@@ -20,8 +20,9 @@ class WriteableMetric : public DeviceMetric
 {
 public:
 	WriteableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType);
-	void registerMetric();
+	void updateSensor(string updateValues);
 };
+
 
 class ObservableMetric : public DeviceMetric
 {
