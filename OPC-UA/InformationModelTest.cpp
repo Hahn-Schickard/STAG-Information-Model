@@ -136,9 +136,10 @@ void InformationModelTest::RunBooleanTest(string msg, bool test())
 	std::cout << "-------------------------------------------------------------------" << std::endl;
 }
 
-void InformationModelTest::CreateDevice_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException()
+bool InformationModelTest::CreateDevice_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException()
 {
 	device = new Device("", "", "");
+	return false;
 }
 
 
@@ -225,6 +226,7 @@ void InformationModelTest::RunTests()
 		CreateElementGroup_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException();
 		CreateElementGroup_ReferenceIdLessThenThreeCharacters_ThrowsInvalidReferenceIdException();
 		CreateElementGroup_ReferenceIdIsValid_NoExceptionThrown();
+		RunExceptionRaisedTest("Creating DeviceElement Group with invalid RefID throws exception", RaisesException);
 	}
 
 	void InformationModelTest::WriteDescriptors(NamedElement * element)

@@ -12,4 +12,14 @@ struct InvalidReferenceIdException : public std::exception {
 	}
 };
 
+struct ElementTypeMismatchException : public std::exception {
+	std::string desc;
+	const char * what() const throw ();
+	ElementTypeMismatchException() {}
+	ElementTypeMismatchException(std::string desc)
+	{
+		this->desc = desc;
+	}
+};
+
 #endif

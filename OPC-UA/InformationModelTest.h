@@ -20,7 +20,7 @@ public:
 	void WriteDescriptors(NamedElement * element);
 
 	//Unit Tests
-	void CreateDevice_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException();
+	bool CreateDevice_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException();
 	void CreateElementGroup_ReferenceIdLessThenThreeCharacters_ThrowsInvalidReferenceIdException();
 	void CreateElementGroup_ReferenceIdIsEmpty_ThrowsInvalidReferenceIdException();
 	void CreateElementGroup_ReferenceIdIsValid_NoExceptionThrown();
