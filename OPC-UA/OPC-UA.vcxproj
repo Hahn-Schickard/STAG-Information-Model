@@ -151,34 +151,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="OPCUA-Modeller\blueprint.h" />
-    <ClInclude Include="OPCUA-Modeller\device.h" />
-    <ClInclude Include="OPCUA-Modeller\deviceElement.h" />
-    <ClInclude Include="OPCUA-Modeller\deviceElementGroup.h" />
-    <ClInclude Include="OPCUA-Modeller\deviceFunction.h" />
-    <ClInclude Include="OPCUA-Modeller\deviceFunctionParameter.h" />
-    <ClInclude Include="OPCUA-Modeller\deviceMetric.h" />
-    <ClInclude Include="InformationModelTest.h" />
-    <ClInclude Include="OPCUA-Modeller\informationModelExceptions.h" />
-    <ClInclude Include="OPCUA-Modeller\namedElement.h" />
-    <ClInclude Include="OPCUA-Modeller\opcua_modeller.hpp" />
-    <ClInclude Include="OPCUA-Modeller\valueDataType.h" />
+    <ClInclude Include="OPCUA-Modeller\includes\blueprint.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\device.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\deviceElement.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\deviceElementGroup.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\deviceFunction.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\deviceFunctionParameter.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\deviceMetric.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\informationModelExceptions.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\namedElement.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\opcua_modeller.hpp" />
+    <ClInclude Include="OPCUA-Modeller\includes\valueDataType.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OPCUA-Modeller\blueprint.cpp" />
-    <ClCompile Include="OPCUA-Modeller\device.cpp" />
-    <ClCompile Include="OPCUA-Modeller\deviceElementGroup.cpp" />
-    <ClCompile Include="InformationModelTest.cpp" />
-    <ClCompile Include="OPC-UA-Test.cpp" />
-    <ClCompile Include="OPCUA-Modeller\deviceElement.cpp" />
-    <ClCompile Include="OPCUA-Modeller\deviceFunction.cpp" />
-    <ClCompile Include="OPCUA-Modeller\deviceFunctionParameter.cpp" />
-    <ClCompile Include="OPCUA-Modeller\deviceMetric.cpp" />
-    <ClCompile Include="OPCUA-Modeller\informationModelExceptions.cpp" />
-    <ClCompile Include="OPCUA-Modeller\namedElement.cpp" />
-    <ClCompile Include="OPCUA-Modeller\observableMetric.cpp" />
-    <ClCompile Include="OPCUA-Modeller\valueDataType.cpp" />
-    <ClCompile Include="OPCUA-Modeller\writeableMetric.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\blueprint.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\device.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\deviceElementGroup.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\deviceElement.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\deviceFunction.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\deviceFunctionParameter.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\deviceMetric.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\informationModelExceptions.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\namedElement.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\observableMetric.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\valueDataType.cpp" />
+    <ClCompile Include="OPCUA-Modeller\src\writeableMetric.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
