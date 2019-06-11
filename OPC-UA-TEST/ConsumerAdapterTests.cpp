@@ -127,30 +127,6 @@ TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsDeviceBlueprint) {
 	EXPECT_EQ("A hardcoded deviceMetric", element->getElementDescription());
 }
 
-//TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsObservableMetric) {
-//	//Arrange
-//	BluePrint * bluePrint = new BluePrint("1234","Test","Test");
-//	auto device = bluePrint->GetDevice("1234");
-//	auto group1 = new DeviceElementGroup("1234.1", "Group", "Test Group");
-//	ObservableMetric * metric = new ObservableMetric("1234.1.1", "TestObservableMetric", "A hardcoded observableMetric Element", ValueType::String);
-//	group1->addElement(*metric);
-//	device->addDeviceElementGroup(group1);
-//
-//	//Act
-//	auto groups = device->getDeviceElementGroups();
-//
-//	//Assert
-//	ASSERT_EQ(1, groups.size());
-//	auto group = groups[0];
-//	auto elements = group->getSubElements();
-//	
-//
-//	ASSERT_GE(1, elements.size());
-//	auto element = elements[0];
-//	EXPECT_EQ("1234.1.1", element->getReferenceId());
-//	EXPECT_EQ("TestObservableMetric", element->getElementName());
-//	EXPECT_EQ("A hardcoded observableMetric Element", element->getElementDescription());
-//}
 
 
 
