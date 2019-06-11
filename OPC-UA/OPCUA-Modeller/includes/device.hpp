@@ -18,7 +18,7 @@ private:
 public:
 	Device(string refId, string name, string desc);
 	
-	~Device();
+
 
 	void addDeviceElementGroup(DeviceElementGroup * group);
 

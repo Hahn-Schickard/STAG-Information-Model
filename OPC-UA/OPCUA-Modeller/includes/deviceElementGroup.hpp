@@ -8,9 +8,9 @@
 class DeviceElementGroup : public DeviceElement
 {
 protected:
-	string name;
+	/*string name;
 	string description;
-	string refId;
+	string refId;*/
 
 	vector<DeviceElement*> subElements;
 

@@ -2,9 +2,9 @@
 
 Device::Device(string refId, string name, string desc) : NamedElement(refId, name, desc)
 {
-	//device_elements = new std::vector<DeviceElementGroup>();
+	device_elements = std::vector<DeviceElementGroup*>();
 }
-Device::~Device() {};
+
 
 void Device::addDeviceElementGroup(DeviceElementGroup * group) {
 	this->device_elements.push_back(group);

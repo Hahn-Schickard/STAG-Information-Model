@@ -17,7 +17,7 @@ protected:
 public:
 	string getElementDescription() { return this->Desc; }
 	string getElementName() { return this->Name; }
-	string getReferenceId() { return this->RefId; }
+	const string getReferenceId() { return this->RefId; }
 
 
 
