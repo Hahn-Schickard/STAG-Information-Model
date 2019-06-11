@@ -17,6 +17,7 @@ class ValueType
 public:
 	enum ValueDataType
 	{
+		Unknown,
 		Integer,
 		String,
 		Boolean,

@@ -34,6 +34,8 @@ struct FunctionElementException : public std::exception {
 	}
 };
 
+
+
 //struct InvalidReferenceIdException : public std::exception {
 //	std::string desc;
 //	const char * what() const throw ();

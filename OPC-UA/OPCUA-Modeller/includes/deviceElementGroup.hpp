@@ -13,11 +13,12 @@ protected:
 	string refId;*/
 
 	vector<DeviceElement*> subElements;
-
 	
 public:
 	DeviceElementGroup(string refId, string name, string desc);
 	vector<DeviceElement*> getSubElements();
+	vector<DeviceElementGroup*>getSubElementGroups();
+
 	void addElement(DeviceElement &element);
 	DeviceElement* GetElementByRefId(string refId)
 	{
