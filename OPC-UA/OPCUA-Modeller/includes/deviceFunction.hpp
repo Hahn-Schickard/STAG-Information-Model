@@ -1,7 +1,7 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
-#include "deviceElement.h"
-#include "deviceFunctionParameter.h"
+#include "deviceElement.hpp"
+#include "deviceFunctionParameter.hpp"
 
 
 
@@ -17,6 +17,11 @@ public:
 	
 	vector<FunctionParameter> getParameterList();
 	void addParameter(const FunctionParameter &functionParameter);
+	
+	
+
+
+
 };
 
 #endif

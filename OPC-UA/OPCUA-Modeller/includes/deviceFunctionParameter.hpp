@@ -1,8 +1,8 @@
 #ifndef FUNCTIONPARAMETER
 #define FUNCTIONPARAMETER
 
-#include "valueDataType.h"
-#include "namedElement.h"
+#include "valueDataType.hpp"
+#include "namedElement.hpp"
 
 
 

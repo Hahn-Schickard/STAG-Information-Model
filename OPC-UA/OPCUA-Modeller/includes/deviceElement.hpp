@@ -1,7 +1,7 @@
 #ifndef DEVICEELEMENT_H
 #define DEVICEELEMENT_H
 
-#include "namedElement.h"
+#include "namedElement.hpp"
 
 static enum ElementType {
 	Undefined,

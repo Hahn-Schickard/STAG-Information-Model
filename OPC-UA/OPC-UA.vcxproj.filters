@@ -15,84 +15,75 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InformationModelTest.h">
+    <ClInclude Include="OPCUA-Modeller\includes\opcua_modeller.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\blueprint.h">
+    <ClInclude Include="OPCUA-Modeller\includes\blueprint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\device.h">
+    <ClInclude Include="OPCUA-Modeller\includes\deviceElement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\deviceElement.h">
+    <ClInclude Include="OPCUA-Modeller\includes\device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\deviceElementGroup.h">
+    <ClInclude Include="OPCUA-Modeller\includes\deviceElementGroup.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\deviceFunction.h">
+    <ClInclude Include="OPCUA-Modeller\includes\deviceFunction.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\deviceFunctionParameter.h">
+    <ClInclude Include="OPCUA-Modeller\includes\deviceFunctionParameter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\deviceMetric.h">
+    <ClInclude Include="OPCUA-Modeller\includes\deviceMetric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\namedElement.h">
+    <ClInclude Include="OPCUA-Modeller\includes\informationModelExceptions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\valueDataType.h">
+    <ClInclude Include="OPCUA-Modeller\includes\namedElement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\opcua_modeller.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OPCUA-Modeller\informationModelExceptions.h">
+    <ClInclude Include="OPCUA-Modeller\includes\valueDataType.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OPC-UA-Test.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\writeableMetric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\deviceElementGroup.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\blueprint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InformationModelTest.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\deviceElement.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\deviceElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\blueprint.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\deviceElementGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\device.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\deviceFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\deviceFunction.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\deviceFunctionParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\deviceFunctionParameter.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\deviceMetric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\valueDataType.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\informationModelExceptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\deviceMetric.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\namedElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\writeableMetric.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\observableMetric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\observableMetric.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\namedElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OPCUA-Modeller\informationModelExceptions.cpp">
+    <ClCompile Include="OPCUA-Modeller\src\valueDataType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

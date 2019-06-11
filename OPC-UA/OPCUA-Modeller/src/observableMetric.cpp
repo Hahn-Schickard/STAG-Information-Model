@@ -1,4 +1,4 @@
-#include "deviceMetric.h"
+#include "../includes/deviceMetric.hpp"
 
 
 ObservableMetric::ObservableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {

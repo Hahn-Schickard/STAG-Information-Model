@@ -1,4 +1,4 @@
-#include "deviceElement.h"
+#include "../includes/deviceElement.hpp"
 
 DeviceElement::DeviceElement(string refId, string name, string desc) : NamedElement(refId, name, desc) {
 

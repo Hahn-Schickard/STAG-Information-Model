@@ -1,4 +1,4 @@
-#include "deviceFunction.h"
+#include "../includes/deviceFunction.hpp"
 
 DeviceFunction::DeviceFunction(string refId, string name, string desc) : DeviceElement(refId, name, desc) {
 	this->elementType = ElementType::Function;

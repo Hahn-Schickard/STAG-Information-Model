@@ -1,7 +1,7 @@
 #ifndef METRIC_H
 #define METRIC_H
-#include "deviceElement.h"
-#include "valueDataType.h"
+#include "deviceElement.hpp"
+#include "valueDataType.hpp"
 
 class DeviceMetric : public DeviceElement
 {

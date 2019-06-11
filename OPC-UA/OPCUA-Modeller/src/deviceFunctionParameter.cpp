@@ -1,4 +1,4 @@
-#include "deviceFunctionParameter.h"
+#include "../includes/deviceFunctionParameter.hpp"
 
 FunctionParameter::FunctionParameter(string refId, string name, string desc, ValueType::ValueDataType valueType) : NamedElement(refId, name, desc) {
 	this->isOptionalFlag = false;
