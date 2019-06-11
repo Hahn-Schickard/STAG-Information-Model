@@ -13,7 +13,7 @@ using namespace std;
 class Device : public NamedElement
 {
 private:
-	vector<DeviceElementGroup*> device_elements;
+	vector<DeviceElementGroup*> device_element_groups;
 	
 public:
 	Device(string refId, string name, string desc);
@@ -25,6 +25,8 @@ public:
 	DeviceElementGroup * getDeviceElementGroup();
 	DeviceElementGroup * getDeviceElementGroup(string refId);
 	vector<DeviceElementGroup*> getDeviceElementGroups();
+	DeviceElementGroup* findSubElementGroup(DeviceElementGroup* deviceElementGroup, std::string refId);
+	DeviceElement* findSubElement(DeviceElementGroup* deviceElementGroup, std::string refId);
 
 	
 };
