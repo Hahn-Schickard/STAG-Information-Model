@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.6)
+
+set (THIS InfoModel_Test_Suite) # Change this variable to your test suite name
+
+file(GLOB Test_Suite "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
+file(GLOB Test_Cases "${CMAKE_CURRENT_LIST_DIR}/*.hpp")
+
+# ==============================================================================================================================
+# =============================================== YOUR CONFIGURATION GOES HERE =================================================
+# ==============================================================================================================================
+# =============================================== EXAMPLE SUBMODULE INCLUSION===================================================
+# ================================================= REMOVED UNUSED PARTS! ======================================================
+
+add_executable(${THIS} ${Test_Suite} ${Test_Cases} )
+
+target_link_libraries(${THIS} PUBLIC
+    InfoModel_Lib
+    gtest_main)
+
+# ==============================================================================================================================
+# ================================================ END OF YOUR CONFIGURATION ===================================================
+
+add_test(
+    NAME ${THIS}
+    COMMAND ${THIS}
+)
+
+if(WIN32)
+    add_custom_command(TARGET ${THIS} POST_BUILD 
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory 
+                            "${CMAKE_BINARY_DIR}/bin/"
+                            $<TARGET_FILE_DIR:${THIS}> 
+                        COMMENT "Copying shared library files from ${CMAKE_BINARY_DIR}/bin directory to ${CMAKE_CURRENT_BINARY_DIR} directory."
+                            VERBATIM) 
+else(UNIX)
+    add_custom_command(TARGET ${THIS} POST_BUILD
+                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
+endif()
