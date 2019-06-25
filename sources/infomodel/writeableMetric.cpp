@@ -7,11 +7,11 @@
 
 
 
-WriteableMetric::WriteableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
+WriteableMetric::WriteableMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
 	this->elementType = ElementType::Writable;
 }
 
-void WriteableMetric::updateSensor(string updateValues)
+void WriteableMetric::updateSensor(std::string updateValues)
 {
 	if (getElementType() != ElementType::Writable)
 	{
