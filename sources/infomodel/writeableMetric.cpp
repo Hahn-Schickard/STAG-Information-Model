@@ -1,5 +1,10 @@
+#ifndef WRITEABLEMETRIC
+#define WRITEABLEMETRIC
+
+#include <string>
 #include "deviceMetric.hpp"
 #include "informationModelExceptions.hpp"
+
 
 
 WriteableMetric::WriteableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
@@ -13,3 +18,6 @@ void WriteableMetric::updateSensor(string updateValues)
 		throw ElementTypeMismatchException("This Element is not Writeable");
 	}
 }
+
+
+#endif // !WRITEABLEMETRIC
