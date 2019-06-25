@@ -21,6 +21,12 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+build/
+cmake/
+cmake-build-debug/
+cmake-build-release/
+libs/
+tools/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -261,3 +267,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+
+# All Text Files
+*.txt

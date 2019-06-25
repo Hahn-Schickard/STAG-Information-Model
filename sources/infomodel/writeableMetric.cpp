@@ -1,15 +1,23 @@
+#ifndef WRITEABLEMETRIC
+#define WRITEABLEMETRIC
+
+#include <string>
 #include "deviceMetric.hpp"
 #include "informationModelExceptions.hpp"
 
 
-WriteableMetric::WriteableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
+
+WriteableMetric::WriteableMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
 	this->elementType = ElementType::Writable;
 }
 
-void WriteableMetric::updateSensor(string updateValues)
+void WriteableMetric::updateSensor(std::string updateValues)
 {
-	if (this->getElementType() != ElementType::Writable)
+	if (getElementType() != ElementType::Writable)
 	{
 		throw ElementTypeMismatchException("This Element is not Writeable");
 	}
 }
+
+
+#endif // !WRITEABLEMETRIC
