@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../includes/utils/PrintText.hpp
+string
+-
+
+C:/projects/GatewayRedesign/Fork/information-modeller/sources/utils/PrintText.cpp
+PrintText.hpp
+C:/projects/GatewayRedesign/Fork/information-modeller/sources/utils/PrintText.hpp
+iostream
+-
+

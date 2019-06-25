@@ -1,0 +1,117 @@
+[
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/googletest-build/googlemock",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/gmock_main.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -Wall -Wshadow -Werror -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles\\gmock_main.dir\\src\\gmock_main.cc.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\googletest-src\\googlemock\\src\\gmock_main.cc",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/googletest-src/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/googletest-build/googlemock",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/gmock.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -Wall -Wshadow -Werror -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles\\gmock.dir\\src\\gmock-all.cc.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\googletest-src\\googlemock\\src\\gmock-all.cc",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/googletest-src/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/googletest-build/googletest",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/gtest.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -Wall -Wshadow -Werror -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles\\gtest.dir\\src\\gtest-all.cc.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\googletest-src\\googletest\\src\\gtest-all.cc",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/googletest-src/googletest/src/gtest-all.cc"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/googletest-build/googletest",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/gtest_main.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -Wall -Wshadow -Werror -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -std=c++11 -o CMakeFiles\\gtest_main.dir\\src\\gtest_main.cc.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\googletest-src\\googletest\\src\\gtest_main.cc",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/googletest-src/googletest/src/gtest_main.cc"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/utils",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DPrint_Text_Lib_EXPORTS @CMakeFiles/Print_Text_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\Print_Text_Lib.dir\\PrintText.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\utils\\PrintText.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/utils/PrintText.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/runner",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/Runner_MAIN.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\Runner_MAIN.dir\\main.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\runner\\main.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/runner/main.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\blueprint.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\blueprint.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/blueprint.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\device.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\device.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/device.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\deviceElement.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\deviceElement.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/deviceElement.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\deviceElementGroup.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\deviceElementGroup.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/deviceElementGroup.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\deviceFunction.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\deviceFunction.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/deviceFunction.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\deviceFunctionParameter.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\deviceFunctionParameter.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/deviceFunctionParameter.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\deviceMetric.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\deviceMetric.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/deviceMetric.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\informationModelExceptions.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\informationModelExceptions.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/informationModelExceptions.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\namedElement.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\namedElement.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/namedElement.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\observableMetric.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\observableMetric.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/observableMetric.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\valueDataType.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\valueDataType.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/valueDataType.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/sources/infomodel",
+  "command": "C:\\mingw64\\bin\\g++.exe  -DInfoModel_Lib_EXPORTS @CMakeFiles/InfoModel_Lib.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Lib.dir\\writeableMetric.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\sources\\infomodel\\writeableMetric.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/sources/infomodel/writeableMetric.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/tests/unit_tests/InfoModel",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/InfoModel_Test_Suite.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Test_Suite.dir\\BlueprintTests.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\unit_tests\\InfoModel\\BlueprintTests.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/unit_tests/InfoModel/BlueprintTests.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/tests/unit_tests/InfoModel",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/InfoModel_Test_Suite.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Test_Suite.dir\\ConsumerAdapterTests.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\unit_tests\\InfoModel\\ConsumerAdapterTests.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/unit_tests/InfoModel/ConsumerAdapterTests.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/tests/unit_tests/InfoModel",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/InfoModel_Test_Suite.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Test_Suite.dir\\DeviceUnitTests.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\unit_tests\\InfoModel\\DeviceUnitTests.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/unit_tests/InfoModel/DeviceUnitTests.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/tests/unit_tests/InfoModel",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/InfoModel_Test_Suite.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Test_Suite.dir\\ProducerAdapterTests.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\unit_tests\\InfoModel\\ProducerAdapterTests.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/unit_tests/InfoModel/ProducerAdapterTests.cpp"
+},
+{
+  "directory": "C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/tests/unit_tests/InfoModel",
+  "command": "C:\\mingw64\\bin\\g++.exe   @CMakeFiles/InfoModel_Test_Suite.dir/includes_CXX.rsp  -fprofile-arcs -ftest-coverage --coverage -g   -W -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -Wall -fprofile-arcs -ftest-coverage -fdiagnostics-color=auto -lgcov --coverage -std=gnu++11 -o CMakeFiles\\InfoModel_Test_Suite.dir\\testRunner.cpp.obj -c C:\\projects\\GatewayRedesign\\Fork\\information-modeller\\tests\\unit_tests\\InfoModel\\testRunner.cpp",
+  "file": "C:/projects/GatewayRedesign/Fork/information-modeller/tests/unit_tests/InfoModel/testRunner.cpp"
+}
+]

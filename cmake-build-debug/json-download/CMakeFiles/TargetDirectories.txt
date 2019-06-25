@@ -1,0 +1,3 @@
+C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/json-download/CMakeFiles/json.dir
+C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/json-download/CMakeFiles/edit_cache.dir
+C:/projects/GatewayRedesign/Fork/information-modeller/cmake-build-debug/json-download/CMakeFiles/rebuild_cache.dir

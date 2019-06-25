@@ -8,7 +8,7 @@ WriteableMetric::WriteableMetric(string refId, string name, string desc, ValueTy
 
 void WriteableMetric::updateSensor(string updateValues)
 {
-	if (this->getElementType() != ElementType::Writable)
+	if (getElementType() != ElementType::Writable)
 	{
 		throw ElementTypeMismatchException("This Element is not Writeable");
 	}

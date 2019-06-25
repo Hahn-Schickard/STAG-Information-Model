@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2019.1.4\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\Runner_MAIN.dir/objects.a
+C:\mingw64\bin\ar.exe cr CMakeFiles\Runner_MAIN.dir/objects.a @CMakeFiles\Runner_MAIN.dir\objects1.rsp
+C:\mingw64\bin\g++.exe  -fprofile-arcs -ftest-coverage --coverage -g   -lgcov --coverage -Wl,--whole-archive CMakeFiles\Runner_MAIN.dir/objects.a -Wl,--no-whole-archive  -o Runner_MAIN.exe -Wl,--out-implib,libRunner_MAIN.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Runner_MAIN.dir\linklibs.rsp
