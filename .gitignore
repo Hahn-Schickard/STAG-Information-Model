@@ -21,10 +21,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-build/
-cmake/
-cmake-build-debug/
-cmake-build-release/
+*build*/
 libs/
 tools/
 
