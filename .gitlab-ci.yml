@@ -1,0 +1,101 @@
+variables: 
+ GIT_SUBMODULE_STRATEGY: recursive
+
+include: 
+ - local: "ci-variables.yml"
+ 
+stages:
+ - prep
+ - configure
+ - build 
+ - test
+ - document
+ - deploy
+ 
+prep_build_environment:
+ stage: prep
+ script: 
+  - mkdir build
+ allow_failure: true
+
+configure_cmake: 
+ stage: configure
+ variables: 
+  GIT_STRATEGY: none
+ script:
+  - cd build
+  - 'cmake ..'
+ 
+build_debug: 
+ stage: build
+ variables: 
+  GIT_STRATEGY: none 
+  CONFIG: "Debug"
+ script: 
+  - 'cmake --build build/ --config $CONFIG --target all --'
+ artifacts: 
+  paths: 
+   - build/
+  
+run_unit_tests: 
+ stage: test
+ variables: 
+  GIT_STRATEGY: none 
+ script: 
+  - cd build
+  - ctest
+
+check_code_coverage: 
+ stage: test 
+ variables: 
+  GIT_STRATEGY: none 
+ script: 
+  - ./check_code_coverage.sh
+ artifacts:                                                           
+  name: "code_coverage_results"
+  paths:
+  - code_coverage_report/
+ allow_failure: true
+
+test_for_memory_leaks: 
+ stage: test
+ variables: 
+  GIT_STRATEGY: none
+ script: 
+  - "./run_valgrind.sh -e $VALGRIND_EXECUTABLE -a $VALGRIND_EXECUTABLE_ARGS"
+ artifacts:                                                           
+  name: "valgrind_results"
+  paths:
+  - valgrind-results.log
+ only: 
+  variables: 
+   - $RUN_VALGRIND == "true" 
+ allow_failure: true
+
+generate_documentation: 
+ stage: document
+ variables: 
+  GIT_STRATEGY: none 
+ script: 
+  - doxygen Doxyfile 
+ artifacts: 
+  name: "doc_files"
+  paths: 
+  - docs/code_documentation/
+  expire_in: 30 days
+ only:
+   - master
+ allow_failure: true
+
+deploy_coverage_report:
+ stage: deploy
+ dependencies:
+    - check_code_coverage
+ script:
+    - mv code_coverage_report/ public/
+ artifacts:
+   paths:
+     - public
+   expire_in: 30 days
+ only:
+   - master
