@@ -1,5 +1,7 @@
 #include "deviceMetric.hpp"
 
+using namespace std;
+
 
 ObservableMetric::ObservableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceMetric(refId, name, desc, valueType) {
 

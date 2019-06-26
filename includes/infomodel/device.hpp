@@ -1,30 +1,27 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include <stdlib.h>
 #include <vector>
 #include <string>
 
 #include "deviceElementGroup.hpp"
 #include "namedElement.hpp"
 
-using namespace std;
-
 class Device : public NamedElement
 {
 private:
-	vector<DeviceElementGroup*> device_element_groups;
+	std::vector<DeviceElementGroup*> device_element_groups;
 	
 public:
-	Device(string refId, string name, string desc);
+	Device(std::string refId, std::string name, std::string desc);
 	
 
 
 	void addDeviceElementGroup(DeviceElementGroup * group);
 
 	DeviceElementGroup * getDeviceElementGroup();
-	DeviceElementGroup * getDeviceElementGroup(string refId);
-	vector<DeviceElementGroup*> getDeviceElementGroups();
+	DeviceElementGroup * getDeviceElementGroup(std::string refId);
+	std::vector<DeviceElementGroup*> getDeviceElementGroups();
 	DeviceElementGroup* findSubElementGroup(DeviceElementGroup* deviceElementGroup, std::string refId);
 	DeviceElement* findSubElement(DeviceElementGroup* deviceElementGroup, std::string refId);
 

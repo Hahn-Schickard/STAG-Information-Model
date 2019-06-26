@@ -1,5 +1,7 @@
 #include "deviceElement.hpp"
 
+using namespace std;
+
 DeviceElement::DeviceElement(string refId, string name, string desc) : NamedElement(refId, name, desc) {
 
 }

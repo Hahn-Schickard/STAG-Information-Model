@@ -1,5 +1,7 @@
 #include "deviceMetric.hpp"
 
+using namespace std;
+
 
 DeviceMetric::DeviceMetric(string refId, string name, string desc, ValueType::ValueDataType valueType) : DeviceElement(refId, name, desc)
 {

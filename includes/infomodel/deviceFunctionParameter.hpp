@@ -13,9 +13,9 @@ private:
 	ValueType::ValueDataType dataType;
 
 public:
-	FunctionParameter(string refId, string name, string desc, ValueType::ValueDataType valueType);
+	FunctionParameter(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType);
 
-	FunctionParameter(string refId, string name, string desc, ValueType::ValueDataType valueType, bool isOptional);
+	FunctionParameter(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType, bool isOptional);
 
 	bool isOptional();
 

@@ -8,19 +8,15 @@
 class DeviceElementGroup : public DeviceElement
 {
 protected:
-	/*string name;
-	string description;
-	string refId;*/
-
-	vector<DeviceElement*> subElements;
+	std::vector<DeviceElement*> subElements;
 	
 public:
-	DeviceElementGroup(string refId, string name, string desc);
-	vector<DeviceElement*> getSubElements();
-	vector<DeviceElementGroup*>getSubElementGroups();
+	DeviceElementGroup(std::string refId, std::string name, std::string desc);
+	std::vector<DeviceElement*> getSubElements();
+	std::vector<DeviceElementGroup*>getSubElementGroups();
 
 	void addElement(DeviceElement &element);
-	DeviceElement* GetElementByRefId(string refId)
+	DeviceElement* GetElementByRefId(std::string refId)
 	{
 		auto elem = std::find_if(subElements.begin(), subElements.end(), [refId](DeviceElement* obj) { return obj->getReferenceId() == refId; });
 		if (elem != subElements.end())

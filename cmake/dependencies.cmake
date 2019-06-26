@@ -1,11 +1,11 @@
-configure_file(JsonDependency.txt json-download/CMakeLists.txt)
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/json-download" )
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/json-download" )
+#configure_file(JsonDependency.txt json-download/CMakeLists.txt)
+#execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+#    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/json-download" )
+#execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+#    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/json-download" )
 
-set(JSON_INCLUDES "${PROJECT_SOURCE_DIR}/libs/json-src/single_include/")
-set(JSON_BuildTests OFF CACHE INTERNAL "")
+#set(JSON_INCLUDES "${PROJECT_SOURCE_DIR}/libs/json-src/single_include/")
+#set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 configure_file(GoogleTestDependency.txt googletest-download/CMakeLists.txt)
 execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .

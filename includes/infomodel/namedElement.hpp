@@ -5,25 +5,23 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class NamedElement
 {
 protected:
-	string Name = "";
-	string Desc = "";
-	string RefId = "";
+	std::string Name = "";
+	std::string Desc = "";
+	std::string RefId = "";
 
 public:
-	string getElementDescription() { return this->Desc; }
-	string getElementName() { return this->Name; }
-	const string getReferenceId() { return this->RefId; }
+	std::string getElementDescription() { return this->Desc; }
+	std::string getElementName() { return this->Name; }
+	const std::string getReferenceId() { return this->RefId; }
 
 
 
-	NamedElement(string refId, string name, string desc);
+	NamedElement(std::string refId, std::string name, std::string desc);
 
-	bool ContainsNonNumericCharacters(string refId);
+	bool ContainsNonNumericCharacters(std::string refId);
 	
 };
 

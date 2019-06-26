@@ -16,15 +16,9 @@ class DeviceElement : public NamedElement
 {
 
 public:
-	
-
-public:
 	ElementType elementType = Undefined;
-
-
-public:	
 	
-	DeviceElement(string refId, string name, string desc) ;
+	DeviceElement(std::string refId, std::string name, std::string desc) ;
 
 	ElementType getElementType();
 };

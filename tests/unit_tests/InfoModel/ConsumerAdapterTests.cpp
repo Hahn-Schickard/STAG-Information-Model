@@ -3,12 +3,7 @@
 #include "blueprint.hpp"
 #include "device.hpp"
 #include <string>
-
-
 using namespace std;
-
-
-
 
 TEST(ConsumerAdapter, GetDevice_ValidRefId_ReturnsDevice) {
 	//Arrange
@@ -53,6 +48,7 @@ TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsOneGroup) {
 	EXPECT_EQ(1, groups.size());
 
 }
+
 TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsDeviceBlueprint) {
 	//Arrange
 	BluePrint * bluePrint = new BluePrint();
@@ -123,19 +119,4 @@ TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsDeviceBlueprint) {
 	EXPECT_EQ("1234.1.4.1", element->getReferenceId());
 	EXPECT_EQ("TestDeviceMetric2", element->getElementName());
 	EXPECT_EQ("A hardcoded deviceMetric", element->getElementDescription());
-}
-
-
-
-
-
-
-ConsumerAdapterTests::ConsumerAdapterTests()
-{
-
-}
-
-
-ConsumerAdapterTests::~ConsumerAdapterTests()
-{
 }
