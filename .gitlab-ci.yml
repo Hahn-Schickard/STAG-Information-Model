@@ -55,6 +55,7 @@ check_code_coverage:
   name: "code_coverage_results"
   paths:
   - code_coverage_report/
+ allow_failure: true
 
 test_for_memory_leaks: 
  stage: test
@@ -69,6 +70,7 @@ test_for_memory_leaks:
  only: 
   variables: 
    - $RUN_VALGRIND == "true" 
+ allow_failure: true
 
 generate_documentation: 
  stage: document
@@ -83,6 +85,7 @@ generate_documentation:
   expire_in: 30 days
  only:
    - master
+ allow_failure: true
 
 deploy_coverage_report:
  stage: deploy
