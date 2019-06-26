@@ -4,7 +4,7 @@ set(THIS InfoModel_Lib) # Change the name of THIS variable to your module name
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB includes_list  "${PROJECT_SOURCE_DIR}/includes/infomodel/*.hpp"
-                         "${PROJECT_SOURCE_DIR}/includes/utils/*.hpp")
+                         )
 
 PRINT_MODULE_FILES(${THIS} "${sources_list}" "${includes_list}")
 
