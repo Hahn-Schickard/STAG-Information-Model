@@ -18,6 +18,7 @@ enable_testing()
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(IS_SUBMODULE_PROJECT OFF CACHE BOOL "Specifies wheather this project is a submodule for another project")
 set(FORCE_WINDOWS_LINTING OFF CACHE BOOL "Force linting with clang-tidy on Windows")
 set(CLANG_OUTPUT "${PROJECT_SOURCE_DIR}/clang-tidy-suggested-fixes.yml")
 set(INCLUDES_DIR "${PROJECT_SOURCE_DIR}/includes")
