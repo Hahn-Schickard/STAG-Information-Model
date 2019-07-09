@@ -24,7 +24,7 @@ public:
 
 public:	
 	
-	DeviceElement(string refId, string name, string desc) ;
+	DeviceElement(std::string refId, std::string name, std::string desc) ;
 
 	ElementType getElementType();
 };

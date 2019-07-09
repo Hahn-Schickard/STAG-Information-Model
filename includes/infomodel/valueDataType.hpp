@@ -3,13 +3,21 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
-static vector<std::string> ValueTypes = {
+static std::vector<std::string> ValueTypes = {
 			"Integer",
 			"String",
 			"Boolean",
 			"Float"
+};
+
+class ValueWrapper
+{
+	ValueType type;
+	union value {
+		int intValue;
+		float floatValue;
+		std::string stringValue;
+	};
 };
 
 class ValueType
@@ -26,7 +34,7 @@ public:
 
 
 
-	static string toString(ValueDataType dataType)
+	static std::string toString(ValueDataType dataType)
 	{
 		return ValueTypes[dataType];
 	}

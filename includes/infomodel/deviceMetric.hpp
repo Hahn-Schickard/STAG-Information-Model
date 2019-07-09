@@ -2,6 +2,7 @@
 #define METRIC_H
 #include "deviceElement.hpp"
 #include "valueDataType.hpp"
+#include <string>
 
 class DeviceMetric : public DeviceElement
 {
@@ -11,7 +12,7 @@ private:
 	ValueType::ValueDataType valueType;
 
 public:
-	DeviceMetric(string refId, string name, string desc, ValueType::ValueDataType valueType);
+	DeviceMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType);
 	ValueType::ValueDataType getMetricValueType();
 };
 
@@ -19,23 +20,23 @@ public:
 class WriteableMetric : public DeviceMetric
 {
 public:
-	WriteableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType);
-	void updateSensor(string updateValues);
+	WriteableMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType);
+	void updateSensor(std::string updateValues);
 };
 
 
 class ObservableMetric : public DeviceMetric
 {
 private:
-	string registration_id;
+	std::string registration_id;
 	static int incrementId;
 public:
 	
-	ObservableMetric(string refId, string name, string desc, ValueType::ValueDataType valueType);
+	ObservableMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType);
 
 	void registerMetric();
 
-	string getRegistrationId();
+	std::string getRegistrationId();
 
 
 };

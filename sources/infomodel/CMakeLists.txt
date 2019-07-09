@@ -8,11 +8,6 @@ file(GLOB includes_list  "${PROJECT_SOURCE_DIR}/includes/infomodel/*.hpp"
 
 PRINT_MODULE_FILES(${THIS} "${sources_list}" "${includes_list}")
 
-# ==============================================================================================================================
-# =============================================== YOUR CONFIGURATION GOES HERE =================================================
-# ==============================================================================================================================
-# =============================================== EXAMPLE SUBMODULE INCLUSION===================================================
-# ================================================= REMOVED UNUSED PARTS! ======================================================
 
 include_directories(${PROJECT_SOURCE_DIR}/includes/infomodel/)
 
@@ -25,8 +20,6 @@ add_library(${THIS} SHARED
 target_include_directories(${THIS} INTERFACE
                            ${PROJECT_SOURCE_DIR}/includes/infomodel/)
    
-# ==============================================================================================================================
-# ================================================ END OF YOUR CONFIGURATION ===================================================
 
 add_custom_command(TARGET ${THIS} POST_BUILD 
                     COMMAND ${CMAKE_COMMAND} -E make_directory 

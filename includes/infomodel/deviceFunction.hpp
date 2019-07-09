@@ -2,7 +2,8 @@
 #define FUNCTION_H
 #include "deviceElement.hpp"
 #include "deviceFunctionParameter.hpp"
-
+#include <string>
+#include <vector>
 
 
 class DeviceFunction : public DeviceElement
@@ -10,12 +11,12 @@ class DeviceFunction : public DeviceElement
 public:
 
 private:
-	vector<FunctionParameter> parameters;
+	std::vector<FunctionParameter> parameters;
 
 public:
-	DeviceFunction(string refId, string name, string desc);
+	DeviceFunction(std::string refId, std::string name, std::string desc);
 	
-	vector<FunctionParameter> getParameterList();
+	std::vector<FunctionParameter> getParameterList();
 	void addParameter(const FunctionParameter &functionParameter);
 	
 	

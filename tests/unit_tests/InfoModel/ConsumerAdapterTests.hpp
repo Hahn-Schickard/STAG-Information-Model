@@ -1,10 +1,9 @@
-#pragma once
+#ifndef CONSUMER_ADAPTER_TESTS
+#define CONSUMER_ADAPTER_TESTS
+
 class ConsumerAdapterTests
 {
-public:
-	ConsumerAdapterTests();
-	~ConsumerAdapterTests();
-
-
 };
+
+#endif
 

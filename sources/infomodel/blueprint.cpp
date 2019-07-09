@@ -1,5 +1,6 @@
 #include "blueprint.hpp"
 #include "informationModelExceptions.hpp"
+using namespace std;
 
 Device * BluePrint::GetDevice(std::string refId) 
 {

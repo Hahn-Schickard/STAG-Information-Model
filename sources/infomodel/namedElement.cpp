@@ -1,6 +1,8 @@
 #include "namedElement.hpp"
 #include "informationModelExceptions.hpp"
 
+using namespace std;
+
 NamedElement::NamedElement(string refId, string name, string desc)
 {
 	if (refId.empty() || refId.length() < 3 || ContainsNonNumericCharacters(refId))

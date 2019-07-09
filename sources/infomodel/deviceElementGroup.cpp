@@ -1,5 +1,7 @@
 #include "deviceElementGroup.hpp"
 
+using namespace std;
+
 DeviceElementGroup::DeviceElementGroup(string refId, string name, string desc) : DeviceElement::DeviceElement(refId, name, desc)
 {
 	this->elementType = ElementType::Group;

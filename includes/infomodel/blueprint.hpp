@@ -1,29 +1,16 @@
 #ifndef BLUEPRINT_H
 #define BLUEPRINT_H
 
-#include <stdlib.h>
 #include <string>
 #include "device.hpp"
 #include "deviceMetric.hpp"
 
-class QString
-{
-public:
-	std::string getString();
-};
-
-class Bar
-{
-public:
-	std::string value;
-	std::string GetValue();
-};
 
 class BluePrint
 {
 private:
 	Device * device;
-	std::string generateRefId(string parentRefId);
+	std::string generateRefId(std::string parentRefId);
 public:
 	
 
@@ -44,9 +31,9 @@ public:
 		AddSubElement(subGroupId, "TestDeviceMetric2", "A hardcoded deviceMetric", ElementType::Readonly, ValueType::ValueDataType::Float);
 	}
 
-	std::string AddDeviceGroup(string name, string desc);
-	void AddSubElement(string groupRefId, string name, string desc, ElementType elementType) ;
-	void AddSubElement(string groupRefId, string name, string desc, ElementType elementType, ValueType::ValueDataType valueType);
+	std::string AddDeviceGroup(std::string name, std::string desc);
+	void AddSubElement(std::string groupRefId, std::string name, std::string desc, ElementType elementType) ;
+	void AddSubElement(std::string groupRefId, std::string name, std::string desc, ElementType elementType, ValueType::ValueDataType valueType);
 
 	Device * GetDevice(std::string refId) ;
 
