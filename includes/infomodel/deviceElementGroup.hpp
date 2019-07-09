@@ -4,6 +4,8 @@
 
 #include "deviceElement.hpp"
 #include <algorithm>
+#include <vector>
+#include <string>
 
 class DeviceElementGroup : public DeviceElement
 {

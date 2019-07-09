@@ -2,6 +2,7 @@
 #define METRIC_H
 #include "deviceElement.hpp"
 #include "valueDataType.hpp"
+#include <string>
 
 class DeviceMetric : public DeviceElement
 {

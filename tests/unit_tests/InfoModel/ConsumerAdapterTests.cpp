@@ -68,7 +68,7 @@ TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsDeviceBlueprint) {
 	DeviceElementGroup * groupMetric = nullptr;
 
 	ASSERT_GE(4, elements.size());
-	for (int i = 0; i < elements.size(); i++) {
+	for (unsigned int i = 0; i < elements.size(); i++) {
 		switch (elements[i]->getElementType())
 		{
 			case Observable: {
@@ -83,11 +83,12 @@ TEST(ConsumerAdapter, GetDeviceElementGroups_ReturnsDeviceBlueprint) {
 			case Group: {
 				groupMetric = (DeviceElementGroup*)elements[i];
 			}break;
-		}
-		
-
-		
+			default: {
+				// Do Nothing
+			}
+		}				
 	}
+	
 	ASSERT_NE(observableMetric, nullptr);
 
 	EXPECT_EQ("1234.1.1", observableMetric->getReferenceId());

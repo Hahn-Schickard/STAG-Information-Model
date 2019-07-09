@@ -3,6 +3,7 @@
 
 #include "valueDataType.hpp"
 #include "namedElement.hpp"
+#include <string>
 
 
 

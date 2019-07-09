@@ -2,7 +2,8 @@
 #define FUNCTION_H
 #include "deviceElement.hpp"
 #include "deviceFunctionParameter.hpp"
-
+#include <string>
+#include <vector>
 
 
 class DeviceFunction : public DeviceElement

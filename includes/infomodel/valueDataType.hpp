@@ -10,6 +10,16 @@ static std::vector<std::string> ValueTypes = {
 			"Float"
 };
 
+class ValueWrapper
+{
+	ValueType type;
+	union value {
+		int intValue;
+		float floatValue;
+		std::string stringValue;
+	};
+};
+
 class ValueType
 {
 public:

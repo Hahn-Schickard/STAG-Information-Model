@@ -1,4 +1,5 @@
 #include "deviceElement.hpp"
+using namespace std;
 
 using namespace std;
 
