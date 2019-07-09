@@ -1,4 +1,4 @@
-#include "infomodel\blueprint.hpp"
+#include "blueprint.hpp"
 #include <iostream>
 
 int main() {

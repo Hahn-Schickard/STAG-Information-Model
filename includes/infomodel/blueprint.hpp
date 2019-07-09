@@ -5,7 +5,6 @@
 #include "device.hpp"
 #include "deviceMetric.hpp"
 
-
 class BluePrint
 {
 private:

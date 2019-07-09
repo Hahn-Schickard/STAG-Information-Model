@@ -2,6 +2,8 @@
 #include "informationModelExceptions.hpp"
 using namespace std;
 
+using namespace std;
+
 Device * BluePrint::GetDevice(std::string refId) 
 {
 	return this->device;
@@ -12,7 +14,7 @@ Device * BluePrint::GetDevice()
 	return this->device;
 }
 
-BluePrint::BluePrint(std::string refId, std::string name, std::string desc)
+BluePrint::BluePrint(string refId, string name, string desc)
 {
 	this->device = new Device(refId, name, desc);
 }
@@ -58,6 +60,7 @@ void BluePrint::AddSubElement(string groupRefId, string name, string desc, Eleme
 	case Writable:
 		element = new WriteableMetric(gRefId, name, desc, valueType);
 		break;
+
 	}
 	if (element != nullptr)
 		parent->addElement(*element);

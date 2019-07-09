@@ -4,7 +4,7 @@ using namespace std;
 
 Device::Device(string refId, string name, string desc) : NamedElement(refId, name, desc)
 {
-	device_element_groups = std::vector<DeviceElementGroup*>();
+	device_element_groups = vector<DeviceElementGroup*>();
 }
 
 

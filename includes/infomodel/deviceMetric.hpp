@@ -21,7 +21,8 @@ class WriteableMetric : public DeviceMetric
 {
 public:
 	WriteableMetric(std::string refId, std::string name, std::string desc, ValueType::ValueDataType valueType);
-	void updateSensor(std::string updateValues);
+	//void updateSensor(std::string updateValues);
+	void CheckIfWriteableMetric(std::string updateValues);
 };
 
 

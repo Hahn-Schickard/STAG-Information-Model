@@ -6,10 +6,6 @@
 #include "informationModelExceptions.hpp"
 #include <string>
 
-
-using namespace std;
-
-
 TEST(RefIdGenerationTests, AddDeviceGroup_DeviceRefIdIs1234_ResultIsNotNullPtr)
 {
 	//Arrange
@@ -96,6 +92,11 @@ TEST(RefIdGenerationTests, AddSecondDeviceSubGroup_DeviceRefIdIs1234_ResultIs123
 	auto group = device->getDeviceElementGroup("1234.1");
 	auto groupElement = device->findSubElementGroup(group, "1234.1.1");
 	auto groupElement2 = device->findSubElementGroup(group, "1234.1.2");
+    
+	ASSERT_NE(groupElement, nullptr);
+	EXPECT_EQ(groupElement->getReferenceId(), "1234.1.1");
+	EXPECT_EQ(groupElement->getElementName(), "TestSubGroup");
+	EXPECT_EQ(groupElement->getElementDescription(), "A Test Subgroup");
 
 	ASSERT_NE(groupElement2, nullptr);
 	EXPECT_EQ(groupElement2->getReferenceId(), "1234.1.2");

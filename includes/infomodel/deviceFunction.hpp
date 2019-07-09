@@ -8,8 +8,6 @@
 
 class DeviceFunction : public DeviceElement
 {
-public:
-
 private:
 	std::vector<FunctionParameter> parameters;
 
