@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6) 
 
-set(THIS Runner_MAIN) # Change the name of THIS variable to your module name
+set(THIS Runner_MAIN)
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 
@@ -11,7 +11,15 @@ add_executable(${THIS}
                ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
-               InfoModel_Lib)
+               InfoModel_Lib
+               gcov)
+               
+if(CLANG_TIDY_EXE)               
+    set_target_properties(
+                        ${THIS} PROPERTIES
+                        CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY}
+                        )
+endif()
 
 add_custom_command(TARGET ${THIS} POST_BUILD 
                     COMMAND ${CMAKE_COMMAND} -E make_directory 
@@ -21,3 +29,16 @@ add_custom_command(TARGET ${THIS} POST_BUILD
                         "${CMAKE_BINARY_DIR}/bin"
                     COMMENT "Copying shared library files from ${CMAKE_CURRENT_BINARY_DIR} directory to ${CMAKE_BINARY_DIR}/bin directory."
                         VERBATIM)
+                        
+install(
+    TARGETS ${THIS} 
+    RUNTIME 
+    DESTINATION bin
+    COMPONENT libraries
+)
+
+install(
+    FILES ${includes_list}
+    DESTINATION include
+    COMPONENT headers
+)
