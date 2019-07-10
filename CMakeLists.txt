@@ -66,8 +66,12 @@ set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_PATCH_VER})
 set(CPACK_OUTPUT_FILE_PREFIX cpack_packages)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/docs/code_documentation/" DESTINATION "docs")
+if(EXISTS ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}-config.cmake)
+    install(FILES ${PROJECT_NAME}-config.cmake DESTINATION ${LIBS_DEST})
+else()
+    message(ERROR "No ${PROJECT_NAME}-config.cmake has been found! Please provide ${PROJECT_NAME}-config.cmake so your packages could be used by other developers!")
+endif()
 install(EXPORT ${PROJECT_NAME} DESTINATION ${LIBS_DEST})
-
 
 if(WIN32 AND NOT UNIX)
     message(STATUS "Using ZIP archiving format for packages!")
