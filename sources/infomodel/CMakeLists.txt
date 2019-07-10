@@ -16,9 +16,12 @@ add_library(${THIS} SHARED
 
 target_link_libraries(${THIS} PUBLIC 
                       gcov)
-
+                           
 target_include_directories(${THIS} INTERFACE
-                           ${PROJECT_SOURCE_DIR}/includes/infomodel/)
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/infomodel/>
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+                           $<INSTALL_INTERFACE:${INCLUDES_DEST}>
+                           $<INSTALL_INTERFACE:${LIBS_DEST}>)
 
 if(CLANG_TIDY_EXE)               
     set_target_properties(
@@ -38,13 +41,14 @@ add_custom_command(TARGET ${THIS} POST_BUILD
 
 install(
     TARGETS ${THIS} 
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
+    EXPORT ${PROJECT_NAME}
+    ARCHIVE DESTINATION ${LIBS_DEST}
+    LIBRARY DESTINATION ${LIBS_DEST}
     COMPONENT libraries
 )
 
 install(
     FILES ${includes_list}
-    DESTINATION include
+    DESTINATION ${INCLUDES_DEST}
     COMPONENT headers
 )

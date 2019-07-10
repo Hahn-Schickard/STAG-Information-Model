@@ -27,6 +27,13 @@ set(PACKAGE_MINOR_VER "0" CACHE STRING "Major version number of the release pack
 set(PACKAGE_PATCH_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
 set(CLANG_OUTPUT "${PROJECT_SOURCE_DIR}/clang-tidy-suggested-fixes.yml")
 set(INCLUDES_DIR "${PROJECT_SOURCE_DIR}/includes")
+set(INCLUDES_DEST "include/")
+set(LIBS_DEST "lib/")
+set(BINS_DEST "bin/")
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "./" CACHE PATH "Specifies where the cpacked binaries and related fills will be installed." FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 set(CMAKE_CONFIGURATION_TYPES "DEBUG" CACHE STRING "Configs" FORCE)
 if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
@@ -59,6 +66,8 @@ set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_PATCH_VER})
 set(CPACK_OUTPUT_FILE_PREFIX cpack_packages)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/docs/code_documentation/" DESTINATION "docs")
+install(EXPORT ${PROJECT_NAME} DESTINATION ${LIBS_DEST})
+
 
 if(WIN32 AND NOT UNIX)
     message(STATUS "Using ZIP archiving format for packages!")

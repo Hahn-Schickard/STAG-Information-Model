@@ -32,13 +32,14 @@ add_custom_command(TARGET ${THIS} POST_BUILD
                         
 install(
     TARGETS ${THIS} 
+    EXPORT ${PROJECT_NAME}
     RUNTIME 
-    DESTINATION bin
+    DESTINATION ${BINS_DEST}
     COMPONENT libraries
 )
 
 install(
     FILES ${includes_list}
-    DESTINATION include
+    DESTINATION ${INCLUDES_DEST}
     COMPONENT headers
 )
