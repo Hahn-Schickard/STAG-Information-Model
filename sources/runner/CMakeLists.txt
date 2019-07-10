@@ -32,7 +32,6 @@ add_custom_command(TARGET ${THIS} POST_BUILD
                         
 install(
     TARGETS ${THIS} 
-    EXPORT ${PROJECT_NAME}
     RUNTIME 
     DESTINATION ${BINS_DEST}
     COMPONENT libraries
