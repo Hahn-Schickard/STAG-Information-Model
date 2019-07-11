@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-set (THIS InfoModel_Test_Suite) # Change this variable to your test suite name
+set (THIS InfoModel_Test_Suite)
 
 file(GLOB Test_Suite "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB Test_Cases "${CMAKE_CURRENT_LIST_DIR}/*.hpp")
@@ -15,6 +15,13 @@ add_test(
     NAME ${THIS}
     COMMAND ${THIS}
 )
+
+if(CLANG_TIDY_EXE)               
+    set_target_properties(
+                        ${THIS} PROPERTIES
+                        CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY}
+                        )
+endif() 
 
 if(WIN32)
     add_custom_command(TARGET ${THIS} POST_BUILD 

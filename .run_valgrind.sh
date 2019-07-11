@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 EXECUTABLE_FILE=""
 ARGUMENTS=""
@@ -15,6 +15,20 @@ run_valgrind(){
         rm valgrind-results.log
     fi
     valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose $EXECUTABLE_FILE $ARGUMENTS 2>&1 | tee valgrind-results.log 
+}
+
+check_for_errors() {
+    HEAD_REGEX="\(ERROR SUMMARY:.\)"
+    TAIL_REGEX="\(\s.*\)"
+    found_errors=$(sed -n "s/^\(.*\)${HEAD_REGEX}//p" ./valgrind-results.log)
+    found_errors=$(sed "s/$TAIL_REGEX//" <<< $found_errors)
+    found_errors=$(sed '$d' <<< $found_errors)
+    if [ $found_errors -ne 0 ]
+    then 
+        echo "Error checker found: $found_errors"
+        echo "Some errors exits! Please fix them before doing a release!" 
+        exit 1
+    fi
 }
 
 while [ -n "$1" ];
@@ -48,3 +62,4 @@ do
 done
 
 run_valgrind
+check_for_errors
