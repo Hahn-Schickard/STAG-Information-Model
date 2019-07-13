@@ -1,5 +1,8 @@
 #include "BlueprintTests.hpp"
+#include "BlueprintTests.hpp"
 #include "ConsumerAdapterTests.hpp"
+#include "ConsumerAdapterTests.hpp"
+#include "DeviceUnitTests.hpp"
 
 #include "gtest/gtest.h"
 
