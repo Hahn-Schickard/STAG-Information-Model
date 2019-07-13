@@ -2,28 +2,25 @@
 
 using namespace std;
 
-DeviceElementGroup::DeviceElementGroup(string refId, string name, string desc) : DeviceElement::DeviceElement(refId, name, desc)
-{
-	this->elementType = ElementType::Group;
+DeviceElementGroup::DeviceElementGroup(string refId, string name, string desc)
+    : DeviceElement::DeviceElement(refId, name, desc) {
+  elementType = ElementType::Group;
 };
 
-vector<DeviceElement*> DeviceElementGroup::getSubElements() {
-	return subElements;
+DeviceElement *DeviceElementGroup::GetElementByRefId(std::string refId) {
+  auto elem = std::find_if(
+      subElements.begin(), subElements.end(),
+      [refId](DeviceElement obj) { return obj.getReferenceId() == refId; });
+  if (elem != subElements.end()) {
+    return &(*elem);
+  }
+  return &(*elem);
 }
 
-vector<DeviceElementGroup*> DeviceElementGroup::getSubElementGroups() {
-	vector<DeviceElementGroup*> elementGroups = vector<DeviceElementGroup*>();
-	for (int i = 0; i < subElements.size(); i++)
-	{
-		if (subElements[i]->getElementType() == Group)
-		{
-			elementGroups.push_back((DeviceElementGroup*)subElements[i]);
-		}		
-	}
-	return elementGroups;
+vector<DeviceElement> DeviceElementGroup::getSubElements() {
+  return subElements;
 }
 
-void DeviceElementGroup::addElement(DeviceElement &element)
-{
-	subElements.push_back(&element);
+void DeviceElementGroup::addElement(DeviceElement &element) {
+  subElements.push_back(element);
 }
