@@ -1,53 +1,44 @@
 #include "blueprint.hpp"
 #include "informationModelExceptions.hpp"
-using namespace std;
 
 using namespace std;
 
-Device *BluePrint::GetDevice(std::string refId) { return this->device; }
+Device *Blueprint::GetDevice() { return device; }
 
-Device *BluePrint::GetDevice() { return this->device; }
-
-BluePrint::BluePrint(string refId, string name, string desc)
-{
+Blueprint::Blueprint(string refId, string name, string desc) {
   this->device = new Device(refId, name, desc);
 }
 
-std::string BluePrint::AddDeviceGroup(string name, string desc)
-{
+std::string Blueprint::AddDeviceGroup(string name, string desc) {
 
-  std::string groupRefId = generateRefId(this->device->getReferenceId());
+  std::string groupRefId =
+      generateRefId(this->device->getReferenceId(), ElementType::Group);
   DeviceElementGroup *group = new DeviceElementGroup(groupRefId, name, desc);
   this->device->addDeviceElementGroup(group);
   return groupRefId;
 }
 
-void BluePrint::AddSubElement(string groupRefId, string name, string desc,
-                              ElementType elementType)
-{
-  AddSubElement(groupRefId, name, desc, elementType, ValueType::Unknown);
+std::string Blueprint::AddSubElement(string groupRefId, string name,
+                                     string desc, ElementType elementType) {
+  return AddSubElement(groupRefId, name, desc, elementType, ValueType::Unknown);
 }
 
-void BluePrint::AddSubElement(string groupRefId, string name, string desc,
-                              ElementType elementType,
-                              ValueType::ValueDataType valueType)
-{
-  auto parent = device->getDeviceElementGroup(groupRefId);
-  if (parent == nullptr)
-  {
+std::string Blueprint::AddSubElement(string groupRefId, string name,
+                                     string desc, ElementType elementType,
+                                     ValueType::ValueDataType valueType) {
+  DeviceElementGroup *parent = device->getDeviceElementGroup(groupRefId);
+  if (parent == nullptr) {
     throw ElementTypeMismatchException(
         "No group element found with reference Id " + groupRefId);
   }
-  if (parent->getElementType() != Group)
-  {
+  if (parent->getElementType() != Group) {
     throw ElementTypeMismatchException(
         "AddSubElment requires parent to be of type Group");
   }
-  auto gRefId = generateRefId(groupRefId);
+  std::string gRefId = generateRefId(groupRefId, elementType);
 
   DeviceElement *element = nullptr;
-  switch (elementType)
-  {
+  switch (elementType) {
   case Group:
     element = new DeviceElementGroup(gRefId, name, desc);
     break;
@@ -66,21 +57,25 @@ void BluePrint::AddSubElement(string groupRefId, string name, string desc,
   }
   if (element != nullptr)
     parent->addElement(*element);
+  return gRefId;
 }
 
-std::string BluePrint::generateRefId(string parentRefId)
-{
-  auto parent = device->getDeviceElementGroup(parentRefId);
+std::string Blueprint::generateRefId(string parentRefId,
+                                     ElementType elementType) {
+  std::string refId = "";
+  DeviceElementGroup *parent = device->getDeviceElementGroup(parentRefId);
   // if nullPtr then it's the device
-  if (parent == nullptr)
-  {
-    auto groups = device->getDeviceElementGroups();
+  if (parent == nullptr) {
+    vector<DeviceElementGroup> groups = device->getDeviceElementGroups();
     int iDeviceGroupId = groups.size() + 1;
-    return parentRefId + "." + std::to_string(iDeviceGroupId);
+    refId = to_string(iDeviceGroupId);
+  } else if (elementType != ElementType::Group) {
+    vector<DeviceElement> elements = parent->getSubElements();
+    size_t iGroupId = elements.size() + 1;
+    refId = to_string(iGroupId);
+  } else {
+    // TODO: handle subgroups and extra DeviceElementGroups...
   }
 
-  auto elements = parent->getSubElements();
-  int iGroupId = elements.size() + 1;
-  std::string refId = parentRefId + "." + std::to_string(iGroupId);
-  return refId;
+  return parentRefId + "." + refId;
 }
