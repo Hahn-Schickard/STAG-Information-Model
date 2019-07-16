@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 #@+ ========================== User configuration ===========================
-set(THIS Information_Model)
+set(THIS Information_Modeler)
 #@- ===================== END OF USER CONFIGURATION =========================
 
 set(CMAKE_VERBOSE_MAKEFILE on)
@@ -53,7 +53,7 @@ include(dependencies)
 include_directories(${INCLUDES_DIR})
    
 add_subdirectory(sources)
-add_subdirectory(tests/unit_tests/InfoModel)
+add_subdirectory(tests/unit_tests/)
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "This module contains the modeling language for device abstractions created by various Technology Adapters")
 set(CPACK_PACKAGE_VENDOR "Hahn-Schickard")

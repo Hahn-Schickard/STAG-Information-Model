@@ -1,13 +1,8 @@
-#include "blueprint.hpp"
 #include <iostream>
 
-int main() {
-  BluePrint *blueprint = new BluePrint("123","TestDevice","A Test Device");
-  auto refId = blueprint->AddDeviceGroup("Test", "Test Blueprint");
-  
-  std::cout << refId << std::endl;
-  
-  delete blueprint;
+using namespace std;
 
+int main() {
+  cout << "Do some runner tests as well!" << endl;
   return 0;
 }
