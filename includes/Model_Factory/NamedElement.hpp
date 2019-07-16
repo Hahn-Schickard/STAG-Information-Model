@@ -3,19 +3,23 @@
 
 #include "iNamedElement.hpp"
 
-class NamedElement : public iNamedElement
-{
-public:
-	NamedElement(const std::string refId, const std::string name, const std::string desc);
+namespace Model_Factory {
+using namespace Information_Model;
 
-	const std::string getElementName();
-	const std::string getElementDescription();
-	const std::string getElementRefId();
+class NamedElement : public iNamedElement {
+public:
+  NamedElement(const std::string refId, const std::string name,
+               const std::string desc);
+
+  const std::string getElementName();
+  const std::string getElementDescription();
+  const std::string getElementRefId();
 
 private:
-	std::string name;
-	std::string desc;
-	std::string refId;
+  std::string name;
+  std::string desc;
+  std::string refId;
 };
+}
 
 #endif //_NAMEDELEMENT_HPP

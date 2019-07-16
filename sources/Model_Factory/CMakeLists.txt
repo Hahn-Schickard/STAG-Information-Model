@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6) 
 
-set(THIS InfoModel_Lib)
+set(THIS Information_Model)
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB includes_list  "${PROJECT_SOURCE_DIR}/includes/Model_Factory/*.hpp"

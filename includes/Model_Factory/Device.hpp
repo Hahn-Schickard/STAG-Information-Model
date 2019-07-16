@@ -4,19 +4,23 @@
 #include <string>
 #include <vector>
 
-#include "iDevice.hpp"
 #include "DeviceElementGroup.hpp"
 #include "NamedElement.hpp"
+#include "iDevice.hpp"
 
-class Device : public iDevice, public NamedElement
-{
+namespace Model_Factory {
+using namespace Information_Model;
+
+class Device : public iDevice, public NamedElement {
 protected:
   iDeviceElementGroup *device_element_group;
 
-  Device(const std::string refId, const std::string name, const std::string desc);
+  Device(const std::string refId, const std::string name,
+         const std::string desc);
 
 public:
   iDeviceElementGroup *getDeviceElementGroup();
 };
+}
 
 #endif //_DEVICE_HPP
