@@ -11,7 +11,7 @@ add_executable(${THIS}
                ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
-               InfoModel_Lib
+               Information_Model
                gcov)
                
 if(CLANG_TIDY_EXE)               
