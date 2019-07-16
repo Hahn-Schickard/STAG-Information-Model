@@ -3,23 +3,11 @@
 
 #include "iNamedElement.hpp"
 
-enum ElementType
-{
-    Undefined,
-    Group,
-    Readonly,
-    Observable,
-    Writable,
-    Function
-};
+enum ElementType { Undefined, Group, Readonly, Observable, Writable, Function };
 
-class iDeviceElement : iNamedElement
-{
+class iDeviceElement : public iNamedElement {
 public:
-    virtual ElementType getElementType() = 0;
-
-protected:
-    iDeviceElement();
+  virtual ElementType getElementType() = 0;
 };
 
 #endif //_I_DEVICE_ELEMENT_HPP

@@ -3,15 +3,11 @@
 
 #include <string>
 
-class iNamedElement
-{
+class iNamedElement {
 public:
-    virtual const std::string getElementName() = 0;
-    virtual const std::string getElementDescription() = 0;
-    virtual const std::string getElementRefId() = 0;
-
-protected:
-    iNamedElement();
+  virtual const std::string getElementName() = 0;
+  virtual const std::string getElementDescription() = 0;
+  virtual const std::string getElementRefId() = 0;
 };
 
 #endif //_I_NAMED_ELEMENT_HPP

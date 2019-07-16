@@ -1,16 +1,12 @@
 #ifndef _I_DEVICE_HPP
 #define _I_DEVICE_HPP
 
-#include "iNamedElement.hpp"
 #include "iDeviceElementGroup.hpp"
+#include "iNamedElement.hpp"
 
-class iDevice : iNamedElement
-{
+class iDevice : public iNamedElement {
 public:
-    virtual iDeviceElementGroup *getDeviceElementGroup() = 0;
-
-protected:
-    iDevice();
+  virtual iDeviceElementGroup *getDeviceElementGroup() = 0;
 };
 
 #endif //_I_DEVICE_HPP
