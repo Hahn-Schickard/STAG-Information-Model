@@ -8,13 +8,13 @@ namespace Model_Factory {
 using namespace Information_Model;
 
 class DeviceElement : public iDeviceElement, public NamedElement {
+private:
+  ElementType elementType = Undefined;
+
 public:
   DeviceElement(const std::string refId, const std::string name,
                 const std::string desc, ElementType type);
   ElementType getElementType();
-
-private:
-  ElementType elementType = Undefined;
 };
 }
 
