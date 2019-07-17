@@ -2,7 +2,7 @@
 
 using namespace std;
 
-std::string generate_Reference_ID(Information_Model::iNamedElement *element) {
+std::string generate_Reference_ID(Information_Model::NamedElement *element) {
   // @TODO: Implement method stub
 
   return nullptr;
