@@ -1,28 +1,40 @@
 #include "DeviceElementGroup.hpp"
+#include "DeviceElement.hpp"
+#include "DeviceElementBuilder.hpp"
+#include "Utils.hpp"
 #include <memory>
 
 using namespace std;
 using namespace Model_Factory;
 
-DeviceElementGroup::DeviceElementGroup(string refId, string name, string desc)
-    : DeviceElement(refId, name, desc, ElementType::Group){};
+DeviceElementGroup::DeviceElementGroup(const string REF_ID, const string NAME,
+                                       const string DESC)
+    : iDeviceElementGroup(REF_ID, NAME, DESC) {}
 
-string DeviceElementGroup::addDeviceEelment(const std::string name,
-                                            const std::string desc,
-                                            ElementType type) {
-  iDeviceElement *subelement = new DeviceElement(name, desc, type);
-  subelements.push_back(subelement);
+string
+DeviceElementGroup::addDeviceEelment(const std::string NAME,
+                                     const std::string DESC,
+                                     Information_Model::ElementType type) {
+  const string REF_ID = generate_Reference_ID(
+      dynamic_cast<Information_Model::NamedElement *>(this));
+
+  subelements.push_back(unique_ptr<Information_Model::DeviceElement>(
+      new DeviceElementBuilder(REF_ID, NAME, DESC, type)));
+
+  return REF_ID;
 }
 
-iDeviceElement *DeviceElementGroup::getSubelement(const std::string REF_ID) {
-  for (auto subelement : subelements) {
+Information_Model::DeviceElement *
+DeviceElementGroup::getSubelement(const std::string REF_ID) {
+  for (auto &subelement : subelements) {
     if (subelement->getElementRefId() == REF_ID) {
-      return subelement;
+      return subelement.get();
     }
   }
   return nullptr;
 }
 
-vector<iDeviceElement *> DeviceElementGroup::getSubelements() {
+vector<std::unique_ptr<Information_Model::DeviceElement>> const &
+DeviceElementGroup::getSubelements() {
   return subelements;
 }
