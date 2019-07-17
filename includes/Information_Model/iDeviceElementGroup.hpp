@@ -10,6 +10,7 @@ namespace Information_Model {
 
 class iDeviceElementGroup : public iDeviceElement {
 public:
+  virtual ~iDeviceElementGroup(){};
   virtual std::vector<iDeviceElement *> getSubelements() = 0;
   virtual iDeviceElement *getSubelement(const std::string refId) = 0;
 };

@@ -9,6 +9,7 @@ enum ElementType { Undefined, Group, Readonly, Observable, Writable, Function };
 
 class iDeviceElement : public iNamedElement {
 public:
+  virtual ~iDeviceElement(){};
   virtual ElementType getElementType() = 0;
 };
 }

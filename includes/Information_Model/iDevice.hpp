@@ -8,6 +8,7 @@ namespace Information_Model {
 
 class iDevice : public iNamedElement {
 public:
+  virtual ~iDevice(){};
   virtual iDeviceElementGroup *getDeviceElementGroup() = 0;
 };
 }
