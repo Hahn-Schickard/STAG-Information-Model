@@ -30,3 +30,7 @@ string DeviceBuilder::addDeviceElement(const std::string NAME,
 
   return REF_ID;
 }
+
+unique_ptr<Information_Model::Device> DeviceBuilder::getDevice() {
+  return move(device);
+}

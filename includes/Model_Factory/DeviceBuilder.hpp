@@ -10,7 +10,7 @@ namespace Model_Factory {
 
 class DeviceBuilder {
 private:
-  std::unique_ptr<Device> device;
+  std::unique_ptr<Information_Model::Device> device;
 
 public:
   DeviceBuilder();
@@ -21,6 +21,8 @@ public:
                                     const std::string DESC);
   std::string addDeviceElement(const std::string NAME, const std::string DESC,
                                Information_Model::ElementType type);
+
+  std::unique_ptr<Information_Model::Device> getDevice();
 };
 }
 
