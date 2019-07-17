@@ -16,8 +16,7 @@ protected:
       : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {}
 
 public:
-  virtual std::vector<std::unique_ptr<DeviceElement>> const &
-  getSubelements() = 0;
+  virtual std::vector<std::shared_ptr<DeviceElement>> getSubelements() = 0;
   virtual DeviceElement *getSubelement(const std::string REF_ID) = 0;
 };
 }
