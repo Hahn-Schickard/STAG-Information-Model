@@ -1,8 +1,8 @@
 #ifndef __UTILS_HPP
 #define __UTILS_HPP
 
-#include "NamedElement.hpp"
+#include "DeviceElement.hpp"
 
-std::string generate_Reference_ID(Information_Model::NamedElement *element);
+std::string generate_Reference_ID(Information_Model::DeviceElement *parent);
 
 #endif //__UTILS_HPP
