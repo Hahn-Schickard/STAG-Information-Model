@@ -1,18 +1,24 @@
 #ifndef _I_DEVICE_ELEMENT_GROUP_HPP
 #define _I_DEVICE_ELEMENT_GROUP_HPP
 
-#include "iDeviceElement.hpp"
-#include "iNamedElement.hpp"
+#include "DeviceElement.hpp"
+#include "NamedElement.hpp"
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace Information_Model {
 
-class iDeviceElementGroup : public iDeviceElement {
+class iDeviceElementGroup : public DeviceElement {
+protected:
+  iDeviceElementGroup(const std::string REF_ID, const std::string NAME,
+                      const std::string DESC)
+      : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {}
+
 public:
-  virtual ~iDeviceElementGroup(){};
-  virtual std::vector<iDeviceElement *> getSubelements() = 0;
-  virtual iDeviceElement *getSubelement(const std::string refId) = 0;
+  virtual std::vector<std::unique_ptr<DeviceElement>> const &
+  getSubelements() = 0;
+  virtual DeviceElement *getSubelement(const std::string REF_ID) = 0;
 };
 }
 
