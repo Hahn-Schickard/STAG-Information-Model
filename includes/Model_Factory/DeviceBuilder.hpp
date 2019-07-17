@@ -4,12 +4,13 @@
 #include "Device.hpp"
 #include "DeviceElement.hpp"
 #include "DeviceElementGroup.hpp"
+#include <memory>
 
 namespace Model_Factory {
 
 class DeviceBuilder {
 private:
-  iDevice *device;
+  std::unique_ptr<iDevice> device;
 
 public:
   DeviceBuilder();
