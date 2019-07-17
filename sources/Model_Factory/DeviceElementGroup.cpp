@@ -16,7 +16,7 @@ DeviceElementGroup::addDeviceEelment(const std::string NAME,
                                      const std::string DESC,
                                      Information_Model::ElementType type) {
   const string REF_ID = generate_Reference_ID(
-      dynamic_cast<Information_Model::NamedElement *>(this));
+      dynamic_cast<Information_Model::DeviceElement *>(this));
 
   subelements.push_back(unique_ptr<Information_Model::DeviceElement>(
       new DeviceElementBuilder(REF_ID, NAME, DESC, type)));
