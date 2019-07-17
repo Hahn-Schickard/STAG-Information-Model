@@ -1,16 +1,16 @@
 #ifndef _DEVICE_FACTORY_HPP
 #define _DEVICE_FACTORY_HPP
 
-#include "Device.hpp"
 #include "DeviceElement.hpp"
-#include "DeviceElementGroup.hpp"
+#include "DeviceElementGroupImpl.hpp"
+#include "DeviceImpl.hpp"
 #include <memory>
 
 namespace Model_Factory {
 
 class DeviceBuilder {
 private:
-  std::unique_ptr<iDevice> device;
+  std::unique_ptr<Device> device;
 
 public:
   DeviceBuilder();

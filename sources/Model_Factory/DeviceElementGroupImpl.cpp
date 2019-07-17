@@ -1,4 +1,4 @@
-#include "DeviceElementGroup.hpp"
+#include "DeviceElementGroupImpl.hpp"
 #include "DeviceElement.hpp"
 #include "DeviceElementBuilder.hpp"
 #include "Utils.hpp"
@@ -7,14 +7,15 @@
 using namespace std;
 using namespace Model_Factory;
 
-DeviceElementGroup::DeviceElementGroup(const string REF_ID, const string NAME,
-                                       const string DESC)
-    : iDeviceElementGroup(REF_ID, NAME, DESC) {}
+DeviceElementGroupImpl::DeviceElementGroupImpl(const string REF_ID,
+                                               const string NAME,
+                                               const string DESC)
+    : DeviceElementGroup(REF_ID, NAME, DESC) {}
 
 string
-DeviceElementGroup::addDeviceEelment(const std::string NAME,
-                                     const std::string DESC,
-                                     Information_Model::ElementType type) {
+DeviceElementGroupImpl::addDeviceEelment(const std::string NAME,
+                                         const std::string DESC,
+                                         Information_Model::ElementType type) {
   const string REF_ID = generate_Reference_ID(
       dynamic_cast<Information_Model::DeviceElement *>(this));
 
@@ -25,7 +26,7 @@ DeviceElementGroup::addDeviceEelment(const std::string NAME,
 }
 
 Information_Model::DeviceElement *
-DeviceElementGroup::getSubelement(const std::string REF_ID) {
+DeviceElementGroupImpl::getSubelement(const std::string REF_ID) {
   for (auto &subelement : subelements) {
     if (subelement->getElementRefId() == REF_ID) {
       return subelement.get();
@@ -35,6 +36,6 @@ DeviceElementGroup::getSubelement(const std::string REF_ID) {
 }
 
 vector<std::unique_ptr<Information_Model::DeviceElement>> const &
-DeviceElementGroup::getSubelements() {
+DeviceElementGroupImpl::getSubelements() {
   return subelements;
 }

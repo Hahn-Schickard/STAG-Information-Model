@@ -2,6 +2,7 @@
 #define _I_DEVICE_ELEMENT_HPP
 
 #include "NamedElement.hpp"
+#include <string>
 
 namespace Information_Model {
 

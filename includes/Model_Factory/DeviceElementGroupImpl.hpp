@@ -2,20 +2,20 @@
 #define _DEVICE_ELEMENT_GROUP_HPP
 
 #include "DeviceElement.hpp"
-#include "iDeviceElementGroup.hpp"
+#include "DeviceElementGroup.hpp"
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace Model_Factory {
 
-class DeviceElementGroup : public Information_Model::iDeviceElementGroup {
+class DeviceElementGroupImpl : public Information_Model::DeviceElementGroup {
 private:
   std::vector<std::unique_ptr<Information_Model::DeviceElement>> subelements;
 
 public:
-  DeviceElementGroup(const std::string refId, const std::string name,
-                     const std::string desc);
+  DeviceElementGroupImpl(const std::string refId, const std::string name,
+                         const std::string desc);
 
   std::string addDeviceEelment(const std::string name, const std::string desc,
                                Information_Model::ElementType type);

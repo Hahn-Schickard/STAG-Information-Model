@@ -9,10 +9,10 @@
 
 namespace Information_Model {
 
-class iDeviceElementGroup : public DeviceElement {
+class DeviceElementGroup : public DeviceElement {
 protected:
-  iDeviceElementGroup(const std::string REF_ID, const std::string NAME,
-                      const std::string DESC)
+  DeviceElementGroup(const std::string REF_ID, const std::string NAME,
+                     const std::string DESC)
       : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {}
 
 public:

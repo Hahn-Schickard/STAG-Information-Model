@@ -4,26 +4,26 @@
 #include <memory>
 #include <string>
 
-#include "DeviceElementGroup.hpp"
+#include "Device.hpp"
+#include "DeviceElementGroupImpl.hpp"
 #include "NamedElement.hpp"
 #include "Utils.hpp"
-#include "iDevice.hpp"
 
 namespace Model_Factory {
 using namespace Information_Model;
 
-class Device : public iDevice {
+class DeviceImpl : public Device {
 private:
-  std::unique_ptr<iDeviceElementGroup> device_element_group;
+  std::unique_ptr<DeviceElementGroup> device_element_group;
 
 public:
-  Device(const std::string REF_ID, const std::string NAME,
-         const std::string DESC)
-      : iDevice(REF_ID, NAME, DESC) {}
+  DeviceImpl(const std::string REF_ID, const std::string NAME,
+             const std::string DESC)
+      : Device(REF_ID, NAME, DESC) {}
 
   std::string addDeviceElementGroup(const std::string NAME,
                                     const std::string DESC);
-  iDeviceElementGroup *getDeviceElementGroup();
+  DeviceElementGroup *getDeviceElementGroup();
 };
 }
 

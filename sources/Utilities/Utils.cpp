@@ -1,6 +1,6 @@
 #include "Utils.hpp"
 #include "DeviceElement.hpp"
-#include "iDeviceElementGroup.hpp"
+#include "DeviceElementGroup.hpp"
 #include <string>
 
 using namespace std;
@@ -12,8 +12,8 @@ string generate_Reference_ID(DeviceElement *parent) {
 
   switch (parent->getElementType()) {
   case ElementType::Group: {
-    iDeviceElementGroup *parent_element =
-        static_cast<iDeviceElementGroup *>(parent);
+    DeviceElementGroup *parent_element =
+        static_cast<DeviceElementGroup *>(parent);
     element_id = to_string(parent_element->getSubelements().size());
     break;
   }
