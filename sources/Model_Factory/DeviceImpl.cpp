@@ -6,8 +6,7 @@ using namespace Model_Factory;
 
 string DeviceImpl::addDeviceElementGroup(const std::string NAME,
                                          const std::string DESC) {
-  const string REF_ID = generate_Reference_ID(
-      dynamic_cast<Information_Model::DeviceElement *>(this));
+  const string REF_ID = this->getElementRefId() + ":";
 
   unique_ptr<Information_Model::DeviceElementGroup> device_element_group_ptr(
       new DeviceElementGroupImpl(REF_ID, NAME, DESC));

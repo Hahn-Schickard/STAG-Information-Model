@@ -22,7 +22,7 @@ string generate_Reference_ID(DeviceElement *parent) {
   case ElementType::Writable:
   case ElementType::Function: {
     int element_number = stoi(parent->getElementRefId()) + 1;
-    element_id = to_string(element_number);
+    element_id = "." + to_string(element_number);
     break;
   }
   case ElementType::Undefined:
@@ -30,5 +30,5 @@ string generate_Reference_ID(DeviceElement *parent) {
     //@TODO: Handle defualt behaviour for Undefined elements
   }
   }
-  return BASE_ID + "." + element_id;
+  return BASE_ID + element_id;
 }
