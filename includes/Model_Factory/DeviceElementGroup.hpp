@@ -3,25 +3,26 @@
 
 #include "DeviceElement.hpp"
 #include "iDeviceElementGroup.hpp"
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace Model_Factory {
-using namespace Information_Model;
 
-class DeviceElementGroup : public iDeviceElementGroup, public DeviceElement {
+class DeviceElementGroup : public Information_Model::iDeviceElementGroup {
 private:
-  std::vector<iDeviceElement *> subelements;
+  std::vector<std::unique_ptr<Information_Model::DeviceElement>> subelements;
 
 public:
   DeviceElementGroup(const std::string refId, const std::string name,
                      const std::string desc);
 
   std::string addDeviceEelment(const std::string name, const std::string desc,
-                               ElementType type);
+                               Information_Model::ElementType type);
 
-  std::vector<iDeviceElement *> getSubelements();
-  iDeviceElement *getSubelement(const std::string refId);
+  std::vector<std::unique_ptr<Information_Model::DeviceElement>> const &
+  getSubelements();
+  Information_Model::DeviceElement *getSubelement(const std::string refId);
 };
 }
 
