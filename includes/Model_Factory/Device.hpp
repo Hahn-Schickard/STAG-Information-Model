@@ -1,8 +1,8 @@
 #ifndef _DEVICE_HPP
 #define _DEVICE_HPP
 
+#include <memory>
 #include <string>
-#include <vector>
 
 #include "DeviceElementGroup.hpp"
 #include "NamedElement.hpp"
@@ -12,13 +12,14 @@
 namespace Model_Factory {
 using namespace Information_Model;
 
-class Device : public iDevice, public NamedElement {
+class Device : public iDevice {
 private:
-  iDeviceElementGroup *device_element_group;
+  std::unique_ptr<iDeviceElementGroup> device_element_group;
 
 public:
-  Device(const std::string refId, const std::string name,
-         const std::string desc);
+  Device(const std::string REF_ID, const std::string NAME,
+         const std::string DESC)
+      : iDevice(REF_ID, NAME, DESC) {}
 
   std::string addDeviceElementGroup(const std::string NAME,
                                     const std::string DESC);
