@@ -20,7 +20,7 @@ public:
   std::string addDeviceElementGroup(const std::string NAME,
                                     const std::string DESC);
   std::string addDeviceElement(const std::string NAME, const std::string DESC,
-                               ElementType type);
+                               Information_Model::ElementType type);
 };
 }
 
