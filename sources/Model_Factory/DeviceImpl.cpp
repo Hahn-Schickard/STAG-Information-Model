@@ -3,9 +3,11 @@
 
 using namespace std;
 using namespace Model_Factory;
+using namespace Information_Model;
 
 string DeviceImpl::addDeviceElementGroup(const std::string NAME,
-                                         const std::string DESC) {
+                                         const std::string DESC)
+{
   const string REF_ID = this->getElementRefId() + ":";
 
   unique_ptr<Information_Model::DeviceElementGroup> device_element_group_ptr(
@@ -16,6 +18,7 @@ string DeviceImpl::addDeviceElementGroup(const std::string NAME,
   return REF_ID;
 }
 
-Information_Model::DeviceElementGroup *DeviceImpl::getDeviceElementGroup() {
+Information_Model::DeviceElementGroup *DeviceImpl::getDeviceElementGroup()
+{
   return device_element_group.get();
 }

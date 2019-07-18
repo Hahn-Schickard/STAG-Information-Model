@@ -3,15 +3,18 @@
 
 using namespace std;
 using namespace Model_Factory;
+using namespace Information_Model;
 
-void printDevice(Device *device) {
+void printDevice(Device *device)
+{
   cout << "Device: " << device->getElementName()
        << " has a ref_id: " << device->getElementRefId()
        << " and is described as: " << device->getElementDescription() << endl;
   std::vector<std::shared_ptr<Information_Model::DeviceElement>> elements =
       device->getDeviceElementGroup()->getSubelements();
   cout << "It has " << elements.size() << " elements" << endl;
-  for (auto element : elements) {
+  for (auto element : elements)
+  {
     cout << "Element: " << element->getElementName()
          << " has a ref_id: " << element->getElementRefId()
          << ", is of type: " << element->getElementType()
@@ -20,7 +23,8 @@ void printDevice(Device *device) {
   }
 }
 
-unique_ptr<Device> buildDeviceFromAFunction() {
+unique_ptr<Device> buildDeviceFromAFunction()
+{
   DeviceBuilder *device_from_func_builder =
       new DeviceBuilder("Fun Device", "4321", "A device built in a function");
   device_from_func_builder->addDeviceElementGroup("Fun Group", "A fun group");
@@ -34,7 +38,8 @@ unique_ptr<Device> buildDeviceFromAFunction() {
   return move(tmp);
 }
 
-int main() {
+int main()
+{
   DeviceBuilder *simple_device_builder =
       new DeviceBuilder("Simple Device", "1234", "A simple device");
   simple_device_builder->addDeviceElementGroup("Simple Group",
