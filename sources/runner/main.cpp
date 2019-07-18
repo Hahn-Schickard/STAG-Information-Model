@@ -57,5 +57,5 @@ int main()
 
   printDevice(externally_build_device.get());
 
-  return 0;
+  exit(0);
 }
