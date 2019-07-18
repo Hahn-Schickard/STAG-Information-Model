@@ -4,11 +4,27 @@
 #include "NamedElement.hpp"
 #include <string>
 
-namespace Information_Model {
+namespace Information_Model
+{
 
-enum ElementType { Undefined, Group, Readonly, Observable, Writable, Function };
+enum ElementType
+{
+  Undefined,
+  Group,
+  Readonly,
+  Observable,
+  Writable,
+  Function
+};
 
-class DeviceElement : public NamedElement {
+/**
+ * @brief This class is the base for all of the elements within the Information_Model::Device. 
+ * @attention This class should be instantiated by its children only!
+ * @author Dovydas Girdvainis
+ * @date 18.07.2019
+ */
+class DeviceElement : public NamedElement
+{
 protected:
   ElementType elementType = ElementType::Undefined;
 
@@ -20,5 +36,6 @@ protected:
 public:
   ElementType getElementType();
 };
-}
+} // namespace Information_Model
+
 #endif //_I_DEVICE_ELEMENT_HPP

@@ -5,15 +5,24 @@
 #include <memory>
 #include <string>
 
-namespace Model_Factory {
+namespace Model_Factory
+{
 
-class DeviceElementBuilder : public Information_Model::DeviceElement {
+/**
+ * @brief This class constructs an instance of Information_Model::DeviceElement that
+ * are used by Model_Factory::DeviceBuilder when adding DeviceElement instances into 
+ * DeviceElementGroup 
+ * @author Dovydas Girdvainis
+ * @date 18.07.2019
+ */
+class DeviceElementBuilder : public Information_Model::DeviceElement
+{
 public:
   DeviceElementBuilder(const std::string REF_ID, const std::string NAME,
                        const std::string DESC,
                        Information_Model::ElementType type)
       : DeviceElement(REF_ID, NAME, DESC, type) {}
 };
-}
+} // namespace Model_Factory
 
 #endif //__DEVICE_ELEMENT_BUILDER_HPP
