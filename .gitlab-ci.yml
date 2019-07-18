@@ -70,6 +70,21 @@ run_unit_tests:
  except: 
   - /Release.*/
 
+test_for_memory_leaks: 
+ stage: analyze
+ variables: 
+  GIT_STRATEGY: none
+ script: 
+  - "./.run_valgrind.sh -e $VALGRIND_EXECUTABLE -a $VALGRIND_EXECUTABLE_ARGS"
+ artifacts:                                                           
+  name: "valgrind_results"
+  paths:
+  - valgrind-results.log
+ only: 
+  variables: 
+   - $RUN_VALGRIND == "true" 
+ allow_failure: true
+
 check_code_coverage: 
  stage: analyze 
  variables: 
@@ -84,21 +99,6 @@ check_code_coverage:
   - code_coverage_report/
  except: 
    - /Release.*/
- allow_failure: true
- 
-test_for_memory_leaks: 
- stage: analyze
- variables: 
-  GIT_STRATEGY: none
- script: 
-  - "./.run_valgrind.sh -e $VALGRIND_EXECUTABLE -a $VALGRIND_EXECUTABLE_ARGS"
- artifacts:                                                           
-  name: "valgrind_results"
-  paths:
-  - valgrind-results.log
- only: 
-  variables: 
-   - $RUN_VALGRIND == "true" 
  allow_failure: true
  
 generate_documentation: 
