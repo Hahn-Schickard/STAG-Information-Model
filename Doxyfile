@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Project Template"
+PROJECT_NAME           = "Information Modeller"
 PROJECT_NUMBER         =
-PROJECT_BRIEF          = "Template project for your future repositories"
+PROJECT_BRIEF          = "Information Model and the building mechanisms for Device Modelling."
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = docs/code_documentation
 CREATE_SUBDIRS         = YES
