@@ -1,13 +1,9 @@
 #include "NamedElement.hpp"
-#include "InformationModelExceptions.hpp"
 
 using namespace std;
-using namespace Model_Factory;
+using namespace Information_Model;
 
 NamedElement::NamedElement(string refId, string name, string desc) {
-  if (refId.empty() || refId.length() < 3) {
-    throw InvalidReferenceIdException();
-  }
   this->name = name;
   this->desc = desc;
   this->refId = refId;

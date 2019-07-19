@@ -1,6 +1,8 @@
 #!/bin/bash
 
 CI_REPOSITORY_URL=$1
+MANUAL_TRIGER=$2
+RELEASE_TYPE=$3
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
 REGEX="^Signed-off-by"
 COMMIT_MESSAGE=$(sed "/${REGEX}/d" <<< $COMMIT_MESSAGE)
@@ -27,10 +29,6 @@ check_if_taged() {
         exit 0
     else 
         echo "This commit is not tagged, trying to add versioning number"
-        get_previous_version_info
-        check_commit_message
-        update_version_info
-        add_new_git_tag
     fi
 }
 
@@ -113,4 +111,29 @@ add_new_git_tag() {
     exit 0
 }
 
-check_if_taged
+if [ "${MANUAL_TRIGER,,}" == "yes" ];
+then
+    check_if_taged
+    get_previous_version_info
+    if [ "${RELEASE_TYPE^^}" == "MAJOR" ];
+    then 
+        incrament_major_version
+    elif [ "${RELEASE_TYPE^^}" == "MINOR" ];
+    then
+        incrament_minor_version
+    elif [ "${RELEASE_TYPE^^}" == "PATCH" ];
+    then 
+        incrament_patch_version
+    else 
+        echo "Realease type is unknown. Please specify what is the release type MAJOR|MINOR|PATCH"
+        exit 1
+    fi
+    update_version_info
+    add_new_git_tag
+else
+    check_if_taged
+    get_previous_version_info
+    check_commit_message
+    update_version_info
+    add_new_git_tag
+fi
