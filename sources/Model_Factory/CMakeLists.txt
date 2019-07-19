@@ -19,7 +19,8 @@ target_link_libraries(${THIS} PUBLIC
                       gcov)
                            
 target_include_directories(${THIS} INTERFACE
-                           $<BUILD_INTERFACE:${INCLUDES_DIR}/infomodel/>
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Model_Factory/>
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
                            $<INSTALL_INTERFACE:${INCLUDES_DEST}>
                            $<INSTALL_INTERFACE:${LIBS_DEST}>)
