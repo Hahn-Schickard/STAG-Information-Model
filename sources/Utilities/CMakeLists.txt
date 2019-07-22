@@ -16,6 +16,7 @@ add_library(${THIS} SHARED
             ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
+                      Information_Model
                       gcov)
                            
 target_include_directories(${THIS} INTERFACE

@@ -1,27 +1,34 @@
 cmake_minimum_required(VERSION 3.6) 
 
-set(THIS Runner_MAIN)
+set(THIS Information_Model)
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
+file(GLOB includes_list "${PROJECT_SOURCE_DIR}/includes/Information_Model/*.hpp")
 
 PRINT_MODULE_FILES(${THIS} "${sources_list}" "${includes_list}")
 
-add_executable(${THIS} 
-               ${sources_list}
-               ${includes_list})
+include_directories(${PROJECT_SOURCE_DIR}/includes/Information_Model/)
+
+add_library(${THIS} SHARED
+            ${sources_list}
+            ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
-               Information_Model
-               Model_Factory
-               gcov)
-               
+                      gcov)
+                           
+target_include_directories(${THIS} INTERFACE
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+                           $<INSTALL_INTERFACE:${INCLUDES_DEST}>
+                           $<INSTALL_INTERFACE:${LIBS_DEST}>)
+
 if(CLANG_TIDY_EXE)               
     set_target_properties(
                         ${THIS} PROPERTIES
                         CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY}
                         )
-endif()
-
+endif()    
+                           
 add_custom_command(TARGET ${THIS} POST_BUILD 
                     COMMAND ${CMAKE_COMMAND} -E make_directory 
                         ${CMAKE_BINARY_DIR}/bin
@@ -30,11 +37,12 @@ add_custom_command(TARGET ${THIS} POST_BUILD
                         "${CMAKE_BINARY_DIR}/bin"
                     COMMENT "Copying shared library files from ${CMAKE_CURRENT_BINARY_DIR} directory to ${CMAKE_BINARY_DIR}/bin directory."
                         VERBATIM)
-                        
+
 install(
     TARGETS ${THIS} 
-    RUNTIME 
-    DESTINATION ${BINS_DEST}
+    EXPORT ${PROJECT_NAME}
+    ARCHIVE DESTINATION ${LIBS_DEST}
+    LIBRARY DESTINATION ${LIBS_DEST}
     COMPONENT libraries
 )
 
