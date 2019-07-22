@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6) 
 
-set(THIS Information_Model)
+set(THIS Model_Factory)
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB includes_list  "${PROJECT_SOURCE_DIR}/includes/Model_Factory/*.hpp"
@@ -16,6 +16,7 @@ add_library(${THIS} SHARED
             ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
+                      Information_Model
                       Utilities
                       gcov)
                            
