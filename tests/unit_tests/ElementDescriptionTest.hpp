@@ -1,5 +1,6 @@
-#ifndef REFIDTEST_HPP
-#define REFIDTEST_HPP
+#ifndef ELEMENTDESCRIPTIONTEST_HPP
+#define ELEMENTDESCRIPTIONTEST_HPP
+
 #include "DeviceElementBuilder.hpp"
 #include "DeviceElementGroupImpl.hpp"
 #include "DeviceImpl.hpp"
@@ -10,86 +11,85 @@
 using namespace Model_Factory;
 using namespace Information_Model;
 
-TEST(RefIdTests, DeviceRefIdIsCorrect) {
+TEST(ElementDescriptionTests, DeviceDescriptionIsCorrect) {
   // Arrange
   Device *element =
       new DeviceImpl("1234", "TestDevice", "A hardcoded deviceelement");
 
   // Act
-  std::string testedElement = element->getElementRefId();
-
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1234";
+  std::string expectedResult = "A hardcoded deviceelement";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-TEST(RefIdTests, DeviceRefIdIsNotCorrect) {
+TEST(ElementDescriptionTests, DeviceDescriptionIsNotCorrect) {
   // Arrange
   Device *element =
       new DeviceImpl("1234", "TestDevice", "A hardcoded deviceelement");
 
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1235";
+  std::string expectedResult = "A new hardcoded deviceelement";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-TEST(RefIdTests, DeviceElementRefIdIsCorrect) {
+TEST(ElementDescriptionTests, DeviceElementDescriptionIsCorrect) {
   // Arrange
   DeviceElement *element = new DeviceElementBuilder(
       "1234", "TestDevice", "A hardcoded deviceelement", ElementType::Group);
 
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1234";
+  std::string expectedResult = "A hardcoded deviceelement";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-TEST(RefIdTests, DeviceElementRefIdIsNotCorrect) {
+TEST(ElementDescriptionTests, DeviceElementDescriptionIsNotCorrect) {
   // Arrange
   DeviceElement *element = new DeviceElementBuilder(
       "1234", "TestDevice", "A hardcoded deviceelement", ElementType::Group);
 
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1235";
+  std::string expectedResult = "A new hardcoded deviceelement";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-TEST(RefIdTests, DeviceElementGroupRefIdIsCorrect) {
+TEST(ElementDescriptionTests, DeviceElementGroupDescriptionIsCorrect) {
   // Arrange
   DeviceElementGroup *element = new DeviceElementGroupImpl(
       "1234", "TestDevice", "A hardcoded deviceelement");
 
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1234";
+  std::string expectedResult = "A hardcoded deviceelement";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-TEST(RefIdTests, DeviceElementGroupRefIdIsNotCorrect) {
+TEST(ElementDescriptionTests, DeviceElementGroupDescriptionIsNotCorrect) {
   // Arrange
   DeviceElementGroup *element = new DeviceElementGroupImpl(
       "1234", "TestDevice", "A hardcoded deviceelement");
 
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = element->getElementDescription();
   // Assert
-  std::string expectedResult = "1235";
+  std::string expectedResult = "A new hardcoded deviceelement";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
