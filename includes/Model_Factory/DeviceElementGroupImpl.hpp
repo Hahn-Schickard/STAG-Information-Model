@@ -4,8 +4,7 @@
 #include "DeviceElement.hpp"
 #include "DeviceElementGroup.hpp"
 #include <memory>
-#include <string>
-#include <vector>
+#include <unordered_map>
 
 namespace Model_Factory
 {
@@ -19,8 +18,8 @@ namespace Model_Factory
 class DeviceElementGroupImpl : public Information_Model::DeviceElementGroup
 {
 private:
-  std::vector<std::shared_ptr<Information_Model::DeviceElement>> subelements;
-   unsigned int elementId;
+  std::unordered_map<std::string, std::shared_ptr<Information_Model::DeviceElement>> subelements;
+  unsigned int elementId;
 
 public:
   DeviceElementGroupImpl(const std::string refId, const std::string name,
@@ -40,6 +39,7 @@ public:
   std::vector<std::shared_ptr<Information_Model::DeviceElement>>
   getSubelements();
   Information_Model::DeviceElement *getSubelement(const std::string refId);
+
   unsigned int incrementElementId();
 };
 } // namespace Model_Factory
