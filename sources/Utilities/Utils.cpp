@@ -14,7 +14,8 @@ string generate_Reference_ID(DeviceElement *parent) {
   case ElementType::Group: {
     DeviceElementGroup *parent_element =
         static_cast<DeviceElementGroup *>(parent);
-    element_id = to_string(parent_element->getSubelements().size());
+    element_id = to_string(parent_element->incrementElementId()-1);
+
     break;
   }
   case ElementType::Readonly:

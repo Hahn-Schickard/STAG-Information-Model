@@ -27,6 +27,8 @@ protected:
 
 public:
   virtual std::vector<std::shared_ptr<DeviceElement>> getSubelements() = 0;
+  virtual unsigned int incrementElementId() = 0;
+
   virtual DeviceElement *getSubelement(const std::string REF_ID) = 0;
 };
 } // namespace Information_Model

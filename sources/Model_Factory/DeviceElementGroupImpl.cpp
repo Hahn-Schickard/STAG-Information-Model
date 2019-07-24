@@ -39,3 +39,9 @@ vector<std::shared_ptr<Information_Model::DeviceElement>>
 DeviceElementGroupImpl::getSubelements() {
   return subelements;
 }
+
+unsigned int DeviceElementGroupImpl::incrementElementId()
+{
+   this->elementId++;
+   return this->elementId;
+}
