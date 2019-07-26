@@ -33,14 +33,17 @@ public:
    * @param type 
    * @return std::string Reference ID of DeviceElement within DeviceElementGroupImpl: DeviceElementGroupImpl::subelements vector
    */
-  std::string addDeviceEelment(const std::string name, const std::string desc,
+  std::string addDeviceElement(const std::string name, const std::string desc,
                                Information_Model::ElementType type);
 
-  std::vector<std::shared_ptr<Information_Model::DeviceElement>>
-  getSubelements();
+  std::vector<std::shared_ptr<Information_Model::DeviceElement>> getSubelements();
   Information_Model::DeviceElement *getSubelement(const std::string refId);
 
-  unsigned int incrementElementId();
+  void incrementElementId();
+
+  unsigned int getNumericElementId();
+
+  virtual ~DeviceElementGroupImpl() = default;
 };
 } // namespace Model_Factory
 

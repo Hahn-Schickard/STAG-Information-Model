@@ -13,7 +13,7 @@ add_executable(${THIS}
 target_link_libraries(${THIS} PUBLIC 
                Information_Model
                Model_Factory
-               gcov)
+               )
                
 if(CLANG_TIDY_EXE)               
     set_target_properties(

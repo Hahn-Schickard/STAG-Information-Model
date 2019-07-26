@@ -12,15 +12,15 @@ DeviceElementGroupImpl::DeviceElementGroupImpl(const string REF_ID,
                                                const string NAME,
                                                const string DESC)
     : DeviceElementGroup(REF_ID, NAME, DESC) {
-      this->elementId = 0;
+      elementId = 0;
     }
 
 string
-DeviceElementGroupImpl::addDeviceEelment(const std::string NAME,
+DeviceElementGroupImpl::addDeviceElement(const std::string NAME,
                                          const std::string DESC,
                                          Information_Model::ElementType type) {
-  const string REF_ID = generate_Reference_ID(
-      dynamic_cast<Information_Model::DeviceElement *>(this));
+  incrementElementId();
+  const string REF_ID = generate_Reference_ID(dynamic_cast<Information_Model::DeviceElement *>(this));
  
   pair<string,shared_ptr<DeviceElement>> elPair (REF_ID, shared_ptr<DeviceElement>(new DeviceElementBuilder(REF_ID, NAME, DESC, type)));
 
@@ -48,8 +48,12 @@ DeviceElementGroupImpl::getSubelements() {
 
 
 
-unsigned int DeviceElementGroupImpl::incrementElementId()
+void DeviceElementGroupImpl::incrementElementId()
 {
-   this->elementId++;
-   return this->elementId;
+   this->elementId++; 
+}
+
+unsigned int DeviceElementGroupImpl::getNumericElementId()
+{
+  return elementId;
 }

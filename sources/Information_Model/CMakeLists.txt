@@ -13,8 +13,8 @@ add_library(${THIS} SHARED
             ${sources_list}
             ${includes_list})
 
-target_link_libraries(${THIS} PUBLIC 
-                      gcov)
+# target_link_libraries(${THIS} PUBLIC 
+#                       gcov)
                            
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>

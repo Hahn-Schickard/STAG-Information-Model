@@ -35,6 +35,7 @@ protected:
 
 public:
   ElementType getElementType();
+  virtual ~DeviceElement() = default;
 };
 } // namespace Information_Model
 

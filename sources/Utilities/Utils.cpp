@@ -12,9 +12,10 @@ string generate_Reference_ID(DeviceElement *parent) {
 
   switch (parent->getElementType()) {
   case ElementType::Group: {
-    DeviceElementGroup *parent_element =
-        static_cast<DeviceElementGroup *>(parent);
-    element_id = to_string(parent_element->incrementElementId()-1);
+    auto parent_element = static_cast<DeviceElementGroup *>(parent);
+    auto elId =  parent_element->getNumericElementId();
+    
+    element_id = to_string(elId);
 
     break;
   }
