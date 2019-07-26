@@ -35,7 +35,6 @@ TEST_F(DeviceElementGroupTest, DeviceElementGroupSubelementIDIsCorrect)
     // Act
     for (auto element : elements)
     {
-        //std::cerr << element->getElementRefId() << std::endl;
         std::string testedElement = element->getElementRefId();
         // Assert
         std::string expectedResult = "1234:0";
