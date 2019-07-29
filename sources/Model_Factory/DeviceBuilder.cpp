@@ -39,7 +39,7 @@ string DeviceBuilder::addDeviceElement(const std::string GROUP_REFID, const std:
                                        ElementType type) 
 { 
   try { 
-    shared_ptr<DeviceElementGroupImpl> device_element_group = getDeviceElementGroup();
+    auto device_element_group = getDeviceElementGroup();
     auto refId = device_element_group->getElementRefId();
     
    // string refId = nullptr;
@@ -49,7 +49,7 @@ string DeviceBuilder::addDeviceElement(const std::string GROUP_REFID, const std:
     }
 
     if (device_element_group->getElementRefId() != GROUP_REFID) {
-      refId = addDeviceElementToSubgroup(device_element_group.get(), GROUP_REFID, NAME, DESC, type );
+      refId = addDeviceElementToSubgroup(device_element_group, GROUP_REFID, NAME, DESC, type );
     }
     else {
         refId = device_element_group->addDeviceElement(NAME, DESC, type); 
@@ -59,19 +59,19 @@ string DeviceBuilder::addDeviceElement(const std::string GROUP_REFID, const std:
   }
   catch(exception ex)
   {
-    cerr << "addDeviceElement threw an excepton: " << ex.what() << ". End" << endl;
+    cerr << "addDeviceElement threw an exception: " << ex.what() << ". End" << endl;
   }
   return nullptr;
 }
 
-shared_ptr<DeviceElementGroupImpl>  DeviceBuilder::getDeviceElementGroup()
+DeviceElementGroupImpl *  DeviceBuilder::getDeviceElementGroup()
 {
   try {
  
     auto group = static_cast<DeviceElementGroupImpl*>(device->getDeviceElementGroup());
 
-    shared_ptr<DeviceElementGroupImpl> device_element_group(group);
-    return device_element_group;
+    //shared_ptr<DeviceElementGroupImpl> device_element_group(group);
+    return group;
   }
   catch (exception ex)
   {
@@ -85,15 +85,17 @@ shared_ptr<DeviceElementGroupImpl>  DeviceBuilder::getDeviceElementGroup()
 string DeviceBuilder::addDeviceElementToSubgroup(DeviceElementGroupImpl * parentGroup, const string GROUP_REFID, const string NAME, const string DESC, ElementType type)
 {
   try {
-   auto subelementGroup = getSubelementGroup(parentGroup, GROUP_REFID);
-   if (subelementGroup == nullptr) {
-      subelementGroup = findElementGroup(GROUP_REFID, parentGroup);
-   }       
-   if (subelementGroup != nullptr) {      
-      return subelementGroup->addDeviceElement(NAME, DESC, type);
-   }
+    auto subelementGroup = getSubelementGroup(parentGroup, GROUP_REFID);
+    if (subelementGroup == nullptr) {
+        subelementGroup = findElementGroup(GROUP_REFID, parentGroup);
+    }       
+    if (subelementGroup != nullptr) {    
+       
+        auto elementRefId = subelementGroup->addDeviceElement(NAME, DESC, type);
+        return elementRefId;
+    }
     
-  return nullptr;
+    return nullptr;
   }
   catch(exception ex)
   {
@@ -102,17 +104,16 @@ string DeviceBuilder::addDeviceElementToSubgroup(DeviceElementGroupImpl * parent
   }
 }
 
-shared_ptr<DeviceElementGroupImpl> DeviceBuilder::getSubelementGroup(DeviceElementGroupImpl * deviceElementGroup, string REFID)
+DeviceElementGroupImpl * DeviceBuilder::getSubelementGroup(DeviceElementGroupImpl * deviceElementGroup, string REFID)
 {
   DeviceElement * el = deviceElementGroup->getSubelement(REFID);
   if (el != nullptr && el->getElementRefId() == REFID)
   {
     
-    auto subelement = static_cast<DeviceElementGroupImpl*>(el);
-    if (subelement != nullptr && subelement->getElementType() == ElementType::Group)
+    auto elementGroup = static_cast<DeviceElementGroupImpl*>(el);
+    if (elementGroup != nullptr && elementGroup->getElementType() == ElementType::Group)
       {
-        shared_ptr<DeviceElementGroupImpl> device_element_group(subelement);
-        return device_element_group;
+        return elementGroup;
       }
   }
   return nullptr;
@@ -120,24 +121,25 @@ shared_ptr<DeviceElementGroupImpl> DeviceBuilder::getSubelementGroup(DeviceEleme
     
 }
 
-shared_ptr<DeviceElementGroupImpl> DeviceBuilder::findElementGroup(string RefId, DeviceElementGroupImpl * deviceElementGroup)
+DeviceElementGroupImpl * DeviceBuilder::findElementGroup(string RefId, DeviceElementGroupImpl * deviceElementGroup)
  {  
     auto subElements = deviceElementGroup->getSubelements();
           
      for (auto element : subElements)
      {
-             
-       if (element->getElementRefId() == RefId)
+      auto elementGroup = dynamic_cast<DeviceElementGroupImpl *>(element.get());  
+
+       if (elementGroup->getElementRefId() == RefId)
        {
-         if (element->getElementType() == ElementType::Group)
+         if (elementGroup->getElementType() == ElementType::Group)
          {
-           return dynamic_pointer_cast<DeviceElementGroupImpl>(element);
+           return elementGroup;
          }
        }
        else if (element->getElementType() == ElementType::Group)
         {
-          auto elementGroup = dynamic_pointer_cast<DeviceElementGroupImpl>(element);        
-          return findElementGroup(RefId, elementGroup.get());
+                
+          return elementGroup;
         }                                
      }
      return nullptr;

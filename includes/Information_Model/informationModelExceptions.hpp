@@ -34,6 +34,16 @@ struct FunctionElementException : public std::exception {
 	}
 };
 
+struct UndefinedElementTypeException : public std::exception {
+	std::string desc;
+	const char * what() const throw ();
+	UndefinedElementTypeException() {}
+	UndefinedElementTypeException(std::string desc)
+	{
+		this->desc = desc;
+	}
+};
+
 
 
 //struct InvalidReferenceIdException : public std::exception {

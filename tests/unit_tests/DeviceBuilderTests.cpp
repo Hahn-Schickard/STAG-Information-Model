@@ -124,11 +124,11 @@ TEST(DeviceBuilder, AddSubGroup_ReturnsCorrectGroupRefId)
 	ASSERT_EQ(1, subElements.size());
 	ASSERT_NE(nullptr,subgroup);
 	//Assert
-    ASSERT_EQ("123:0",subgroup->getElementRefId());
+    ASSERT_EQ("123:0.",subgroup->getElementRefId());
 }
 
 
-TEST(DeviceBuilder, AddMetricToGroup_ReturnsCorrectMetricRefId)
+TEST(DeviceBuilder, AaddDeviceElement_GROUP_CorrectGroupRefId)
 {
 	//Arrange
    	auto builder = make_unique<DeviceBuilder>("TestDevice","123","A device for testing only");
@@ -158,11 +158,10 @@ TEST(DeviceBuilder, AddMetricToGroup_ReturnsCorrectMetricRefId)
 	ASSERT_EQ(1, subElements.size());
 	ASSERT_NE(nullptr,subgroup);
 	//Assert
-    ASSERT_EQ("123:0",subgroup->getElementRefId());
+    ASSERT_EQ("123:0.",subgroup->getElementRefId());
 }
 
-
-TEST(DeviceBuilder, AddMetricToSubgroup_ReturnsCorrectMetricRefId)
+TEST(DeviceBuilder, AddDeviceElement_GROUP_ElementTypeIsGroup)
 {
 	//Arrange
    	auto builder = make_unique<DeviceBuilder>("TestDevice","123","A device for testing only");
@@ -170,42 +169,34 @@ TEST(DeviceBuilder, AddMetricToSubgroup_ReturnsCorrectMetricRefId)
 	
 	//Act
 	auto refId = builder->addDeviceElement("Subgroup1", "A Subgroup",ElementType::Group);
-	cerr << "RefId: " << refId << endl;
 
-	auto metricRefId = builder->addDeviceElement(refId, "Metric2", "An observable Metric added to a subgroup", ElementType::Observable);
-	cerr << "Metric RefId: " << metricRefId << endl;
+	//Assert
+	std::unique_ptr<Information_Model::Device> aDevice = builder->getDevice();
+	auto aGroup = aDevice->getDeviceElementGroup();
+	ASSERT_EQ(ElementType::Group, aGroup->getElementType());
+
+	auto aSubelements = aGroup->getSubelements();
+	ASSERT_EQ(1, aSubelements.size());
+
+	auto aSubgroup = aSubelements[0];
+	EXPECT_EQ(ElementType::Group, aSubgroup->getElementType());
+}
+
+TEST(DeviceBuilder, AddDeviceElement_SubgroupRefId_Observable_ReturnsCorrectMetricRefId)
+{
+	//Arrange
+   	auto builder = make_unique<DeviceBuilder>("TestDevice","123","A device for testing only");
+	builder->addDeviceElementGroup("TestBaseGroup","A base group");
+	auto subgroupRefId = builder->addDeviceElement("Subgroup1", "A Subgroup",ElementType::Group);
+
+	//Act
+	auto metricRefId = builder->addDeviceElement(subgroupRefId, "Metric2", "An observable Metric added to a subgroup", ElementType::Observable);	
 	
+	//Assert
+	std::unique_ptr<Information_Model::Device> device = builder->getDevice();
+
+
+	auto actualRefId =  static_pointer_cast<DeviceElementGroup>(device->getDeviceElementGroup()->getSubelements()[0])->getSubelements()[0]->getElementRefId();
+	EXPECT_EQ("123:0.0",actualRefId);
 	
-	// //Assert
-	// std::unique_ptr<Information_Model::Device> device = builder->getDevice();
-	// auto group = device->getDeviceElementGroup();
-	// auto subElements = group->getSubelements();
-	
-	// std::shared_ptr<DeviceElementGroup> subgroup;
-	// std::shared_ptr<DeviceElement> observableElement;
-
-	// for (auto el : subElements)
-	// {
-	// 	if (el->getElementType() == ElementType::Group)
-	// 	{
-	// 		subgroup = static_pointer_cast<DeviceElementGroup>(el);
-	// 		for (auto element : subgroup->getSubelements())
-	// 		{
-	// 			if (element->getElementType() == ElementType::Observable)
-	// 			{
-	// 				observableElement = element;
-	// 			}
-
-	// 		}
-			
-	// 	}
-	// }
-
-	// ASSERT_EQ(1, subElements.size());
-	// ASSERT_NE(nullptr,subgroup);
-	// //Assert
-    // ASSERT_EQ("123:0",subgroup->getElementRefId());
-	// ASSERT_NE(nullptr,observableElement);
-
-	// EXPECT_EQ("123:0:1",observableElement->getElementRefId());
 }
