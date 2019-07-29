@@ -15,11 +15,12 @@ DeviceElementGroupImpl::DeviceElementGroupImpl(const string REF_ID,
       elementId = 0;
     }
 
+
+
 string
 DeviceElementGroupImpl::addDeviceElement(const std::string NAME,
                                          const std::string DESC,
-                                         ElementType ELEMENT_TYPE) {
-  incrementElementId();
+                                         ElementType ELEMENT_TYPE) { 
   const string REF_ID = generate_Reference_ID(ELEMENT_TYPE);
  
   switch (ELEMENT_TYPE)
@@ -37,19 +38,45 @@ DeviceElementGroupImpl::addDeviceElement(const std::string NAME,
     };break;
     default: {}
   }
-  
-
-  
-
   return REF_ID;
+}
+
+
+Information_Model::DeviceElement * DeviceElementGroupImpl::findSubelement(const std::string REF_ID)
+{
+   if (subelements.find(REF_ID) != subelements.end())
+    return subelements.at(REF_ID).get(); 
+
+   for (auto el = subelements.begin(); el != subelements.end(); ++ el)
+    {
+      if (el->second->getElementType() == ElementType::Group)
+      {
+          auto groupElement = static_cast<DeviceElementGroupImpl*>(el->second.get());
+          auto subEl = groupElement->findSubelement(REF_ID);
+          if (subEl != nullptr)
+          {
+            return subEl;
+          }
+           
+      }
+    }
+
+    return nullptr;
 }
 
 Information_Model::DeviceElement *
 DeviceElementGroupImpl::getSubelement(const std::string REF_ID) {
-  if (subelements.find(REF_ID) != subelements.end())
-    return subelements.at(REF_ID).get(); 
-  return nullptr;
+  
+ 
+  
+  auto el = findSubelement(REF_ID);
+  if (el != nullptr)
+    return el;
+  else
+    throw InvalidReferenceIdException("RefId " + REF_ID + " not found.");
+  
 }
+
 
 vector<std::shared_ptr<Information_Model::DeviceElement>>
 DeviceElementGroupImpl::getSubelements() {
@@ -80,7 +107,7 @@ string DeviceElementGroupImpl::generate_Reference_ID(Information_Model::ElementT
 
   switch (elementType) {
     case ElementType::Group: {
-      auto elId =  getNumericElementId()-1;
+      auto elId =  getNumericElementId();
       incrementElementId();
       
       element_id = to_string(elId) + ".";
@@ -91,7 +118,7 @@ string DeviceElementGroupImpl::generate_Reference_ID(Information_Model::ElementT
     case ElementType::Observable:
     case ElementType::Writable:
     case ElementType::Function: {
-      auto element_number = getNumericElementId()-1;
+      auto element_number = getNumericElementId();
       element_id = to_string(element_number);
       incrementElementId();
       break;

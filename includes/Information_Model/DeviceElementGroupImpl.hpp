@@ -20,6 +20,7 @@ class DeviceElementGroupImpl : public DeviceElementGroup
 private:
   std::unordered_map<std::string, std::shared_ptr<Information_Model::DeviceElement>> subelements;
   unsigned int elementId;
+  Information_Model::DeviceElement * findSubelement(const std::string REF_ID);
 
 public:
   DeviceElementGroupImpl(const std::string refId, const std::string name,

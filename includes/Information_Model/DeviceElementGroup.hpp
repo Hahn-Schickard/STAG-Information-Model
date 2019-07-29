@@ -23,7 +23,9 @@ class DeviceElementGroup : public DeviceElement
 protected:
   DeviceElementGroup(const std::string REF_ID, const std::string NAME,
                      const std::string DESC)
-      : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {}
+      : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {
+        
+      }
 
   
 
