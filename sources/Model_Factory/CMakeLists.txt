@@ -17,8 +17,7 @@ add_library(${THIS} SHARED
 
 target_link_libraries(${THIS} PUBLIC 
                       Information_Model
-                      Utilities
-                      gcov)
+                      Utilities)
                            
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>
