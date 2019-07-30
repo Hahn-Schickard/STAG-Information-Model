@@ -265,14 +265,14 @@ TEST(DeviceBuilder, Adding_Two_Metrics_And_One_Group_To_One_Subgroup_ReturnsCorr
 	
 	//Act
 	auto subgroupRefId = builder->addDeviceElement("Subgroup1", "A Subgroup",ElementType::Group);
-	builder->addDeviceElement(subgroupRefId, "Observable Metric", "An observable Metric added to a subgroup", ElementType::Observable);
-	builder->addDeviceElement(subgroupRefId, "Writable Metric", "An writable Metric added to a subgroup", ElementType::Writable);	
+	builder->addDeviceElement(subgroupRefId, "Observable Metric 1", "An observable Metric added to a subgroup", ElementType::Observable);
+	builder->addDeviceElement(subgroupRefId, "Writable Metric 1", "An writable Metric added to a subgroup", ElementType::Writable);	
 	builder->addDeviceElement(subgroupRefId, "Subgroup1a", "A subgroup withing a subgroup", ElementType::Group );
 
 	auto anotherSubgroupRefId = builder->addDeviceElement("Subgroup2","Another Subgroup", ElementType::Group);
-	builder->addDeviceElement(anotherSubgroupRefId, "Observable Metric", "An observable Metric added to a subgroup", ElementType::Observable);
-	builder->addDeviceElement(anotherSubgroupRefId, "Writable Metric", "An writable Metric added to a subgroup", ElementType::Writable);	
-	builder->addDeviceElement(subgroupRefId, "Subgroup1a", "A subgroup withing a subgroup", ElementType::Group );
+	builder->addDeviceElement(anotherSubgroupRefId, "Observable Metric 2", "An observable Metric added to a subgroup", ElementType::Observable);
+	builder->addDeviceElement(anotherSubgroupRefId, "Writable Metric 2", "An writable Metric added to a subgroup", ElementType::Writable);	
+	builder->addDeviceElement(anotherSubgroupRefId, "Subgroup2a", "A subgroup withing a subgroup", ElementType::Group );
 
 	//Assert
 	std::unique_ptr<Information_Model::Device> device = builder->getDevice();
@@ -286,10 +286,10 @@ TEST(DeviceBuilder, Adding_Two_Metrics_And_One_Group_To_One_Subgroup_ReturnsCorr
 
 	EXPECT_EQ("123:0.0",observableRefId1);
 	EXPECT_EQ("123:0.1",writeableRefId1);
-	EXPECT_EQ("123:0.2",subgroupRefId2);
+	EXPECT_EQ("123:0.2.",subgroupRefId1);
 	EXPECT_EQ("123:1.0",observableRefId2);
 	EXPECT_EQ("123:1.1",writeableRefId2);
-	EXPECT_EQ("123:1.2",subgroupRefId2);
+	EXPECT_EQ("123:1.2.",subgroupRefId2);
 	
 }
 
