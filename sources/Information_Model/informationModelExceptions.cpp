@@ -25,9 +25,3 @@ const char * UndefinedElementTypeException::what() const throw ()
 	std::string str = "Undefined ElementType: ";
 	return (str + desc).c_str();
 }
-
-//const char * InvalidReferenceIdException::what() const throw ()
-//{
-//	std::string str = "An Invalid ReferenceId caused an exception: ";
-//	return (str + desc).c_str();
-//}

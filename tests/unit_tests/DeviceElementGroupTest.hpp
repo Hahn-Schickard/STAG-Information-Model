@@ -28,7 +28,7 @@ public:
             "TestGroup", "This is a synthetic test for device element group.");
         group = device->getDeviceElementGroup();
         DeviceElementGroupImpl *tmp_group = dynamic_cast<DeviceElementGroupImpl *>(group);
-        tmp_group->addDeviceEelment("SubTestDevice", "This is the first Subelement", ElementType::Readonly);
+        tmp_group->addDeviceElement("SubTestDevice", "This is the first Subelement", ElementType::Readonly);
         elements = group->getSubelements();
     }
 
