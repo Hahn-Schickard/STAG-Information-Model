@@ -16,8 +16,7 @@ add_library(${THIS} SHARED
             ${includes_list})
 
 target_link_libraries(${THIS} PUBLIC 
-                      Information_Model
-                      Utilities)
+                      Information_Model)
                            
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>

@@ -9,7 +9,6 @@ add_executable(${THIS} ${Test_Suite} ${Test_Cases} )
 
 target_link_libraries(${THIS} PUBLIC
     Information_Model
-    Utilities
     Model_Factory
     gtest_main)
 

@@ -1,6 +1,5 @@
 #include "DeviceBuilder.hpp"
 #include "DeviceElementBuilder.hpp"
-#include "Utils.hpp"
 #include "informationModelExceptions.hpp"
 #include <iostream>
 
