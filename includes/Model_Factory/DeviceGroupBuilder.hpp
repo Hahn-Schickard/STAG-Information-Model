@@ -15,12 +15,12 @@ namespace Model_Factory
  * @author Dovydas Girdvainis
  * @date 18.07.2019
  */
-class DeviceGroupBuilder : public Information_Model::DeviceElementGroupImpl
+class DeviceGroupBuilder : public DeviceElementGroupImpl
 {
 public:
   DeviceGroupBuilder(const std::string REF_ID, const std::string NAME,
                        const std::string DESC)
-      : Information_Model::DeviceElementGroupImpl(REF_ID, NAME, DESC) {}
+      : DeviceElementGroupImpl(REF_ID, NAME, DESC) {}
 
     
 };

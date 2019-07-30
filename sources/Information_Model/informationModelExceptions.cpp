@@ -25,3 +25,10 @@ const char * UndefinedElementTypeException::what() const throw ()
 	std::string str = "Undefined ElementType: ";
 	return (str + desc).c_str();
 }
+
+
+const char * GroupElementDoesNotExistException::what() const throw ()
+{
+	std::string str = "Group element does not exist : ";
+	return (str + desc).c_str();
+}

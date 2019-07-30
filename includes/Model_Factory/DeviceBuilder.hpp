@@ -23,10 +23,10 @@ class DeviceBuilder
 {
 private:
   std::unique_ptr<Information_Model::Device> device;
-  Information_Model::DeviceElementGroupImpl *  getDeviceElementGroup();
-  std::string addDeviceElementToSubgroup(Information_Model::DeviceElementGroupImpl * parentGroup, const std::string GROUP_REFID, const std::string NAME, const std::string DESC, Information_Model::ElementType type);
-  Information_Model::DeviceElementGroupImpl * getSubelementGroup(Information_Model::DeviceElementGroupImpl * deviceElementGroup, std::string REFID);
-  Information_Model::DeviceElementGroupImpl * findElementGroup(std::string RefId, Information_Model::DeviceElementGroupImpl * deviceElementGroup);
+  Model_Factory::DeviceElementGroupImpl *  getDeviceElementGroup();
+  std::string addDeviceElementToSubgroup(Model_Factory::DeviceElementGroupImpl * parentGroup, const std::string GROUP_REFID, const std::string NAME, const std::string DESC, Information_Model::ElementType type);
+  Model_Factory::DeviceElementGroupImpl * getSubelementGroup(Model_Factory::DeviceElementGroupImpl * deviceElementGroup, std::string REFID);
+  Model_Factory::DeviceElementGroupImpl * findElementGroup(std::string RefId, Model_Factory::DeviceElementGroupImpl * deviceElementGroup);
 
 public:
   DeviceBuilder(const std::string NAME, const std::string REF_ID,

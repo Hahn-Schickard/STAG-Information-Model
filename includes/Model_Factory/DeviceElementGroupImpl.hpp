@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace Information_Model
+namespace Model_Factory
 {
 /**
  * @brief This class is an implementation of Information_Model::DeviceElementGroup
@@ -15,7 +15,7 @@ namespace Information_Model
  * @author Dovydas Girdvainis
  * @date 18.07.2019
  */
-class DeviceElementGroupImpl : public DeviceElementGroup
+class DeviceElementGroupImpl : public Information_Model::DeviceElementGroup
 {
 private:
   std::unordered_map<std::string, std::shared_ptr<Information_Model::DeviceElement>> subelements;
@@ -42,7 +42,7 @@ public:
 
   void incrementElementId();
 
-  std::string generate_Reference_ID(Information_Model::ElementType elementType);
+  std::string generate_Reference_ID();
 
   unsigned int getNumericElementId();
 

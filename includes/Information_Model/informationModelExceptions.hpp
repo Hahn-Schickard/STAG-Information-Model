@@ -44,5 +44,15 @@ struct UndefinedElementTypeException : public std::exception {
 	}
 };
 
+struct GroupElementDoesNotExistException : public std::exception {
+	std::string desc;
+	const char * what() const throw ();
+	GroupElementDoesNotExistException() {}
+	GroupElementDoesNotExistException(std::string desc)
+	{
+		this->desc = desc;
+	}
+};
+
 
 #endif
