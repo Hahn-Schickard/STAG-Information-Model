@@ -8,13 +8,24 @@ PRINT_MODULE_FILES(${THIS} "${sources_list}" "${includes_list}")
 
 add_executable(${THIS} 
                ${sources_list}
-               ${includes_list})
+               ${includes_list})              
 
-target_link_libraries(${THIS} PUBLIC 
-               Information_Model
-               Model_Factory
-               gcov)
-               
+if (WIN32)
+    target_link_libraries(${THIS} PUBLIC
+                                Information_Model
+                                Model_Factory)
+elseif (UNIX)
+    target_link_libraries(${THIS} PUBLIC gcov
+                                Information_Model
+                                Model_Factory
+                                gcov)
+else ()
+    target_link_libraries(${THIS} PUBLIC
+                                Information_Model
+                                Model_Factory)                                
+    message(WARNING "Please configure your linking for your operating system for target ${THIS}")
+endif ()
+
 if(CLANG_TIDY_EXE)               
     set_target_properties(
                         ${THIS} PROPERTIES

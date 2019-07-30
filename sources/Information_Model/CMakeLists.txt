@@ -17,7 +17,14 @@ add_library(${THIS} SHARED
             ${sources_list}
             ${includes_list})
 
-target_link_libraries(${THIS} PUBLIC gcov)
+if (WIN32)
+    target_link_libraries(${THIS} PUBLIC)
+elseif (UNIX)
+    target_link_libraries(${THIS} PUBLIC gcov)
+else ()
+    target_link_libraries(${THIS} PUBLIC)
+    message(WARNING "Please configure your linking for your operating system for target ${THIS}")
+endif ()
                            
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>
