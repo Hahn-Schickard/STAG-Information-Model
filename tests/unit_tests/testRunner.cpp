@@ -3,6 +3,7 @@
 #include "ElementDescriptionTest.hpp"
 #include "DeviceTest.hpp"
 #include "DeviceElementTest.hpp"
+#include "DeviceElementGroupTest.hpp"
 #include "gtest/gtest.h"
 
 int main(int argc, char **argv)
