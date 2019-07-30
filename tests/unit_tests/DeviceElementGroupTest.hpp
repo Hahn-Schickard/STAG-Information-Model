@@ -1,7 +1,12 @@
 #ifndef DEVICEELEMENTGROUPTEST_HPP
 #define DEVICEELEMENTGROUPTEST_HPP
+#include "Device.hpp"
+#include "DeviceElementBuilder.hpp"
+#include "DeviceElementGroupImpl.hpp"
+#include "DeviceImpl.hpp"
 
 #include <iostream>
+#include <gtest/gtest.h>
 
 using namespace Model_Factory;
 using namespace Information_Model;
