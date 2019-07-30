@@ -9,7 +9,6 @@ add_executable(${THIS} ${Test_Suite} ${Test_Cases} )
 
 target_link_libraries(${THIS} PUBLIC
     Information_Model
-    Utilities
     Model_Factory
     gtest_main)
 
@@ -32,7 +31,4 @@ if(WIN32)
                             $<TARGET_FILE_DIR:${THIS}> 
                         COMMENT "Copying shared library files from ${CMAKE_BINARY_DIR}/bin directory to ${CMAKE_CURRENT_BINARY_DIR} directory."
                             VERBATIM) 
-else(UNIX)
-    add_custom_command(TARGET ${THIS} POST_BUILD
-                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
 endif()

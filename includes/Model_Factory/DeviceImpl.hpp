@@ -7,7 +7,6 @@
 #include "Device.hpp"
 #include "DeviceElementGroupImpl.hpp"
 #include "NamedElement.hpp"
-#include "Utils.hpp"
 
 namespace Model_Factory
 {

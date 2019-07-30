@@ -2,7 +2,7 @@
 #define _DEVICE_FACTORY_HPP
 
 #include "DeviceElement.hpp"
-#include "DeviceElementGroupImpl.hpp"
+
 #include "DeviceImpl.hpp"
 #include <memory>
 
@@ -23,6 +23,10 @@ class DeviceBuilder
 {
 private:
   std::unique_ptr<Information_Model::Device> device;
+  Information_Model::DeviceElementGroupImpl *  getDeviceElementGroup();
+  std::string addDeviceElementToSubgroup(Information_Model::DeviceElementGroupImpl * parentGroup, const std::string GROUP_REFID, const std::string NAME, const std::string DESC, Information_Model::ElementType type);
+  Information_Model::DeviceElementGroupImpl * getSubelementGroup(Information_Model::DeviceElementGroupImpl * deviceElementGroup, std::string REFID);
+  Information_Model::DeviceElementGroupImpl * findElementGroup(std::string RefId, Information_Model::DeviceElementGroupImpl * deviceElementGroup);
 
 public:
   DeviceBuilder(const std::string NAME, const std::string REF_ID,
@@ -56,6 +60,10 @@ public:
   std::string addDeviceElement(const std::string NAME, const std::string DESC,
                                Information_Model::ElementType type);
 
+
+  std::string addDeviceElement(const std::string GROUP_REFID, const std::string NAME, const std::string DESC,
+                               Information_Model::ElementType type);
+
   /**
    * @brief This method returns a pointer with full ownership rights. 
    * @attention If this pointer is not saved by the caller, it will be cleaned up by the 
@@ -64,6 +72,9 @@ public:
    * @return std::unique_ptr<Information_Model::Device> 
    */
   std::unique_ptr<Information_Model::Device> getDevice();
+
+
+
 };
 } // namespace Model_Factory
 

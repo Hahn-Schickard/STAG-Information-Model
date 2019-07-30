@@ -96,7 +96,7 @@ TEST(RefIdTests, DeviceElementGroupRefIdIsNotCorrect)
     std::string testedElement = element->getElementRefId();
     // Assert
     std::string expectedResult = "1235";
-    EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
+    EXPECT_NE(expectedResult, testedElement)
         << "expected: " << expectedResult << std::endl
         << "provided: " << testedElement << std::endl;
 }

@@ -21,7 +21,7 @@ public:
   DeviceElementBuilder(const std::string REF_ID, const std::string NAME,
                        const std::string DESC,
                        Information_Model::ElementType type)
-      : DeviceElement(REF_ID, NAME, DESC, type) {}
+      : Information_Model::DeviceElement(REF_ID, NAME, DESC, type) {}
 };
 } // namespace Model_Factory
 

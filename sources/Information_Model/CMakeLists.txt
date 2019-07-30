@@ -4,20 +4,32 @@ set(THIS Information_Model)
 
 file(GLOB sources_list "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB includes_list "${PROJECT_SOURCE_DIR}/includes/Information_Model/*.hpp")
+file(GLOB includes_list "${PROJECT_SOURCE_DIR}/includes/Model_Factory/*.hpp")
+file(GLOB includes_list "${PROJECT_SOURCE_DIR}/includes/Utilities/*.hpp")
 
 PRINT_MODULE_FILES(${THIS} "${sources_list}" "${includes_list}")
 
 include_directories(${PROJECT_SOURCE_DIR}/includes/Information_Model/)
+include_directories(${PROJECT_SOURCE_DIR}/includes/Model_Factory/)
+
 
 add_library(${THIS} SHARED
             ${sources_list}
             ${includes_list})
 
-target_link_libraries(${THIS} PUBLIC 
-                      gcov)
+if (WIN32)
+    target_link_libraries(${THIS} PUBLIC)
+elseif (UNIX)
+    target_link_libraries(${THIS} PUBLIC gcov)
+else ()
+    target_link_libraries(${THIS} PUBLIC)
+    message(WARNING "Please configure your linking for your operating system for target ${THIS}")
+endif ()
                            
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model/>
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Model_Factory/>
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Utilities/>
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
                            $<INSTALL_INTERFACE:${INCLUDES_DEST}>
                            $<INSTALL_INTERFACE:${LIBS_DEST}>)

@@ -30,6 +30,8 @@ public:
   const std::string getElementName();
   const std::string getElementDescription();
   const std::string getElementRefId();
+
+  virtual ~NamedElement()  = default;
 };
 } // namespace Information_Model
 

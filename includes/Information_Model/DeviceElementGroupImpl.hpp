@@ -4,10 +4,9 @@
 #include "DeviceElement.hpp"
 #include "DeviceElementGroup.hpp"
 #include <memory>
-#include <string>
-#include <vector>
+#include <unordered_map>
 
-namespace Model_Factory
+namespace Information_Model
 {
 /**
  * @brief This class is an implementation of Information_Model::DeviceElementGroup
@@ -16,10 +15,12 @@ namespace Model_Factory
  * @author Dovydas Girdvainis
  * @date 18.07.2019
  */
-class DeviceElementGroupImpl : public Information_Model::DeviceElementGroup
+class DeviceElementGroupImpl : public DeviceElementGroup
 {
 private:
-  std::vector<std::shared_ptr<Information_Model::DeviceElement>> subelements;
+  std::unordered_map<std::string, std::shared_ptr<Information_Model::DeviceElement>> subelements;
+  unsigned int elementId;
+  Information_Model::DeviceElement * findSubelement(const std::string REF_ID);
 
 public:
   DeviceElementGroupImpl(const std::string refId, const std::string name,
@@ -33,13 +34,20 @@ public:
    * @param type 
    * @return std::string Reference ID of DeviceElement within DeviceElementGroupImpl: DeviceElementGroupImpl::subelements vector
    */
-  std::string addDeviceEelment(const std::string name, const std::string desc,
+  std::string addDeviceElement(const std::string name, const std::string desc,
                                Information_Model::ElementType type);
 
-  std::vector<std::shared_ptr<Information_Model::DeviceElement>>
-  getSubelements();
+  std::vector<std::shared_ptr<Information_Model::DeviceElement>> getSubelements();
   Information_Model::DeviceElement *getSubelement(const std::string refId);
+
+  void incrementElementId();
+
+  std::string generate_Reference_ID(Information_Model::ElementType elementType);
+
+  unsigned int getNumericElementId();
+
+  virtual ~DeviceElementGroupImpl() = default;
 };
-} // namespace Model_Factory
+} // namespace Model_Factory 
 
 #endif //_DEVICE_ELEMENT_GROUP_HPP

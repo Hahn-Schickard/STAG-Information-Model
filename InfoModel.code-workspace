@@ -41,7 +41,8 @@
 			"ctime": "cpp",
 			"iomanip": "cpp",
 			"iostream": "cpp",
-			"memory": "cpp"
+			"memory": "cpp",
+			"list": "cpp"
 		}
 	}
 }

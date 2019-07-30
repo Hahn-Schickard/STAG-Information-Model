@@ -23,11 +23,22 @@ class DeviceElementGroup : public DeviceElement
 protected:
   DeviceElementGroup(const std::string REF_ID, const std::string NAME,
                      const std::string DESC)
-      : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {}
+      : DeviceElement(REF_ID, NAME, DESC, ElementType::Group) {
+        
+      }
+
+  
 
 public:
   virtual std::vector<std::shared_ptr<DeviceElement>> getSubelements() = 0;
+
+ 
+
   virtual DeviceElement *getSubelement(const std::string REF_ID) = 0;
+  virtual unsigned int getNumericElementId() = 0;
+
+  virtual ~DeviceElementGroup() = default;
+
 };
 } // namespace Information_Model
 

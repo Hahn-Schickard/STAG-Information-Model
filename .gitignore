@@ -7,3 +7,5 @@ code_coverage.info
 docs/code_documentation/html
 docs/code_documentation/latex
 clang-tidy-suggested-fixes.yml
+*.stackdump
+*.code-workspace
