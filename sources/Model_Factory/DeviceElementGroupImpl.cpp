@@ -6,6 +6,7 @@
 #include <memory>
 
 using namespace std;
+using namespace Model_Factory;
 using namespace Information_Model;
 
 DeviceElementGroupImpl::DeviceElementGroupImpl(const string REF_ID,
