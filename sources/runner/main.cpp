@@ -1,5 +1,6 @@
 #include "DeviceBuilder.hpp"
 #include <iostream>
+#include "informationModelExceptions.hpp"
 
 using namespace std;
 using namespace Model_Factory;
@@ -42,7 +43,7 @@ void printSubelements(vector<shared_ptr<DeviceElement>> elements)
   {
     if (element->getElementType() == Group)
     {
-      cout << "\n\n==== SUBGROUP: " << element->getElementName() << ">>>\n" << endl;
+      cout << "\n\n==== SUBGROUP: " << element->getElementName() << " >>>\n" << endl;
       DeviceElementGroup* groupElement = static_cast<DeviceElementGroup*>(element.get());
       auto subElements = groupElement->getSubelements();
       if (subElements.size() > 0)
@@ -113,6 +114,22 @@ int main()
 
   cout << "\n\n>>>>>  EXTERNALLY BUILD  <<<<<<" << endl;
   printDevice(externally_build_device.get());
+
+  cout << "\n\n>>>>>> EXCEPTION HANDLING <<<<<" << endl;
+
+  try {
+    DeviceBuilder *device_builder = new DeviceBuilder("Simple Device", "1234", "A simple device");
+    device_builder->addDeviceElement(groupRefId, "Observable Metric", "A simple observable Metric", ElementType::Observable);
+  }
+  catch (GroupElementDoesNotExistException exception)
+  {
+      cout << "adding a metric caused a GroupElementDoesNotExistException: " << exception.what() << endl;
+  }
+  catch (exception ex)
+  {
+      cout << "adding a metric caused an exception: " << ex.what() << endl;
+  }
+
 
   exit(0);
 }

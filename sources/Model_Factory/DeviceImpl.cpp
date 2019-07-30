@@ -1,5 +1,6 @@
 #include "DeviceImpl.hpp"
 #include <memory>
+#include "informationModelExceptions.hpp"
 
 using namespace std;
 using namespace Model_Factory;
@@ -20,5 +21,7 @@ string DeviceImpl::addDeviceElementGroup(const std::string NAME,
 
 Information_Model::DeviceElementGroup *DeviceImpl::getDeviceElementGroup()
 {
+  if (device_element_group == nullptr)
+    throw GroupElementDoesNotExistException("Device has no Element Group");
   return device_element_group.get();
 }
