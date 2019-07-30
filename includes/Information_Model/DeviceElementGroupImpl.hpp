@@ -42,7 +42,7 @@ public:
 
   void incrementElementId();
 
-  std::string generate_Reference_ID(Information_Model::ElementType elementType);
+  std::string generate_Reference_ID();
 
   unsigned int getNumericElementId();
 

@@ -21,7 +21,7 @@ string
 DeviceElementGroupImpl::addDeviceElement(const std::string NAME,
                                          const std::string DESC,
                                          ElementType ELEMENT_TYPE) { 
-  const string REF_ID = generate_Reference_ID(ELEMENT_TYPE);
+  const string REF_ID = generate_Reference_ID();
  
   switch (ELEMENT_TYPE)
   {
@@ -101,32 +101,16 @@ unsigned int DeviceElementGroupImpl::getNumericElementId()
 }
 
 
-string DeviceElementGroupImpl::generate_Reference_ID(Information_Model::ElementType elementType) {
+string DeviceElementGroupImpl::generate_Reference_ID() {
   const string BASE_ID = this->getElementRefId();
   string element_id = "";
+  auto elId =  getNumericElementId();
 
-  switch (elementType) {
-    case ElementType::Group: {
-      auto elId =  getNumericElementId();
-      incrementElementId();
-      
-      element_id = to_string(elId) + ".";
-
-      break;
-    }
-    case ElementType::Readonly:
-    case ElementType::Observable:
-    case ElementType::Writable:
-    case ElementType::Function: {
-      auto element_number = getNumericElementId();
-      element_id = to_string(element_number);
-      incrementElementId();
-      break;
-    }
-    case ElementType::Undefined:
-    default: {
-      throw UndefinedElementTypeException("Failed to generate refid because ElementType is undefined.");
-    }
-  }
+  if (BASE_ID.back() == ':')
+    element_id = to_string(elId);
+  else
+    element_id = "." + to_string(elId);
+   incrementElementId();
   return BASE_ID + element_id;
+
 }

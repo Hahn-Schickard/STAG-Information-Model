@@ -3,6 +3,7 @@
 #include <string>
 #include "DeviceBuilder.hpp"
 #include "MakeUnique.hpp"
+#include "informationModelExceptions.hpp"
 
 
 using namespace std;
@@ -124,7 +125,7 @@ TEST(DeviceBuilder, AddSubGroup_ReturnsCorrectGroupRefId)
 	ASSERT_EQ(1, subElements.size());
 	ASSERT_NE(nullptr,subgroup);
 	//Assert
-    ASSERT_EQ("123:0.",subgroup->getElementRefId());
+    ASSERT_EQ("123:0",subgroup->getElementRefId());
 }
 
 
@@ -158,7 +159,7 @@ TEST(DeviceBuilder, AaddDeviceElement_GROUP_CorrectGroupRefId)
 	ASSERT_EQ(1, subElements.size());
 	ASSERT_NE(nullptr,subgroup);
 	//Assert
-    ASSERT_EQ("123:0.",subgroup->getElementRefId());
+    ASSERT_EQ("123:0",subgroup->getElementRefId());
 }
 
 TEST(DeviceBuilder, AddDeviceElement_GROUP_ElementTypeIsGroup)
@@ -279,17 +280,17 @@ TEST(DeviceBuilder, Adding_Two_Metrics_And_One_Group_To_One_Subgroup_ReturnsCorr
 
 	auto observableRefId1 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.0"))->getElementRefId();  
 	auto writeableRefId1  = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.1"))->getElementRefId();  
-	auto subgroupRefId1 =  static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.2."))->getElementRefId();  
+	auto subgroupRefId1 =  static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.2"))->getElementRefId();  
 	auto observableRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.0"))->getElementRefId(); 
 	auto writeableRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.1"))->getElementRefId(); 
-	auto subgroupRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.2."))->getElementRefId();
+	auto subgroupRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.2"))->getElementRefId();
 
 	EXPECT_EQ("123:0.0",observableRefId1);
 	EXPECT_EQ("123:0.1",writeableRefId1);
-	EXPECT_EQ("123:0.2.",subgroupRefId1);
+	EXPECT_EQ("123:0.2",subgroupRefId1);
 	EXPECT_EQ("123:1.0",observableRefId2);
 	EXPECT_EQ("123:1.1",writeableRefId2);
-	EXPECT_EQ("123:1.2.",subgroupRefId2);
+	EXPECT_EQ("123:1.2",subgroupRefId2);
 	
 }
 
@@ -315,10 +316,10 @@ TEST(DeviceBuilder, Adding_Two_Metrics_And_One_Group_To_One_Subgroup_ReturnsCorr
 
 	auto observableRefId1 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.0"))->getElementName();  
 	auto writeableRefId1  = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.1"))->getElementName();  
-	auto subgroupRefId1 =  static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.2."))->getElementName();  
+	auto subgroupRefId1 =  static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:0.2"))->getElementName();  
 	auto observableRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.0"))->getElementName(); 
 	auto writeableRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.1"))->getElementName(); 
-	auto subgroupRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.2."))->getElementName();
+	auto subgroupRefId2 = static_cast<DeviceElementGroup *>(device->getDeviceElementGroup()->getSubelement("123:1.2"))->getElementName();
 
 	EXPECT_EQ("TestDevice", device->getElementName());
 	EXPECT_EQ("TestBaseGroup",device->getDeviceElementGroup()->getElementName());
@@ -334,3 +335,16 @@ TEST(DeviceBuilder, Adding_Two_Metrics_And_One_Group_To_One_Subgroup_ReturnsCorr
 	
 }
 
+TEST(DeviceBuilder, getDeviceElementGroup_throws_exception_when_accessing_not_existing_elements)
+{	
+	//Arrange
+   	auto builder = make_unique<DeviceBuilder>("TestDevice","123","A device for testing only");
+	
+	std::unique_ptr<Information_Model::Device> device = builder->getDevice();
+	
+	//Act
+	
+
+	//Assert
+	EXPECT_THROW(auto elGroup = device->getDeviceElementGroup(),GroupElementDoesNotExistException);
+}	
