@@ -20,4 +20,3 @@ D -.Merge request.->B;
 1. Changes are commited to a niglty branch throught Pull-requests. 
 1. Each accepted Pull-Request goes throuth projects CI/CD pipeline, and if passed, a Merge-request is allowed. 
 1. A Merge-request must be aporved by one of the Project maintainers, preferabbly, not the one who initiated the Merge-request. 
-
