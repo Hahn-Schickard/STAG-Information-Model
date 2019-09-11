@@ -5,18 +5,16 @@
 #include "NamedElement.hpp"
 #include <string>
 
-namespace Information_Model
-{
+namespace Information_Model {
 /**
- * @brief This class models a Device. 
+ * @brief This class models a Device.
  * It contains a single instance of Information_Model::DeviceElementGroup, which
  * has all of the elements that this device uses.
  * @attention This class should be built by Model_Factory::DeviceBuilder only!
  * @author Dovydas Girdvainis
  * @date 18.07.2019
  */
-class Device : public NamedElement
-{
+class Device : public NamedElement {
 protected:
   Device(const std::string REF_ID, const std::string NAME,
          const std::string DESC)
