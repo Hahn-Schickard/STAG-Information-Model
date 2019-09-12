@@ -12,17 +12,8 @@ using ::testing::AtLeast;
 
 class DeviceTest : public ::testing::Test {
 public:
-  /*void SetUp() override {
-    mock_device = MockDevice("1234", "TestDevice", "A hardcoded deviceelement");
-    // device = new DeviceImpl("1234", "TestDevice", "A hardcoded
-    // deviceelement");
-    // DeviceImpl *tmp_device = dynamic_cast<DeviceImpl *>(device);
-    // tmp_device->addDeviceElementGroup(
-    //    "TestGroup", "This is a synthetic test for device element group.");
-    // element = device->getDeviceElementGroup();
-    // test_device =
-    //    new MockDevice("1234", "TestDevice", "A hardcoded deviceelement");
-  }*/
+  void SetUp() override {
+  }
 };
 
 TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
@@ -30,15 +21,16 @@ TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
   // Act
   std::string testedElement = mock_device.getElementRefId();
   // Assert
-  std::string expectedResult = "1234:";
+  std::string expectedResult = "1234";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
-/*TEST(DeviceTest, DeviceElementGroupIDIsNotCorrect) {
+TEST(DeviceTest, DeviceElementGroupIDIsNotCorrect) {
+  MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = element->getElementRefId();
+  std::string testedElement = mock_device.getElementRefId();
   // Assert
   std::string expectedResult = "1235:";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
@@ -47,46 +39,50 @@ TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
 }
 
 TEST(DeviceTest, DeviceElementGroupNameIsCorrect) {
+  MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = element->getElementName();
+  std::string testedElement = mock_device.getElementName();
   // Assert
-  std::string expectedResult = "TestGroup";
+  std::string expectedResult = "TestDevice";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupNameIsNotCorrect) {
+  MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = element->getElementName();
+  std::string testedElement = mock_device.getElementName();
   // Assert
-  std::string expectedResult = "TestGroup2";
+  std::string expectedResult = "TestDevice2";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupDescriptionIsCorrect) {
+  MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = element->getElementDescription();
+  std::string testedElement = mock_device.getElementDescription();
   // Assert
   std::string expectedResult =
-      "This is a synthetic test for device element group.";
+      "A hardcoded deviceelement";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupDescriptionIsNotCorrect) {
+  MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = element->getElementDescription();
+  std::string testedElement = mock_device.getElementDescription();
   // Assert
   std::string expectedResult =
-      "This is a synthetic test for device element group2.";
+      "A hardcoded deviceelement2.";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
-}*/
+}
 
 TEST(DeviceTest, CanGetDeviceElementGroup) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");

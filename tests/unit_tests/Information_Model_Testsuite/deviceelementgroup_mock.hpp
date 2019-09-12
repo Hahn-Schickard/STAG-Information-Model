@@ -5,8 +5,11 @@
 
 #include "DeviceElementGroup.hpp"
 
-class MockListener : public Information_Model::DeviceElementGroup {
+class MockDeviceElementGroup : public Information_Model::DeviceElementGroup {
 public:
+  MockDeviceElementGroup(const std::string REF_ID, const std::string NAME,
+             const std::string DESC)
+      : Information_Model::DeviceElementGroup(REF_ID, NAME, DESC) {}
   MOCK_METHOD(std::vector<std::shared_ptr<DeviceElement>>, getSubelements, (),
               (override));
   MOCK_METHOD(Information_Model::DeviceElement *, getSubelement,

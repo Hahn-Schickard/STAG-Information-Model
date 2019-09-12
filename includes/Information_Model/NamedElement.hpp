@@ -26,9 +26,9 @@ private:
 protected:
   NamedElement(const std::string REF_ID, const std::string NAME,
                const std::string DESC) {
-    this->name = name;
-    this->desc = desc;
-    this->refId = refId;
+    name = NAME;
+    desc = DESC;
+    refId = REF_ID;
   }
 
 public:
