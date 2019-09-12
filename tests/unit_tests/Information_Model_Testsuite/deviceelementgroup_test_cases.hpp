@@ -6,7 +6,6 @@
 
 #include "deviceelementgroup_mock.hpp"
 
-#include <stdexcept>
 
 using ::testing::AtLeast;
 
