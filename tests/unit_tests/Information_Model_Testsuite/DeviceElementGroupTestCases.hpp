@@ -4,16 +4,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "deviceelementgroup_mock.hpp"
+#include "DeviceElementGroupMock.hpp"
 
 
 using ::testing::AtLeast;
-
-class DeviceElemenGroupTest : public ::testing::Test {
-public:
-  void SetUp() override {
-  }
-};
 
 TEST(DeviceElemenGroupTest, CanGetSubelement) {
   MockDeviceElementGroup mock_deviceelementgroup("1234", "TestDevice", "A hardcoded deviceelement");

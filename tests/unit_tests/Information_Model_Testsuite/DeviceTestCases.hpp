@@ -4,16 +4,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "device_mock.hpp"
+#include "DeviceMock.hpp"
 
 
 using ::testing::AtLeast;
-
-class DeviceTest : public ::testing::Test {
-public:
-  void SetUp() override {
-  }
-};
 
 TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
