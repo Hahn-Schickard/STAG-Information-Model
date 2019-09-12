@@ -6,7 +6,6 @@
 
 #include "device_mock.hpp"
 
-#include <stdexcept>
 
 using ::testing::AtLeast;
 
