@@ -3,7 +3,6 @@
 
 #include "gtest/gtest.h"
 
-#include "Device.hpp"
 #include "DeviceElement.hpp"
 
 TEST(DeviceElementTest, DeviceElementTypeUndefIsCorrect) {
