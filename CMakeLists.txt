@@ -25,6 +25,7 @@ set(DEBIAN_PACKAGING OFF CACHE BOOL "Packages files in .deb format.")
 set(PACKAGE_MAJOR_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
 set(PACKAGE_MINOR_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
 set(PACKAGE_PATCH_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
+set(THIS_PACKAGE_NAME "${PROJECT_NAME}-${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}-${CMAKE_SYSTEM_NAME}")
 set(CLANG_OUTPUT "${PROJECT_SOURCE_DIR}/clang-tidy-suggested-fixes.yml")
 set(INCLUDES_DIR "${PROJECT_SOURCE_DIR}/includes")
 set(INCLUDES_DEST "include/")
@@ -65,16 +66,31 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_MAJOR_VER})
 set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_MINOR_VER})
 set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_PATCH_VER})
 set(CPACK_OUTPUT_FILE_PREFIX cpack_packages)
+set(PACKAGE_VERSION "${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}")
+
+WRITE_PKG_CONFIG_IN_FILE(${PROJECT_NAME})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake"
+                                 VERSION ${PACKAGE_VERSION}
+                                 COMPATIBILITY SameMajorVersion)
+
+configure_package_config_file(
+  "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+  "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+  INSTALL_DESTINATION
+  ${PROJECT_NAME}/)
+
+install(EXPORT ${PROJECT_NAME}
+        FILE ${PROJECT_NAME}Targets.cmake
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION ${CONFIGS_DEST})
+
+install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+         DESTINATION ${CONFIGS_DEST})
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/docs/code_documentation/" DESTINATION "docs")
-set(CONFIG_FILE "")
-string(TOLOWER ${PROJECT_NAME} CONFIG_FILE)
-if(EXISTS ${PROJECT_SOURCE_DIR}/${CONFIG_FILE}-config.cmake)
-    install(FILES ${CONFIG_FILE}-config.cmake DESTINATION ${CONFIGS_DEST})
-else()
-    message(ERROR " No ${CONFIG_FILE}-config.cmake has been found! Please provide ${CONFIG_FILE}-config.cmake so your packages could be used by other developers!")
-endif()
-install(EXPORT ${PROJECT_NAME} DESTINATION ${LIBS_DEST})
 
 if(WIN32 AND NOT UNIX)
     message(STATUS "Using ZIP archiving format for packages!")
