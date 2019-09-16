@@ -9,3 +9,5 @@ docs/code_documentation/latex
 clang-tidy-suggested-fixes.yml
 *.stackdump
 *.code-workspace
+*.cmake
+*.cmake.in
