@@ -18,17 +18,16 @@ target_link_libraries(${THIS} PUBLIC
     gmock_main
 )
 
+if(CLANG_TIDY_EXE)
+  set_target_properties(
+    ${THIS} PROPERTIES
+    CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
+endif()       
+
 add_test(
     NAME ${THIS}
     COMMAND ${THIS}
 )
-
-if(CLANG_TIDY_EXE)               
-    set_target_properties(
-                        ${THIS} PROPERTIES
-                        CXX_CLANG_TIDY ${CMAKE_CXX_CLANG_TIDY}
-                        )
-endif()    
 
 if(WIN32)
     add_custom_command(TARGET ${THIS} POST_BUILD 
