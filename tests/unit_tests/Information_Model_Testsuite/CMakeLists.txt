@@ -19,9 +19,9 @@ target_link_libraries(${THIS} PUBLIC
 )
 
 if(CLANG_TIDY_EXE)
-  set_target_properties(
-    ${THIS} PROPERTIES
-    CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
+    set_target_properties(${THIS} PROPERTIES
+                                  CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}"
+    )
 endif()       
 
 add_test(
@@ -35,5 +35,6 @@ if(WIN32)
                             "${CMAKE_BINARY_DIR}/bin/"
                             $<TARGET_FILE_DIR:${THIS}> 
                         COMMENT "Copying shared library files from ${CMAKE_BINARY_DIR}/bin directory to ${CMAKE_CURRENT_BINARY_DIR} directory."
-                            VERBATIM)
+                            VERBATIM
+)
 endif()
