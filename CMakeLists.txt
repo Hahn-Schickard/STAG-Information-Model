@@ -56,7 +56,10 @@ include(dependencies)
 include_directories(${INCLUDES_DIR})
    
 add_subdirectory(sources)
-add_subdirectory(tests/unit_tests)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(tests/unit_tests)
+endif()
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "This module contains the modeling language for device abstractions created by various Technology Adapters")
 set(CPACK_PACKAGE_VENDOR "Hahn-Schickard")
@@ -68,8 +71,9 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_MAJOR_VER})
 set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_MINOR_VER})
 set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_PATCH_VER})
 set(CPACK_OUTPUT_FILE_PREFIX cpack_packages)
+set(THIS_PACKAGE_NAME "${PROJECT_NAME}-${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}-${CMAKE_SYSTEM_NAME}")
 set(PACKAGE_VERSION "${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}")
-
+	
 WRITE_PKG_CONFIG_IN_FILE(${PROJECT_NAME})
 
 include(CMakePackageConfigHelpers)
