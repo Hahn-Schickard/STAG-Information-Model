@@ -4,9 +4,9 @@ cmake_minimum_required(VERSION 3.6)
 set(THIS Information_Modeler)
 #@- ===================== END OF USER CONFIGURATION =========================
 
-set(CMAKE_VERBOSE_MAKEFILE on)
-set(CMAKE_POSITION_INDEPENDENT_CODE on)
-set(VERBOSE_FILE_INCLUSION on)
+set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(VERBOSE_FILE_INCLUSION ON)
 set(PROJECT_FLAGS C CXX)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
@@ -20,7 +20,7 @@ enable_testing()
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(FORCE_WINDOWS_LINTING OFF CACHE BOOL "Force linting with clang-tidy on Windows")
+set(ENABLE_STATIC_CODE_ANALYSIS ON CACHE BOOL "Activates static code analysis during the build")
 set(DEBIAN_PACKAGING OFF CACHE BOOL "Packages files in .deb format.")
 set(PACKAGE_MAJOR_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
 set(PACKAGE_MINOR_VER "0" CACHE STRING "Major version number of the release package. This option is overriden by CI/CD setup, however for local builds it is still valid")
@@ -28,6 +28,8 @@ set(PACKAGE_PATCH_VER "0" CACHE STRING "Major version number of the release pack
 set(THIS_PACKAGE_NAME "${PROJECT_NAME}-${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}-${CMAKE_SYSTEM_NAME}")
 set(CLANG_OUTPUT "${PROJECT_SOURCE_DIR}/clang-tidy-suggested-fixes.yml")
 set(INCLUDES_DIR "${PROJECT_SOURCE_DIR}/includes")
+set(SOURCES_DIR "${PROJECT_SOURCE_DIR}/sources")
+set(TESTS_DIR "${PROJECT_SOURCE_DIR}/tests/unit_tests")
 set(INCLUDES_DEST "include/")
 set(LIBS_DEST "lib/")
 set(BINS_DEST "bin/")
@@ -54,7 +56,10 @@ include(dependencies)
 include_directories(${INCLUDES_DIR})
    
 add_subdirectory(sources)
-add_subdirectory(tests/unit_tests)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(tests/unit_tests)
+endif()
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "This module contains the modeling language for device abstractions created by various Technology Adapters")
 set(CPACK_PACKAGE_VENDOR "Hahn-Schickard")
@@ -66,8 +71,9 @@ set(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_MAJOR_VER})
 set(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_MINOR_VER})
 set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_PATCH_VER})
 set(CPACK_OUTPUT_FILE_PREFIX cpack_packages)
+set(THIS_PACKAGE_NAME "${PROJECT_NAME}-${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}-${CMAKE_SYSTEM_NAME}")
 set(PACKAGE_VERSION "${PACKAGE_MAJOR_VER}.${PACKAGE_MINOR_VER}.${PACKAGE_PATCH_VER}")
-
+	
 WRITE_PKG_CONFIG_IN_FILE(${PROJECT_NAME})
 
 include(CMakePackageConfigHelpers)
