@@ -10,7 +10,9 @@ public:
   MockDevice(const std::string REF_ID, const std::string NAME,
              const std::string DESC)
       : Information_Model::Device(REF_ID, NAME, DESC) {}
-  MOCK_METHOD(Information_Model::DeviceElementGroup *, getDeviceElementGroup,
+  //MOCK_METHOD(Information_Model::DeviceElementGroup *, getDeviceElementGroup,  //bearbeitet
+  //            (), (override));
+  MOCK_METHOD(std::shared_ptr<Information_Model::DeviceElementGroup> , getDeviceElementGroup,
               (), (override));
 };
 
