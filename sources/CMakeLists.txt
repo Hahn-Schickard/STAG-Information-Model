@@ -12,7 +12,7 @@ add_library(${THIS} INTERFACE)
                          
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model>
-                           $<INSTALL_INTERFACE:${THIS_PACKAGE_NAME}/${INCLUDES_DEST}/Information_Model>
+                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Information_Model>
 )
 
 install(
