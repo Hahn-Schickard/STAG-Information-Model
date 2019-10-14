@@ -5,11 +5,11 @@ set (THIS Information_Model_Testsuite)
 file(GLOB Test_Suite "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 file(GLOB Test_Cases "${CMAKE_CURRENT_LIST_DIR}/*.hpp")
 
-list(APPEND ${THIS}_PUBLIC_INCLUDES_DIRS
-            ${PROJECT_SOURCE_DIR}/includes/Information_Model
+list(APPEND PUBLIC_INCLUDES_DIRS
+            ${INCLUDES_DIR}/Information_Model
 )
 
-INCLUDE_DIRS(${THIS}_PUBLIC_INCLUDES_DIRS)
+INCLUDE_DIRS_AND_FILES("${PUBLIC_INCLUDES_DIRS}" PUBLIC_INCLUDES)
 
 add_executable(${THIS} ${Test_Suite} ${Test_Cases} ${PUBLIC_INCLUDES})
 
@@ -36,5 +36,5 @@ if(WIN32)
                             $<TARGET_FILE_DIR:${THIS}> 
                         COMMENT "Copying shared library files from ${CMAKE_BINARY_DIR}/bin directory to ${CMAKE_CURRENT_BINARY_DIR} directory."
                             VERBATIM
-)
+    )
 endif()
