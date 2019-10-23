@@ -1,3 +1,5 @@
+image: alpine:latest
+
 variables: 
  GIT_SUBMODULE_STRATEGY: recursive
 
