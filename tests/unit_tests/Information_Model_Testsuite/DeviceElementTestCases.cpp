@@ -1,6 +1,3 @@
-#ifndef __DEVICEELEMENT_TEST_CASES_HPP
-#define __DEVICEELEMENT_TEST_CASES_HPP
-
 #include "gtest/gtest.h"
 
 #include "DeviceElement.hpp"
@@ -21,4 +18,3 @@ TEST(DeviceElementTest, DeviceElementTypeUndefIsCorrect) {
       << "expected: " << expectedResult << std::endl
       << "provided: " << testedElement << std::endl;
 }
-#endif //__DEVICEELEMENT_TEST_CASES_HPP
