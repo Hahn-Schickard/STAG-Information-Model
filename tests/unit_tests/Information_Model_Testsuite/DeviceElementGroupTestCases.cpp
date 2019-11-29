@@ -1,10 +1,7 @@
-#ifndef __DEVICEELEMENTGROUP_TEST_CASES_HPP
-#define __DEVICEELEMENTGROUP_TEST_CASES_HPP
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "DeviceElementGroupMock.hpp"
+#include "DeviceElementGroup_MOCK.hpp"
 
 
 using ::testing::AtLeast;
@@ -26,4 +23,3 @@ TEST(DeviceElemenGroupTest, CanGetNumericElementId) {
   EXPECT_CALL(mock_deviceelementgroup, getNumericElementId).Times(AtLeast(1));
   mock_deviceelementgroup.getNumericElementId();
 }
-#endif //__DEVICEELEMENTGROUP_TEST_CASES_HPP

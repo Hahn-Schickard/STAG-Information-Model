@@ -1,10 +1,7 @@
-#ifndef __DEVICE_TEST_CASES_HPP
-#define __DEVICE_TEST_CASES_HPP
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "DeviceMock.hpp"
+#include "Device_MOCK.hpp"
 
 
 using ::testing::AtLeast;
@@ -82,4 +79,3 @@ TEST(DeviceTest, CanGetDeviceElementGroup) {
   EXPECT_CALL(mock_device, getDeviceElementGroup).Times(AtLeast(1));
   mock_device.getDeviceElementGroup();
 }
-#endif //__DEVICE_TEST_CASES_HPP
