@@ -2,31 +2,26 @@ cmake_minimum_required(VERSION 3.6)
 
 set(THIS Information_Model_Interface)
 
-list(APPEND ${THIS}_PUBLIC_INCLUDES_DIRS
-            ${PROJECT_SOURCE_DIR}/includes/Information_Model
-            
+list(APPEND PUBLIC_INCLUDES_DIRS
+            ${INCLUDES_DIR}/Information_Model
 )
 
-INCLUDE_DIRS_AND_FILES(${THIS}_PUBLIC_INCLUDES_DIRS PUBLIC_INCLUDES)
-
-PRINT_MODULE_FILES(${THIS} "${sources_list}" "${PUBLIC_INCLUDES}")
+INCLUDE_DIRS_AND_FILES("${PUBLIC_INCLUDES_DIRS}" PUBLIC_INCLUDES)
 
 add_library(${THIS} INTERFACE)
                          
 target_include_directories(${THIS} INTERFACE
-                           $<INSTALL_INTERFACE:${INCLUDES_DEST}>
-                           $<INSTALL_INTERFACE:${LIBS_DEST}>)
-                          
-install(
-    TARGETS ${THIS} 
-    EXPORT ${PROJECT_NAME}
-    ARCHIVE DESTINATION ${LIBS_DEST}
-    LIBRARY DESTINATION ${LIBS_DEST}
-    COMPONENT libraries
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model>
+                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Information_Model>
 )
 
 install(
-    FILES ${includes_list}
-    DESTINATION ${INCLUDES_DEST}
-    COMPONENT headers
+    TARGETS ${THIS}
+    EXPORT ${PROJECT_NAME}Targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+    DIRECTORY ${PUBLIC_INCLUDES_DIRS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

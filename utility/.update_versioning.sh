@@ -18,6 +18,55 @@ MAJOR_VER="0"
 MINOR_VER="0"
 PATCH_VER="0"
 
+do_incrament(){
+    if [ "${MANUAL_TRIGER,,}" == "yes" ];
+    then 
+        manual_trigger_incrament
+    else 
+        automatic_trigger_incrament
+    fi
+    add_new_git_tag
+}
+
+automatic_trigger_incrament() {
+    check_commit_message
+    update_version_info
+}
+
+manual_trigger_incrament(){
+    if [ "${RELEASE_TYPE^^}" == "MAJOR" ];
+    then 
+        incrament_major_version
+    elif [ "${RELEASE_TYPE^^}" == "MINOR" ];
+    then
+        incrament_minor_version
+    elif [ "${RELEASE_TYPE^^}" == "PATCH" ];
+    then 
+        incrament_patch_version
+    else 
+        echo "Realease type is unknown. Please specify what is the release type MAJOR|MINOR|PATCH"
+        exit 1
+    fi
+}
+
+check_if_first_tag() {
+    git describe --abbrev=0
+    git_cmd_status=$?
+    
+    if [ $git_cmd_status -eq 128 ]; 
+    then 
+        echo "This commit is the first tag!"
+        LAST_MAJOR_VER="0"
+        LAST_MINOR_VER="0"
+        LAST_PATCH_VER="0"
+        do_incrament
+    else 
+        check_if_taged
+        get_previous_version_info
+        do_incrament
+    fi   
+}
+
 check_if_taged() {
     echo "running git describe get the tag and commit information"
     git describe --exact-match --abbrev=0
@@ -66,6 +115,8 @@ incrament_patch_version() {
 }
 
 check_commit_message() {
+    echo "Commit message: "
+    echo "${COMMIT_MESSAGE}"
     if [[ ${COMMIT_MESSAGE,,} == *${MAJOR_RELEASE_TYPE,,}* ]];
     then 
         echo "Incramenting Major version number"
@@ -111,29 +162,4 @@ add_new_git_tag() {
     exit 0
 }
 
-if [ "${MANUAL_TRIGER,,}" == "yes" ];
-then
-    check_if_taged
-    get_previous_version_info
-    if [ "${RELEASE_TYPE^^}" == "MAJOR" ];
-    then 
-        incrament_major_version
-    elif [ "${RELEASE_TYPE^^}" == "MINOR" ];
-    then
-        incrament_minor_version
-    elif [ "${RELEASE_TYPE^^}" == "PATCH" ];
-    then 
-        incrament_patch_version
-    else 
-        echo "Realease type is unknown. Please specify what is the release type MAJOR|MINOR|PATCH"
-        exit 1
-    fi
-    update_version_info
-    add_new_git_tag
-else
-    check_if_taged
-    get_previous_version_info
-    check_commit_message
-    update_version_info
-    add_new_git_tag
-fi
+check_if_first_tag

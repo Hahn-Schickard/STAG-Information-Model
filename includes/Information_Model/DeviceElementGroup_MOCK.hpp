@@ -12,7 +12,9 @@ public:
       : Information_Model::DeviceElementGroup(REF_ID, NAME, DESC) {}
   MOCK_METHOD(std::vector<std::shared_ptr<DeviceElement>>, getSubelements, (),
               (override));
-  MOCK_METHOD(Information_Model::DeviceElement *, getSubelement,
+  //MOCK_METHOD(Information_Model::DeviceElement *, getSubelement,  //bearbeitet
+  //            (const std::string REF_ID), (override));
+  MOCK_METHOD(std::shared_ptr<Information_Model::DeviceElement>, getSubelement,
               (const std::string REF_ID), (override));
   MOCK_METHOD(unsigned int, getNumericElementId, (), (override));
 };
