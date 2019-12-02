@@ -1,21 +1,30 @@
 #ifndef METRIC_HPP
 #define METRIC_HPP
 
-#include "DataType.hpp"
+#include "DataWrapper.hpp"
 #include "NamedElement.hpp"
+
 #include <string>
 
-namespace Information_Model
-{
+namespace Information_Model {
 
-    class Metric : public NamedElement {
-        protected:
-            Metric( const std::string REF_ID, const std::string NAME,
-                    const std::string DESC, Information_Model::DataType valueType): NamedElement(REF_ID, NAME, DESC) , value_type_(valueType) {}
-        private:
-            DataType value_type_;
-        public:
-        DataType getMetricValueType() { return value_type_; }
-    };
-} // namespace Information_Model
-#endif //METRIC_HPP
+  /**
+  * @brief A Readonly metric type
+  * 
+  * @attention This class should be built by Model_Factory::DeviceBuilder only!
+  * 
+  * @tparam T 
+  */
+  template<class T>
+  class Metric : public NamedElement {
+   protected:
+    Metric(const std::string REF_ID,
+        const std::string NAME,
+        const std::string DESC)
+        : NamedElement(REF_ID, NAME, DESC) {}
+
+   public:
+    DataWrapper<T> getMetricValue();
+  };
+}   // namespace Information_Model
+#endif   //METRIC_HPP
