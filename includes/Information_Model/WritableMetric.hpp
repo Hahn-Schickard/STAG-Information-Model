@@ -1,7 +1,7 @@
-#ifndef WRITEABLEMETRIC_HPP
-#define WRITEABLEMETRIC_HPP
+#ifndef __WRITEABLE_METRIC_HPP
+#define __WRITEABLE_METRIC_HPP
 
-#include "Metric.hpp"
+#include "ReadableMetric.hpp"
 
 namespace Information_Model {
   /**
@@ -14,15 +14,17 @@ namespace Information_Model {
   * @tparam T 
   */
   template<class T>
-  class WritableMetric : public Metric<T> {
+  class WritableMetric : public ReadableMetric<T> {
    protected:
     WritableMetric(const std::string REF_ID,
         const std::string NAME,
         const std::string DESC)
-        : Metric<T>(REF_ID, NAME, DESC) {}
+        : ReadableMetric<T>(REF_ID, NAME, DESC) {
+      Metric::setElementType(ElementType::Writable);
+    }
 
    public:
     void setMetricValue(DataWrapper<T> value);
   };
 }   // namespace Information_Model
-#endif   //WRITEABLEMETRIC_HPP
+#endif   //__WRITEABLE_METRIC_HPP

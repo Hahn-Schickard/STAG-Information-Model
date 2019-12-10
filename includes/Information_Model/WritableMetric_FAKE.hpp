@@ -3,26 +3,28 @@
 
 #include "WritableMetric.hpp"
 
+using namespace Information_Model;
+
 template<class T>
-class FakeWritableMetric : public Information_Model::WritableMetric<T> {
+class FakeWritableMetric : public WritableMetric<T> {
  public:
   FakeWritableMetric(const std::string REF_ID,
       const std::string NAME,
       const std::string DESC,
       T value)
-      : Information_Model::WritableMetric<T>(REF_ID, NAME, DESC)
-      , value_(Information_Model::DataWrapper<T>(value)) {}
+      : WritableMetric<T>(REF_ID, NAME, DESC)
+      , value_(DataWrapper<T>(value)) {}
 
-  void setMetricValue(Information_Model::DataWrapper<T> value) {
+  void setMetricValue(DataWrapper<T> value) {
     value_ = value;
   }
 
-  Information_Model::DataWrapper<T> getMetricValue() {
+  DataWrapper<T> getMetricValue() {
     return value_;
   }
 
  private:
-  Information_Model::DataWrapper<T> value_;
+  DataWrapper<T> value_;
 };
 
 #endif   //__WRITABLE_METRIC_FAKE_HPP_
