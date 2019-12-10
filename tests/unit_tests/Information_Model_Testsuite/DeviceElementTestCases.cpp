@@ -1,20 +1,20 @@
+#include "DeviceElement_FAKE.hpp"
+
 #include "gtest/gtest.h"
 
-#include "DeviceElement.hpp"
+using namespace Information_Model;
 
 TEST(DeviceElementTest, DeviceElementTypeUndefIsCorrect) {
-
   // Arrange
-  Information_Model::DeviceElement *element =
-      new Information_Model::DeviceElement(
-          "1234", "TestDevice", "A hardcoded deviceelement",
-          Information_Model::ElementType::Undefined);
+  DeviceElement* element = new FakeDeviceElement("1234",
+      "TestDevice",
+      "A hardcoded deviceelement",
+      ElementType::Undefined);
   // Act
-  Information_Model::ElementType testedElement = element->getElementType();
+  ElementType tested_element = element->getElementType();
   // Assert
-  Information_Model::ElementType expectedResult =
-      Information_Model::ElementType::Undefined;
-  EXPECT_EQ(expectedResult, testedElement)
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  ElementType expecte_result = ElementType::Undefined;
+  EXPECT_EQ(expecte_result, tested_element)
+      << "expected: " << expecte_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
