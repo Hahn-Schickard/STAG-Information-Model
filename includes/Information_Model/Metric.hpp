@@ -1,30 +1,47 @@
-#ifndef METRIC_HPP
-#define METRIC_HPP
+#ifndef __METRIC_HPP
+#define __METRIC_HPP
 
-#include "DataWrapper.hpp"
-#include "NamedElement.hpp"
+#include "DeviceElement.hpp"
 
-#include <string>
+#include <exception>
 
 namespace Information_Model {
+  typedef enum DataTypeEnum {
+    BOOLEAN,
+    BYTE,      // uint8_t
+    SHORT,     // int16_t
+    INTEGER,   // int32_t
+    LONG,      // int64_t
+    FLOAT,     // float
+    DOUBLE,    // double
+    STRING,    // std::string
+    UNKNOWN
+  } DataType;
 
-  /**
-  * @brief A Readonly metric type
-  * 
-  * @attention This class should be built by Model_Factory::DeviceBuilder only!
-  * 
-  * @tparam T 
-  */
-  template<class T>
-  class Metric : public NamedElement {
+  class Metric : public DeviceElement {
    protected:
     Metric(const std::string REF_ID,
         const std::string NAME,
-        const std::string DESC)
-        : NamedElement(REF_ID, NAME, DESC) {}
+        const std::string DESC,
+        ElementType type,
+        DataType data_type)
+        : DeviceElement(REF_ID, NAME, DESC, type)
+        , type_(data_type) {
+      if(type_ == DataType::UNKNOWN) {
+	throw std::runtime_error("Could not instantiaite metric " + REF_ID + ":"
+	                         + NAME
+	                         + ". Given data type is not supported!");
+      }
+    }
 
    public:
-    DataWrapper<T> getMetricValue();
+    DataType getDataType() {
+      return type_;
+    };
+
+   private:
+    DataType type_;
   };
 }   // namespace Information_Model
-#endif   //METRIC_HPP
+
+#endif   //__METRIC_HPP

@@ -3,22 +3,17 @@
 
 #include "Metric.hpp"
 
-template<class T>
-class FakeMetric : public Information_Model::Metric<T> {
- public:
-  FakeMetric(const std::string REF_ID,
-      const std::string NAME,
-      const std::string DESC,
-      T value)
-      : Information_Model::Metric<T>(REF_ID, NAME, DESC)
-      , value_(Information_Model::DataWrapper<T>(value)) {}
+namespace Information_Model {
 
-  Information_Model::DataWrapper<T> getMetricValue() {
-    return value_;
-  }
-
- private:
-  Information_Model::DataWrapper<T> value_;
-};
+  class FakeMetric : public Metric {
+   public:
+    FakeMetric(const std::string REF_ID,
+        const std::string NAME,
+        const std::string DESC,
+        ElementType type,
+        DataType data_type)
+        : Metric(REF_ID, NAME, DESC, type, data_type) {}
+  };
+}   // namespace Information_Model
 
 #endif   //__METRIC_FAKE_HPP_
