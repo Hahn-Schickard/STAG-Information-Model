@@ -17,9 +17,9 @@ namespace Information_Model {
  */
   class Device : public NamedElement {
    protected:
-    Device(const std::string REF_ID,
-        const std::string NAME,
-        const std::string DESC)
+    Device(const std::string& REF_ID,
+        const std::string& NAME,
+        const std::string& DESC)
         : NamedElement(REF_ID, NAME, DESC) {}
 
    public:

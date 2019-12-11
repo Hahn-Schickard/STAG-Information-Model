@@ -3,8 +3,9 @@
 #include "gtest/gtest.h"
 #include <string>
 
-using namespace Information_Model;
 using namespace std;
+using namespace Information_Model;
+using namespace Information_Model::testing;
 
 class ReadableIntegerTest : public ::testing::Test {
  protected:

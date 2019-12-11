@@ -16,11 +16,11 @@ namespace Information_Model {
   template<class T>
   class WritableMetric : public ReadableMetric<T> {
    protected:
-    WritableMetric(const std::string REF_ID,
-        const std::string NAME,
-        const std::string DESC)
+    WritableMetric(const std::string& REF_ID,
+        const std::string& NAME,
+        const std::string& DESC)
         : ReadableMetric<T>(REF_ID, NAME, DESC) {
-      Metric::setElementType(ElementType::Writable);
+      Metric::setElementType(ElementType::WRITABLE);
     }
 
    public:

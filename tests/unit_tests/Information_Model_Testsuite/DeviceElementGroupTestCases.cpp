@@ -3,7 +3,9 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using ::testing::AtLeast;
+using testing::AtLeast;
+using namespace Information_Model;
+using namespace Information_Model::testing;
 
 TEST(DeviceElemenGroupTest, CanGetSubelement) {
   MockDeviceElementGroup mock_device_element_group(

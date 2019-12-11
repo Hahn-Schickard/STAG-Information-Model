@@ -18,10 +18,10 @@ namespace Information_Model {
   template<class T>
   class ReadableMetric : public Metric {
    protected:
-    ReadableMetric(const std::string REF_ID,
-        const std::string NAME,
-        const std::string DESC)
-        : Metric(REF_ID, NAME, DESC, ElementType::Readable, getDataType()) {}
+    ReadableMetric(const std::string& REF_ID,
+        const std::string& NAME,
+        const std::string& DESC)
+        : Metric(REF_ID, NAME, DESC, ElementType::READABLE, getDataType()) {}
 
    public:
     DataWrapper<T> getMetricValue();

@@ -5,14 +5,19 @@
 
 namespace Information_Model {
 
-  enum ElementType {
-    Undefined,
-    Group,
-    Readable,
-    Observable,
-    Writable,
-    Function
-  };
+  /**
+   * @enum ElementTypeEnum
+   * @brief ElementType enumeration, specifying the abailable DeviceElement types
+   * 
+   */
+  typedef enum ElementTypeEnum {
+    UNDEFINED,  /*!< Fallback type */
+    GROUP,      /*!< Groupping element, aka list */
+    READABLE,   /*!< Metric with read access */
+    OBSERVABLE, /*!< Metric with observation access */
+    WRITABLE,   /*!< Metric with write access */
+    FUNCTION    /*!< Function elemenets */
+  } ElementType;
   /**
  * @brief This class is the base for all of the elements within the
  * Information_Model::Device.
@@ -22,15 +27,21 @@ namespace Information_Model {
  */
   class DeviceElement : public NamedElement {
    protected:
-    ElementType type_ = ElementType::Undefined;
+    ElementType type_ = ElementType::UNDEFINED;
 
-    DeviceElement(const std::string REF_ID,
-        const std::string NAME,
-        const std::string DESC,
+    DeviceElement(const std::string& REF_ID,
+        const std::string& NAME,
+        const std::string& DESC,
         ElementType type)
         : NamedElement(REF_ID, NAME, DESC)
         , type_(type) {}
 
+    /**
+     * @brief Set the Element Type object
+     * Only called from by children.
+     * 
+     * @param type 
+     */
     void setElementType(ElementType type) {
       type_ = type;
     }

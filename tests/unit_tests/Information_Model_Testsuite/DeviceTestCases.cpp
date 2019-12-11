@@ -3,72 +3,75 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using ::testing::AtLeast;
+using testing::AtLeast;
+using namespace std;
+using namespace Information_Model;
+using namespace Information_Model::testing;
 
 TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementRefId();
+  string tested_element = mock_device.getElementRefId();
   // Assert
-  std::string expected_result = "1234";
+  string expected_result = "1234";
   EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupIDIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementRefId();
+  string tested_element = mock_device.getElementRefId();
   // Assert
-  std::string expected_result = "1235:";
+  string expected_result = "1235:";
   EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupNameIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementName();
+  string tested_element = mock_device.getElementName();
   // Assert
-  std::string expected_result = "TestDevice";
+  string expected_result = "TestDevice";
   EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupNameIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementName();
+  string tested_element = mock_device.getElementName();
   // Assert
-  std::string expected_result = "TestDevice2";
+  string expected_result = "TestDevice2";
   EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupDescriptionIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementDescription();
+  string tested_element = mock_device.getElementDescription();
   // Assert
-  std::string expected_result = "A hardcoded deviceelement";
+  string expected_result = "A hardcoded deviceelement";
   EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, DeviceElementGroupDescriptionIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string tested_element = mock_device.getElementDescription();
+  string tested_element = mock_device.getElementDescription();
   // Assert
-  std::string expected_result = "A hardcoded deviceelement2.";
+  string expected_result = "A hardcoded deviceelement2.";
   EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
-      << "expected: " << expected_result << std::endl
-      << "provided: " << tested_element << std::endl;
+      << "expected: " << expected_result << endl
+      << "provided: " << tested_element << endl;
 }
 
 TEST(DeviceTest, CanGetDeviceElementGroup) {
