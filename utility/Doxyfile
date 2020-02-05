@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "HaSSL"
+PROJECT_NAME           = "Information Model Builder"
 PROJECT_NUMBER         =
-PROJECT_BRIEF          = "Hahn-Schickard Logging library for Cpp, a logging frontend for spd-log C++ library with filesystem managment capabilites."
+PROJECT_BRIEF          = "This module provides the Information Model Building API as well as implemntations of the classes defined within the Information Model."
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = docs/code_documentation
 CREATE_SUBDIRS         = YES

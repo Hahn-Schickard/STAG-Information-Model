@@ -1,6 +1,4 @@
-tests/googletest-src/
 build
-libs
 log
 .vscode/
 valgrind_results/
