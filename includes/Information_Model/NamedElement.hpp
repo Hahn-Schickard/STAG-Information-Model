@@ -34,7 +34,7 @@ protected:
 public:
   const std::string getElementName() { return name; }
   const std::string getElementDescription() { return desc; }
-  const std::string getElementRefId() { return refId; }
+  const std::string getElementId() { return refId; }
 
   virtual ~NamedElement() = default;
 };

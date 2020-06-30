@@ -25,7 +25,7 @@ class MetricTest : public ::testing::Test {
 //NOLINTNEXTLINE
 TEST_F(MetricTest, IntegerMetricHasCorrectID) {
   // Act
-  string testedElement = integer->getElementRefId();
+  string testedElement = integer->getElementId();
   // Assert
   string expectedResult = "12345";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())

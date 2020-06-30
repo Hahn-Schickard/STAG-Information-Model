@@ -9,7 +9,7 @@ using ::testing::AtLeast;
 TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementRefId();
+  std::string testedElement = mock_device.getElementId();
   // Assert
   std::string expectedResult = "1234";
   EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
@@ -20,7 +20,7 @@ TEST(DeviceTest, DeviceElementGroupIDIsCorrect) {
 TEST(DeviceTest, DeviceElementGroupIDIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementRefId();
+  std::string testedElement = mock_device.getElementId();
   // Assert
   std::string expectedResult = "1235:";
   EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
