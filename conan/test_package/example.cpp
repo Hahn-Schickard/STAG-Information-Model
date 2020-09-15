@@ -5,7 +5,8 @@
 using namespace std;
 
 int main() {
-  auto element = NamedElement("1", "element", "Dummy element");
+  auto element =
+      Information_Model::NamedElement("1", "element", "Dummy element");
   cout << "Element id: " << element.getElementRefId()
        << " with name: " << element.getElementName()
        << " described as: " << element.getElementDescription() << endl;
