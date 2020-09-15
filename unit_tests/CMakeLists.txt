@@ -1,14 +1,20 @@
 cmake_minimum_required(VERSION 3.6)
 
-set(THIS ${PROJECT_NAME}_Test_Suite)
+set(THIS Unit_Tests_Runner)
+
+file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
+
+find_package(GTest REQUIRED)
 
 add_executable(${THIS})
 target_sources(${THIS} PRIVATE 
                        "testRunner.cpp"
+                       ${Mock_Test_Suite}
 )
 
 target_link_libraries(${THIS} PUBLIC
-                              CONAN_PKG::gtest
+                              GTest::GTest
+                              Model
 )
 
 add_test(

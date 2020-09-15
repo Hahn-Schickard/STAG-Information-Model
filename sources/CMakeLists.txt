@@ -13,13 +13,18 @@ list(APPEND THIS_MOCK_INCLUDES_DIRS
 INCLUDE_DIRS_AND_FILES("${THIS_INCLUDES_DIRS}" THIS_INCLUDES)
 INCLUDE_DIRS_AND_FILES("${THIS_MOCK_INCLUDES_DIRS}" THIS_MOCK_INCLUDES)
 
+find_package(GTest REQUIRED)
+
 add_library(${THIS} INTERFACE)
+
+target_link_libraries(${THIS} INTERFACE 
+                              GTest::GTest
+)
 
 target_include_directories(${THIS} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}>
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/mocks>
                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/mocks>
 )
 
 target_compile_features(${THIS} INTERFACE cxx_std_17)
@@ -31,11 +36,11 @@ install(
 )
 
 install(
-    DIRECTORY ${THIS_MOCK_INCLUDES_DIRS}
+    FILES ${THIS_INCLUDES}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(
-    FILES ${THIS_INCLUDES}
-    TYPE INCLUDE 
+    FILES ${THIS_MOCK_INCLUDES}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

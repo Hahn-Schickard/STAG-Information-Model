@@ -1,7 +1,7 @@
 #ifndef __DATA_MODEL_METRIC_MOCK_HPP_
 #define __DATA_MODEL_METRIC_MOCK_HPP_
 
-#include "../Metric.hpp"
+#include "Metric.hpp"
 
 #include "gmock/gmock.h"
 

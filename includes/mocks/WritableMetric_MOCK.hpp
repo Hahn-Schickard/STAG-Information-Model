@@ -1,7 +1,7 @@
 #ifndef __DATA_MODEL_WRITABLE_METRIC_FAKE_HPP_
 #define __DATA_MODEL_WRITABLE_METRIC_FAKE_HPP_
 
-#include "../WritableMetric.hpp"
+#include "WritableMetric.hpp"
 
 #include "gmock/gmock.h"
 

@@ -1,7 +1,7 @@
 #ifndef _DATA_MODEL_FAKE_DEVICE_ELEMENT_HPP
 #define _DATA_MODEL_FAKE_DEVICE_ELEMENT_HPP
 
-#include "../DeviceElement.hpp"
+#include "DeviceElement.hpp"
 
 #include <string>
 

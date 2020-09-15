@@ -1,7 +1,7 @@
 #ifndef __DATA_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 #define __DATA_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 
-#include "../DeviceElementGroup.hpp"
+#include "DeviceElementGroup.hpp"
 
 #include "gmock/gmock.h"
 

@@ -1,7 +1,9 @@
 [requires]
-gtest/1.8.1@bincrafters/stable 
+gtest/1.10.0
 
 [generators]
-cmake
-cmake_find_package
 cmake_paths
+cmake_find_package
+
+[imports]
+., Find*.cmake -> ./

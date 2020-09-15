@@ -1,9 +1,9 @@
 #ifndef __DEVICE_MOCK_HPP
 #define __DEVICE_MOCK_HPP
 
-#include "../Device.hpp"
+#include "Device.hpp"
 
-#include "gmock/gmock.h"
+#include <gmock/gmock.h>
 
 namespace Information_Model {
 /**
@@ -22,8 +22,10 @@ public:
              const std::string &DESC)
       : Device(REF_ID, NAME, DESC) {}
 
-  MOCK_METHOD(std::shared_ptr<DeviceElementGroup>, getDeviceElementGroup, (),
-              (override));
+  MOCK_METHOD0(getDeviceElementGroup, std::shared_ptr<DeviceElementGroup>());
+
+  MOCK_METHOD1(getDeviceElement,
+               std::shared_ptr<DeviceElement>(const std::string &ref_id));
 };
 } // namespace testing
 } // namespace Information_Model
