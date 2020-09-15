@@ -1,19 +1,33 @@
-cmake_minimum_required(VERSION 3.6) 
+cmake_minimum_required(VERSION 3.12) 
 
-set(THIS Information_Model_Interface)
+set(THIS Model)
 
-list(APPEND PUBLIC_INCLUDES_DIRS
-            ${INCLUDES_DIR}/Information_Model
+list(APPEND THIS_INCLUDES_DIRS
+            ${INCLUDES_DIR}
 )
 
-INCLUDE_DIRS_AND_FILES("${PUBLIC_INCLUDES_DIRS}" PUBLIC_INCLUDES)
+list(APPEND THIS_MOCK_INCLUDES_DIRS
+            ${INCLUDES_DIR}/mocks
+)
+
+INCLUDE_DIRS_AND_FILES("${THIS_INCLUDES_DIRS}" THIS_INCLUDES)
+INCLUDE_DIRS_AND_FILES("${THIS_MOCK_INCLUDES_DIRS}" THIS_MOCK_INCLUDES)
+
+find_package(GTest REQUIRED)
 
 add_library(${THIS} INTERFACE)
-                         
-target_include_directories(${THIS} INTERFACE
-                           $<BUILD_INTERFACE:${INCLUDES_DIR}/Information_Model>
-                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Information_Model>
+
+target_link_libraries(${THIS} INTERFACE 
+                              GTest::GTest
 )
+
+target_include_directories(${THIS} INTERFACE
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}>
+                           $<BUILD_INTERFACE:${INCLUDES_DIR}/mocks>
+                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+target_compile_features(${THIS} INTERFACE cxx_std_17)
 
 install(
     TARGETS ${THIS}
@@ -22,6 +36,11 @@ install(
 )
 
 install(
-    DIRECTORY ${PUBLIC_INCLUDES_DIRS}
+    FILES ${THIS_INCLUDES}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+    FILES ${THIS_MOCK_INCLUDES}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

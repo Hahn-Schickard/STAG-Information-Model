@@ -10,3 +10,7 @@
 ## Description 
 
 This module contains the modelling language for Device abstractions, which are created by various Technology Adapters. It is used to decouple real devices from their Data Consumers.
+
+## Requirements
+* [Python 3.7](https://www.python.org/downloads/release/python-370/)
+* [conan](https://docs.conan.io/en/latest/installation.html)

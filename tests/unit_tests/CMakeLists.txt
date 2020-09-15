@@ -1,1 +1,0 @@
-add_subdirectory(Information_Model_Testsuite)
