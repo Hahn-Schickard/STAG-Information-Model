@@ -2,13 +2,15 @@
 ### Added
  - Changelog
  - Authors
- - License placeholder
+ - License 
+ - Notice
  - conanfile for conan package configurator
  - DataVariant type and data type pattern matcher consumer. 
  - Cpp CXX17 Standard requirement
  - conan package support
  - conan.cmake
- - Seperate _MOCK cmake target
+ - Seperate _MOCK definitions
+ - conan packaging and integration testing
 
 ### Changed
  - Various test cases
@@ -18,6 +20,11 @@
  - Gtest runner to use *.cc extention instead of *.cpp
  - Moved Mocks and Fakes into mocks subdirectory
  - Readme to show Python 3 and conan dependencies
+ - Updated gtest to 1.10
+ - Documentation style
+ - Contributing guide
+ - reworked utilities scripts into python
+ - Unit tests structure
 
 ### Removed
  - Downloading Gtest via Cmake module ExternalProjectAdd
