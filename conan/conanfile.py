@@ -8,14 +8,22 @@ class PackageConan(ConanFile):
     license = "Apache 2.0"
     topics = ("conan", "stag", "modelling")
     build_requires = "gtest/1.10.0"
-    requires = ""
     settings = "cppstd", "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
                "fPIC": [True, False]}
     default_options = {"shared": True,
                        "fPIC": True}
     default_user = "Hahn-Schickard"
-    exports_sources = "../*", "!../conan/*", "!../build/*", "!../.vscode/*", "!../.gitlab/*", "!../log/*",
+    exports_sources = [
+        "../*",
+        "!../conan/*",
+        "!../build/*",
+        "!../.vscode/*",
+        "!../.gitlab/*",
+        "!../log/*",
+        "!../utility/*",
+        "!../docs/*",
+    ]
     _cmake = None
 
     def set_name(self):
