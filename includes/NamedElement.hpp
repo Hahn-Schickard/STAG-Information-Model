@@ -13,7 +13,7 @@ protected:
 public:
   const std::string getElementName() const { return name_; }
   const std::string getElementDescription() const { return desc_; }
-  const std::string getElementRefId() const { return refID_; }
+  const std::string getElementId() const { return refID_; }
 
   virtual ~NamedElement() = default;
 
