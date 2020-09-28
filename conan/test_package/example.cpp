@@ -12,7 +12,7 @@ struct ElementImplementation : public Information_Model::NamedElement {
 
 int main() {
   auto element = ElementImplementation("1", "element", "Dummy element");
-  cout << "Element id: " << element.getElementRefId()
+  cout << "Element id: " << element.getElementId()
        << " with name: " << element.getElementName()
        << " described as: " << element.getElementDescription() << endl;
   exit(EXIT_SUCCESS);
