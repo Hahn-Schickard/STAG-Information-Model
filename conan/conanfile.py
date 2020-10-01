@@ -52,11 +52,6 @@ class PackageConan(ConanFile):
             self.build_folder, "build"))
         return self._cmake
 
-    def build(self):
-        cmake = self._configure_cmake()
-        cmake.build()
-        cmake.test()
-
     def package(self):
         cmake = self._configure_cmake()
         cmake.install()
@@ -65,11 +60,10 @@ class PackageConan(ConanFile):
         self.copy(pattern="NOTICE", dst="licenses", src=self._source_subfolder)
         self.copy(pattern="AUTHORS", dst="licenses",
                   src=self._source_subfolder)
-        shutil.move(os.path.join(self.build_folder, "build",
-                                 "sources"), os.path.join(self.package_folder, "bin"))
-        tools.rmdir(os.path.join(self.package_folder, "build"))
 
     def package_info(self):
         self.cpp_info.names["cmake_find_package"] = self.name
         self.cpp_info.names["cmake_find_package_multi"] = self.name
-        self.cpp_info.libs = tools.collect_libs(self)
+
+    def package_id(self):
+        self.info.header_only()

@@ -5,6 +5,9 @@
  - UNSIGNED_INTEGER type to DataTypeEnum
  - OPAQUE type to DataTypeEnum
 
+### Changed
+ - conan package type to header only
+
 ### Removed 
  - uint8_t type from DataVariant
  - uint16_t type from DataVariant
