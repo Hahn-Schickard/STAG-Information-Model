@@ -65,7 +65,7 @@ TEST_F(WritableMetricTests, canSetIntegerValue) {
   // Act
   EXPECT_CALL(*integer.get(), setMetricValue(::testing::_)).Times(AtLeast(1));
   // Assert
-  ASSERT_NO_THROW(integer->setMetricValue((DataVariant)10));
+  ASSERT_NO_THROW(integer->setMetricValue((int64_t)10));
 }
 
 TEST_F(WritableMetricTests, canGetIntegerType) {

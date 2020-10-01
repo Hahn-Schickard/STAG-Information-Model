@@ -1,3 +1,17 @@
+## [0.1.2] - 2020.10.01
+### Added
+ - std::vector<uint8_t> type to DataVariant
+ - uint64_t type to DataVariant
+ - UNSIGNED_INTEGER type to DataTypeEnum
+ - OPAQUE type to DataTypeEnum
+
+### Removed 
+ - uint8_t type from DataVariant
+ - uint16_t type from DataVariant
+ - uint32_t type from DataVariant
+ - float type from DataVariant
+ - Variant visitor
+
 ## [0.1.1] - 2020.09.28
 ### Added
  - Metric Test suite 
