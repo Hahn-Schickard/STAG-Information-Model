@@ -19,8 +19,9 @@ namespace testing {
  * @param cut_off
  * @return size_t
  */
-size_t countOccurrences(const std::string &input, const std::string &pattern,
-                        const std::string &cut_off) {
+inline size_t countOccurrences(const std::string &input,
+                               const std::string &pattern,
+                               const std::string &cut_off) {
   size_t count = 0;
   std::string buffer = input.substr(input.find(cut_off) + 1, input.size());
   if (!buffer.empty()) {
@@ -41,7 +42,7 @@ size_t countOccurrences(const std::string &input, const std::string &pattern,
  * @param ref_id
  * @return size_t
  */
-size_t getTreeLevel(const std::string &ref_id) {
+inline size_t getTreeLevel(const std::string &ref_id) {
   return countOccurrences(ref_id, ".", ":");
 }
 
@@ -54,8 +55,8 @@ size_t getTreeLevel(const std::string &ref_id) {
  * @param pattern
  * @return size_t
  */
-size_t findNthSubstring(const std::string &input, size_t occurence,
-                        const std::string &pattern) {
+inline size_t findNthSubstring(const std::string &input, size_t occurence,
+                               const std::string &pattern) {
   if (0 == occurence) {
     return std::string::npos;
   } else {
@@ -81,8 +82,8 @@ size_t findNthSubstring(const std::string &input, size_t occurence,
  * @param parent_level
  * @return std::string
  */
-std::string getNextElementID(const std::string &child_ref_id,
-                             size_t parent_level) {
+inline std::string getNextElementID(const std::string &child_ref_id,
+                                    size_t parent_level) {
   std::string tmp =
       child_ref_id.substr(0, findNthSubstring(child_ref_id, parent_level, "."));
   return tmp;
