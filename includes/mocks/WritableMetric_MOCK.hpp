@@ -1,6 +1,7 @@
-#ifndef __DATA_MODEL_WRITABLE_METRIC_FAKE_HPP_
-#define __DATA_MODEL_WRITABLE_METRIC_FAKE_HPP_
+#ifndef __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
+#define __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
 
+#include "Metric_MOCK.hpp"
 #include "WritableMetric.hpp"
 
 #include "gmock/gmock.h"
@@ -13,17 +14,17 @@ namespace testing {
  */
 class MockWritableMetric : public WritableMetric {
 public:
-  MockWritableMetric(const std::string &REF_ID, const std::string &NAME,
-                     const std::string &DESC, DataType data_type)
-      : WritableMetric(REF_ID, NAME, DESC), data_type_(data_type) {}
+  MockWritableMetric(const std::string &ref_id, const std::string &name,
+                     const std::string &desc)
+      : WritableMetric(ref_id, name, desc) {}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(void, setMetricValue, (DataVariant), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
-
-private:
-  DataType data_type_;
 };
+
+using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
 } // namespace testing
 } // namespace Information_Model
-#endif //__DATA_MODEL_WRITABLE_METRIC_FAKE_HPP_
+
+#endif //__INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_

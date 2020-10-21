@@ -13,8 +13,8 @@ class WritableMetricTests : public ::testing::Test {
 protected:
   // NOLINTNEXTLINE
   void SetUp() {
-    integer = make_shared<MockWritableMetric>(
-        "12345", "Mock Integer", "Just a Mock Integer", DataType::INTEGER);
+    integer = make_shared<MockWritableMetric>("12345", "Mock Integer",
+                                              "Just a Mock Integer");
   }
 
   shared_ptr<MockWritableMetric> integer;
@@ -26,7 +26,7 @@ TEST_F(WritableMetricTests, IntegerMetricHasCorrectID) {
   string testedElement = integer->getElementId();
   // Assert
   string expectedResult = "12345";
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
+  EXPECT_EQ(expectedResult, testedElement)
       << "expected: " << expectedResult << endl
       << "provided: " << testedElement << endl;
 }
@@ -37,7 +37,7 @@ TEST_F(WritableMetricTests, IntegerMetricHasCorrectName) {
   string testedElement = integer->getElementName();
   // Assert
   string expectedResult = "Mock Integer";
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
+  EXPECT_EQ(expectedResult, testedElement)
       << "expected: " << expectedResult << endl
       << "provided: " << testedElement << endl;
 }
@@ -47,7 +47,7 @@ TEST_F(WritableMetricTests, IntegerMetricHasCorrectDescription) {
   string testedElement = integer->getElementDescription();
   string expectedResult = "Just a Mock Integer";
 
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
+  EXPECT_EQ(expectedResult, testedElement)
       << "expected: " << expectedResult << endl
       << "provided: " << testedElement << endl;
 }

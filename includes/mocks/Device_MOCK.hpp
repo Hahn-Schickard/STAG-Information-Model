@@ -1,7 +1,8 @@
-#ifndef __DEVICE_MOCK_HPP
-#define __DEVICE_MOCK_HPP
+#ifndef __INFORMATION_MODEL_DEVICE_MOCK_HPP
+#define __INFORMATION_MODEL_DEVICE_MOCK_HPP
 
 #include "Device.hpp"
+#include "DeviceElementGroup_MOCK.hpp"
 
 #include <gmock/gmock.h>
 
@@ -17,16 +18,31 @@ namespace testing {
  *
  */
 class MockDevice : public Device {
+  MockDeviceElementGroupPtr base_group_;
+
 public:
-  MockDevice(const std::string &REF_ID, const std::string &NAME,
-             const std::string &DESC)
-      : Device(REF_ID, NAME, DESC) {}
+  MockDevice(const std::string &ref_id, const std::string &name,
+             const std::string &desc)
+      : Device(ref_id, name, desc),
+        base_group_(std::make_shared<MockDeviceElementGroup>(ref_id + ":", name,
+                                                             desc)) {
+    ON_CALL(*this, getDeviceElementGroup)
+        .WillByDefault(
+            [this]() -> DeviceElementGroupPtr { return base_group_; });
 
-  MOCK_METHOD0(getDeviceElementGroup, std::shared_ptr<DeviceElementGroup>());
+    ON_CALL(*this, getDeviceElement)
+        .WillByDefault([this](const std::string &ref_id) -> DeviceElementPtr {
+          return base_group_->getSubelement(ref_id);
+        });
+  }
 
-  MOCK_METHOD1(getDeviceElement,
-               std::shared_ptr<DeviceElement>(const std::string &ref_id));
+  MOCK_METHOD(DeviceElementGroupPtr, getDeviceElementGroup, (), (override));
+
+  MOCK_METHOD(DeviceElementPtr, getDeviceElement, (const std::string &ref_id),
+              (override));
 };
+
+using MockDevicePtr = std::shared_ptr<MockDevice>;
 } // namespace testing
 } // namespace Information_Model
-#endif //__DEVICE_MOCK_HPP
+#endif //__INFORMATION_MODEL_DEVICE_MOCK_HPP
