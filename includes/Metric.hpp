@@ -1,5 +1,5 @@
-#ifndef __DATA_MODEL_METRIC_HPP
-#define __DATA_MODEL_METRIC_HPP
+#ifndef __INFORMATION_MODEL_METRIC_HPP
+#define __INFORMATION_MODEL_METRIC_HPP
 
 #include "DataVariant.hpp"
 #include "DeviceElement.hpp"
@@ -9,14 +9,17 @@
 namespace Information_Model {
 class Metric : public DeviceElement {
 protected:
-  Metric(const std::string REF_ID, const std::string NAME,
-         const std::string DESC)
-      : DeviceElement(REF_ID, NAME, DESC, ElementType::READABLE) {}
+  Metric(const std::string &ref_id, const std::string &name,
+         const std::string &desc)
+      : DeviceElement(ref_id, name, desc, ElementType::READABLE) {}
 
 public:
   virtual DataVariant getMetricValue() = 0;
   virtual DataType getDataType() = 0;
   virtual ~Metric() = default;
 };
+
+using MetricPtr = std::shared_ptr<Metric>;
 } // namespace Information_Model
-#endif //__DATA_MODEL_METRIC_HPP
+
+#endif //__INFORMATION_MODEL_METRIC_HPP

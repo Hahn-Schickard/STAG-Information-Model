@@ -1,5 +1,5 @@
-#ifndef __DATA_MODEL_DEVICE_HPP
-#define __DATA_MODEL_DEVICE_HPP
+#ifndef __INFORMATION_MODEL_DEVICE_HPP
+#define __INFORMATION_MODEL_DEVICE_HPP
 
 #include "DeviceElement.hpp"
 #include "DeviceElementGroup.hpp"
@@ -11,16 +11,16 @@
 namespace Information_Model {
 class Device : public NamedElement {
 protected:
-  Device(const std::string REF_ID, const std::string NAME,
-         const std::string DESC)
-      : NamedElement(REF_ID, NAME, DESC) {}
+  Device(const std::string &ref_id, const std::string &name,
+         const std::string &desc)
+      : NamedElement(ref_id, name, desc) {}
 
 public:
-  virtual std::shared_ptr<DeviceElementGroup> getDeviceElementGroup() = 0;
-  virtual std::shared_ptr<DeviceElement>
-  getDeviceElement(const std::string &ref_id) = 0;
+  virtual DeviceElementGroupPtr getDeviceElementGroup() = 0;
+  virtual DeviceElementPtr getDeviceElement(const std::string &ref_id) = 0;
 };
 
+using DevicePtr = std::shared_ptr<Device>;
 } // namespace Information_Model
 
-#endif //__DATA_MODEL_DEVICE_HPP
+#endif //__INFORMATION_MODEL_DEVICE_HPP

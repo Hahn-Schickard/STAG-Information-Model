@@ -1,5 +1,5 @@
-#ifndef __DATA_MODEL_DEVICE_ELEMENT_HPP
-#define __DATA_MODEL_DEVICE_ELEMENT_HPP
+#ifndef __INFORMATION_MODEL_DEVICE_ELEMENT_HPP
+#define __INFORMATION_MODEL_DEVICE_ELEMENT_HPP
 
 #include "NamedElement.hpp"
 
@@ -22,18 +22,18 @@ typedef enum ElementTypeEnum {
 } ElementType;
 
 class DeviceElement : public NamedElement {
+  ElementType type_ = ElementType::UNDEFINED;
+
 public:
-  DeviceElement(const std::string REF_ID, const std::string NAME,
-                const std::string DESC, ElementType type)
-      : NamedElement(REF_ID, NAME, DESC), type_(type) {}
+  DeviceElement(const std::string &ref_id, const std::string &name,
+                const std::string &desc, ElementType type)
+      : NamedElement(ref_id, name, desc), type_(type) {}
 
   ElementType getElementType() { return type_; }
   virtual ~DeviceElement() = default;
-
-private:
-  ElementType type_ = ElementType::UNDEFINED;
 };
 
+using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 } // namespace Information_Model
 
-#endif //__DATA_MODEL_DEVICE_ELEMENT_HPP
+#endif //__INFORMATION_MODEL_DEVICE_ELEMENT_HPP

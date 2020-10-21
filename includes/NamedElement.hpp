@@ -1,28 +1,27 @@
-#ifndef __DATA_MODEL_NAMED_ELEMENT_HPP_
-#define __DATA_MODEL_NAMED_ELEMENT_HPP_
+#ifndef __INFORMATION_MODEL_NAMED_ELEMENT_HPP_
+#define __INFORMATION_MODEL_NAMED_ELEMENT_HPP_
 
+#include <memory>
 #include <string>
 
 namespace Information_Model {
 class NamedElement {
+  std::string name_;
+  std::string desc_;
+  std::string refID_;
+
 protected:
-  NamedElement(const std::string REF_ID, const std::string NAME,
-               const std::string DESC)
-      : name_(NAME), desc_(DESC), refID_(REF_ID) {}
+  NamedElement(const std::string &ref_id, const std::string &name,
+               const std::string &desc)
+      : name_(name), desc_(desc), refID_(ref_id) {}
 
 public:
   const std::string getElementName() const { return name_; }
   const std::string getElementDescription() const { return desc_; }
   const std::string getElementId() const { return refID_; }
-
-  virtual ~NamedElement() = default;
-
-private:
-  std::string name_;
-  std::string desc_;
-  std::string refID_;
 };
 
+using NamedElementPtr = std::shared_ptr<NamedElement>;
 } // namespace Information_Model
 
-#endif //__DATA_MODEL_NAMED_ELEMENT_HPP_
+#endif //__INFORMATION_MODEL_NAMED_ELEMENT_HPP_
