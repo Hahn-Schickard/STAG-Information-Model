@@ -7,6 +7,7 @@
 
 #include <gmock/gmock.h>
 #include <optional>
+#include <stdexcept>
 
 namespace Information_Model {
 namespace testing {
@@ -25,17 +26,17 @@ template <class T> T setCallback(std::optional<T> optional_value) {
  *
  */
 class DeviceMockBuilder : public DeviceBuilderInterface {
-  MockDevicePtr device;
+  MockDevicePtr device_;
 
 public:
   void buildDeviceBase(const std::string &unique_id, const std::string &name,
                        const std::string &desc) {
-    device = make_shared<MockDevice>(unique_id, name, desc);
+    device_ = std::make_shared<MockDevice>(unique_id, name, desc);
   }
 
   std::string addDeviceElementGroup(const std::string &name,
                                     const std::string &desc) {
-    return addDeviceElement(string(), name, desc, ElementType::GROUP,
+    return addDeviceElement(std::string(), name, desc, ElementType::GROUP,
                             DataType::UNKNOWN, std::nullopt, std::nullopt);
   }
 
@@ -49,7 +50,7 @@ public:
   std::string addReadableMetric(const std::string &name,
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb) {
-    return addDeviceElement(string(), name, desc, ElementType::READABLE,
+    return addDeviceElement(std::string(), name, desc, ElementType::READABLE,
                             data_type, move(read_cb), std::nullopt);
   }
 
@@ -57,14 +58,14 @@ public:
                                 const std::string &name,
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb) {
-    return addDeviceElement(group_ref_id, name, desc, ElementType::READABLE,
+    return addDeviceElement(group_refid, name, desc, ElementType::READABLE,
                             data_type, move(read_cb), std::nullopt);
   }
 
   std::string addWritableMetric(const std::string &name,
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb, WriteFunctor write_cb) {
-    return addDeviceElement(string(), name, desc, ElementType::WRITABLE,
+    return addDeviceElement(std::string(), name, desc, ElementType::WRITABLE,
                             data_type, move(read_cb), move(write_cb));
   }
 
@@ -72,17 +73,21 @@ public:
                                 const std::string &name,
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb, WriteFunctor write_cb) {
-    return addDeviceElement(group_ref_id, name, desc, ElementType::WRITABLE,
+    return addDeviceElement(group_refid, name, desc, ElementType::WRITABLE,
                             data_type, move(read_cb), move(write_cb));
   }
 
-  MockDeviceElementGroupPtr getGroupImplementation(const string &ref_id) {
-    if (ref_id.empty()) {
-      return static_pointer_cast<MockDeviceElementGroup>(
-          device_->getDeviceElementGroup());
+  MockDeviceElementGroupPtr getGroupImplementation(const std::string &ref_id) {
+    if (device_) {
+      if (ref_id.empty()) {
+        return std::static_pointer_cast<MockDeviceElementGroup>(
+            device_->getDeviceElementGroup());
+      } else {
+        return std::static_pointer_cast<MockDeviceElementGroup>(
+            device_->getDeviceElementGroup()->getSubelement(ref_id));
+      }
     } else {
-      return static_pointer_cast<MockDeviceElementGroup>(
-          device_->getDeviceElementGroup()->getSubelement(ref_id));
+      throw std::runtime_error("Device base was not built!");
     }
   }
 
@@ -118,7 +123,13 @@ public:
     return ref_id;
   }
 
-  DevicePtr getResult() { return device; }
+  DevicePtr getResult() {
+    if (device_) {
+      return move(device_);
+    } else {
+      throw std::runtime_error("Device base was not built!");
+    }
+  }
 };
 } // namespace testing
 } // namespace Information_Model
