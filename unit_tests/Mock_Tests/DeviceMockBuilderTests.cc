@@ -9,21 +9,31 @@ using namespace std;
 using namespace Information_Model;
 using namespace Information_Model::testing;
 
-class DeviceMockBuilderTests : public ::testing::Test {
-protected:
-  // NOLINTNEXTLINE
-  void SetUp() { builder = make_shared<DeviceMockBuilder>(); }
+TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
+  auto builder = make_shared<DeviceMockBuilder>();
 
-  shared_ptr<DeviceMockBuilder> builder;
-};
-
-TEST_F(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
-  EXPECT_THROW(builder->addDeviceElementGroup("1234", "Mocky", "Mocked devie"),
+  EXPECT_THROW(builder->addDeviceElementGroup("1234", "Mocky", "Mocked device"),
                runtime_error);
+  DevicePtr result;
+  EXPECT_THROW(result = builder->getResult(), runtime_error);
+  result.reset();
 }
 
-TEST_F(DeviceMockBuilderTests, canAddGroup) {
-  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked devie"));
+TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnOverridingBuild) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+  EXPECT_THROW(builder->buildDeviceBase("4321", "Schmuck", "Overriding device"),
+               runtime_error);
+  DevicePtr result;
+  EXPECT_NO_THROW(result = builder->getResult());
+  result.reset();
+}
+
+TEST(DeviceMockBuilderTests, canAddGroup) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
   string ref_id;
   string group_name = "Group 1";
@@ -39,7 +49,7 @@ TEST_F(DeviceMockBuilderTests, canAddGroup) {
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234:", base_group->getElementId());
   EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked devie", base_group->getElementDescription());
+  EXPECT_EQ("Mocked device", base_group->getElementDescription());
   EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
 
   auto group_element = base_group->getSubelement(ref_id);
@@ -51,8 +61,10 @@ TEST_F(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-TEST_F(DeviceMockBuilderTests, canAddSubGroup) {
-  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked devie"));
+TEST(DeviceMockBuilderTests, canAddSubGroup) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
   string ref_id;
   string subgroup_ref_id;
@@ -72,7 +84,7 @@ TEST_F(DeviceMockBuilderTests, canAddSubGroup) {
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234:", base_group->getElementId());
   EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked devie", base_group->getElementDescription());
+  EXPECT_EQ("Mocked device", base_group->getElementDescription());
   EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
 
   auto group_element = base_group->getSubelement(subgroup_ref_id);
@@ -84,8 +96,10 @@ TEST_F(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-TEST_F(DeviceMockBuilderTests, canAddMetric) {
-  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked devie"));
+TEST(DeviceMockBuilderTests, canAddMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
   string ref_id;
   string element_name = "Metric";
@@ -101,7 +115,7 @@ TEST_F(DeviceMockBuilderTests, canAddMetric) {
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234:", base_group->getElementId());
   EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked devie", base_group->getElementDescription());
+  EXPECT_EQ("Mocked device", base_group->getElementDescription());
   EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
 
   auto element = base_group->getSubelement(ref_id);
@@ -121,8 +135,10 @@ TEST_F(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-TEST_F(DeviceMockBuilderTests, canAddWritableMetric) {
-  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked devie"));
+TEST(DeviceMockBuilderTests, canAddWritableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
   string ref_id;
   string element_name = "Writable Metric";
@@ -138,7 +154,7 @@ TEST_F(DeviceMockBuilderTests, canAddWritableMetric) {
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234:", base_group->getElementId());
   EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked devie", base_group->getElementDescription());
+  EXPECT_EQ("Mocked device", base_group->getElementDescription());
   EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
 
   auto element = base_group->getSubelement(ref_id);
