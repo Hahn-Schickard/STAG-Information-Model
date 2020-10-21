@@ -31,7 +31,13 @@ class DeviceMockBuilder : public DeviceBuilderInterface {
 public:
   void buildDeviceBase(const std::string &unique_id, const std::string &name,
                        const std::string &desc) {
-    device_ = std::make_shared<MockDevice>(unique_id, name, desc);
+    if (!device_) {
+      device_ = std::make_shared<MockDevice>(unique_id, name, desc);
+    } else {
+      throw std::runtime_error(
+          "A device is already beeing built! Call "
+          "DeviceMockBuilder::getResult() before starting to build a new one!");
+    }
   }
 
   std::string addDeviceElementGroup(const std::string &name,
@@ -125,7 +131,7 @@ public:
 
   DevicePtr getResult() {
     if (device_) {
-      return move(device_);
+      return std::move(device_);
     } else {
       throw std::runtime_error("Device base was not built!");
     }
