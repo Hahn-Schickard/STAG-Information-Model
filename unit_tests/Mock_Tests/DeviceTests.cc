@@ -80,9 +80,3 @@ TEST(DeviceTests, canGetDeviceElementGroup) {
   EXPECT_CALL(mock_device, getDeviceElementGroup).Times(AtLeast(1));
   mock_device.getDeviceElementGroup();
 }
-
-TEST(DeviceTestss, canCallgetDeviceElementGroup) {
-  MockDevice test_device("1234", "Test Device", "Lorem Ipsum");
-  EXPECT_CALL(test_device, getDeviceElementGroup).Times(AtLeast(1));
-  test_device.getDeviceElementGroup();
-}
