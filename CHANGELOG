@@ -1,3 +1,26 @@
+## [0.1.3] - 2020.10.21
+### Added 
+ - DeviceBuilderInterface from Technology_Adapter_Interface
+ - DeviceBuilderInterface_MOCK 
+ - DevoceMockBuilder
+ - NamedElementPtr alias
+ - DeviceElementPtr alias
+ - DeviceElementGroupPtr alias
+ - DeviceElements internal class alias
+ - MetricPtr alias
+ - WritableMetricPtr alias
+ - DevicePtr alias
+ - New mocking documentation
+ - main.md
+ - DeviceMockBuilderTests
+
+### Changed 
+ - Header formating, to better fit project standard 
+
+### Removed
+ - DeviceElement_FAKE
+ - Duplicate test in DeviceTests.cc
+
 ## [0.1.2] - 2020.10.01
 ### Added
  - std::vector<uint8_t> type to DataVariant
