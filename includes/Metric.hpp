@@ -7,6 +7,10 @@
 #include <string>
 
 namespace Information_Model {
+/**
+ * @brief Read only Metric of a given type.
+ *
+ */
 class Metric : public DeviceElement {
 protected:
   Metric(const std::string &ref_id, const std::string &name,

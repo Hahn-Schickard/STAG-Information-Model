@@ -7,6 +7,12 @@
 #include <string>
 
 namespace Information_Model {
+/**
+ * @brief A read and writable metric. If this metric does not support active
+ * value reading (Readalbe part), Information_Model::DataVariant will be set to
+ * default data type value (for example: bool = true, int = 0, string = "");
+ *
+ */
 class WritableMetric : public DeviceElement {
 protected:
   WritableMetric(const std::string &ref_id, const std::string &name,
