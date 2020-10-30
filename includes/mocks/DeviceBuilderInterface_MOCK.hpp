@@ -35,12 +35,13 @@ public:
               (override));
   MOCK_METHOD(std::string, addWritableMetric,
               (const std::string &name, const std::string &desc,
-               DataType data_type, ReadFunctor read_cb, WriteFunctor write_cb),
+               DataType data_type, std::optional<ReadFunctor> read_cb,
+               WriteFunctor write_cb),
               (override));
   MOCK_METHOD(std::string, addWritableMetric,
               (const std::string &group_refid, const std::string &name,
-               const std::string &desc, DataType data_type, ReadFunctor read_cb,
-               WriteFunctor write_cb),
+               const std::string &desc, DataType data_type,
+               std::optional<ReadFunctor> read_cb, WriteFunctor write_cb),
               (override));
   MOCK_METHOD(std::string, addDeviceElement,
               (const std::string &group_refid, const std::string &name,

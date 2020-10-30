@@ -70,7 +70,8 @@ public:
 
   std::string addWritableMetric(const std::string &name,
                                 const std::string &desc, DataType data_type,
-                                ReadFunctor read_cb, WriteFunctor write_cb) {
+                                std::optional<ReadFunctor> read_cb,
+                                WriteFunctor write_cb) {
     return addDeviceElement(std::string(), name, desc, ElementType::WRITABLE,
                             data_type, move(read_cb), move(write_cb));
   }
@@ -78,7 +79,8 @@ public:
   std::string addWritableMetric(const std::string &group_refid,
                                 const std::string &name,
                                 const std::string &desc, DataType data_type,
-                                ReadFunctor read_cb, WriteFunctor write_cb) {
+                                std::optional<ReadFunctor> read_cb,
+                                WriteFunctor write_cb) {
     return addDeviceElement(group_refid, name, desc, ElementType::WRITABLE,
                             data_type, move(read_cb), move(write_cb));
   }

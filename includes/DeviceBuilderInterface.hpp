@@ -97,7 +97,8 @@ public:
    */
   virtual std::string addWritableMetric(const std::string &name,
                                         const std::string &desc,
-                                        DataType data_type, ReadFunctor read_cb,
+                                        DataType data_type,
+                                        std::optional<ReadFunctor> read_cb,
                                         WriteFunctor write_cb) = 0;
 
   /**
@@ -115,7 +116,8 @@ public:
   virtual std::string addWritableMetric(const std::string &group_refid,
                                         const std::string &name,
                                         const std::string &desc,
-                                        DataType data_type, ReadFunctor read_cb,
+                                        DataType data_type,
+                                        std::optional<ReadFunctor> read_cb,
                                         WriteFunctor write_cb) = 0;
 
   /**
