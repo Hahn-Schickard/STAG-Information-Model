@@ -21,6 +21,26 @@ enum class DataType {
   UNKNOWN           /*!< fallback type */
 };
 
+static inline std::string toString(DataType type) {
+  switch (type) {
+  case DataType::BOOLEAN:
+    return "Boolean";
+  case DataType::INTEGER:
+    return "Signed Integer";
+  case DataType::UNSIGNED_INTEGER:
+    return "Unsigned Integer";
+  case DataType::DOUBLE:
+    return "Double floating point";
+  case DataType::OPAQUE:
+    return "Opaque byte array";
+  case DataType::STRING:
+    return "String";
+  case DataType::UNKNOWN:
+  default:
+    return "Unknown";
+  }
+}
+
 using DataVariant = std::variant<bool, int64_t, uint64_t, double,
                                  std::vector<uint8_t>, std::string>;
 } // namespace Information_Model
