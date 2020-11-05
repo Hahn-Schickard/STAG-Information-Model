@@ -2,6 +2,7 @@
 ### Added 
  - POSIX time data type
  - DateTime test case 
+ - missing virtual destrocturs
 
 ### Changed 
  - Metric Unit Test suit to Parametrized tests with full Data Type coverage
