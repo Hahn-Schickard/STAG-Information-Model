@@ -20,6 +20,7 @@ protected:
 public:
   virtual DataVariant getMetricValue() = 0;
   virtual DataType getDataType() = 0;
+
   virtual ~Metric() = default;
 };
 
