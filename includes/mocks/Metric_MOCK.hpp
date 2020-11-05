@@ -12,10 +12,27 @@ namespace testing {
  *
  */
 class MockMetric : public Metric {
+  DataType type_;
+  DataVariant value_;
+
 public:
   MockMetric(const std::string &ref_id, const std::string &name,
              const std::string &desc)
-      : Metric(ref_id, name, desc) {}
+      : Metric(ref_id, name, desc), type_(DataType::UNKNOWN),
+        value_(DataVariant((bool)false)) {}
+
+  MockMetric(const std::string &ref_id, const std::string &name,
+             const std::string &desc, DataType type, const DataVariant &value)
+      : Metric(ref_id, name, desc), type_(type), value_(DataVariant(value)) {
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      return value_;
+    });
+    ON_CALL(*this, getDataType).WillByDefault([this]() -> DataType {
+      return type_;
+    });
+  }
+
+   ~MockMetric(){}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
