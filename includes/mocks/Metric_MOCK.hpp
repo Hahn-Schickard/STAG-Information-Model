@@ -8,7 +8,7 @@
 namespace Information_Model {
 namespace testing {
 /**
- * @brief Metric fake implementation. Use only for testing!
+ * @brief Metric mock implementation. Use only for testing!
  *
  */
 class MockMetric : public Metric {
