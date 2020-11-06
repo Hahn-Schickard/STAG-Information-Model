@@ -23,16 +23,14 @@ public:
 
   MockMetric(const std::string &ref_id, const std::string &name,
              const std::string &desc, DataType type, const DataVariant &value)
-      : Metric(ref_id, name, desc), type_(type), value_(DataVariant(value)) {
-    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      return value_;
-    });
-    ON_CALL(*this, getDataType).WillByDefault([this]() -> DataType {
-      return type_;
-    });
+      : Metric(ref_id, name, desc), type_(type), value_(DataVariant(value)) {}
+
+  void delegateToFake() {
+    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
-   ~MockMetric(){}
+  ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
