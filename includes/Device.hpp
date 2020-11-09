@@ -18,6 +18,8 @@ protected:
 public:
   virtual DeviceElementGroupPtr getDeviceElementGroup() = 0;
   virtual DeviceElementPtr getDeviceElement(const std::string &ref_id) = 0;
+
+  virtual ~Device() = default;
 };
 
 using DevicePtr = std::shared_ptr<Device>;

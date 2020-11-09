@@ -1,11 +1,77 @@
 #ifndef __INFORMATION_MODEL_DATA_VARIANT_HPP_
 #define __INFORMATION_MODEL_DATA_VARIANT_HPP_
 
+#include <chrono>
 #include <string>
 #include <variant>
 #include <vector>
 
 namespace Information_Model {
+
+/**
+ * @brief POSIX time wrapper class with inbuilt comparators
+ *
+ */
+class DateTime {
+  std::time_t posix_time_;
+
+public:
+  /**
+   * @brief Sets this time point as current system time at the point of calling
+   *
+   */
+  DateTime() : posix_time_(std::time(nullptr)) {}
+
+  /**
+   * @brief Sets Specified time point
+   *
+   * @param time_point
+   */
+  DateTime(std::time_t time_point) : posix_time_(time_point) {}
+
+  /**
+   * @brief Converts POSIX time to huma nreadable format
+   *
+   * @return std::string
+   */
+  std::string toString() const {
+    return std::string(std::asctime(std::localtime(&posix_time_)));
+  }
+
+  /**
+   * @brief Returns the amount of seconds since POSIX time epoch
+   *
+   * @return std::time_t
+   */
+  std::time_t getValue() const { return posix_time_; }
+
+  friend bool operator==(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator!=(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator<(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator>(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator<=(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator>=(const DateTime &lhs, const DateTime &rhs);
+};
+
+inline bool operator==(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ == rhs.posix_time_);
+}
+inline bool operator!=(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ != rhs.posix_time_);
+}
+inline bool operator<(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ < rhs.posix_time_);
+}
+inline bool operator>(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ > rhs.posix_time_);
+}
+inline bool operator<=(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ <= rhs.posix_time_);
+}
+inline bool operator>=(const DateTime &lhs, const DateTime &rhs) {
+  return (lhs.posix_time_ >= rhs.posix_time_);
+}
+
 /**
  * @enum DataType
  * @brief DataType enumeration, specifying the supported data types
@@ -15,13 +81,14 @@ enum class DataType {
   BOOLEAN,          /*!< bool */
   INTEGER,          /*!< int64_t */
   UNSIGNED_INTEGER, /*!< uint64_t */
+  TIME,             /*!< Infromation_Model::DateTime */
   DOUBLE,           /*!< doable */
   OPAQUE,           /*!< std::vector<uint8_t> */
   STRING,           /*!< std::string */
   UNKNOWN           /*!< fallback type */
 };
 
-static inline std::string toString(DataType type) {
+inline std::string toString(DataType type) {
   switch (type) {
   case DataType::BOOLEAN:
     return "Boolean";
@@ -29,6 +96,8 @@ static inline std::string toString(DataType type) {
     return "Signed Integer";
   case DataType::UNSIGNED_INTEGER:
     return "Unsigned Integer";
+  case DataType::TIME:
+    return "Time";
   case DataType::DOUBLE:
     return "Double floating point";
   case DataType::OPAQUE:
@@ -41,7 +110,7 @@ static inline std::string toString(DataType type) {
   }
 }
 
-using DataVariant = std::variant<bool, int64_t, uint64_t, double,
+using DataVariant = std::variant<bool, int64_t, uint64_t, double, DateTime,
                                  std::vector<uint8_t>, std::string>;
 } // namespace Information_Model
 

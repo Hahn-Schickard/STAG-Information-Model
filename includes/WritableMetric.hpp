@@ -23,6 +23,8 @@ public:
   virtual DataVariant getMetricValue() = 0;
   virtual void setMetricValue(DataVariant value) = 0;
   virtual DataType getDataType() = 0;
+
+  virtual ~WritableMetric() = default;
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
