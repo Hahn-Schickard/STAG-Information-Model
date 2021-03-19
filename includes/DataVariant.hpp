@@ -1,7 +1,11 @@
 #ifndef __INFORMATION_MODEL_DATA_VARIANT_HPP_
 #define __INFORMATION_MODEL_DATA_VARIANT_HPP_
 
+#include "Variant_Visitor.hpp"
+
 #include <chrono>
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <variant>
@@ -134,6 +138,26 @@ inline DataVariant setVariant(DataType type) {
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
   }
+}
+
+inline std::string toString(DataVariant variant) {
+  std::string result;
+  match(variant, [&](bool value) { result = (value ? "true" : "false"); },
+        [&](int64_t value) { result = std::to_string(value); },
+        [&](uint64_t value) { result = std::to_string(value); },
+        [&](double value) { result = std::to_string(value); },
+        [&](DateTime value) { result = value.toString(); },
+        [&](std::vector<uint8_t> value) {
+          std::stringstream ss;
+          ss << std::hex << std::setfill('0');
+          for (auto byte : value) {
+            ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
+          }
+          result = ss.str();
+        },
+        [&](std::string value) { result = value; });
+
+  return result;
 }
 } // namespace Information_Model
 
