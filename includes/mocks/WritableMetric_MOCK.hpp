@@ -43,6 +43,11 @@ public:
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
+  void delegateToFake(std::function<DataVariant()> callback) {
+    ON_CALL(*this, getMetricValue).WillByDefault(callback);
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+  }
+
   void delegateToFake(std::function<DataVariant()> reader,
                       std::function<void(DataVariant)> writer) {
     ON_CALL(*this, getMetricValue).WillByDefault(reader);

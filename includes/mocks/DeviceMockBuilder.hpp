@@ -3,6 +3,7 @@
 
 #include "DeviceBuilderInterface.hpp"
 #include "DeviceElementGroup_MOCK.hpp"
+#include "DeviceMockType.hpp"
 #include "Device_MOCK.hpp"
 
 #include <gmock/gmock.h>
@@ -11,13 +12,6 @@
 
 namespace Information_Model {
 namespace testing {
-template <class T> T setCallback(std::optional<T> optional_value) {
-  if (optional_value.has_value()) {
-    return optional_value.value();
-  } else {
-    return T();
-  }
-}
 
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
@@ -29,10 +23,13 @@ class DeviceMockBuilder : public DeviceBuilderInterface {
   MockDevicePtr device_;
 
 public:
+  DeviceMockBuilder() = default;
+
   void buildDeviceBase(const std::string &unique_id, const std::string &name,
                        const std::string &desc) {
     if (!device_) {
-      device_ = std::make_shared<MockDevice>(unique_id, name, desc);
+      device_ = std::make_shared<::testing::NiceMock<MockDevice>>(unique_id,
+                                                                  name, desc);
     } else {
       throw std::runtime_error(
           "A device is already beeing built! Call "
@@ -54,10 +51,16 @@ public:
   }
 
   std::string addReadableMetric(const std::string &name,
+                                const std::string &desc, DataType data_type) {
+    return addDeviceElement(std::string(), name, desc, ElementType::READABLE,
+                            data_type, std::nullopt, std::nullopt);
+  }
+
+  std::string addReadableMetric(const std::string &name,
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb) {
     return addDeviceElement(std::string(), name, desc, ElementType::READABLE,
-                            data_type, move(read_cb), std::nullopt);
+                            data_type, read_cb, std::nullopt);
   }
 
   std::string addReadableMetric(const std::string &group_refid,
@@ -65,7 +68,20 @@ public:
                                 const std::string &desc, DataType data_type,
                                 ReadFunctor read_cb) {
     return addDeviceElement(group_refid, name, desc, ElementType::READABLE,
-                            data_type, move(read_cb), std::nullopt);
+                            data_type, read_cb, std::nullopt);
+  }
+
+  std::string addReadableMetric(const std::string &group_refid,
+                                const std::string &name,
+                                const std::string &desc, DataType data_type) {
+    return addDeviceElement(group_refid, name, desc, ElementType::READABLE,
+                            data_type, std::nullopt, std::nullopt);
+  }
+
+  std::string addWritableMetric(const std::string &name,
+                                const std::string &desc, DataType data_type) {
+    return addDeviceElement(std::string(), name, desc, ElementType::WRITABLE,
+                            data_type, std::nullopt, std::nullopt);
   }
 
   std::string addWritableMetric(const std::string &name,
@@ -73,7 +89,14 @@ public:
                                 std::optional<ReadFunctor> read_cb,
                                 WriteFunctor write_cb) {
     return addDeviceElement(std::string(), name, desc, ElementType::WRITABLE,
-                            data_type, move(read_cb), move(write_cb));
+                            data_type, read_cb, write_cb);
+  }
+
+  std::string addWritableMetric(const std::string &group_refid,
+                                const std::string &name,
+                                const std::string &desc, DataType data_type) {
+    return addDeviceElement(group_refid, name, desc, ElementType::WRITABLE,
+                            data_type, std::nullopt, std::nullopt);
   }
 
   std::string addWritableMetric(const std::string &group_refid,
@@ -82,7 +105,7 @@ public:
                                 std::optional<ReadFunctor> read_cb,
                                 WriteFunctor write_cb) {
     return addDeviceElement(group_refid, name, desc, ElementType::WRITABLE,
-                            data_type, move(read_cb), move(write_cb));
+                            data_type, read_cb, write_cb);
   }
 
   MockDeviceElementGroupPtr getGroupImplementation(const std::string &ref_id) {
@@ -115,14 +138,12 @@ public:
     };
     case ElementType::OBSERVABLE:
     case ElementType::WRITABLE: {
-      ref_id = group->addWritableMetric(name, desc, data_type,
-                                        setCallback<ReadFunctor>(read_cb),
-                                        setCallback<WriteFunctor>(write_cb));
+      ref_id =
+          group->addWritableMetric(name, desc, data_type, read_cb, write_cb);
       break;
     }
     case ElementType::READABLE: {
-      ref_id = group->addReadableMetric(name, desc, data_type,
-                                        setCallback<ReadFunctor>(read_cb));
+      ref_id = group->addReadableMetric(name, desc, data_type, read_cb);
       break;
     }
     case ElementType::FUNCTION:
