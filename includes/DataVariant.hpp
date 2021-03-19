@@ -114,7 +114,7 @@ inline std::string toString(DataType type) {
 using DataVariant = std::variant<bool, int64_t, uint64_t, double, DateTime,
                                  std::vector<uint8_t>, std::string>;
 
-DataVariant setVariant(DataType type) {
+inline DataVariant setVariant(DataType type) {
   switch (type) {
   case DataType::BOOLEAN:
     return DataVariant((bool)false);
