@@ -20,6 +20,12 @@ include(conan_install)
 include(compiler_settings)
 execute_conan_install()
 
+#@+ ======================== User PACKAGES configuration ===========================
+list(APPEND DEPENDENCIES_LIST 
+            Variant_Visitor
+)
+#@- ========================= END OF USER CONFIGURATION ============================
+
 FIND_INSTALLED_DEPENDENCIES("${DEPENDENCIES_LIST}")
 
 add_subdirectory(sources)
