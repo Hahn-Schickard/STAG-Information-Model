@@ -191,7 +191,10 @@ public:
         ref_id, name, desc, data_type);
     if (read_cb.has_value()) {
       metric->delegateToFake(read_cb.value());
+    } else {
+      metric->delegateToFake();
     }
+
     std::pair<std::string, DeviceElementPtr> element_pair(ref_id, move(metric));
 
     elements_map_.insert(element_pair);
@@ -224,6 +227,8 @@ public:
       } else {
         metric->delegateToFake(read_cb.value());
       }
+    } else {
+      metric->delegateToFake();
     }
 
     std::pair<std::string, DeviceElementPtr> element_pair(ref_id, move(metric));
