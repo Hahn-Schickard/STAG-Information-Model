@@ -16,17 +16,27 @@ class MockMetric : public Metric {
   DataVariant value_;
 
 public:
+  MockMetric() = delete;
   MockMetric(const std::string &ref_id, const std::string &name,
              const std::string &desc)
       : Metric(ref_id, name, desc), type_(DataType::UNKNOWN),
         value_(DataVariant((bool)false)) {}
 
   MockMetric(const std::string &ref_id, const std::string &name,
-             const std::string &desc, DataType type, const DataVariant &value)
-      : Metric(ref_id, name, desc), type_(type), value_(DataVariant(value)) {}
+             const std::string &desc, DataType type)
+      : Metric(ref_id, name, desc), type_(type), value_(setVariant(type_)) {}
+
+  MockMetric(const std::string &ref_id, const std::string &name,
+             const std::string &desc, DataType type, const DataVariant &variant)
+      : Metric(ref_id, name, desc), type_(type), value_(variant) {}
 
   void delegateToFake() {
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+  }
+
+  void delegateToFake(std::function<DataVariant()> callback) {
+    ON_CALL(*this, getMetricValue()).WillByDefault(callback);
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
