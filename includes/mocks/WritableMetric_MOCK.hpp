@@ -1,8 +1,8 @@
 #ifndef __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
 #define __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
 
+#include "../WritableMetric.hpp"
 #include "Metric_MOCK.hpp"
-#include "WritableMetric.hpp"
 
 #include "gmock/gmock.h"
 

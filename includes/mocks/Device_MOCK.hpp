@@ -1,9 +1,8 @@
 #ifndef __INFORMATION_MODEL_DEVICE_MOCK_HPP
 #define __INFORMATION_MODEL_DEVICE_MOCK_HPP
 
-#include "Device.hpp"
+#include "../Device.hpp"
 #include "DeviceElementGroup_MOCK.hpp"
-#include "DeviceMockType.hpp"
 
 #include <gmock/gmock.h>
 
