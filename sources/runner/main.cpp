@@ -1,7 +1,7 @@
-#include "Information_Model/mocks/DeviceMockBuilder.hpp"
+#include "DeviceMockBuilder.hpp"
 
-#include "Information_Model/Metric.hpp"
-#include "Information_Model/WritableMetric.hpp"
+#include "Metric.hpp"
+#include "WritableMetric.hpp"
 
 #include <iostream>
 

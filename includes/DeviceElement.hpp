@@ -21,10 +21,33 @@ typedef enum ElementTypeEnum {
   FUNCTION    /*!< Function elemenets */
 } ElementType;
 
+inline std::string toString(ElementType type) {
+  switch (type) {
+  case ElementType::GROUP: {
+    return "Group";
+  }
+  case ElementType::READABLE: {
+    return "Readable";
+  }
+  case ElementType::WRITABLE: {
+    return "Writable";
+  }
+  case ElementType::OBSERVABLE: {
+    return "Observable";
+  }
+  case ElementType::FUNCTION: {
+    return "Function";
+  }
+  case ElementType::UNDEFINED:
+  default: { return "UNDEFINED"; }
+  }
+}
+
 class DeviceElement : public NamedElement {
   ElementType type_ = ElementType::UNDEFINED;
 
 public:
+  DeviceElement() = default;
   DeviceElement(const std::string &ref_id, const std::string &name,
                 const std::string &desc, ElementType type)
       : NamedElement(ref_id, name, desc), type_(type) {}

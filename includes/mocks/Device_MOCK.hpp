@@ -1,7 +1,7 @@
 #ifndef __INFORMATION_MODEL_DEVICE_MOCK_HPP
 #define __INFORMATION_MODEL_DEVICE_MOCK_HPP
 
-#include "Device.hpp"
+#include "../Device.hpp"
 #include "DeviceElementGroup_MOCK.hpp"
 
 #include <gmock/gmock.h>
@@ -18,14 +18,15 @@ namespace testing {
  *
  */
 class MockDevice : public Device {
-  MockDeviceElementGroupPtr base_group_;
+  ::testing::NiceMock<MockDeviceElementGroupPtr> base_group_;
 
 public:
   MockDevice(const std::string &ref_id, const std::string &name,
              const std::string &desc)
       : Device(ref_id, name, desc),
-        base_group_(std::make_shared<MockDeviceElementGroup>(ref_id + ":", name,
-                                                             desc)) {
+        base_group_(
+            std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(
+                ref_id + ":", name, desc)) {
     ON_CALL(*this, getDeviceElementGroup)
         .WillByDefault(
             [this]() -> DeviceElementGroupPtr { return base_group_; });

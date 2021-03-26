@@ -1,7 +1,7 @@
 #ifndef __INFORMATION_MODEL_DEVICE_BUILDER_MOCK_HPP
 #define __INFORMATION_MODEL_DEVICE_BUILDER_MOCK_HPP
 
-#include "DeviceBuilderInterface.hpp"
+#include "../DeviceBuilderInterface.hpp"
 
 #include <gmock/gmock.h>
 

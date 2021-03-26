@@ -1,7 +1,12 @@
 #ifndef __INFORMATION_MODEL_DATA_VARIANT_HPP_
 #define __INFORMATION_MODEL_DATA_VARIANT_HPP_
 
+#include "Variant_Visitor.hpp"
+
 #include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <variant>
 #include <vector>
@@ -81,8 +86,8 @@ enum class DataType {
   BOOLEAN,          /*!< bool */
   INTEGER,          /*!< int64_t */
   UNSIGNED_INTEGER, /*!< uint64_t */
+  DOUBLE,           /*!< double */
   TIME,             /*!< Infromation_Model::DateTime */
-  DOUBLE,           /*!< doable */
   OPAQUE,           /*!< std::vector<uint8_t> */
   STRING,           /*!< std::string */
   UNKNOWN           /*!< fallback type */
@@ -96,10 +101,10 @@ inline std::string toString(DataType type) {
     return "Signed Integer";
   case DataType::UNSIGNED_INTEGER:
     return "Unsigned Integer";
-  case DataType::TIME:
-    return "Time";
   case DataType::DOUBLE:
     return "Double floating point";
+  case DataType::TIME:
+    return "Time";
   case DataType::OPAQUE:
     return "Opaque byte array";
   case DataType::STRING:
@@ -112,6 +117,48 @@ inline std::string toString(DataType type) {
 
 using DataVariant = std::variant<bool, int64_t, uint64_t, double, DateTime,
                                  std::vector<uint8_t>, std::string>;
+
+inline DataVariant setVariant(DataType type) {
+  switch (type) {
+  case DataType::BOOLEAN:
+    return DataVariant((bool)false);
+  case DataType::INTEGER:
+    return DataVariant((int64_t)0);
+  case DataType::UNSIGNED_INTEGER:
+    return DataVariant((uint64_t)0);
+  case DataType::DOUBLE:
+    return DataVariant((double)0.0);
+  case DataType::TIME:
+    return DataVariant(DateTime());
+  case DataType::OPAQUE:
+    return DataVariant(std::vector<uint8_t>());
+  case DataType::STRING:
+    return DataVariant(std::string());
+  case DataType::UNKNOWN:
+  default:
+    throw std::logic_error("Can not initialise variant with unknown data type");
+  }
+}
+
+inline std::string toString(DataVariant variant) {
+  std::string result;
+  match(variant, [&](bool value) { result = (value ? "true" : "false"); },
+        [&](int64_t value) { result = std::to_string(value); },
+        [&](uint64_t value) { result = std::to_string(value); },
+        [&](double value) { result = std::to_string(value); },
+        [&](DateTime value) { result = value.toString(); },
+        [&](std::vector<uint8_t> value) {
+          std::stringstream ss;
+          ss << std::hex << std::setfill('0');
+          for (auto byte : value) {
+            ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
+          }
+          result = ss.str();
+        },
+        [&](std::string value) { result = value; });
+
+  return result;
+}
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DATA_VARIANT_HPP_

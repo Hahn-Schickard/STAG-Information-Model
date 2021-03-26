@@ -102,9 +102,8 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   string ref_id;
   string element_name = "Metric";
   string element_desc = "Mocked Metric";
-  EXPECT_NO_THROW(
-      ref_id = builder->addReadableMetric(element_name, element_desc,
-                                          DataType::DOUBLE, ReadFunctor()));
+  EXPECT_NO_THROW(ref_id = builder->addReadableMetric(
+                      element_name, element_desc, DataType::DOUBLE));
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
@@ -125,12 +124,18 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
 
   auto mocked_metric = static_pointer_cast<MockMetric>(element);
 
-  EXPECT_CALL(*mocked_metric.get(), getDataType());
+  EXPECT_CALL(*mocked_metric, getDataType());
   auto metric = static_pointer_cast<Metric>(element);
   metric->getDataType();
 
-  EXPECT_CALL(*mocked_metric.get(), getMetricValue());
-  metric->getMetricValue();
+  EXPECT_CALL(*mocked_metric, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception &ex) {
+    FAIL()
+        << "Cought an unhandeled exception while trying to read metric value: "
+        << ex.what() << endl;
+  }
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -144,8 +149,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   string element_name = "Writable Metric";
   string element_desc = "Mocked Writable Metric";
   EXPECT_NO_THROW(ref_id = builder->addWritableMetric(
-                      element_name, element_desc, DataType::DOUBLE,
-                      ReadFunctor(), WriteFunctor()));
+                      element_name, element_desc, DataType::DOUBLE));
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
@@ -171,10 +175,22 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   writable_metric->getDataType();
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());
-  writable_metric->getMetricValue();
+  try {
+    writable_metric->getMetricValue();
+  } catch (exception &ex) {
+    FAIL()
+        << "Cought an unhandeled exception while trying to read metric value: "
+        << ex.what() << endl;
+  }
 
   EXPECT_CALL(*mocked_metric.get(), setMetricValue(::testing::_));
-  mocked_metric->setMetricValue((double)20.2);
+  try {
+    mocked_metric->setMetricValue((double)20.2);
+  } catch (exception &ex) {
+    FAIL()
+        << "Cought an unhandeled exception while trying to write metric value: "
+        << ex.what() << endl;
+  }
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }

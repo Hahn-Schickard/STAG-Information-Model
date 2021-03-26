@@ -8,7 +8,11 @@ import shutil
 class PackageConan(ConanFile):
     license = "Apache 2.0"
     topics = ("conan", "stag", "modelling")
-    build_requires = "gtest/1.10.0"
+    requires = [
+        "gtest/1.10.0",
+        "Variant_Visitor/0.1.0@hahn-schickard/stable",
+    ]
+
     settings = "cppstd", "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
                "fPIC": [True, False]}

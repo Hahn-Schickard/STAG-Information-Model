@@ -1,7 +1,7 @@
 #ifndef __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 
-#include "DeviceElementGroup.hpp"
+#include "../DeviceElementGroup.hpp"
 #include "Metric_MOCK.hpp"
 #include "WritableMetric_MOCK.hpp"
 
@@ -165,7 +165,8 @@ public:
   std::string addSubgroup(const std::string &name, const std::string &desc) {
     auto ref_id = generateReferenceID();
     std::pair<std::string, DeviceElementPtr> element_pair(
-        ref_id, std::make_shared<MockDeviceElementGroup>(ref_id, name, desc));
+        ref_id, std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(
+                    ref_id, name, desc));
 
     elements_map_.insert(element_pair);
     return ref_id;
@@ -181,12 +182,20 @@ public:
    * @param read_cb - read callback functor
    * @return std::string
    */
-  std::string addReadableMetric(const std::string &name,
-                                const std::string &desc, DataType data_type,
-                                std::function<DataVariant()> read_cb) {
+  std::string
+  addReadableMetric(const std::string &name, const std::string &desc,
+                    DataType data_type,
+                    std::optional<std::function<DataVariant()>> read_cb) {
     auto ref_id = generateReferenceID();
-    std::pair<std::string, DeviceElementPtr> element_pair(
-        ref_id, std::make_shared<MockMetric>(ref_id, name, desc));
+    auto metric = std::make_shared<::testing::NiceMock<MockMetric>>(
+        ref_id, name, desc, data_type);
+    if (read_cb.has_value()) {
+      metric->delegateToFake(read_cb.value());
+    } else {
+      metric->delegateToFake();
+    }
+
+    std::pair<std::string, DeviceElementPtr> element_pair(ref_id, move(metric));
 
     elements_map_.insert(element_pair);
     return ref_id;
@@ -203,13 +212,26 @@ public:
    * @param write_cb - write callback functor
    * @return std::string
    */
-  std::string addWritableMetric(const std::string &name,
-                                const std::string &desc, DataType data_type,
-                                std::function<DataVariant()> read_cb,
-                                std::function<void(DataVariant)> write_cb) {
+  std::string
+  addWritableMetric(const std::string &name, const std::string &desc,
+                    DataType data_type,
+                    std::optional<std::function<DataVariant()>> read_cb,
+                    std::optional<std::function<void(DataVariant)>> write_cb) {
     auto ref_id = generateReferenceID();
-    std::pair<std::string, DeviceElementPtr> element_pair(
-        ref_id, std::make_shared<MockWritableMetric>(ref_id, name, desc));
+    auto metric = std::make_shared<::testing::NiceMock<MockWritableMetric>>(
+        ref_id, name, desc, data_type);
+
+    if (read_cb.has_value()) {
+      if (write_cb.has_value()) {
+        metric->delegateToFake(read_cb.value(), write_cb.value());
+      } else {
+        metric->delegateToFake(read_cb.value());
+      }
+    } else {
+      metric->delegateToFake();
+    }
+
+    std::pair<std::string, DeviceElementPtr> element_pair(ref_id, move(metric));
 
     elements_map_.insert(element_pair);
     return ref_id;
