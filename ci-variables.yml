@@ -1,4 +1,4 @@
 variables:
-  RUN_VALGRIND: "False"
-  VALGRIND_TARGET: "dummy"
+  RUN_VALGRIND: "True"
+  VALGRIND_TARGET: "build/soruces/runner/Runner"
   VALGRIND_TARGET_ARGS: ""
