@@ -1,3 +1,28 @@
+## [0.1.5] - 2021.03.29 
+### Changed
+ - install include paths to resolve potentian header name collissions 
+ - DeviceBuilderInterface_MOCK.hpp to use relative path in includes
+ - DeviceElementGroup_MOCK.hpp to use relative path in includes
+ - DeviceElementGroup_MOCK::addReadableMetric method to set the read callback 
+ - DeviceElementGroup_MOCK::addWritableMetric method to set the read and write callbacks 
+ - DeviceMockBuilder.hpp to use relative path in includes
+ - DeviceMockBuilder to allow adding metrics without any callbacks 
+ - Device_MOCK.hpp to use relative path in includes
+ - MockDevice to use NiceMock<MockDeviceElementGroupPtr> to supress GTest unused mock warnings
+ - Metric_MOCK.hpp to use relative path in includes
+ - WritableMetric_MOCK.hpp to use relative path in includes
+ - conan example.cpp to use correct inclusion paths
+
+### Added 
+ - Variant Visitor dependency
+ - example main.cpp runner to showcase usage
+ - valgrind checks to main.cpp
+ - toString(DataVariant) function
+ - setVraint(DataType) function
+ - toString(ElementType) function
+ - delegateToFake method to MockMetric 
+ - delegateToFake method to MockWritableMetric 
+
 ## [0.1.4] - 2020.11.05
 ### Added 
  - POSIX time data type
