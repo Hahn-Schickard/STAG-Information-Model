@@ -1,3 +1,13 @@
+## [0.1.6] - NOT RELEASED
+### Changed 
+ - DataVariant int64_t to intmax_t
+ - DataVariant uint64_t to uintmax_t 
+ - DataVariant setVariant(DataType::INTEGER) to set (intmax_t)0 instead of (int64_t)0
+ - DataVariant setVariant(DataType::UNSIGNED_INTEGER) to set (uintmax_t)0 instead of (uint64_t)0
+ - MetricTests DataType::INTEGER test parameter to be set to intmax_t instead of int64_t
+ - MetricTests DataType::UNSIGNED_INTEGER test parameter to be set to uintmax_t instead of uint64_t
+ - WritableMetricTests::canSetIntegerValue to set Metric value to intmax_t instead of int64_t
+
 ## [0.1.5] - 2021.03.29 
 ### Changed
  - install include paths to resolve potentian header name collissions 

@@ -84,8 +84,8 @@ inline bool operator>=(const DateTime &lhs, const DateTime &rhs) {
  */
 enum class DataType {
   BOOLEAN,          /*!< bool */
-  INTEGER,          /*!< int64_t */
-  UNSIGNED_INTEGER, /*!< uint64_t */
+  INTEGER,          /*!< intmax_t */
+  UNSIGNED_INTEGER, /*!< uintmax_t */
   DOUBLE,           /*!< double */
   TIME,             /*!< Infromation_Model::DateTime */
   OPAQUE,           /*!< std::vector<uint8_t> */
@@ -115,7 +115,7 @@ inline std::string toString(DataType type) {
   }
 }
 
-using DataVariant = std::variant<bool, int64_t, uint64_t, double, DateTime,
+using DataVariant = std::variant<bool, intmax_t, uintmax_t, double, DateTime,
                                  std::vector<uint8_t>, std::string>;
 
 inline DataVariant setVariant(DataType type) {
@@ -123,9 +123,9 @@ inline DataVariant setVariant(DataType type) {
   case DataType::BOOLEAN:
     return DataVariant((bool)false);
   case DataType::INTEGER:
-    return DataVariant((int64_t)0);
+    return DataVariant((intmax_t)0);
   case DataType::UNSIGNED_INTEGER:
-    return DataVariant((uint64_t)0);
+    return DataVariant((uintmax_t)0);
   case DataType::DOUBLE:
     return DataVariant((double)0.0);
   case DataType::TIME:
@@ -143,8 +143,8 @@ inline DataVariant setVariant(DataType type) {
 inline std::string toString(DataVariant variant) {
   std::string result;
   match(variant, [&](bool value) { result = (value ? "true" : "false"); },
-        [&](int64_t value) { result = std::to_string(value); },
-        [&](uint64_t value) { result = std::to_string(value); },
+        [&](intmax_t value) { result = std::to_string(value); },
+        [&](uintmax_t value) { result = std::to_string(value); },
         [&](double value) { result = std::to_string(value); },
         [&](DateTime value) { result = value.toString(); },
         [&](std::vector<uint8_t> value) {
