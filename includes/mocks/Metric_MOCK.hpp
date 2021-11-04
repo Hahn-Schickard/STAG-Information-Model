@@ -36,9 +36,15 @@ public:
   MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
-    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(value_)));
-    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, size).WillByDefault([this]() -> std::size_t {
+      return size_of(value_);
+    });
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      return value_;
+    });
+    ON_CALL(*this, getDataType).WillByDefault([this]() -> DataType {
+      return type_;
+    });
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
@@ -49,7 +55,9 @@ public:
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
-  ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
+  bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
+
+  virtual ~MockMetric() {}
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;
