@@ -45,7 +45,7 @@ class MockDeviceElementGroup : public DeviceElementGroup {
   }
 
   /**
-   * @brief Get the level of a current branch within a tree structued string.
+   * @brief Get the level of a current branch within a tree structured string.
    * USED INTERNALLY
    *
    * @param ref_id
@@ -56,22 +56,22 @@ class MockDeviceElementGroup : public DeviceElementGroup {
   }
 
   /**
-   * @brief get the position of a Nth occurence of a given pattern inside  a
+   * @brief get the position of a Nth occurrence of a given pattern inside  a
    * given string. USED INTERNALLY
    *
    * @param input
-   * @param occurence
+   * @param occurrence
    * @param pattern
    * @return size_t
    */
-  size_t findNthSubstring(const std::string &input, size_t occurence,
+  size_t findNthSubstring(const std::string &input, size_t occurrence,
                           const std::string &pattern) {
-    if (0 == occurence) {
+    if (0 == occurrence) {
       return std::string::npos;
     } else {
       size_t position, offset = 0;
       unsigned int i = 0;
-      while (i < occurence) {
+      while (i < occurrence) {
         position = input.find(pattern, offset);
         if (std::string::npos == position) {
           break;
@@ -123,8 +123,8 @@ public:
     ON_CALL(*this, getSubelements).WillByDefault([this]() -> DeviceElements {
       std::vector<DeviceElementPtr> subelements;
       // NOLINTNEXTLINE
-      for (auto elelement_pair : elements_map_) {
-        subelements.push_back(elelement_pair.second);
+      for (auto element_pair : elements_map_) {
+        subelements.push_back(element_pair.second);
       }
       return subelements;
     });

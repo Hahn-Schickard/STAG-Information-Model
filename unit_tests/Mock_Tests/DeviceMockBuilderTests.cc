@@ -133,7 +133,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
     metric->getMetricValue();
   } catch (exception &ex) {
     FAIL()
-        << "Cought an unhandeled exception while trying to read metric value: "
+        << "Caught an unhandled exception while trying to read metric value: "
         << ex.what() << endl;
   }
 
@@ -179,7 +179,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
     writable_metric->getMetricValue();
   } catch (exception &ex) {
     FAIL()
-        << "Cought an unhandeled exception while trying to read metric value: "
+        << "Caught an unhandled exception while trying to read metric value: "
         << ex.what() << endl;
   }
 
@@ -188,7 +188,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
     mocked_metric->setMetricValue((double)20.2);
   } catch (exception &ex) {
     FAIL()
-        << "Cought an unhandeled exception while trying to write metric value: "
+        << "Caught an unhandled exception while trying to write metric value: "
         << ex.what() << endl;
   }
 

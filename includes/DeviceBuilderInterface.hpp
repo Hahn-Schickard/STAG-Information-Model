@@ -15,7 +15,7 @@ using WriteFunctor = std::function<void(DataVariant)>;
 
 /**
  * @brief This Interface is used by Technology Adapter implementations to build
- * a device witihin the Information Model
+ * a device within the Information Model
  *
  */
 class DeviceBuilderInterface {
@@ -123,13 +123,13 @@ public:
   /**
    * @brief Provides a generalized approach to creating a device element
    *
-   * To add a Group call with 3 parameters (group_refid cann be an empty
+   * To add a Group call with 3 parameters (group_refid can be an empty
    * string): addDeviceElement(group_refid, name, desc)
    *
-   * To add a Readable metric call with 4 parameters (group_refid cann be an
+   * To add a Readable metric call with 4 parameters (group_refid can be an
    * empty string): addDeviceElement(group_refid, name, desc, read_callback)
    *
-   * To add a Writable Metric call with 5 parameters (group_refid cann be an
+   * To add a Writable Metric call with 5 parameters (group_refid can be an
    * empty string): addDeviceElement(group_refid, name, desc, read_callback,
    * write_callback)
    *

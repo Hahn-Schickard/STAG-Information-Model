@@ -35,7 +35,7 @@ public:
   DateTime(std::time_t time_point) : posix_time_(time_point) {}
 
   /**
-   * @brief Converts POSIX time to huma nreadable format
+   * @brief Converts POSIX time to human nreadable format
    *
    * @return std::string
    */
@@ -89,7 +89,7 @@ enum class DataType {
   INTEGER,          /*!< intmax_t */
   UNSIGNED_INTEGER, /*!< uintmax_t */
   DOUBLE,           /*!< double */
-  TIME,             /*!< Infromation_Model::DateTime */
+  TIME,             /*!< Information_Model::DateTime */
   OPAQUE,           /*!< std::vector<uint8_t> */
   STRING,           /*!< std::string */
   UNKNOWN           /*!< fallback type */

@@ -9,7 +9,7 @@
 namespace Information_Model {
 /**
  * @enum ElementTypeEnum
- * @brief ElementType enumeration, specifying the abailable DeviceElement types
+ * @brief ElementType enumeration, specifying the available DeviceElement types
  *
  */
 enum class ElementType {
@@ -18,7 +18,7 @@ enum class ElementType {
   READABLE,   /*!< Metric with read access */
   OBSERVABLE, /*!< Metric with observation access */
   WRITABLE,   /*!< Metric with write access */
-  FUNCTION    /*!< Function elemenets */
+  FUNCTION    /*!< Function elements */
 };
 
 inline std::string toString(ElementType type) {
