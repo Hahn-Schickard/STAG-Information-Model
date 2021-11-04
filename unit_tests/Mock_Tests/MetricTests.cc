@@ -99,21 +99,25 @@ TEST_P(MetricMultipleParametersTests, canGetSize) {
 }
 
 TEST_P(MetricMultipleParametersTests, canGetType) {
+  auto mock = dynamic_pointer_cast<MockMetric>(metric);
+  mock->delegateToFake();
+
   DataType tested;
   ASSERT_NO_THROW(tested = metric->getDataType());
-  // EXPECT_EQ(expectations->type_, tested);
+  EXPECT_EQ(expectations->type_, tested);
   EXPECT_TRUE(::testing::Mock::VerifyAndClear(metric.get()));
 }
 
 TEST_P(MetricMultipleParametersTests, canGetValue) {
-  // TODO: check if ON_CALL and EXPECT_CALL is a GTest bug for mock leaking
-  // auto mock = static_pointer_cast<MockMetric>(metric);
-  // mock->delegateToFake();
-  // EXPECT_CALL(*mock.get(), getMetricValue()).Times(1);
+  auto mock = dynamic_pointer_cast<MockMetric>(metric);
+  mock->delegateToFake();
+
+  EXPECT_CALL(*mock.get(), getMetricValue()).Times(1);
+
   DataVariant tested;
-  ASSERT_NO_THROW(tested = metric->getMetricValue());
-  // EXPECT_EQ(expectations->value_, tested);
-  // EXPECT_TRUE(::testing::Mock::VerifyAndClearExpectations(metric.get()));
+  ASSERT_NO_THROW(tested = metric->getMetricValue(););
+  EXPECT_EQ(expectations->value_, tested);
+  EXPECT_TRUE(::testing::Mock::VerifyAndClearExpectations(metric.get()));
 }
 
 struct SetTestNameSuffix {
