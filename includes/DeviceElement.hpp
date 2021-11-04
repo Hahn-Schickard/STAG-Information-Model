@@ -12,14 +12,14 @@ namespace Information_Model {
  * @brief ElementType enumeration, specifying the abailable DeviceElement types
  *
  */
-typedef enum ElementTypeEnum {
+enum class ElementType {
   UNDEFINED,  /*!< Fallback type */
   GROUP,      /*!< Groupping element, aka list */
   READABLE,   /*!< Metric with read access */
   OBSERVABLE, /*!< Metric with observation access */
   WRITABLE,   /*!< Metric with write access */
   FUNCTION    /*!< Function elemenets */
-} ElementType;
+};
 
 inline std::string toString(ElementType type) {
   switch (type) {
