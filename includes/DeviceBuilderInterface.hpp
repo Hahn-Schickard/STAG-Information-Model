@@ -29,9 +29,12 @@ public:
    * @param name
    * @param desc
    */
-  virtual void buildDeviceBase(const std::string &unique_id,
-                               const std::string &name,
-                               const std::string &desc) = 0;
+  virtual void buildDeviceBase(const std::string & /*unique_id*/,
+                               const std::string & /*name*/,
+                               const std::string & /*desc*/) {
+    throw std::runtime_error("Called base implementation of "
+                             "DeviceBuilderInterface::buildDeviceBase");
+  }
 
   /**
    * @brief Adds a group element to the device
@@ -40,8 +43,11 @@ public:
    * @param desc
    * @return std::string
    */
-  virtual std::string addDeviceElementGroup(const std::string &name,
-                                            const std::string &desc) = 0;
+  virtual std::string addDeviceElementGroup(const std::string & /*name*/,
+                                            const std::string & /*desc*/) {
+    throw std::runtime_error("Called base implementation of "
+                             "DeviceBuilderInterface::addDeviceElementGroup");
+  }
 
   /**
    * @brief Adds a group elemenet to another group
@@ -51,10 +57,12 @@ public:
    * @param desc
    * @return std::string
    */
-  virtual std::string addDeviceElementGroup(const std::string &group_refid,
-                                            const std::string &name,
-                                            const std::string &desc) = 0;
-
+  virtual std::string addDeviceElementGroup(const std::string & /*group_refid*/,
+                                            const std::string & /*name*/,
+                                            const std::string & /*desc*/) {
+    throw std::runtime_error("Called base implementation of "
+                             "DeviceBuilderInterface::addDeviceElementGroup");
+  }
   /**
    * @brief Adds a readable metric with a given data type to the root group
    *
@@ -64,11 +72,14 @@ public:
    * @param read_cb
    * @return std::string
    */
-  virtual std::string addReadableMetric(const std::string &name,
-                                        const std::string &desc,
-                                        DataType data_type,
-                                        ReadFunctor read_cb) = 0;
-
+  virtual std::string addReadableMetric(const std::string & /*name*/,
+                                        const std::string & /*desc*/,
+                                        DataType /*data_type*/,
+                                        ReadFunctor /*read_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addReadableMetric for root group");
+  }
   /**
    * @brief Adds a readable metric with a given data type to a given subroup
    *
@@ -79,11 +90,15 @@ public:
    * @param read_cb
    * @return std::string
    */
-  virtual std::string addReadableMetric(const std::string &group_refid,
-                                        const std::string &name,
-                                        const std::string &desc,
-                                        DataType data_type,
-                                        ReadFunctor read_cb) = 0;
+  virtual std::string addReadableMetric(const std::string & /*group_refid*/,
+                                        const std::string & /*name*/,
+                                        const std::string & /*desc*/,
+                                        DataType /*data_type*/,
+                                        ReadFunctor /*read_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addReadableMetric for subgroup");
+  }
 
   /**
    * @brief Adds a writable metric with a given data type to the root group
@@ -95,11 +110,15 @@ public:
    * @param write_cb
    * @return std::string
    */
-  virtual std::string addWritableMetric(const std::string &name,
-                                        const std::string &desc,
-                                        DataType data_type,
-                                        std::optional<ReadFunctor> read_cb,
-                                        WriteFunctor write_cb) = 0;
+  virtual std::string addWritableMetric(const std::string & /*name*/,
+                                        const std::string & /*desc*/,
+                                        DataType /*data_type*/,
+                                        std::optional<ReadFunctor> /*read_cb*/,
+                                        WriteFunctor /*write_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addWritableMetric for root group");
+  }
 
   /**
    * @brief Adds a writable metrich with a given data type to a given subgroup
@@ -113,13 +132,16 @@ public:
    * @param write_cb
    * @return std::string
    */
-  virtual std::string addWritableMetric(const std::string &group_refid,
-                                        const std::string &name,
-                                        const std::string &desc,
-                                        DataType data_type,
-                                        std::optional<ReadFunctor> read_cb,
-                                        WriteFunctor write_cb) = 0;
-
+  virtual std::string addWritableMetric(const std::string & /*group_refid*/,
+                                        const std::string & /*name*/,
+                                        const std::string & /*desc*/,
+                                        DataType /*data_type*/,
+                                        std::optional<ReadFunctor> /*read_cb*/,
+                                        WriteFunctor /*write_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addWritableMetric for subgroup");
+  }
   /**
    * @brief Provides a generalized approach to creating a device element
    *
@@ -143,12 +165,19 @@ public:
    * @return std::string
    */
   virtual std::string
-  addDeviceElement(const std::string &group_refid, const std::string &name,
-                   const std::string &desc, ElementType type,
-                   DataType data_type, std::optional<ReadFunctor> read_cb,
-                   std::optional<WriteFunctor> write_cb) = 0;
+  addDeviceElement(const std::string & /*group_refid*/,
+                   const std::string & /*name*/, const std::string & /*desc*/,
+                   ElementType /*type*/, DataType /*data_type*/,
+                   std::optional<ReadFunctor> /*read_cb*/,
+                   std::optional<WriteFunctor> /*write_cb*/) {
+    throw std::runtime_error("Called base implementation of "
+                             "DeviceBuilderInterface::addDeviceElement");
+  }
 
-  virtual DevicePtr getResult() = 0;
+  virtual DevicePtr getResult() {
+    throw std::runtime_error("Called base implementation of "
+                             "DeviceBuilderInterface::getResult");
+  }
 };
 } // namespace Information_Model
 

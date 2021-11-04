@@ -25,9 +25,20 @@ public:
         "Called based implementation of WritableMetric::size()");
   }
 
-  virtual DataVariant getMetricValue() = 0;
-  virtual void setMetricValue(DataVariant value) = 0;
-  virtual DataType getDataType() = 0;
+  virtual DataVariant getMetricValue() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::getMetricValue()");
+  }
+
+  virtual void setMetricValue(DataVariant /*value*/) {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::setMetricValue()");
+  }
+
+  virtual DataType getDataType() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::getDataType()");
+  }
 
   virtual ~WritableMetric() = default;
 };

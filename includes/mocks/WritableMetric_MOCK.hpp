@@ -36,7 +36,7 @@ public:
 
   MOCK_METHOD(std::size_t, size, (), (override));
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(void, setMetricValue, (DataVariant), (override));
+  MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {

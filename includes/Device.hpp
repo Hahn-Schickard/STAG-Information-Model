@@ -16,8 +16,15 @@ protected:
       : NamedElement(ref_id, name, desc) {}
 
 public:
-  virtual DeviceElementGroupPtr getDeviceElementGroup() = 0;
-  virtual DeviceElementPtr getDeviceElement(const std::string &ref_id) = 0;
+  virtual DeviceElementGroupPtr getDeviceElementGroup() {
+    throw std::runtime_error(
+        "Called base implementation of Device::getDeviceElementGroup");
+  }
+
+  virtual DeviceElementPtr getDeviceElement(const std::string & /* ref_id */) {
+    throw std::runtime_error(
+        "Called base implementation of Device::getDeviceElement");
+  }
 
   virtual ~Device() = default;
 };

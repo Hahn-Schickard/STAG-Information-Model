@@ -22,8 +22,15 @@ public:
     throw std::runtime_error("Called based implementation of Metric::size()");
   }
 
-  virtual DataVariant getMetricValue() = 0;
-  virtual DataType getDataType() = 0;
+  virtual DataVariant getMetricValue() {
+    throw std::runtime_error(
+        "Called based implementation of Metric::getMetricValue()");
+  }
+
+  virtual DataType getDataType() {
+    throw std::runtime_error(
+        "Called based implementation of Metric::getDataType()");
+  }
 
   virtual ~Metric() = default;
 };

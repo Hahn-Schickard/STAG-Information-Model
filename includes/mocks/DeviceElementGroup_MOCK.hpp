@@ -238,8 +238,8 @@ public:
   }
 
   MOCK_METHOD(DeviceElements, getSubelements, (), (override));
-  MOCK_METHOD(DeviceElementPtr, getSubelement, (const std::string &ref_id),
-              (override));
+  MOCK_METHOD(DeviceElementPtr, getSubelement,
+              (const std::string & /* ref_id */), (override));
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;

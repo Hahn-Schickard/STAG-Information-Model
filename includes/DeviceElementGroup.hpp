@@ -18,8 +18,15 @@ protected:
 public:
   using DeviceElements = std::vector<DeviceElementPtr>;
 
-  virtual DeviceElements getSubelements() = 0;
-  virtual DeviceElementPtr getSubelement(const std::string &ref_id) = 0;
+  virtual DeviceElements getSubelements() {
+    throw std::runtime_error(
+        "Called base implementation of DeviceElements::getSubelements");
+  }
+
+  virtual DeviceElementPtr getSubelement(const std::string & /*ref_id*/) {
+    throw std::runtime_error(
+        "Called base implementation of DeviceElements::getSubelement");
+  }
 
   virtual ~DeviceElementGroup() = default;
 };
