@@ -26,12 +26,14 @@
  - WritableMetric::setMetricValue method from pure virtual, to virtual method with base implementation
  - WritableMetric::getDataType method from pure virtual, to virtual method with base implementation
  - unused method parameter names to comment blocks
+ - MetricTests to build MockMetric for each test from the provided Expectations to avoid dangling resources after global test teardown
 
 ### Added
   - size_of(DataVariant) function
   - DateTime::size() method
   - Metric::size() method
   - WritableMetric::size() method
+  - MockMetric::clearExpectations method to allow the user to unset ON_CALL and EXPECT_CALL actions
 
 ### Fixed
  - typos in Changelog
