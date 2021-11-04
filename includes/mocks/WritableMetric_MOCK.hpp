@@ -34,22 +34,26 @@ public:
                      const DataVariant &variant)
       : WritableMetric(ref_id, name, desc), type_(type), value_(variant) {}
 
+  MOCK_METHOD(std::size_t, size, (), (override));
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(void, setMetricValue, (DataVariant), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
+    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(value_)));
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
+    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(callback())));
     ON_CALL(*this, getMetricValue).WillByDefault(callback);
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   void delegateToFake(std::function<DataVariant()> reader,
                       std::function<void(DataVariant)> writer) {
+    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(reader())));
     ON_CALL(*this, getMetricValue).WillByDefault(reader);
     ON_CALL(*this, setMetricValue)
         .WillByDefault([this, writer](DataVariant value) { writer(value); });

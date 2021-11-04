@@ -20,6 +20,11 @@ protected:
       : DeviceElement(ref_id, name, desc, ElementType::WRITABLE) {}
 
 public:
+  virtual std::size_t size() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::size()");
+  }
+
   virtual DataVariant getMetricValue() = 0;
   virtual void setMetricValue(DataVariant value) = 0;
   virtual DataType getDataType() = 0;

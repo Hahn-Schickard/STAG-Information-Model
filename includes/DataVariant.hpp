@@ -50,6 +50,8 @@ public:
    */
   std::time_t getValue() const { return posix_time_; }
 
+  std::size_t size() { return sizeof(posix_time_); }
+
   friend bool operator==(const DateTime &lhs, const DateTime &rhs);
   friend bool operator!=(const DateTime &lhs, const DateTime &rhs);
   friend bool operator<(const DateTime &lhs, const DateTime &rhs);
@@ -117,6 +119,18 @@ inline std::string toString(DataType type) {
 
 using DataVariant = std::variant<bool, intmax_t, uintmax_t, double, DateTime,
                                  std::vector<uint8_t>, std::string>;
+
+inline std::size_t size_of(DataVariant variant) {
+  std::size_t result;
+  match(variant, [&](bool value) { result = sizeof(value); },
+        [&](intmax_t value) { result = sizeof(value); },
+        [&](uintmax_t value) { result = sizeof(value); },
+        [&](double value) { result = sizeof(value); },
+        [&](DateTime value) { result = value.size(); },
+        [&](std::vector<uint8_t> value) { result = value.size(); },
+        [&](std::string value) { result = value.size(); });
+  return result;
+}
 
 inline DataVariant setVariant(DataType type) {
   switch (type) {

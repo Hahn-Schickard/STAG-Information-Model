@@ -88,6 +88,16 @@ TEST_P(MetricMultipleParametersTests, hasCorrectDescription) {
       << "provided: " << testedElement << endl;
 }
 
+TEST_P(MetricMultipleParametersTests, canGetSize) {
+  auto mock = dynamic_pointer_cast<MockMetric>(metric);
+  mock->delegateToFake();
+
+  size_t tested;
+  size_t expected = size_of(expectations->value_);
+  ASSERT_NO_THROW(tested = metric->size(););
+  EXPECT_EQ(expected, tested);
+}
+
 TEST_P(MetricMultipleParametersTests, canGetType) {
   DataType tested;
   ASSERT_NO_THROW(tested = metric->getDataType());

@@ -8,6 +8,12 @@
  - MetricTests DataType::UNSIGNED_INTEGER test parameter to be set to uintmax_t instead of uint64_t
  - WritableMetricTests::canSetIntegerValue to set Metric value to intmax_t instead of int64_t
 
+### Added
+  - size_of(DataVariant) function
+  - DateTime::size() method
+  - Metric::size() method
+  - WritableMetric::size() method
+
 ## [0.1.5] - 2021.03.29 
 ### Changed
  - install include paths to resolve potentian header name collissions 

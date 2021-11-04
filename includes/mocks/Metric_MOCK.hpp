@@ -31,15 +31,18 @@ public:
              const std::string &desc, DataType type, const DataVariant &variant)
       : Metric(ref_id, name, desc), type_(type), value_(variant) {}
 
+  MOCK_METHOD(std::size_t, size, (), (override));
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
+    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(value_)));
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
+    ON_CALL(*this, size).WillByDefault(::testing::Return(size_of(callback())));
     ON_CALL(*this, getMetricValue).WillByDefault([callback]() -> DataVariant {
       return callback();
     });

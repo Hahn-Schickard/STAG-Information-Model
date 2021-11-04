@@ -18,6 +18,10 @@ protected:
       : DeviceElement(ref_id, name, desc, ElementType::READABLE) {}
 
 public:
+  virtual std::size_t size() {
+    throw std::runtime_error("Called based implementation of Metric::size()");
+  }
+
   virtual DataVariant getMetricValue() = 0;
   virtual DataType getDataType() = 0;
 
