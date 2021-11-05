@@ -1,4 +1,4 @@
-## [0.1.6] - 2021.11.04
+## [0.1.6] - 2021.11.05
 ### Changed 
  - DataVariant int64_t to intmax_t
  - DataVariant uint64_t to uintmax_t 
@@ -30,9 +30,6 @@
 
 ### Added
   - size_of(DataVariant) function
-  - DateTime::size() method
-  - Metric::size() method
-  - WritableMetric::size() method
   - MockMetric::clearExpectations method to allow the user to unset ON_CALL and EXPECT_CALL actions
 
 ### Fixed
