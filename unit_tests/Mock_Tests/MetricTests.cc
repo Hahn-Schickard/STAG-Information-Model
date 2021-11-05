@@ -65,19 +65,6 @@ TEST_P(MetricMultipleParametersTests, hasCorrectDescription) {
       << "expected: " << expectedResult << endl
       << "provided: " << testedElement << endl;
 }
-
-TEST_P(MetricMultipleParametersTests, canGetSize) {
-  auto mock = dynamic_pointer_cast<MockMetric>(metric);
-  mock->delegateToFake();
-
-  EXPECT_CALL(*mock.get(), size()).Times(1);
-
-  size_t tested;
-  size_t expected = size_of(expectations->value_);
-  ASSERT_NO_THROW(tested = metric->size());
-  EXPECT_EQ(expected, tested);
-}
-
 TEST_P(MetricMultipleParametersTests, canGetType) {
   auto mock = dynamic_pointer_cast<MockMetric>(metric);
   mock->delegateToFake();

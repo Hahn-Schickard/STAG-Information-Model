@@ -51,14 +51,6 @@ TEST_F(WritableMetricTests, IntegerMetricHasCorrectDescription) {
       << "expected: " << expectedResult << endl
       << "provided: " << testedElement << endl;
 }
-
-TEST_F(WritableMetricTests, canGetSize) {
-  // Act
-  EXPECT_CALL(*integer.get(), size()).Times(AtLeast(1));
-  // Assert
-  ASSERT_NO_THROW(integer->size());
-}
-
 // NOLINTNEXTLINE
 TEST_F(WritableMetricTests, canGetIntegerValue) {
   // Act
