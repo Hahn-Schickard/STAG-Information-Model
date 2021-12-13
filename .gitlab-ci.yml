@@ -23,6 +23,7 @@ stages:
     - conan config get storage.download_cache
     - pip3 install --upgrade conan
     - conan remote add upload_repo ${CONAN_REMOTE}
+    - docker login --username="robot\$ci-runner" --password="${DOCKER_CI_AUTH_TOKEN}" $DOCKER_REGISTRY
 
 .build:
   extends: .setup
