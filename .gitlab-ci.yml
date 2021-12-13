@@ -55,7 +55,7 @@ build:ubuntu-18.04:
 
 build:ubuntu-20.04:
   extends: .build
-  image: ${DOCKER_REGISTRY}//hs-conan-ubuntu-20.04:2.0.0
+  image: ${DOCKER_REGISTRY}/hs-conan-ubuntu-20.04:2.0.0
 
 build:fedora-32:
   extends: .build
