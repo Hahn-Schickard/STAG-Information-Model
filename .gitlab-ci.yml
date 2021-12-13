@@ -21,8 +21,6 @@ stages:
     - conan config set storage.download_cache="${CI_PROJECT_DIR}/.conan"
     - conan config set storage.path="${CI_PROJECT_DIR}/.conan/data"
     - conan config get storage.download_cache
-    - pip3 install --upgrade conan
-    - conan remote add upload_repo ${CONAN_REMOTE}
 
 .build:
   extends: .setup
@@ -30,6 +28,8 @@ stages:
   tags:
     - conan
   script:
+    - pip3 install --upgrade conan
+    - conan remote add upload_repo ${CONAN_REMOTE}
     - mkdir build
     - cd build
     - cmake ${CMAKE_VARIABLES} ..
