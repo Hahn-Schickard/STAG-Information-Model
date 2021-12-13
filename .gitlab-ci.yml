@@ -156,27 +156,27 @@ analyze_memory_usage:fedora-34:
       - code_coverage_report/
 
 check_code_coverage:debian-buster:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:debian-buster", "run_tests:debian-buster"]
 
 check_code_coverage:debian-bullseye:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:debian-bullseye", "run_tests:debian-bullseye"]
 
 check_code_coverage:ubuntu-18.04:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:ubuntu-18.04", "run_tests:ubuntu-18.04"]
 
 check_code_coverage:ubuntu-20.04:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:ubuntu-20.04", "run_tests:ubuntu-20.04"]
 
 check_code_coverage:fedora-32:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:fedora-32", "run_tests:fedora-32"]
 
 check_code_coverage:fedora-34:
-  extends: .run_tests
+  extends: .check_code_coverage
   needs: ["build:fedora-34", "run_tests:fedora-34"]
 
 generate_autodoc:
