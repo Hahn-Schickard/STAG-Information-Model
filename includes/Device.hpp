@@ -6,6 +6,7 @@
 #include "NamedElement.hpp"
 
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 namespace Information_Model {

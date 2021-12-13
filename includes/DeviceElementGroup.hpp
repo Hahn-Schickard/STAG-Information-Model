@@ -5,6 +5,7 @@
 #include "NamedElement.hpp"
 
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

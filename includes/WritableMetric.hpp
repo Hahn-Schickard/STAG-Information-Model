@@ -4,6 +4,7 @@
 #include "DataVariant.hpp"
 #include "DeviceElement.hpp"
 
+#include <stdexcept>
 #include <string>
 
 namespace Information_Model {
