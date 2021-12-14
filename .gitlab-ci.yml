@@ -65,7 +65,7 @@ build:fedora-34:
   extends: .build
   image: 
     name: ${DOCKER_REGISTRY}/hs-conan-fedora-34:2.0.0
-    entrypoint: ["/bin/sh"]
+    entrypoint: ["/bin/sh", "-c"]
 
 .run_tests:
   extends: .setup
