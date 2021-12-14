@@ -1,4 +1,4 @@
-## [0.1.6] - 2021.11.05
+## [0.1.6] - 2021.12.14
 ### Changed 
  - DataVariant int64_t to intmax_t
  - DataVariant uint64_t to uintmax_t 
@@ -31,6 +31,8 @@
 ### Added
   - size_of(DataVariant) function
   - MockMetric::clearExpectations method to allow the user to unset ON_CALL and EXPECT_CALL actions
+  - stdexcept header to Device, DeviceBuilderInterface, DeviceElementGroup, Metric and WritableMetric units
+  - optional header to DeviceElementGroup_MOCK
 
 ### Fixed
  - typos in Changelog
