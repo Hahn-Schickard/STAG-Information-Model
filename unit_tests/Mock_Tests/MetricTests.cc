@@ -112,7 +112,7 @@ TestParameters makeTestParameters() {
                       DataVariant(string("Hello world!")));
   params.emplace_back("6", "Time", "Time metric", DataType::TIME,
                       DataVariant(DateTime()));
-  return move(params);
+  return params;
 }
 
 INSTANTIATE_TEST_SUITE_P(MetricTests, MetricMultipleParametersTests,
