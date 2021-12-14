@@ -98,7 +98,7 @@ build:fedora-34:
 
 run_tests:debian-buster:
   extends: .run_tests
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-buster::2.0.0
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-buster:2.0.0
   needs: ["build:debian-buster"]
   cache: 
     key: ${CI_PROJECT_ID}_buster_cache
@@ -107,7 +107,7 @@ run_tests:debian-buster:
 
 run_tests:debian-bullseye:
   extends: .run_tests
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-bullseye::2.0.0
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-bullseye:2.0.0
   needs: ["build:debian-bullseye"]
   cache: 
     key: ${CI_PROJECT_ID}_bullseye_cache
