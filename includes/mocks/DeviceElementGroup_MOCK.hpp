@@ -6,6 +6,7 @@
 #include "WritableMetric_MOCK.hpp"
 
 #include "gmock/gmock.h"
+#include <optional>
 #include <unordered_map>
 
 namespace Information_Model {
