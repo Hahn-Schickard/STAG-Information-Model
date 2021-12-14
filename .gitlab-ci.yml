@@ -1,11 +1,5 @@
 include: "ci-variables.yml"
 
-cache: &global
-  key: ${CI_PROJECT_ID}_global_cache
-  paths:
-    - ${CI_PROJECT_DIR}/.conan
-  policy: pull
-
 stages:
   - build
   - test
@@ -34,9 +28,6 @@ stages:
     - cd build
     - cmake ${CMAKE_VARIABLES} ..
     - cmake --build . --target all --config Debug --
-  cache:
-    <<: *global
-    policy: pull-push
   artifacts:
     paths:
       - build/
@@ -44,28 +35,52 @@ stages:
 build:debian-buster:
   extends: .build
   image: ${DOCKER_REGISTRY}/hs-conan-debian-buster:2.0.0
+  cache: 
+    key: ${CI_PROJECT_ID}_buster_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 build:debian-bullseye:
   extends: .build
   image: ${DOCKER_REGISTRY}/hs-conan-debian-bullseye:2.0.0
+  cache: 
+    key: ${CI_PROJECT_ID}_bullseye_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 build:ubuntu-18.04:
   extends: .build
   image: ${DOCKER_REGISTRY}/hs-conan-ubuntu-18.04:2.0.0
+  cache: 
+    key: ${CI_PROJECT_ID}_ubuntu18_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 build:ubuntu-20.04:
   extends: .build
   image: ${DOCKER_REGISTRY}/hs-conan-ubuntu-20.04:2.0.0
+  cache: 
+    key: ${CI_PROJECT_ID}_ubuntu20_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 build:fedora-32:
   extends: .build
   image: ${DOCKER_REGISTRY}/hs-conan-fedora-32:2.0.0
+  cache: 
+    key: ${CI_PROJECT_ID}_fedora32_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 build:fedora-34:
   extends: .build
   image: 
     name: ${DOCKER_REGISTRY}/hs-conan-fedora-34:2.0.0
     entrypoint: ["/bin/sh", "-c"]
+  cache: 
+    key: ${CI_PROJECT_ID}_fedora34_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 .run_tests:
   extends: .setup
@@ -84,26 +99,50 @@ build:fedora-34:
 run_tests:debian-buster:
   extends: .run_tests
   needs: ["build:debian-buster"]
+  cache: 
+    key: ${CI_PROJECT_ID}_buster_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 run_tests:debian-bullseye:
   extends: .run_tests
   needs: ["build:debian-bullseye"]
+  cache: 
+    key: ${CI_PROJECT_ID}_bullseye_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 run_tests:ubuntu-18.04:
   extends: .run_tests
   needs: ["build:ubuntu-18.04"]
+  cache: 
+    key: ${CI_PROJECT_ID}_ubuntu18_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 run_tests:ubuntu-20.04:
   extends: .run_tests
   needs: ["build:ubuntu-20.04"]
+  cache: 
+    key: ${CI_PROJECT_ID}_ubuntu20_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 run_tests:fedora-32:
   extends: .run_tests
   needs: ["build:fedora-32"]
+  cache: 
+    key: ${CI_PROJECT_ID}_fedora32_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 run_tests:fedora-34:
   extends: .run_tests
   needs: ["build:fedora-34"]
+  cache: 
+    key: ${CI_PROJECT_ID}_fedora34_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
 
 .analyze_memory_usage:
   extends: .setup
@@ -209,6 +248,10 @@ generate_autodoc:
 
 package:stable:
   extends: .package
+  cache: 
+    key: ${CI_PROJECT_ID}_buster_cache
+    paths:
+      - ${CI_PROJECT_DIR}/.conan
   script:
     - VERSION=$(python3 ./utility/getVersionFromTag.py)
     - conan create ./conan/ ${VERSION}@hahn-schickard/stable --build=missing
