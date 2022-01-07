@@ -1,30 +1,29 @@
 #ifndef __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP
 
-#include "DeviceElement.hpp"
-#include "NamedElement.hpp"
-
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 namespace Information_Model {
-class DeviceElementGroup : public DeviceElement {
+class DeviceElement;
+
+class DeviceElementGroup {
 protected:
-  DeviceElementGroup(const std::string &ref_id, const std::string &name,
-                     const std::string &desc)
-      : DeviceElement(ref_id, name, desc, ElementType::GROUP) {}
+  DeviceElementGroup() = default;
 
 public:
-  using DeviceElements = std::vector<DeviceElementPtr>;
+  using DeviceElements = std::vector<std::shared_ptr<DeviceElement>>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
 
-  virtual DeviceElementPtr getSubelement(const std::string & /*ref_id*/) {
+  virtual std::shared_ptr<DeviceElement> getSubelement(
+    const std::string & /*ref_id*/)
+  {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }

@@ -13,44 +13,12 @@ class WritableMetricTests : public ::testing::Test {
 protected:
   // NOLINTNEXTLINE
   void SetUp() {
-    integer = make_shared<MockWritableMetric>("12345", "Mock Integer",
-                                              "Just a Mock Integer");
+    integer = make_shared<MockWritableMetric>();
   }
 
   shared_ptr<MockWritableMetric> integer;
 };
 
-// NOLINTNEXTLINE
-TEST_F(WritableMetricTests, IntegerMetricHasCorrectID) {
-  // Act
-  string testedElement = integer->getElementId();
-  // Assert
-  string expectedResult = "12345";
-  EXPECT_EQ(expectedResult, testedElement)
-      << "expected: " << expectedResult << endl
-      << "provided: " << testedElement << endl;
-}
-
-// NOLINTNEXTLINE
-TEST_F(WritableMetricTests, IntegerMetricHasCorrectName) {
-  // Act
-  string testedElement = integer->getElementName();
-  // Assert
-  string expectedResult = "Mock Integer";
-  EXPECT_EQ(expectedResult, testedElement)
-      << "expected: " << expectedResult << endl
-      << "provided: " << testedElement << endl;
-}
-
-// NOLINTNEXTLINE
-TEST_F(WritableMetricTests, IntegerMetricHasCorrectDescription) {
-  string testedElement = integer->getElementDescription();
-  string expectedResult = "Just a Mock Integer";
-
-  EXPECT_EQ(expectedResult, testedElement)
-      << "expected: " << expectedResult << endl
-      << "provided: " << testedElement << endl;
-}
 // NOLINTNEXTLINE
 TEST_F(WritableMetricTests, canGetIntegerValue) {
   // Act

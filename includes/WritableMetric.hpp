@@ -2,8 +2,8 @@
 #define __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
 
 #include "DataVariant.hpp"
-#include "DeviceElement.hpp"
 
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -14,11 +14,9 @@ namespace Information_Model {
  * default data type value (for example: bool = true, int = 0, string = "");
  *
  */
-class WritableMetric : public DeviceElement {
+class WritableMetric {
 protected:
-  WritableMetric(const std::string &ref_id, const std::string &name,
-                 const std::string &desc)
-      : DeviceElement(ref_id, name, desc, ElementType::WRITABLE) {}
+  WritableMetric() = default;
 
 public:
   virtual DataVariant getMetricValue() {
