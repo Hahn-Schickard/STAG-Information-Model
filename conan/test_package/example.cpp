@@ -66,38 +66,12 @@ void print(DeviceElementPtr element, size_t offset) {
        << endl;
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
-  cout << string(offset, ' ')
-       << "Element type: " << toString(element->getElementType()) << endl;
 
-  switch (element->getElementType()) {
-  case ElementType::GROUP: {
-    print(static_pointer_cast<DeviceElementGroup>(element), offset);
-    break;
-  }
-  case ElementType::READABLE: {
-    print(static_pointer_cast<Metric>(element), offset);
-    break;
-  }
-  case ElementType::WRITABLE: {
-    print(static_pointer_cast<WritableMetric>(element), offset);
-    break;
-  }
-  case ElementType::FUNCTION: {
-    cerr << string(offset, ' ') << "Function element types are not implemented!"
-         << endl;
-    break;
-  }
-  case ElementType::OBSERVABLE: {
-    cerr << string(offset, ' ')
-         << "Observable elements types are not implemented!" << endl;
-    break;
-  }
-  case ElementType::UNDEFINED:
-  default: {
-    cerr << string(offset, ' ') << "Is not a valid element type!" << endl;
-    break;
-  }
-  }
+  match(element->specific_interface,
+    [offset](DeviceElementGroupPtr interface){print(interface,offset);},
+    [offset](MetricPtr interface){print(interface,offset);},
+    [offset](WritableMetricPtr interface){print(interface,offset);}
+    );
 }
 
 void print(DevicePtr device) {
