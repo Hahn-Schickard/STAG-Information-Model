@@ -13,9 +13,9 @@ namespace Information_Model {
 
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<
-    DeviceElementGroupPtr,
-    MetricPtr,
-    WritableMetricPtr>;
+    NonEmptyPtr<DeviceElementGroupPtr>,
+    NonEmptyPtr<MetricPtr>,
+    NonEmptyPtr<WritableMetricPtr>>;
 
   DeviceElement() = default;
   DeviceElement(const std::string &ref_id, const std::string &name,
