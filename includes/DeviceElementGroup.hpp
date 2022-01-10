@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "NonemptyPtr.hpp"
+
 namespace Information_Model {
 class DeviceElement;
 
@@ -14,7 +16,8 @@ protected:
   DeviceElementGroup() = default;
 
 public:
-  using DeviceElements = std::vector<std::shared_ptr<DeviceElement>>;
+  using DeviceElements =
+    std::vector<NonEmptyPtr<std::shared_ptr<DeviceElement>>>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(

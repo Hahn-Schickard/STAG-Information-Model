@@ -17,7 +17,7 @@ protected:
       : NamedElement(ref_id, name, desc) {}
 
 public:
-  virtual DeviceElementGroupPtr getDeviceElementGroup() {
+  virtual NonEmptyPtr<DeviceElementGroupPtr> getDeviceElementGroup() {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
