@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
+
 namespace Information_Model {
 /**
  * @brief A read and writable metric. If this metric does not support active
@@ -38,6 +40,7 @@ public:
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
+using NonemptyWritableMetricPtr = NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP

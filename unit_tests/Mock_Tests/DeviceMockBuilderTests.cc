@@ -52,7 +52,7 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_EQ(ref_id, group_element->getElementId());
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
-  EXPECT_TRUE(std::holds_alternative<DeviceElementGroupPtr>(
+  EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
     group_element->specific_interface));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
@@ -88,7 +88,7 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_EQ(subgroup_ref_id, group_element->getElementId());
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
-  EXPECT_TRUE(std::holds_alternative<DeviceElementGroupPtr>(
+  EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
     group_element->specific_interface));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
@@ -119,10 +119,11 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_EQ(ref_id, element->getElementId());
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
-  EXPECT_TRUE(std::holds_alternative<MetricPtr>(element->specific_interface));
+  EXPECT_TRUE(std::holds_alternative<NonemptyMetricPtr>(
+    element->specific_interface));
 
-  auto metric = std::get<MetricPtr>(element->specific_interface);
-  auto mocked_metric = static_pointer_cast<MockMetric>(metric);
+  auto metric = std::get<NonemptyMetricPtr>(element->specific_interface);
+  auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
   EXPECT_CALL(*mocked_metric, getDataType());
   metric->getDataType();
@@ -166,8 +167,9 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_EQ(element_desc, element->getElementDescription());
 
   auto writable_metric =
-    std::get<WritableMetricPtr>(element->specific_interface);
-  auto mocked_metric = static_pointer_cast<MockWritableMetric>(writable_metric);
+    std::get<NonemptyWritableMetricPtr>(element->specific_interface);
+  auto mocked_metric =
+    static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
   EXPECT_CALL(*mocked_metric.get(), getDataType());
   writable_metric->getDataType();

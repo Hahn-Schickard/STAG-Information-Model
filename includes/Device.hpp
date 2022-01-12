@@ -17,7 +17,7 @@ protected:
       : NamedElement(ref_id, name, desc) {}
 
 public:
-  virtual NonEmptyPtr<DeviceElementGroupPtr> getDeviceElementGroup() {
+  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
@@ -31,6 +31,7 @@ public:
 };
 
 using DevicePtr = std::shared_ptr<Device>;
+using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_HPP

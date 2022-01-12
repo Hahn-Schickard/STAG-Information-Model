@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "NonemptyPtr.hpp"
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
 class DeviceElement;
@@ -17,7 +17,7 @@ protected:
 
 public:
   using DeviceElements =
-    std::vector<NonEmptyPtr<std::shared_ptr<DeviceElement>>>;
+    std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(
@@ -35,6 +35,8 @@ public:
 };
 
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
+using NonemptyDeviceElementGroupPtr
+  = NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP

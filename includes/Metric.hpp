@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
+
 namespace Information_Model {
 /**
  * @brief Read only Metric of a given type.
@@ -31,6 +33,7 @@ public:
 };
 
 using MetricPtr = std::shared_ptr<Metric>;
+using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_METRIC_HPP

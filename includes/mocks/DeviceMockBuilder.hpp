@@ -111,12 +111,13 @@ public:
     if (device_) {
       if (ref_id.empty()) {
         return std::static_pointer_cast<MockDeviceElementGroup>(
-            device_->getDeviceElementGroup());
+            device_->getDeviceElementGroup().base());
       } else {
         return std::static_pointer_cast<MockDeviceElementGroup>(
-          std::get<DeviceElementGroupPtr>(
+          std::get<NonemptyDeviceElementGroupPtr>(
             device_->getDeviceElementGroup()->getSubelement(ref_id)
-              ->specific_interface));
+              ->specific_interface)
+            .base());
       }
     } else {
       throw std::runtime_error("Device base was not built!");

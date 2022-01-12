@@ -13,9 +13,9 @@ namespace Information_Model {
 
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<
-    NonEmptyPtr<DeviceElementGroupPtr>,
-    NonEmptyPtr<MetricPtr>,
-    NonEmptyPtr<WritableMetricPtr>>;
+    NonemptyDeviceElementGroupPtr,
+    NonemptyMetricPtr,
+    NonemptyWritableMetricPtr>;
 
   DeviceElement() = default;
   DeviceElement(const std::string &ref_id, const std::string &name,
@@ -29,6 +29,7 @@ struct DeviceElement : NamedElement {
 };
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
+using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_HPP
