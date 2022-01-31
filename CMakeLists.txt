@@ -23,6 +23,7 @@ execute_conan_install()
 #@+ ======================== User PACKAGES configuration ===========================
 list(APPEND DEPENDENCIES_LIST 
             Variant_Visitor
+            Nonempty_Pointer
 )
 #@- ========================= END OF USER CONFIGURATION ============================
 

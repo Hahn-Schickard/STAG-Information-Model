@@ -16,20 +16,15 @@ class MockMetric : public Metric {
   DataVariant value_;
 
 public:
-  MockMetric() = delete;
-
-  MockMetric(const std::string &ref_id, const std::string &name,
-             const std::string &desc)
-      : Metric(ref_id, name, desc), type_(DataType::UNKNOWN),
+  MockMetric()
+      : Metric(), type_(DataType::UNKNOWN),
         value_(DataVariant((bool)false)) {}
 
-  MockMetric(const std::string &ref_id, const std::string &name,
-             const std::string &desc, DataType type)
-      : Metric(ref_id, name, desc), type_(type), value_(setVariant(type_)) {}
+  MockMetric(DataType type)
+      : Metric(), type_(type), value_(setVariant(type_)) {}
 
-  MockMetric(const std::string &ref_id, const std::string &name,
-             const std::string &desc, DataType type, const DataVariant &variant)
-      : Metric(ref_id, name, desc), type_(type), value_(variant) {}
+  MockMetric(DataType type, const DataVariant &variant)
+      : Metric(), type_(type), value_(variant) {}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));

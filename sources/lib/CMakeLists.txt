@@ -20,6 +20,7 @@ add_library(${THIS} INTERFACE)
 target_link_libraries(${THIS} INTERFACE 
                               GTest::GTest
                               Variant_Visitor::Variant_Visitor
+                              Nonempty_Pointer::Nonempty_Pointer
 )
 
 target_include_directories(${THIS} INTERFACE

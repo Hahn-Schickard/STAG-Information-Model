@@ -111,10 +111,13 @@ public:
     if (device_) {
       if (ref_id.empty()) {
         return std::static_pointer_cast<MockDeviceElementGroup>(
-            device_->getDeviceElementGroup());
+            device_->getDeviceElementGroup().base());
       } else {
         return std::static_pointer_cast<MockDeviceElementGroup>(
-            device_->getDeviceElementGroup()->getSubelement(ref_id));
+          std::get<NonemptyDeviceElementGroupPtr>(
+            device_->getDeviceElementGroup()->getSubelement(ref_id)
+              ->specific_interface)
+            .base());
       }
     } else {
       throw std::runtime_error("Device base was not built!");
@@ -135,7 +138,6 @@ public:
       ref_id = group->addSubgroup(name, desc);
       break;
     };
-    case ElementType::OBSERVABLE:
     case ElementType::WRITABLE: {
       ref_id =
           group->addWritableMetric(name, desc, data_type, read_cb, write_cb);
@@ -145,7 +147,6 @@ public:
       ref_id = group->addReadableMetric(name, desc, data_type, read_cb);
       break;
     }
-    case ElementType::FUNCTION:
     default: { break; }
     }
     return ref_id;

@@ -17,22 +17,17 @@ class MockWritableMetric : public WritableMetric {
   DataVariant value_;
 
 public:
-  MockWritableMetric() = delete;
-
-  MockWritableMetric(const std::string &ref_id, const std::string &name,
-                     const std::string &desc)
-      : WritableMetric(ref_id, name, desc), type_(DataType::UNKNOWN),
+  MockWritableMetric()
+      : WritableMetric(), type_(DataType::UNKNOWN),
         value_(DataVariant((bool)false)) {}
 
-  MockWritableMetric(const std::string &ref_id, const std::string &name,
-                     const std::string &desc, DataType type)
-      : WritableMetric(ref_id, name, desc), type_(type),
+  MockWritableMetric(DataType type)
+      : WritableMetric(), type_(type),
         value_(setVariant(type_)) {}
 
-  MockWritableMetric(const std::string &ref_id, const std::string &name,
-                     const std::string &desc, DataType type,
+  MockWritableMetric(DataType type,
                      const DataVariant &variant)
-      : WritableMetric(ref_id, name, desc), type_(type), value_(variant) {}
+      : WritableMetric(), type_(type), value_(variant) {}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));

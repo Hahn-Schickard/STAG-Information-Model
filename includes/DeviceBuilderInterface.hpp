@@ -15,6 +15,17 @@ using ReadFunctor = std::function<DataVariant()>;
 using WriteFunctor = std::function<void(DataVariant)>;
 
 /**
+ * @enum ElementTypeEnum
+ * @brief ElementType enumeration, specifying the available DeviceElement types
+ *
+ */
+enum class ElementType {
+  GROUP,      /*!< Groupping element, aka list */
+  READABLE,   /*!< Metric with read access */
+  WRITABLE    /*!< Metric with write access */
+};
+
+/**
  * @brief This Interface is used by Technology Adapter implementations to build
  * a device within the Information Model
  *

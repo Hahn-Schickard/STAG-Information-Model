@@ -2,21 +2,21 @@
 #define __INFORMATION_MODEL_METRIC_HPP
 
 #include "DataVariant.hpp"
-#include "DeviceElement.hpp"
 
+#include <memory>
 #include <stdexcept>
 #include <string>
+
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
 /**
  * @brief Read only Metric of a given type.
  *
  */
-class Metric : public DeviceElement {
+class Metric {
 protected:
-  Metric(const std::string &ref_id, const std::string &name,
-         const std::string &desc)
-      : DeviceElement(ref_id, name, desc, ElementType::READABLE) {}
+  Metric() = default;
 
 public:
   virtual DataVariant getMetricValue() {
@@ -33,6 +33,7 @@ public:
 };
 
 using MetricPtr = std::shared_ptr<Metric>;
+using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_METRIC_HPP

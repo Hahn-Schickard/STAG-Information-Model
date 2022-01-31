@@ -11,6 +11,7 @@ class PackageConan(ConanFile):
     requires = [
         "gtest/1.10.0",
         "Variant_Visitor/0.1.0@hahn-schickard/stable",
+        "Nonempty_Pointer/0.1.0@hahn-schickard/stable",
     ]
 
     settings = "cppstd", "os", "compiler", "build_type", "arch"

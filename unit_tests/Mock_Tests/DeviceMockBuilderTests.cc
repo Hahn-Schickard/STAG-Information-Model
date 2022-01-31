@@ -43,17 +43,17 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_NO_THROW(device = builder->getResult());
 
   auto base_group = device->getDeviceElementGroup();
-  EXPECT_EQ("1234:", base_group->getElementId());
-  EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked device", base_group->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
   EXPECT_EQ(1, base_group->getSubelements().size());
 
   auto group_element = base_group->getSubelement(ref_id);
   EXPECT_EQ(ref_id, group_element->getElementId());
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, group_element->getElementType());
+  EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
+    group_element->specific_interface));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -79,17 +79,17 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_NO_THROW(device = builder->getResult());
 
   auto base_group = device->getDeviceElementGroup();
-  EXPECT_EQ("1234:", base_group->getElementId());
-  EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked device", base_group->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
   EXPECT_EQ(1, base_group->getSubelements().size());
 
   auto group_element = base_group->getSubelement(subgroup_ref_id);
   EXPECT_EQ(subgroup_ref_id, group_element->getElementId());
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, group_element->getElementType());
+  EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
+    group_element->specific_interface));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -110,22 +110,22 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_NO_THROW(device = builder->getResult());
 
   auto base_group = device->getDeviceElementGroup();
-  EXPECT_EQ("1234:", base_group->getElementId());
-  EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked device", base_group->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
   EXPECT_EQ(1, base_group->getSubelements().size());
 
   auto element = base_group->getSubelement(ref_id);
   EXPECT_EQ(ref_id, element->getElementId());
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
-  EXPECT_EQ(ElementType::READABLE, element->getElementType());
+  EXPECT_TRUE(std::holds_alternative<NonemptyMetricPtr>(
+    element->specific_interface));
 
-  auto mocked_metric = static_pointer_cast<MockMetric>(element);
+  auto metric = std::get<NonemptyMetricPtr>(element->specific_interface);
+  auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
   EXPECT_CALL(*mocked_metric, getDataType());
-  auto metric = static_pointer_cast<Metric>(element);
   metric->getDataType();
 
   EXPECT_CALL(*mocked_metric, getMetricValue());
@@ -156,22 +156,22 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_NO_THROW(device = builder->getResult());
 
   auto base_group = device->getDeviceElementGroup();
-  EXPECT_EQ("1234:", base_group->getElementId());
-  EXPECT_EQ("Mocky", base_group->getElementName());
-  EXPECT_EQ("Mocked device", base_group->getElementDescription());
-  EXPECT_EQ(ElementType::GROUP, base_group->getElementType());
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
   EXPECT_EQ(1, base_group->getSubelements().size());
 
   auto element = base_group->getSubelement(ref_id);
   EXPECT_EQ(ref_id, element->getElementId());
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
-  EXPECT_EQ(ElementType::WRITABLE, element->getElementType());
 
-  auto mocked_metric = static_pointer_cast<MockWritableMetric>(element);
+  auto writable_metric =
+    std::get<NonemptyWritableMetricPtr>(element->specific_interface);
+  auto mocked_metric =
+    static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
   EXPECT_CALL(*mocked_metric.get(), getDataType());
-  auto writable_metric = static_pointer_cast<WritableMetric>(element);
   writable_metric->getDataType();
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());

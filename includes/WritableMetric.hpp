@@ -2,10 +2,12 @@
 #define __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
 
 #include "DataVariant.hpp"
-#include "DeviceElement.hpp"
 
+#include <memory>
 #include <stdexcept>
 #include <string>
+
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
 /**
@@ -14,11 +16,9 @@ namespace Information_Model {
  * default data type value (for example: bool = true, int = 0, string = "");
  *
  */
-class WritableMetric : public DeviceElement {
+class WritableMetric {
 protected:
-  WritableMetric(const std::string &ref_id, const std::string &name,
-                 const std::string &desc)
-      : DeviceElement(ref_id, name, desc, ElementType::WRITABLE) {}
+  WritableMetric() = default;
 
 public:
   virtual DataVariant getMetricValue() {
@@ -40,6 +40,7 @@ public:
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
+using NonemptyWritableMetricPtr = NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP

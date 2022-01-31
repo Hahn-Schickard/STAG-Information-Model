@@ -18,7 +18,7 @@ namespace testing {
  *
  */
 class MockDevice : public Device {
-  ::testing::NiceMock<MockDeviceElementGroupPtr> base_group_;
+  NonemptyDeviceElementGroupPtr base_group_;
 
 public:
   MockDevice(const std::string &ref_id, const std::string &name,
@@ -26,10 +26,12 @@ public:
       : Device(ref_id, name, desc),
         base_group_(
             std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(
-                ref_id + ":", name, desc)) {
+                ref_id + ":")) {
     ON_CALL(*this, getDeviceElementGroup)
         .WillByDefault(
-            [this]() -> DeviceElementGroupPtr { return base_group_; });
+            [this]() -> NonemptyDeviceElementGroupPtr {
+              return NonemptyDeviceElementGroupPtr(base_group_);
+            });
 
     ON_CALL(*this, getDeviceElement)
         .WillByDefault([this](const std::string &ref_id) -> DeviceElementPtr {
@@ -37,10 +39,10 @@ public:
         });
   }
 
-  MOCK_METHOD(DeviceElementGroupPtr, getDeviceElementGroup, (), (override));
+  MOCK_METHOD(NonemptyDeviceElementGroupPtr, getDeviceElementGroup, ());
 
   MOCK_METHOD(DeviceElementPtr, getDeviceElement,
-              (const std::string & /*ref_id*/), (override));
+              (const std::string & /*ref_id*/));
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
