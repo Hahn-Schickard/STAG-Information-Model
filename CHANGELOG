@@ -1,3 +1,32 @@
+## [0.2.0] - 2022.02.02
+### Added
+ - Dependency to project Nonempty_Pointer
+ - type NonemptyNamedElementPtr
+ - type NonemptyDevicePtr
+ - type NonemptyDeviceElementPtr
+ - type NonemptyDeviceElementGroupPtr
+ - type NonemptyMetricPtr
+ - type NonemptyWritableMetricPtr
+
+### Changed
+ - DeviceElement inheritance into a variant of pointers to more specific interfaces
+ - Moved ElementType from DeviceElement.hpp to DeviceElementBuilder.hpp
+ - Device::getDeviceElementGroup return type from DeviceElementGroupPtr to
+   NonemptyDeviceElementGroupPtr
+ - DeviceElementGroup::DeviceElements to contain NonemptyPtr
+ - MockDeviceElementGroup::DeviceElementsMap to contain NonemptyPtr
+
+### Removed
+ - DeviceElement inheritance from DeviceElementGroup, Metric, and WritableMetric
+ - cases UNDEFINED, OBSERVABLE, and FUNCTION from ElementType
+ - toString(ElementType)
+ - arguments name and desc from MockDeviceElementGroup constructor
+ - arguments ref_id, name and desc from MockMetric constructors
+ - arguments ref_id, name and desc from MockWritableMetric constructors
+
+### Fixed
+ - typo in source code
+
 ## [0.1.6] - 2021.12.14
 ### Changed 
  - DataVariant int64_t to intmax_t

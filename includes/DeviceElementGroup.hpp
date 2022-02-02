@@ -16,6 +16,7 @@ protected:
   DeviceElementGroup() = default;
 
 public:
+  /** aka std::vector<NonemptyDeviceElementPtr> */
   using DeviceElements =
     std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
 
