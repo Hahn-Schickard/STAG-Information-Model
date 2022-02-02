@@ -39,10 +39,11 @@ public:
         });
   }
 
-  MOCK_METHOD(NonemptyDeviceElementGroupPtr, getDeviceElementGroup, ());
+  MOCK_METHOD(
+    NonemptyDeviceElementGroupPtr, getDeviceElementGroup, (), (override));
 
   MOCK_METHOD(DeviceElementPtr, getDeviceElement,
-              (const std::string & /*ref_id*/));
+              (const std::string & /*ref_id*/), (override));
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
