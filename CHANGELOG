@@ -1,65 +1,67 @@
 ## [0.2.0] - 2022.02.02
 ### Added
  - Dependency to project Nonempty_Pointer
- - type NonemptyNamedElementPtr
- - type NonemptyDevicePtr
- - type NonemptyDeviceElementPtr
- - type NonemptyDeviceElementGroupPtr
- - type NonemptyMetricPtr
- - type NonemptyWritableMetricPtr
+ - type `NonemptyNamedElementPtr`
+ - type `NonemptyDevicePtr`
+ - type `NonemptyDeviceElementPtr`
+ - type `NonemptyDeviceElementGroupPtr`
+ - type `NonemptyMetricPtr`
+ - type `NonemptyWritableMetricPtr`
 
 ### Changed
- - DeviceElement inheritance into a variant of pointers to more specific interfaces
- - Moved ElementType from DeviceElement.hpp to DeviceElementBuilder.hpp
- - Device::getDeviceElementGroup return type from DeviceElementGroupPtr to
-   NonemptyDeviceElementGroupPtr
- - DeviceElementGroup::DeviceElements to contain NonemptyPtr
- - MockDeviceElementGroup::DeviceElementsMap to contain NonemptyPtr
+ - `DeviceElement` inheritance into a variant of pointers to more specific
+   interfaces
+ - Moved `ElementType` from DeviceElement.hpp to DeviceElementBuilder.hpp
+ - `Device::getDeviceElementGroup` return type from `DeviceElementGroupPtr` to
+   `NonemptyDeviceElementGroupPtr`
+ - `DeviceElementGroup::DeviceElements` to contain `NonemptyPtr`
+ - `MockDeviceElementGroup::DeviceElementsMap` to contain `NonemptyPtr`
 
 ### Removed
- - DeviceElement inheritance from DeviceElementGroup, Metric, and WritableMetric
- - cases UNDEFINED, OBSERVABLE, and FUNCTION from ElementType
- - toString(ElementType)
- - arguments name and desc from MockDeviceElementGroup constructor
- - arguments ref_id, name and desc from MockMetric constructors
- - arguments ref_id, name and desc from MockWritableMetric constructors
+ - `DeviceElement` inheritance from `DeviceElementGroup`, `Metric`, and
+   `WritableMetric`
+ - cases `UNDEFINED`, `OBSERVABLE`, and `FUNCTION` from `ElementType`
+ - `toString(ElementType)`
+ - arguments `name` and `desc` from `MockDeviceElementGroup` constructor
+ - arguments `ref_id`, `name` and `desc` from `MockMetric` constructors
+ - arguments `ref_id`, `name` and `desc` from `MockWritableMetric` constructors
 
 ### Fixed
  - typo in source code
 
 ## [0.1.6] - 2021.12.14
 ### Changed 
- - DataVariant int64_t to intmax_t
- - DataVariant uint64_t to uintmax_t 
- - DataVariant setVariant(DataType::INTEGER) to set (intmax_t)0 instead of (int64_t)0
- - DataVariant setVariant(DataType::UNSIGNED_INTEGER) to set (uintmax_t)0 instead of (uint64_t)0
- - MetricTests DataType::INTEGER test parameter to be set to intmax_t instead of int64_t
- - MetricTests DataType::UNSIGNED_INTEGER test parameter to be set to uintmax_t instead of uint64_t
- - WritableMetricTests::canSetIntegerValue to set Metric value to intmax_t instead of int64_t
- - Device::getDeviceElementGroup() method from pure virtual, to virtual method with base implementation
- - Device::getDeviceElement() method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::buildDeviceBase method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addDeviceElementGroup to root group method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addDeviceElementGroup to subgroup method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addReadableMetric to root group method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addReadableMetric to subgroup method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addWritableMetric to root group method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addWritableMetric to subgroup method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::addDeviceElement method from pure virtual, to virtual method with base implementation
- - DeviceBuilderInterface::getResult method from pure virtual, to virtual method with base implementation
- - DeviceElementGroup::getSubelements method from pure virtual, to virtual method with base implementation
- - DeviceElementGroup::getSubelement method from pure virtual, to virtual method with base implementation
- - Metric::getMetricValue method from pure virtual, to virtual method with base implementation
- - Metric::getDataType method from pure virtual, to virtual method with base implementation 
- - WritableMetric::getMetricValue method from pure virtual, to virtual method with base implementation
- - WritableMetric::setMetricValue method from pure virtual, to virtual method with base implementation
- - WritableMetric::getDataType method from pure virtual, to virtual method with base implementation
+ - `DataVariant` `int64_t` to `intmax_t`
+ - `DataVariant` `uint64_t` to `uintmax_t`
+ - `DataVariant setVariant(DataType::INTEGER)` to set `(intmax_t)0` instead of `(int64_t)0`
+ - `DataVariant setVariant(DataType::UNSIGNED_INTEGER)` to set `(uintmax_t)0` instead of `(uint64_t)0`
+ - `MetricTests` `DataType::INTEGER` test parameter to be set to `intmax_t` instead of `int64_t`
+ - `MetricTests` `DataType::UNSIGNED_INTEGER` test parameter to be set to `uintmax_t` instead of `uint64_t`
+ - `WritableMetricTests::canSetIntegerValue` to set `Metric` value to `intmax_t` instead of `int64_t`
+ - `Device::getDeviceElementGroup()` method from pure virtual, to virtual method with base implementation
+ - `Device::getDeviceElement()` method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::buildDeviceBase` method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addDeviceElementGroup` to root group method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addDeviceElementGroup` to subgroup method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addReadableMetric` to root group method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addReadableMetric` to subgroup method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addWritableMetric` to root group method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addWritableMetric` to subgroup method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::addDeviceElement` method from pure virtual, to virtual method with base implementation
+ - `DeviceBuilderInterface::getResult` method from pure virtual, to virtual method with base implementation
+ - `DeviceElementGroup::getSubelements` method from pure virtual, to virtual method with base implementation
+ - `DeviceElementGroup::getSubelement` method from pure virtual, to virtual method with base implementation
+ - `Metric::getMetricValue` method from pure virtual, to virtual method with base implementation
+ - `Metric::getDataType` method from pure virtual, to virtual method with base implementation 
+ - `WritableMetric::getMetricValue` method from pure virtual, to virtual method with base implementation
+ - `WritableMetric::setMetricValue` method from pure virtual, to virtual method with base implementation
+ - `WritableMetric::getDataType` method from pure virtual, to virtual method with base implementation
  - unused method parameter names to comment blocks
- - MetricTests to build MockMetric for each test from the provided Expectations to avoid dangling resources after global test teardown
+ - `MetricTests` to build `MockMetric` for each test from the provided `Expectations` to avoid dangling resources after global test teardown
 
 ### Added
-  - size_of(DataVariant) function
-  - MockMetric::clearExpectations method to allow the user to unset ON_CALL and EXPECT_CALL actions
+  - `size_of(DataVariant)` function
+  - `MockMetric::clearExpectations` method to allow the user to unset `ON_CALL` and `EXPECT_CALL` actions
   - stdexcept header to Device, DeviceBuilderInterface, DeviceElementGroup, Metric and WritableMetric units
   - optional header to DeviceElementGroup_MOCK
 
@@ -72,12 +74,12 @@
  - install include paths to resolve potential header name collisions 
  - DeviceBuilderInterface_MOCK.hpp to use relative path in includes
  - DeviceElementGroup_MOCK.hpp to use relative path in includes
- - DeviceElementGroup_MOCK::addReadableMetric method to set the read callback 
- - DeviceElementGroup_MOCK::addWritableMetric method to set the read and write callbacks 
+ - `DeviceElementGroup_MOCK::addReadableMetric` method to set the read callback 
+ - `DeviceElementGroup_MOCK::addWritableMetric` method to set the read and write callbacks 
  - DeviceMockBuilder.hpp to use relative path in includes
- - DeviceMockBuilder to allow adding metrics without any callbacks 
+ - `DeviceMockBuilder` to allow adding metrics without any callbacks 
  - Device_MOCK.hpp to use relative path in includes
- - MockDevice to use NiceMock<MockDeviceElementGroupPtr> to suppress GTest unused mock warnings
+ - `MockDevice` to use `NiceMock<MockDeviceElementGroupPtr>` to suppress GTest unused mock warnings
  - Metric_MOCK.hpp to use relative path in includes
  - WritableMetric_MOCK.hpp to use relative path in includes
  - conan example.cpp to use correct inclusion paths
@@ -86,16 +88,16 @@
  - Variant Visitor dependency
  - example main.cpp runner to showcase usage
  - valgrind checks to main.cpp
- - toString(DataVariant) function
- - setVariant(DataType) function
- - toString(ElementType) function
- - delegateToFake method to MockMetric 
- - delegateToFake method to MockWritableMetric 
+ - `toString(DataVariant)` function
+ - `setVariant(DataType)` function
+ - `toString(ElementType)` function
+ - `delegateToFake` method to `MockMetric`
+ - `delegateToFake` method to `MockWritableMetric`
 
 ## [0.1.4] - 2020.11.05
 ### Added 
  - POSIX time data type
- - DateTime test case 
+ - `DateTime` test case 
  - missing virtual destructors
 
 ### Changed 
@@ -103,42 +105,42 @@
 
 ## [0.1.3] - 2020.10.21
 ### Added 
- - DeviceBuilderInterface from Technology_Adapter_Interface
- - DeviceBuilderInterface_MOCK 
- - DeviceMockBuilder
- - NamedElementPtr alias
- - DeviceElementPtr alias
- - DeviceElementGroupPtr alias
- - DeviceElements internal class alias
- - MetricPtr alias
- - WritableMetricPtr alias
- - DevicePtr alias
+ - `DeviceBuilderInterface` from Technology_Adapter_Interface
+ - `DeviceBuilderInterface_MOCK`
+ - `DeviceMockBuilder`
+ - `NamedElementPtr` alias
+ - `DeviceElementPtr` alias
+ - `DeviceElementGroupPtr` alias
+ - `DeviceElements` internal class alias
+ - `MetricPtr` alias
+ - `WritableMetricPtr` alias
+ - `DevicePtr` alias
  - New mocking documentation
  - main.md
- - DeviceMockBuilderTests
+ - `DeviceMockBuilderTests`
 
 ### Changed 
  - Header formatting, to better fit project standard 
 
 ### Removed
- - DeviceElement_FAKE
+ - `DeviceElement_FAKE`
  - Duplicate test in DeviceTests.cc
 
 ## [0.1.2] - 2020.10.01
 ### Added
- - std::vector<uint8_t> type to DataVariant
- - uint64_t type to DataVariant
- - UNSIGNED_INTEGER type to DataTypeEnum
- - OPAQUE type to DataTypeEnum
+ - `std::vector<uint8_t>` type to `DataVariant`
+ - `uint64_t` type to `DataVariant`
+ - `UNSIGNED_INTEGER` type to `DataTypeEnum`
+ - `OPAQUE` type to `DataTypeEnum`
 
 ### Changed
  - conan package type to header only
 
 ### Removed 
- - uint8_t type from DataVariant
- - uint16_t type from DataVariant
- - uint32_t type from DataVariant
- - float type from DataVariant
+ - `uint8_t` type from `DataVariant`
+ - `uint16_t` type from `DataVariant`
+ - `uint32_t` type from `DataVariant`
+ - `float` type from `DataVariant`
  - Variant visitor
 
 ## [0.1.1] - 2020.09.28
@@ -148,7 +150,7 @@
  - old Device Test cases into Device Test suite 
 
 ### Changed 
- - ElementRefID() to ElementId()
+ - `ElementRefID()` to `ElementId()`
 
 ## [0.1.0] - 2020.09.15
 ### Added
@@ -157,7 +159,7 @@
  - License 
  - Notice
  - conanfile for conan package configurator
- - DataVariant type and data type pattern matcher consumer. 
+ - `DataVariant` type and data type pattern matcher consumer. 
  - Cpp CXX17 Standard requirement
  - conan package support
  - conan.cmake
@@ -166,7 +168,7 @@
 
 ### Changed
  - Various test cases
- - Writable and Readable Metrics to use DataVariant instead of DataWrapper
+ - Writable and Readable Metrics to use `DataVariant` instead of `DataWrapper`
  - Writable and Readable Metrics into interfaces 
  - CMakeLists.txt to use Cmake 3.x best practices 
  - Gtest runner to use *.cc extension instead of *.cpp
@@ -179,9 +181,9 @@
  - Unit tests structure
 
 ### Removed
- - Downloading Gtest via Cmake module ExternalProjectAdd
- - InformationModelExceptions
- - DataWrapper
+ - Downloading Gtest via Cmake module `ExternalProjectAdd`
+ - `InformationModelExceptions`
+ - `DataWrapper`
  - CPack support
  - Old test cases
 
@@ -189,21 +191,21 @@
 ### Added 
  - Draft Writable Metric template implementation
  - Writable Metric test cases and FAKE implementation
- - Draft Metric template implementation
- - Metric test cases and FAKE implementation
- - DataWrapper template to encapsulate used data types
- - DataWrapper template FAKE for gtest mocking
+ - Draft `Metric` template implementation
+ - `Metric` test cases and FAKE implementation
+ - `DataWrapper` template to encapsulate used data types
+ - `DataWrapper` template FAKE for gtest mocking
  - Added CPack configuration
  - Updated to Cpp Project template v0.8.27 
- - Reworked raw pointers into smart pointers for the Device elements
- - InformationModelExceptions
- - DeviceElementGroup interface
- - DeviceElement interface
- - Device interface
- - NamedElement
- - Test cases for DeviceElement methods
- - Test cases for DeviceElementGroup methods
- - Test cases for Device methods
+ - Reworked raw pointers into smart pointers for the `Device` elements
+ - `InformationModelExceptions`
+ - `DeviceElementGroup` interface
+ - `DeviceElement` interface
+ - `Device` interface
+ - `NamedElement`
+ - Test cases for `DeviceElement` methods
+ - Test cases for `DeviceElementGroup` methods
+ - Test cases for `Device` methods
  - GTest runner
  - CMakeLists.txt
  - Readme
