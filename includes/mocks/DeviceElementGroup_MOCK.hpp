@@ -163,9 +163,9 @@ public:
    */
   std::string addSubgroup(const std::string &name, const std::string &desc) {
     auto ref_id = generateReferenceID();
-    NonemptyDeviceElementGroupPtr sub_group =
+    NonemptyDeviceElementGroupPtr sub_group(
       NonemptyPointer::make_shared<::testing::NiceMock<MockDeviceElementGroup>>
-        (ref_id);
+        (ref_id));
     std::pair<std::string, NonemptyDeviceElementPtr>
       element_pair(
         ref_id,
