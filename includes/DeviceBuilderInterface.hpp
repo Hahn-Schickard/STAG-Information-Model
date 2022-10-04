@@ -16,7 +16,7 @@ using WriteFunctor = std::function<void(DataVariant)>;
 
 /**
  * @enum ElementTypeEnum
- * @brief ElementType enumeration, specifying the available DeviceElement types
+ * @brief ElementType enumeration, specifying the available DeviceElement types.
  *
  */
 enum class ElementType {
@@ -27,7 +27,7 @@ enum class ElementType {
 
 /**
  * @brief This Interface is used by Technology Adapter implementations to build
- * a device within the Information Model
+ * a device within the Information Model.
  *
  */
 class DeviceBuilderInterface {
@@ -56,10 +56,13 @@ public:
    *
    * This method creates a new DeviceElementGroup instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
-   * DeviceElement ID of the said newly created DeviceElementGroup. Returned
+   * DeviceElement ID of the newly created DeviceElementGroup. The returned
    * string will be based on the unique id, provided by the user with the
-   * previously called buildDeviceBase() method. The format of this string the
-   * be as follows: DEVICE_UNIQUE_ID:ELEMENT_ID
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
    *
    * @param name
    * @param desc
@@ -72,7 +75,7 @@ public:
   }
 
   /**
-   * @brief Adds a group element to another DeviceElementGroup. Parent group
+   * @brief Adds a group element to another DeviceElementGroup. The parent group
    * element MUST exist.
    *
    * This method creates a new DeviceElementGroup instance, adds it to the
@@ -80,16 +83,18 @@ public:
    * DeviceElement ID of the newly created DeviceElementGroup.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call
+   * addDeviceElementGroup() or addDeviceElement() call.
    *
-   * The returned string will be based on the unique id, provided by the user with
-   * the previously called buildDeviceBase() method. The format of this string
-   * will be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string will be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
    *
-   * If the specified parent DeviceElementGroup is a subgroup itself, the returned
-   * string will represent it as a new ID element as such:
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID. A similar
-   * format will be used in the nth level of subgroups as well.
+   * If the specified parent DeviceElementGroup is a subgroup itself, the
+   * returned string will represent it as a new ID element as such:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * @endcode
+   * A similar format will be used in the nth level of subgroups as well.
    *
    * @param group_refid
    * @param name
@@ -107,10 +112,13 @@ public:
    *
    * This method creates a new Metric instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
-   * DeviceElement ID of the said newly created Metric. Returned
+   * DeviceElement ID of the newly created Metric. The returned
    * string will be based on the unique id, provided by the user with the
-   * previously called buildDeviceBase() method. The format of this string the
-   * be as follows: DEVICE_UNIQUE_ID:ELEMENT_ID
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
    *
    * @param name
    * @param desc
@@ -135,16 +143,18 @@ public:
    * DeviceElement ID of the newly created Metric.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup(name,desc) or addDeviceElement(...) call
+   * addDeviceElementGroup() or addDeviceElement() call.
    *
-   * Returned string will be based on the unique id, provided by the user with
-   * the previously called buildDeviceBase() method. The format of this string
-   * the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
    *
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID. Similar
-   * format will be used nth level of subgroup as well.
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
    *
    * @param group_refid
    * @param name
@@ -167,10 +177,13 @@ public:
    *
    * This method creates a new WritableMetric instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
-   * DeviceElement ID of the said newly created WritableMetric. Returned
+   * DeviceElement ID of the newly created WritableMetric. The returned
    * string will be based on the unique id, provided by the user with the
-   * previously called buildDeviceBase() method. The format of this string the
-   * be as follows: DEVICE_UNIQUE_ID:ELEMENT_ID
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
    *
    * @param name
    * @param desc
@@ -189,23 +202,25 @@ public:
 
   /**
    * @brief Adds a writable metric with a given data type to another
-   * DeviceElementGroup. Parent group element MUST exist.
+   * DeviceElementGroup. The parent group element MUST exist.
    *
    * This method creates a new WritableMetric instance, adds it to the specified
    * DeviceElementGroup of the currently built device and returns the
-   * DeviceElement ID of the said newly created WritableMetric.
+   * DeviceElement ID of the newly created WritableMetric.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup(name,desc) or addDeviceElement(...) call
+   * addDeviceElementGroup() or addDeviceElement() call.
    *
-   * Returned string will be based on the unique id, provided by the user with
-   * the previously called buildDeviceBase() method. The format of this string
-   * the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
    *
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID. Similar
-   * format will be used nth level of subgroup as well.
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
    *
    * @param group_refid
    * @param name
@@ -226,41 +241,41 @@ public:
   }
 
   /**
-   * @brief Provides a generalized approach to creating any device element
+   * @brief Provides a generalized approach to creating any device element.
    *
    * To add a new root DeviceElementGroup call this method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement("",name,desc)
    * @endcode
    *
    * To add a new DeviceElementGroup to an existing DeviceElementGroup call this
    * method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement(parent_id,name,desc)
    * @endcode
    * The requested parent_id argument is obtained from previous
-   * addDeviceElementGroup(name,desc) or addDeviceElement(...) call
+   * addDeviceElementGroup() or addDeviceElement() call.
    *
    * To add a new root Readable metric call this method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement("",name,desc,ElementType::READABLE,data_type,read_cb)
    * @endcode
    * Where data_type specifies the desired DataType that this Metric
    * will model and read_cb specifies the functor callback used when trying to
-   * access the real value
+   * access the value.
    *
    * To add a new Readable metric to an existing DeviceElementGroup call this
    * method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement(parent_id,name,ElementType::READABLE,data_type,read_cb)
    * @endcode
    * The requested parent_id argument is obtained from previous
-   * addDeviceElementGroup(name,desc) or addDeviceElement(...) call, data_type
+   * addDeviceElementGroup() or addDeviceElement() call, data_type
    * specifies the desired DataType that this Metric will model and read_cb
-   * specifies the functor callback used when trying to access the real value
+   * specifies the functor callback used when trying to access the value.
    *
    * To add a new root Writable Metric call this method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement("",name,desc,ElementType::WRITABLE,data_type,read_cb,
    *     write_cb)
    * @endcode
@@ -273,12 +288,12 @@ public:
    *
    * To add a new Writable Metric to an existing DeviceElementGroup call this
    * method as follows:
-   * @code
+   * @code {cpp}
    * addDeviceElement(parent_id,name,desc,ElementType::WRITABLE,data_type,read_cb,
    *     write_cb)
    * @endcode
    * The requested parent_id argument is obtained from  previous
-   * addDeviceElementGroup(name,desc) or addDeviceElement(...) call, data_type
+   * addDeviceElementGroup() or addDeviceElement() call, data_type
    * specifies the desired DataType that this Metric will model, read_cb
    * specifies the functor callback used when trying to access the value
    * and write_cb specifies the functor callback used when trying to set the
@@ -307,7 +322,7 @@ public:
   /**
    * @brief Checks if the built result is valid and returns it.
    *
-   * If the device creation was not properly finished, throws an exception
+   * If the device creation was not properly finished, throws an exception.
    *
    * @return DevicePtr
    */
