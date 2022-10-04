@@ -1,4 +1,12 @@
 # Changelog
+## [0.2.1] - 2022.10.04
+### Changed 
+ - Nonempty_Pointer dependency to v0.1.2
+ - `toString(DataVariant)` implementation to reduce code repetition
+ - `size_of(DataVariant)` implementation to reduce code repetition
+ - DeviceBuilderInterface.hpp unit documentation
+ - `DeviceBuilderInterface::addDeviceElement()` default argument values
+
 ## [0.2.0] - 2022.02.02
 ### Added
  - Dependency to project Nonempty_Pointer
