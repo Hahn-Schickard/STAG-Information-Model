@@ -40,7 +40,8 @@ public:
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
-using NonemptyWritableMetricPtr = NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
+using NonemptyWritableMetricPtr =
+    NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP

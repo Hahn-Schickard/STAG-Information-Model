@@ -13,8 +13,8 @@ class NamedElement {
   std::string refID_;
 
 protected:
-  NamedElement(const std::string &ref_id, const std::string &name,
-               const std::string &desc)
+  NamedElement(const std::string& ref_id, const std::string& name,
+      const std::string& desc)
       : name_(name), desc_(desc), refID_(ref_id) {}
 
 public:

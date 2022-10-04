@@ -35,7 +35,7 @@ public:
   DateTime(std::time_t time_point) : posix_time_(time_point) {}
 
   /**
-   * @brief Converts POSIX time to human nreadable format
+   * @brief Converts POSIX time to human readable format
    *
    * @return std::string
    */
@@ -52,30 +52,30 @@ public:
 
   std::size_t size() { return sizeof(posix_time_); }
 
-  friend bool operator==(const DateTime &lhs, const DateTime &rhs);
-  friend bool operator!=(const DateTime &lhs, const DateTime &rhs);
-  friend bool operator<(const DateTime &lhs, const DateTime &rhs);
-  friend bool operator>(const DateTime &lhs, const DateTime &rhs);
-  friend bool operator<=(const DateTime &lhs, const DateTime &rhs);
-  friend bool operator>=(const DateTime &lhs, const DateTime &rhs);
+  friend bool operator==(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator<(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator>(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator<=(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator>=(const DateTime& lhs, const DateTime& rhs);
 };
 
-inline bool operator==(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator==(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ == rhs.posix_time_);
 }
-inline bool operator!=(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator!=(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ != rhs.posix_time_);
 }
-inline bool operator<(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator<(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ < rhs.posix_time_);
 }
-inline bool operator>(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator>(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ > rhs.posix_time_);
 }
-inline bool operator<=(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator<=(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ <= rhs.posix_time_);
 }
-inline bool operator>=(const DateTime &lhs, const DateTime &rhs) {
+inline bool operator>=(const DateTime& lhs, const DateTime& rhs) {
   return (lhs.posix_time_ >= rhs.posix_time_);
 }
 
@@ -85,14 +85,14 @@ inline bool operator>=(const DateTime &lhs, const DateTime &rhs) {
  *
  */
 enum class DataType {
-  BOOLEAN,          /*!< bool */
-  INTEGER,          /*!< intmax_t */
+  BOOLEAN, /*!< bool */
+  INTEGER, /*!< intmax_t */
   UNSIGNED_INTEGER, /*!< uintmax_t */
-  DOUBLE,           /*!< double */
-  TIME,             /*!< Information_Model::DateTime */
-  OPAQUE,           /*!< std::vector<uint8_t> */
-  STRING,           /*!< std::string */
-  UNKNOWN           /*!< fallback type */
+  DOUBLE, /*!< double */
+  TIME, /*!< Information_Model::DateTime */
+  OPAQUE, /*!< std::vector<uint8_t> */
+  STRING, /*!< std::string */
+  UNKNOWN /*!< fallback type */
 };
 
 inline std::string toString(DataType type) {
@@ -118,7 +118,7 @@ inline std::string toString(DataType type) {
 }
 
 using DataVariant = std::variant<bool, intmax_t, uintmax_t, double, DateTime,
-                                 std::vector<uint8_t>, std::string>;
+    std::vector<uint8_t>, std::string>;
 
 inline std::size_t size_of(DataVariant variant) {
   std::size_t result;

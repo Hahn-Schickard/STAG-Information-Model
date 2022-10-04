@@ -18,7 +18,7 @@ namespace testing {
  */
 class MockDeviceElementGroup : public DeviceElementGroup {
   using DeviceElementsMap =
-    std::unordered_map<std::string, NonemptyDeviceElementPtr>;
+      std::unordered_map<std::string, NonemptyDeviceElementPtr>;
   DeviceElementsMap elements_map_;
   size_t element_count_;
   std::string element_id_;
@@ -32,8 +32,8 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    * @param cut_off
    * @return size_t
    */
-  size_t countOccurrences(const std::string &input, const std::string &pattern,
-                          const std::string &cut_off) {
+  size_t countOccurrences(const std::string& input, const std::string& pattern,
+      const std::string& cut_off) {
     size_t count = 0;
     std::string buffer = input.substr(input.find(cut_off) + 1, input.size());
     if (!buffer.empty()) {
@@ -54,7 +54,7 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    * @param ref_id
    * @return size_t
    */
-  size_t getTreeLevel(const std::string &ref_id) {
+  size_t getTreeLevel(const std::string& ref_id) {
     return countOccurrences(ref_id, ".", ":");
   }
 
@@ -67,8 +67,8 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    * @param pattern
    * @return size_t
    */
-  size_t findNthSubstring(const std::string &input, size_t occurrence,
-                          const std::string &pattern) {
+  size_t findNthSubstring(
+      const std::string& input, size_t occurrence, const std::string& pattern) {
     if (0 == occurrence) {
       return std::string::npos;
     } else {
@@ -94,8 +94,8 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    * @param parent_level
    * @return std::string
    */
-  std::string getNextElementID(const std::string &child_ref_id,
-                               size_t parent_level) {
+  std::string getNextElementID(
+      const std::string& child_ref_id, size_t parent_level) {
     std::string tmp = child_ref_id.substr(
         0, findNthSubstring(child_ref_id, parent_level, "."));
     return tmp;
@@ -108,16 +108,15 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    */
   std::string generateReferenceID() {
     auto base_id = element_id_;
-    std::string sub_element_id = (
-      (base_id.back() == ':')
-      ? std::to_string(element_count_)
-      : "." + std::to_string(element_count_));
+    std::string sub_element_id =
+        ((base_id.back() == ':') ? std::to_string(element_count_)
+                                 : "." + std::to_string(element_count_));
     element_count_++;
     return base_id + sub_element_id;
   }
 
 public:
-  MockDeviceElementGroup(const std::string &ref_id)
+  MockDeviceElementGroup(const std::string& ref_id)
       : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
     ON_CALL(*this, getSubelements).WillByDefault([this]() -> DeviceElements {
       std::vector<NonemptyDeviceElementPtr> subelements;
@@ -129,7 +128,7 @@ public:
     });
 
     ON_CALL(*this, getSubelement)
-        .WillByDefault([this](const std::string &ref_id) -> DeviceElementPtr {
+        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
           size_t target_level = getTreeLevel(ref_id) - 1;
           size_t current_level = getTreeLevel(element_id_);
           // Check if a given element is in a sub group
@@ -138,9 +137,8 @@ public:
             auto next_element = getSubelement(next_id);
             // Check if next element exists and is a group
             if (next_element) {
-              auto next_group =
-                std::get_if<NonemptyDeviceElementGroupPtr>
-                  (&next_element->specific_interface);
+              auto next_group = std::get_if<NonemptyDeviceElementGroupPtr>(
+                  &next_element->specific_interface);
               if (next_group)
                 return (*next_group)->getSubelement(ref_id);
             }
@@ -161,16 +159,13 @@ public:
    * @param desc
    * @return std::string
    */
-  std::string addSubgroup(const std::string &name, const std::string &desc) {
+  std::string addSubgroup(const std::string& name, const std::string& desc) {
     auto ref_id = generateReferenceID();
-    NonemptyDeviceElementGroupPtr sub_group(
-      NonemptyPointer::make_shared<::testing::NiceMock<MockDeviceElementGroup>>
-        (ref_id));
-    std::pair<std::string, NonemptyDeviceElementPtr>
-      element_pair(
-        ref_id,
+    NonemptyDeviceElementGroupPtr sub_group(NonemptyPointer::make_shared<
+        ::testing::NiceMock<MockDeviceElementGroup>>(ref_id));
+    std::pair<std::string, NonemptyDeviceElementPtr> element_pair(ref_id,
         NonemptyPointer::make_shared<DeviceElement>(
-          ref_id, name, desc, sub_group));
+            ref_id, name, desc, sub_group));
 
     elements_map_.insert(element_pair);
     return ref_id;
@@ -186,13 +181,12 @@ public:
    * @param read_cb - read callback functor
    * @return std::string
    */
-  std::string
-  addReadableMetric(const std::string &name, const std::string &desc,
-                    DataType data_type,
-                    std::optional<std::function<DataVariant()>> read_cb) {
+  std::string addReadableMetric(const std::string& name,
+      const std::string& desc, DataType data_type,
+      std::optional<std::function<DataVariant()>> read_cb) {
     auto ref_id = generateReferenceID();
     auto mock_metric =
-      std::make_shared<::testing::NiceMock<MockMetric>>(data_type);
+        std::make_shared<::testing::NiceMock<MockMetric>>(data_type);
     NonemptyMetricPtr metric(mock_metric);
     if (read_cb.has_value()) {
       mock_metric->delegateToFake(read_cb.value());
@@ -200,9 +194,9 @@ public:
       mock_metric->delegateToFake();
     }
 
-    std::pair<std::string, NonemptyDeviceElementPtr> element_pair(
-      ref_id,
-      NonemptyPointer::make_shared<DeviceElement>(ref_id, name, desc, metric));
+    std::pair<std::string, NonemptyDeviceElementPtr> element_pair(ref_id,
+        NonemptyPointer::make_shared<DeviceElement>(
+            ref_id, name, desc, metric));
 
     elements_map_.insert(element_pair);
     return ref_id;
@@ -219,14 +213,13 @@ public:
    * @param write_cb - write callback functor
    * @return std::string
    */
-  std::string
-  addWritableMetric(const std::string &name, const std::string &desc,
-                    DataType data_type,
-                    std::optional<std::function<DataVariant()>> read_cb,
-                    std::optional<std::function<void(DataVariant)>> write_cb) {
+  std::string addWritableMetric(const std::string& name,
+      const std::string& desc, DataType data_type,
+      std::optional<std::function<DataVariant()>> read_cb,
+      std::optional<std::function<void(DataVariant)>> write_cb) {
     auto ref_id = generateReferenceID();
-    auto mock_metric = std::make_shared<::testing::NiceMock<MockWritableMetric>>(
-      data_type);
+    auto mock_metric =
+        std::make_shared<::testing::NiceMock<MockWritableMetric>>(data_type);
     NonemptyWritableMetricPtr metric(mock_metric);
 
     if (read_cb.has_value()) {
@@ -239,9 +232,9 @@ public:
       mock_metric->delegateToFake();
     }
 
-    std::pair<std::string, NonemptyDeviceElementPtr> element_pair(
-      ref_id,
-      NonemptyPointer::make_shared<DeviceElement>(ref_id, name, desc, metric));
+    std::pair<std::string, NonemptyDeviceElementPtr> element_pair(ref_id,
+        NonemptyPointer::make_shared<DeviceElement>(
+            ref_id, name, desc, metric));
 
     elements_map_.insert(element_pair);
     return ref_id;
@@ -249,7 +242,7 @@ public:
 
   MOCK_METHOD(DeviceElements, getSubelements, (), (override));
   MOCK_METHOD(DeviceElementPtr, getSubelement,
-              (const std::string & /* ref_id */), (override));
+      (const std::string& /* ref_id */), (override));
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;

@@ -17,13 +17,12 @@ class MockMetric : public Metric {
 
 public:
   MockMetric()
-      : Metric(), type_(DataType::UNKNOWN),
-        value_(DataVariant((bool)false)) {}
+      : Metric(), type_(DataType::UNKNOWN), value_(DataVariant((bool)false)) {}
 
   MockMetric(DataType type)
       : Metric(), type_(type), value_(setVariant(type_)) {}
 
-  MockMetric(DataType type, const DataVariant &variant)
+  MockMetric(DataType type, const DataVariant& variant)
       : Metric(), type_(type), value_(variant) {}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));

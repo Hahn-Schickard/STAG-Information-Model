@@ -18,7 +18,7 @@ protected:
 public:
   /** aka std::vector<NonemptyDeviceElementPtr> */
   using DeviceElements =
-    std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
+      std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(
@@ -26,8 +26,7 @@ public:
   }
 
   virtual std::shared_ptr<DeviceElement> getSubelement(
-    const std::string & /*ref_id*/)
-  {
+      const std::string& /*ref_id*/) {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
@@ -36,8 +35,8 @@ public:
 };
 
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
-using NonemptyDeviceElementGroupPtr
-  = NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
+using NonemptyDeviceElementGroupPtr =
+    NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP

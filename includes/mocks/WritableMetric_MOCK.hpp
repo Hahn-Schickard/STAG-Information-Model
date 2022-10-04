@@ -22,11 +22,9 @@ public:
         value_(DataVariant((bool)false)) {}
 
   MockWritableMetric(DataType type)
-      : WritableMetric(), type_(type),
-        value_(setVariant(type_)) {}
+      : WritableMetric(), type_(type), value_(setVariant(type_)) {}
 
-  MockWritableMetric(DataType type,
-                     const DataVariant &variant)
+  MockWritableMetric(DataType type, const DataVariant& variant)
       : WritableMetric(), type_(type), value_(variant) {}
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
@@ -44,7 +42,7 @@ public:
   }
 
   void delegateToFake(std::function<DataVariant()> reader,
-                      std::function<void(DataVariant)> writer) {
+      std::function<void(DataVariant)> writer) {
     ON_CALL(*this, getMetricValue).WillByDefault(reader);
     ON_CALL(*this, setMetricValue)
         .WillByDefault([this, writer](DataVariant value) { writer(value); });

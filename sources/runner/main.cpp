@@ -21,9 +21,8 @@ int main() {
     builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
     auto subgroup_1_ref_id =
         builder->addDeviceElementGroup("Group 1", "First group");
-    auto boolean_ref_id =
-        builder->addReadableMetric(subgroup_1_ref_id, "Boolean",
-                                   "Mocked readable metric", DataType::BOOLEAN);
+    auto boolean_ref_id = builder->addReadableMetric(subgroup_1_ref_id,
+        "Boolean", "Mocked readable metric", DataType::BOOLEAN);
     auto integer_ref_id = builder->addReadableMetric(
         "Integer", "Mocked readable metric", DataType::INTEGER);
     auto string_ref_id = builder->addReadableMetric(
@@ -38,8 +37,7 @@ int main() {
   return EXIT_SUCCESS;
 }
 
-void print(NonemptyDeviceElementGroupPtr elements, size_t offset)
-{
+void print(NonemptyDeviceElementGroupPtr elements, size_t offset) {
   cout << string(offset, ' ') << "Group contains elements:" << endl;
   for (auto element : elements->getSubelements()) {
     print(element, offset + 3);
@@ -52,8 +50,7 @@ void print(NonemptyMetricPtr element, size_t offset) {
   cout << endl;
 }
 
-void print(NonemptyWritableMetricPtr element, size_t offset)
-{
+void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
   cout << string(offset, ' ') << "Writes " << toString(element->getDataType())
@@ -61,8 +58,7 @@ void print(NonemptyWritableMetricPtr element, size_t offset)
   cout << endl;
 }
 
-void print(NonemptyDeviceElementPtr element, size_t offset)
-{
+void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
   cout << string(offset, ' ') << "Element id: " << element->getElementId()
@@ -70,11 +66,14 @@ void print(NonemptyDeviceElementPtr element, size_t offset)
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(element->specific_interface,
-    [offset](NonemptyDeviceElementGroupPtr interface){print(interface,offset);},
-    [offset](NonemptyMetricPtr interface){print(interface,offset);},
-    [offset](NonemptyWritableMetricPtr interface){print(interface,offset);}
-    );
+  match(
+      element->specific_interface,
+      [offset](NonemptyDeviceElementGroupPtr interface) {
+        print(interface, offset);
+      },
+      [offset](NonemptyMetricPtr interface) { print(interface, offset); },
+      [offset](
+          NonemptyWritableMetricPtr interface) { print(interface, offset); });
 }
 
 void print(DevicePtr device) {

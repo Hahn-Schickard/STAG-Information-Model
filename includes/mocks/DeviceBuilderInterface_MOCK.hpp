@@ -15,45 +15,42 @@ namespace testing {
 class DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
 public:
   MOCK_METHOD(void, buildDeviceBase,
-              (const std::string & /* unique_id */,
-               const std::string & /* name */, const std::string & /* desc */),
-              (override));
+      (const std::string& /* unique_id */, const std::string& /* name */,
+          const std::string& /* desc */),
+      (override));
   MOCK_METHOD(std::string, addDeviceElementGroup,
-              (const std::string & /* name */, const std::string & /* desc */),
-              (override));
+      (const std::string& /* name */, const std::string& /* desc */),
+      (override));
   MOCK_METHOD(std::string, addDeviceElementGroup,
-              (const std::string & /* group_refid */,
-               const std::string & /* name */, const std::string & /* desc */),
-              (override));
+      (const std::string& /* group_refid */, const std::string& /* name */,
+          const std::string& /* desc */),
+      (override));
   MOCK_METHOD(std::string, addReadableMetric,
-              (const std::string & /* name */, const std::string & /* desc */,
-               DataType /* data_type */, ReadFunctor /* read_cb */),
-              (override));
+      (const std::string& /* name */, const std::string& /* desc */,
+          DataType /* data_type */, ReadFunctor /* read_cb */),
+      (override));
   MOCK_METHOD(std::string, addReadableMetric,
-              (const std::string & /* group_refid */,
-               const std::string & /* name */, const std::string & /* desc */,
-               DataType /* data_type */, ReadFunctor /* read_cb */),
-              (override));
+      (const std::string& /* group_refid */, const std::string& /* name */,
+          const std::string& /* desc */, DataType /* data_type */,
+          ReadFunctor /* read_cb */),
+      (override));
   MOCK_METHOD(std::string, addWritableMetric,
-              (const std::string & /* name */, const std::string & /* desc */,
-               DataType /* data_type */,
-               std::optional<ReadFunctor> /* read_cb */,
-               WriteFunctor /* write_cb */),
-              (override));
+      (const std::string& /* name */, const std::string& /* desc */,
+          DataType /* data_type */, std::optional<ReadFunctor> /* read_cb */,
+          WriteFunctor /* write_cb */),
+      (override));
   MOCK_METHOD(std::string, addWritableMetric,
-              (const std::string & /* group_refid */,
-               const std::string & /* name */, const std::string & /* desc */,
-               DataType /* data_type */,
-               std::optional<ReadFunctor> /* read_cb */,
-               WriteFunctor /* write_cb */),
-              (override));
+      (const std::string& /* group_refid */, const std::string& /* name */,
+          const std::string& /* desc */, DataType /* data_type */,
+          std::optional<ReadFunctor> /* read_cb */,
+          WriteFunctor /* write_cb */),
+      (override));
   MOCK_METHOD(std::string, addDeviceElement,
-              (const std::string & /* group_refid */,
-               const std::string & /* name */, const std::string & /* desc */,
-               ElementType /* type */, DataType /* data_type */,
-               std::optional<ReadFunctor> /* read_cb */,
-               std::optional<WriteFunctor> /* write_cb */),
-              (override));
+      (const std::string& /* group_refid */, const std::string& /* name */,
+          const std::string& /* desc */, ElementType /* type */,
+          DataType /* data_type */, std::optional<ReadFunctor> /* read_cb */,
+          std::optional<WriteFunctor> /* write_cb */),
+      (override));
   MOCK_METHOD(std::shared_ptr<Device>, getResult, (), (override));
 };
 } // namespace testing

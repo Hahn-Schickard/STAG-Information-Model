@@ -12,8 +12,8 @@
 namespace Information_Model {
 class Device : public NamedElement {
 protected:
-  Device(const std::string &ref_id, const std::string &name,
-         const std::string &desc)
+  Device(const std::string& ref_id, const std::string& name,
+      const std::string& desc)
       : NamedElement(ref_id, name, desc) {}
 
 public:
@@ -22,7 +22,7 @@ public:
         "Called base implementation of Device::getDeviceElementGroup");
   }
 
-  virtual DeviceElementPtr getDeviceElement(const std::string & /* ref_id */) {
+  virtual DeviceElementPtr getDeviceElement(const std::string& /* ref_id */) {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElement");
   }

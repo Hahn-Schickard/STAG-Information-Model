@@ -12,9 +12,7 @@ using ::testing::AtLeast;
 class WritableMetricTests : public ::testing::Test {
 protected:
   // NOLINTNEXTLINE
-  void SetUp() {
-    integer = make_shared<MockWritableMetric>();
-  }
+  void SetUp() { integer = make_shared<MockWritableMetric>(); }
 
   shared_ptr<MockWritableMetric> integer;
 };
