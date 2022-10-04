@@ -9,9 +9,9 @@ class PackageConan(ConanFile):
     license = "Apache 2.0"
     topics = ("conan", "stag", "modelling")
     requires = [
-        "gtest/1.10.0",
+        "gtest/1.11.0",
         "Variant_Visitor/0.1.0@hahn-schickard/stable",
-        "Nonempty_Pointer/0.1.1@hahn-schickard/stable",
+        "Nonempty_Pointer/0.1.2@hahn-schickard/stable",
     ]
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
