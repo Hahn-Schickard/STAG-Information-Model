@@ -122,13 +122,11 @@ using DataVariant = std::variant<bool, intmax_t, uintmax_t, double, DateTime,
 
 inline std::size_t size_of(DataVariant variant) {
   std::size_t result;
-  match(variant, [&](bool value) { result = sizeof(value); },
-        [&](intmax_t value) { result = sizeof(value); },
-        [&](uintmax_t value) { result = sizeof(value); },
-        [&](double value) { result = sizeof(value); },
-        [&](DateTime value) { result = value.size(); },
-        [&](std::vector<uint8_t> value) { result = value.size(); },
-        [&](std::string value) { result = value.size(); });
+  match(
+      variant, [&](auto value) { result = sizeof(value); },
+      [&](DateTime value) { result = value.size(); },
+      [&](std::vector<uint8_t> value) { result = value.size(); },
+      [&](std::string value) { result = value.size(); });
   return result;
 }
 
@@ -156,20 +154,19 @@ inline DataVariant setVariant(DataType type) {
 
 inline std::string toString(DataVariant variant) {
   std::string result;
-  match(variant, [&](bool value) { result = (value ? "true" : "false"); },
-        [&](intmax_t value) { result = std::to_string(value); },
-        [&](uintmax_t value) { result = std::to_string(value); },
-        [&](double value) { result = std::to_string(value); },
-        [&](DateTime value) { result = value.toString(); },
-        [&](std::vector<uint8_t> value) {
-          std::stringstream ss;
-          ss << std::hex << std::setfill('0');
-          for (auto byte : value) {
-            ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
-          }
-          result = ss.str();
-        },
-        [&](std::string value) { result = value; });
+  match(
+      variant, [&](bool value) { result = (value ? "true" : "false"); },
+      [&](auto value) { result = std::to_string(value); },
+      [&](DateTime value) { result = value.toString(); },
+      [&](std::vector<uint8_t> value) {
+        std::stringstream ss;
+        ss << std::hex << std::setfill('0');
+        for (auto byte : value) {
+          ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
+        }
+        result = ss.str();
+      },
+      [&](std::string value) { result = value; });
 
   return result;
 }
