@@ -13,8 +13,7 @@ class PackageConan(ConanFile):
         "Variant_Visitor/0.1.0@hahn-schickard/stable",
         "Nonempty_Pointer/0.1.1@hahn-schickard/stable",
     ]
-
-    settings = "cppstd", "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
                "fPIC": [True, False]}
     default_options = {"shared": True,
@@ -53,9 +52,15 @@ class PackageConan(ConanFile):
             return self._cmake
         self._cmake = CMake(self)
         self._cmake.verbose = True
+        self._cmake.definitions["STATIC_CODE_ANALYSIS"] = False
+        self._cmake.definitions["USE_CONAN"] = True
         self._cmake.configure(build_dir=os.path.join(
             self.build_folder, "build"))
         return self._cmake
+
+    def build(self):
+        cmake = self._configure_cmake()
+        cmake.build()
 
     def package(self):
         cmake = self._configure_cmake()
@@ -69,6 +74,7 @@ class PackageConan(ConanFile):
     def package_info(self):
         self.cpp_info.names["cmake_find_package"] = self.name
         self.cpp_info.names["cmake_find_package_multi"] = self.name
+        self.cpp_info.libs = tools.collect_libs(self)
 
     def package_id(self):
         self.info.header_only()

@@ -30,7 +30,7 @@
  - typo in source code
 
 ## [0.1.6] - 2021.12.14
-### Changed 
+### Changed
  - `DataVariant` `int64_t` to `intmax_t`
  - `DataVariant` `uint64_t` to `uintmax_t`
  - `DataVariant setVariant(DataType::INTEGER)` to set `(intmax_t)0` instead of `(int64_t)0`
@@ -52,7 +52,7 @@
  - `DeviceElementGroup::getSubelements` method from pure virtual, to virtual method with base implementation
  - `DeviceElementGroup::getSubelement` method from pure virtual, to virtual method with base implementation
  - `Metric::getMetricValue` method from pure virtual, to virtual method with base implementation
- - `Metric::getDataType` method from pure virtual, to virtual method with base implementation 
+ - `Metric::getDataType` method from pure virtual, to virtual method with base implementation
  - `WritableMetric::getMetricValue` method from pure virtual, to virtual method with base implementation
  - `WritableMetric::setMetricValue` method from pure virtual, to virtual method with base implementation
  - `WritableMetric::getDataType` method from pure virtual, to virtual method with base implementation
@@ -69,22 +69,22 @@
  - typos in Changelog
  - typos in source code
 
-## [0.1.5] - 2021.03.29 
+## [0.1.5] - 2021.03.29
 ### Changed
- - install include paths to resolve potential header name collisions 
+ - install include paths to resolve potential header name collisions
  - DeviceBuilderInterface_MOCK.hpp to use relative path in includes
  - DeviceElementGroup_MOCK.hpp to use relative path in includes
- - `DeviceElementGroup_MOCK::addReadableMetric` method to set the read callback 
- - `DeviceElementGroup_MOCK::addWritableMetric` method to set the read and write callbacks 
+ - `DeviceElementGroup_MOCK::addReadableMetric` method to set the read callback
+ - `DeviceElementGroup_MOCK::addWritableMetric` method to set the read and write callbacks
  - DeviceMockBuilder.hpp to use relative path in includes
- - `DeviceMockBuilder` to allow adding metrics without any callbacks 
+ - `DeviceMockBuilder` to allow adding metrics without any callbacks
  - Device_MOCK.hpp to use relative path in includes
  - `MockDevice` to use `NiceMock<MockDeviceElementGroupPtr>` to suppress GTest unused mock warnings
  - Metric_MOCK.hpp to use relative path in includes
  - WritableMetric_MOCK.hpp to use relative path in includes
  - conan example.cpp to use correct inclusion paths
 
-### Added 
+### Added
  - Variant Visitor dependency
  - example main.cpp runner to showcase usage
  - valgrind checks to main.cpp
@@ -95,16 +95,16 @@
  - `delegateToFake` method to `MockWritableMetric`
 
 ## [0.1.4] - 2020.11.05
-### Added 
+### Added
  - POSIX time data type
- - `DateTime` test case 
+ - `DateTime` test case
  - missing virtual destructors
 
-### Changed 
+### Changed
  - Metric Unit Test suit to Parametrized tests with full Data Type coverage
 
 ## [0.1.3] - 2020.10.21
-### Added 
+### Added
  - `DeviceBuilderInterface` from Technology_Adapter_Interface
  - `DeviceBuilderInterface_MOCK`
  - `DeviceMockBuilder`
@@ -119,8 +119,8 @@
  - main.md
  - `DeviceMockBuilderTests`
 
-### Changed 
- - Header formatting, to better fit project standard 
+### Changed
+ - Header formatting, to better fit project standard
 
 ### Removed
  - `DeviceElement_FAKE`
@@ -136,7 +136,7 @@
 ### Changed
  - conan package type to header only
 
-### Removed 
+### Removed
  - `uint8_t` type from `DataVariant`
  - `uint16_t` type from `DataVariant`
  - `uint32_t` type from `DataVariant`
@@ -145,21 +145,21 @@
 
 ## [0.1.1] - 2020.09.28
 ### Added
- - Metric Test suite 
- - Writable Metric Test suite 
- - old Device Test cases into Device Test suite 
+ - Metric Test suite
+ - Writable Metric Test suite
+ - old Device Test cases into Device Test suite
 
-### Changed 
+### Changed
  - `ElementRefID()` to `ElementId()`
 
 ## [0.1.0] - 2020.09.15
 ### Added
  - Changelog
  - Authors
- - License 
+ - License
  - Notice
  - conanfile for conan package configurator
- - `DataVariant` type and data type pattern matcher consumer. 
+ - `DataVariant` type and data type pattern matcher consumer.
  - Cpp CXX17 Standard requirement
  - conan package support
  - conan.cmake
@@ -169,8 +169,8 @@
 ### Changed
  - Various test cases
  - Writable and Readable Metrics to use `DataVariant` instead of `DataWrapper`
- - Writable and Readable Metrics into interfaces 
- - CMakeLists.txt to use Cmake 3.x best practices 
+ - Writable and Readable Metrics into interfaces
+ - CMakeLists.txt to use Cmake 3.x best practices
  - Gtest runner to use *.cc extension instead of *.cpp
  - Moved Mocks and Fakes into mocks subdirectory
  - Readme to show Python 3 and conan dependencies
@@ -187,8 +187,8 @@
  - CPack support
  - Old test cases
 
-## [0.0.1] - 2019.12.02 
-### Added 
+## [0.0.1] - 2019.12.02
+### Added
  - Draft Writable Metric template implementation
  - Writable Metric test cases and FAKE implementation
  - Draft `Metric` template implementation
@@ -196,7 +196,7 @@
  - `DataWrapper` template to encapsulate used data types
  - `DataWrapper` template FAKE for gtest mocking
  - Added CPack configuration
- - Updated to Cpp Project template v0.8.27 
+ - Updated to Cpp Project template v0.8.27
  - Reworked raw pointers into smart pointers for the `Device` elements
  - `InformationModelExceptions`
  - `DeviceElementGroup` interface
@@ -211,5 +211,5 @@
  - Readme
 
  ## [Initial] - 2019.05.20
- ### Added 
+ ### Added
   - CONTRIBUTING.md
