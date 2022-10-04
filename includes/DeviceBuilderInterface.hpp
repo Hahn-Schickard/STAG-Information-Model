@@ -268,10 +268,8 @@ public:
    * will model, read_cb specifies the functor callback used when trying to
    * access the real value and write_cb specifies the functor callback used when
    * trying to set the real value. All WritableMetric instances are also
-   * Readable instances! If you want to create a Write-Only Metric, set the
-   * read_cb to a real function with an empty body. DO NOT provide a
-   * std::nullopt as a read_cb since, this will throw an exception when calling
-   * the read operation.
+   * Readable instances! If you want to create a Write-Only Metric, , set the
+   * read_cb to a std::nullopt.
    *
    * To add a new Writable Metric to an existing DeviceElementGroup call this
    * method as follows:
@@ -285,9 +283,7 @@ public:
    * specifies the functor callback used when trying to access the real value
    * and write_cb specifies the functor callback used when trying to set the
    * real value. All WritableMetric instances are also Readable instances! If
-   * you want to create a Write-Only Metric, set the read_cb to a real function
-   * with an empty body. DO NOT provide a std::nullopt as a read_cb since, this
-   * will throw an exception when calling the read operation.
+   * you want to create a Write-Only Metric, set the read_cb to a std::nullopt.
    *
    * @param group_refid
    * @param name
