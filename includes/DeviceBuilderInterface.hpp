@@ -13,6 +13,7 @@
 namespace Information_Model {
 using ReadFunctor = std::function<DataVariant()>;
 using WriteFunctor = std::function<void(DataVariant)>;
+using ExecuteFunctor = std::function<bool(std::string)>;
 
 /**
  * @enum ElementTypeEnum
@@ -245,6 +246,72 @@ public:
   }
 
   /**
+   * @brief Adds a function to the device root level DeviceElementGroup.
+   *
+   * This method creates a new Function instance, adds it to the root
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function. The returned
+   * string will be based on the unique id, provided by the user with the
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
+   *
+   * @param name
+   * @param desc
+   * @param data_type
+   * @param read_cb
+   * @param write_cb
+   * @return std::string
+   */
+  virtual std::string addFunction(const std::string& /*name*/,
+      const std::string& /*desc*/, ExecuteFunctor /*execute_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addFunction for root group");
+  }
+
+  /**
+   * @brief Adds a function to another DeviceElementGroup. The parent group
+   * element MUST exist.
+   *
+   * This method creates a new Function instance, adds it to the specified
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function.
+   *
+   * The requested group_refid argument is obtained from the previous
+   * addDeviceElementGroup() or addDeviceElement() call.
+   *
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   *
+   * If specified parent DeviceElementGroup is a subgroup itself, the returned
+   * string will represent it as a new ID element as such:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
+   *
+   * @param group_refid
+   * @param name
+   * @param desc
+   * @param type
+   * @param data_type
+   * @param read_cb
+   * @param write_cb
+   * @return std::string
+   */
+  virtual std::string addFunction(const std::string& /*group_refid*/,
+      const std::string& /*name*/, const std::string& /*desc*/,
+      ExecuteFunctor /*execute_cb*/) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addFunction for subgroup");
+  }
+
+  /**
    * @brief Provides a generalized approach to creating any device element.
    *
    * To add a new root DeviceElementGroup call this method as follows:
@@ -304,6 +371,21 @@ public:
    * value. All WritableMetric instances are also Readable instances! If
    * you want to create a Write-Only Metric, set the read_cb to a std::nullopt.
    *
+   * To add a new root Function call this method as follows:
+   * @code {cpp}
+   * addDeviceElement("",name,desc,ElementType::FUNCTION, execute_cb)
+   * @endcode
+   * Where execute_cb specifies the execute function callback.
+   *
+   * To add a new Function to an existing DeviceElementGroup call this
+   * method as follows:
+   * @code {cpp}
+   * addDeviceElement(parent_id,name,desc,ElementType::FUNCTION,execute_cb)
+   * @endcode
+   * The requested parent_id argument is obtained from  previous
+   * addDeviceElementGroup() or addDeviceElement() call and execute_cb specifies
+   * the execute function callback.
+   *
    * @param group_refid
    * @param name
    * @param desc
@@ -318,7 +400,8 @@ public:
       ElementType type = ElementType::GROUP,
       DataType data_type = DataType::UNKNOWN,
       std::optional<ReadFunctor> read_cb = std::nullopt,
-      std::optional<WriteFunctor> write_cb = std::nullopt) {
+      std::optional<WriteFunctor> write_cb = std::nullopt,
+      std::optional<ExecuteFunctor> execute_cb = std::nullopt) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
