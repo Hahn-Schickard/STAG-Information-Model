@@ -1,5 +1,5 @@
 # Changelog
-## [0.2.1] - 2022.10.04
+## [0.2.1] - 2022.10.05
 ### Changed 
  - Nonempty_Pointer dependency to v0.1.2
  - `toString(DataVariant)` implementation to reduce code repetition
