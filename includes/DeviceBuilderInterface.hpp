@@ -16,13 +16,17 @@ using WriteFunctor = std::function<void(DataVariant)>;
 
 /**
  * @enum ElementTypeEnum
- * @brief ElementType enumeration, specifying the available DeviceElement types.
+ * @brief ElementType enumeration, specifying the available DeviceElement
+ * types.
  *
  */
 enum class ElementType {
   GROUP, /*!< Grouping element, aka list */
   READABLE, /*!< Metric with read access */
-  WRITABLE /*!< Metric with write access */
+  WRITABLE, /*!< Metric with write access */
+  OBSERVABLE, /*!< Metric with read access and ability to self report
+                 changes */
+  FUNCTION /*!< Metric with execute access */
 };
 
 /**
