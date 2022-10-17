@@ -246,6 +246,30 @@ public:
   }
 
   /**
+   * @todo Decide on how to best create a binding to an Observable
+   *
+   */
+
+  virtual std::string addObservableMetric(const std::string& /*name*/,
+      const std::string& /*desc*/ /* @todo: Observer binding mechanism */) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addObservableMetric for root group");
+  }
+
+  /**
+   * @todo Decide on how to best create a binding to an Observable
+   *
+   */
+  virtual std::string addObservableMetric(const std::string& /*group_refid*/,
+      const std::string& /*name*/, const std::string& /*desc*/,
+      DataType /*data_type*/ /* @todo: Observer binding mechanism */) {
+    throw std::runtime_error(
+        "Called base implementation of "
+        "DeviceBuilderInterface::addObservableMetric for subgroup");
+  }
+
+  /**
    * @brief Adds a function to the device root level DeviceElementGroup.
    *
    * This method creates a new Function instance, adds it to the root
