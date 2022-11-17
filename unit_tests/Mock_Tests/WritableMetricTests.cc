@@ -11,7 +11,6 @@ using ::testing::AtLeast;
 
 class WritableMetricTests : public ::testing::Test {
 protected:
-  // NOLINTNEXTLINE
   void SetUp() { integer = make_shared<MockWritableMetric>(); }
 
   shared_ptr<MockWritableMetric> integer;
@@ -33,6 +32,7 @@ TEST_F(WritableMetricTests, canSetIntegerValue) {
   ASSERT_NO_THROW(integer->setMetricValue((intmax_t)10));
 }
 
+// NOLINTNEXTLINE
 TEST_F(WritableMetricTests, canGetIntegerType) {
   // Act
   EXPECT_CALL(*integer.get(), getDataType()).Times(AtLeast(1));

@@ -9,6 +9,7 @@ using namespace std;
 using namespace Information_Model;
 using namespace Information_Model::testing;
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -17,6 +18,7 @@ TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnOverridingBuild) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -26,6 +28,7 @@ TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnOverridingBuild) {
   EXPECT_NO_THROW(builder->getResult());
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddGroup) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -58,6 +61,7 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddSubGroup) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -94,6 +98,7 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -140,6 +145,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 

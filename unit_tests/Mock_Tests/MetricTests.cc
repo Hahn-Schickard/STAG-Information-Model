@@ -34,6 +34,7 @@ protected:
   MetricPtr metric;
 };
 
+// NOLINTNEXTLINE
 TEST_P(MetricMultipleParametersTests, canGetType) {
   auto mock = dynamic_pointer_cast<MockMetric>(metric);
   mock->delegateToFake();
@@ -45,6 +46,7 @@ TEST_P(MetricMultipleParametersTests, canGetType) {
   EXPECT_EQ(expectations->type_, tested);
 }
 
+// NOLINTNEXTLINE
 TEST_P(MetricMultipleParametersTests, canGetValue) {
   auto mock = dynamic_pointer_cast<MockMetric>(metric);
   mock->delegateToFake();
@@ -80,5 +82,7 @@ TestParameters makeTestParameters() {
   return params;
 }
 
-INSTANTIATE_TEST_SUITE_P(MetricTests, MetricMultipleParametersTests,
-    ::testing::ValuesIn(makeTestParameters()), SetTestNameSuffix());
+INSTANTIATE_TEST_SUITE_P(MetricTests,
+    MetricMultipleParametersTests,
+    ::testing::ValuesIn(makeTestParameters()),
+    SetTestNameSuffix());

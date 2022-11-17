@@ -9,6 +9,7 @@ using namespace Information_Model;
 using namespace Information_Model::testing;
 using ::testing::AtLeast;
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupIDIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -20,6 +21,7 @@ TEST(DeviceTests, DeviceElementGroupIDIsCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupIDIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -31,6 +33,7 @@ TEST(DeviceTests, DeviceElementGroupIDIsNotCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupNameIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -42,6 +45,7 @@ TEST(DeviceTests, DeviceElementGroupNameIsCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupNameIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -53,6 +57,7 @@ TEST(DeviceTests, DeviceElementGroupNameIsNotCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupDescriptionIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -64,6 +69,7 @@ TEST(DeviceTests, DeviceElementGroupDescriptionIsCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupDescriptionIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
@@ -75,6 +81,7 @@ TEST(DeviceTests, DeviceElementGroupDescriptionIsNotCorrect) {
       << "provided: " << testedElement << std::endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DeviceTests, canGetDeviceElementGroup) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   EXPECT_CALL(mock_device, getDeviceElementGroup).Times(AtLeast(1));

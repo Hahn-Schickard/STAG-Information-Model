@@ -9,6 +9,7 @@
 using namespace Information_Model;
 using namespace std;
 
+// NOLINTNEXTLINE
 TEST(DateTimeTests, isEqual) {
   DateTime dt1 = DateTime();
   DateTime dt2 = dt1;
@@ -18,6 +19,7 @@ TEST(DateTimeTests, isEqual) {
       << "expected: " << dt1.toString() << "!=" << dt2.toString() << endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DateTimeTests, isNotEqual) {
   DateTime dt1 = DateTime();
   this_thread::sleep_for(1s);
@@ -28,6 +30,7 @@ TEST(DateTimeTests, isNotEqual) {
       << "expected: " << dt1.toString() << "!=" << dt2.toString() << endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DateTimeTests, isLess) {
   DateTime dt1 = DateTime();
   this_thread::sleep_for(1s);
@@ -38,6 +41,7 @@ TEST(DateTimeTests, isLess) {
       << "expected: " << dt1.toString() << "<" << dt2.toString() << endl;
 }
 
+// NOLINTNEXTLINE
 TEST(DateTimeTests, isMore) {
   DateTime dt1 = DateTime();
   this_thread::sleep_for(1s);
