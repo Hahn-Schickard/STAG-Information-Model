@@ -82,6 +82,7 @@ TestParameters makeTestParameters() {
   return params;
 }
 
+// NOLINTNEXTLINE
 INSTANTIATE_TEST_SUITE_P(MetricTests,
     MetricMultipleParametersTests,
     ::testing::ValuesIn(makeTestParameters()),
