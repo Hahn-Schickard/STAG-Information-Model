@@ -32,7 +32,8 @@ class MockDeviceElementGroup : public DeviceElementGroup {
    * @param cut_off
    * @return size_t
    */
-  size_t countOccurrences(const std::string& input, const std::string& pattern,
+  size_t countOccurrences(const std::string& input,
+      const std::string& pattern,
       const std::string& cut_off) {
     size_t count = 0;
     std::string buffer = input.substr(input.find(cut_off) + 1, input.size());
@@ -182,7 +183,8 @@ public:
    * @return std::string
    */
   std::string addReadableMetric(const std::string& name,
-      const std::string& desc, DataType data_type,
+      const std::string& desc,
+      DataType data_type,
       std::optional<std::function<DataVariant()>> read_cb) {
     auto ref_id = generateReferenceID();
     auto mock_metric =
@@ -214,7 +216,8 @@ public:
    * @return std::string
    */
   std::string addWritableMetric(const std::string& name,
-      const std::string& desc, DataType data_type,
+      const std::string& desc,
+      DataType data_type,
       std::optional<std::function<DataVariant()>> read_cb,
       std::optional<std::function<void(DataVariant)>> write_cb) {
     auto ref_id = generateReferenceID();
@@ -241,8 +244,10 @@ public:
   }
 
   MOCK_METHOD(DeviceElements, getSubelements, (), (override));
-  MOCK_METHOD(DeviceElementPtr, getSubelement,
-      (const std::string& /* ref_id */), (override));
+  MOCK_METHOD(DeviceElementPtr,
+      getSubelement,
+      (const std::string& /* ref_id */),
+      (override));
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;

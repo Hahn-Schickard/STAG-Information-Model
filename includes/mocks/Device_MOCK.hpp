@@ -21,7 +21,8 @@ class MockDevice : public Device {
   NonemptyDeviceElementGroupPtr base_group_;
 
 public:
-  MockDevice(const std::string& ref_id, const std::string& name,
+  MockDevice(const std::string& ref_id,
+      const std::string& name,
       const std::string& desc)
       : Device(ref_id, name, desc),
         base_group_(
@@ -41,8 +42,10 @@ public:
   MOCK_METHOD(
       NonemptyDeviceElementGroupPtr, getDeviceElementGroup, (), (override));
 
-  MOCK_METHOD(DeviceElementPtr, getDeviceElement,
-      (const std::string& /*ref_id*/), (override));
+  MOCK_METHOD(DeviceElementPtr,
+      getDeviceElement,
+      (const std::string& /*ref_id*/),
+      (override));
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;

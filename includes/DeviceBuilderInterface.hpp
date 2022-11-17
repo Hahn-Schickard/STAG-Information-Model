@@ -51,7 +51,8 @@ public:
    * @param desc
    */
   virtual void buildDeviceBase(const std::string& /*unique_id*/,
-      const std::string& /*name*/, const std::string& /*desc*/) {
+      const std::string& /*name*/,
+      const std::string& /*desc*/) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::buildDeviceBase");
   }
@@ -107,7 +108,8 @@ public:
    * @return std::string
    */
   virtual std::string addDeviceElementGroup(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/) {
+      const std::string& /*name*/,
+      const std::string& /*desc*/) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElementGroup");
   }
@@ -132,7 +134,8 @@ public:
    * @return std::string
    */
   virtual std::string addReadableMetric(const std::string& /*name*/,
-      const std::string& /*desc*/, DataType /*data_type*/,
+      const std::string& /*desc*/,
+      DataType /*data_type*/,
       ReadFunctor /*read_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
@@ -169,8 +172,10 @@ public:
    * @return std::string
    */
   virtual std::string addReadableMetric(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/,
-      DataType /*data_type*/, ReadFunctor /*read_cb*/) {
+      const std::string& /*name*/,
+      const std::string& /*desc*/,
+      DataType /*data_type*/,
+      ReadFunctor /*read_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
@@ -198,8 +203,10 @@ public:
    * @return std::string
    */
   virtual std::string addWritableMetric(const std::string& /*name*/,
-      const std::string& /*desc*/, DataType /*data_type*/,
-      std::optional<ReadFunctor> /*read_cb*/, WriteFunctor /*write_cb*/) {
+      const std::string& /*desc*/,
+      DataType /*data_type*/,
+      std::optional<ReadFunctor> /*read_cb*/,
+      WriteFunctor /*write_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for root group");
@@ -237,8 +244,10 @@ public:
    * @return std::string
    */
   virtual std::string addWritableMetric(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/,
-      DataType /*data_type*/, std::optional<ReadFunctor> /*read_cb*/,
+      const std::string& /*name*/,
+      const std::string& /*desc*/,
+      DataType /*data_type*/,
+      std::optional<ReadFunctor> /*read_cb*/,
       WriteFunctor /*write_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
@@ -262,7 +271,8 @@ public:
    *
    */
   virtual std::string addObservableMetric(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/,
+      const std::string& /*name*/,
+      const std::string& /*desc*/,
       DataType /*data_type*/ /* @todo: Observer binding mechanism */) {
     throw std::runtime_error(
         "Called base implementation of "
@@ -290,7 +300,8 @@ public:
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*name*/,
-      const std::string& /*desc*/, ExecuteFunctor /*execute_cb*/) {
+      const std::string& /*desc*/,
+      ExecuteFunctor /*execute_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for root group");
@@ -328,7 +339,8 @@ public:
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/,
+      const std::string& /*name*/,
+      const std::string& /*desc*/,
       ExecuteFunctor /*execute_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "

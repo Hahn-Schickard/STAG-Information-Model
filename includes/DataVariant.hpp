@@ -117,13 +117,19 @@ inline std::string toString(DataType type) {
   }
 }
 
-using DataVariant = std::variant<bool, intmax_t, uintmax_t, double, DateTime,
-    std::vector<uint8_t>, std::string>;
+using DataVariant = std::variant<bool,
+    intmax_t,
+    uintmax_t,
+    double,
+    DateTime,
+    std::vector<uint8_t>,
+    std::string>;
 
 inline std::size_t size_of(DataVariant variant) {
   std::size_t result;
   match(
-      variant, [&](auto value) { result = sizeof(value); },
+      variant,
+      [&](auto value) { result = sizeof(value); },
       [&](DateTime value) { result = value.size(); },
       [&](std::vector<uint8_t> value) { result = value.size(); },
       [&](std::string value) { result = value.size(); });
@@ -155,7 +161,8 @@ inline DataVariant setVariant(DataType type) {
 inline std::string toString(DataVariant variant) {
   std::string result;
   match(
-      variant, [&](bool value) { result = (value ? "true" : "false"); },
+      variant,
+      [&](bool value) { result = (value ? "true" : "false"); },
       [&](auto value) { result = std::to_string(value); },
       [&](DateTime value) { result = value.toString(); },
       [&](std::vector<uint8_t> value) {
