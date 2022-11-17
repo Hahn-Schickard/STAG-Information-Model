@@ -419,13 +419,15 @@ public:
    * @param write_cb
    * @return std::string
    */
-  virtual std::string addDeviceElement(const std::string& /*group_refid*/,
-      const std::string& /*name*/, const std::string& /*desc*/,
-      ElementType type = ElementType::GROUP,
-      DataType data_type = DataType::UNKNOWN,
-      std::optional<ReadFunctor> read_cb = std::nullopt,
-      std::optional<WriteFunctor> write_cb = std::nullopt,
-      std::optional<ExecuteFunctor> execute_cb = std::nullopt) {
+  virtual std::string addDeviceElement( // clang-format off
+      const std::string& /*group_refid*/,
+      const std::string& /*name*/, 
+      const std::string& /*desc*/,
+      __attribute__((unused)) ElementType type = ElementType::GROUP,
+      __attribute__((unused)) DataType data_type = DataType::UNKNOWN,
+      __attribute__((unused)) std::optional<ReadFunctor> read_cb = std::nullopt,
+      __attribute__((unused)) std::optional<WriteFunctor> write_cb = std::nullopt,
+      __attribute__((unused)) std::optional<ExecuteFunctor> execute_cb = std::nullopt) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
