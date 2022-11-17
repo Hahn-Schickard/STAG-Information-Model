@@ -423,11 +423,11 @@ public:
       const std::string& /*group_refid*/,
       const std::string& /*name*/, 
       const std::string& /*desc*/,
-      __attribute__((unused)) ElementType type = ElementType::GROUP,
-      __attribute__((unused)) DataType data_type = DataType::UNKNOWN,
-      __attribute__((unused)) std::optional<ReadFunctor> read_cb = std::nullopt,
-      __attribute__((unused)) std::optional<WriteFunctor> write_cb = std::nullopt,
-      __attribute__((unused)) std::optional<ExecuteFunctor> execute_cb = std::nullopt) {
+      ElementType /* type */,
+      DataType /* data_type */,
+      std::optional<ReadFunctor> /* read_cb */,
+      std::optional<WriteFunctor> /* write_cb */,
+      std::optional<ExecuteFunctor> /* execute_cb */) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
