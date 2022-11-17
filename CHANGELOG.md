@@ -1,4 +1,19 @@
 # Changelog
+## [0.2.2] - 2022.11.17
+### Changed
+ - conan packaging recipe
+ - gtest dependency to fuzzy v1.11
+ - Variant_Visitor dependency to fuzzy v0.1
+ - Nonempty_Pointer dependency to fuzzy v0.1
+
+### Removed
+ - `DeviceBuilderInterface::addDeviceElement()` parameter names, to avoid -Wunused_param warnings
+
+### Added
+ - exception handling mechanism for main example
+ - exception handling mechanism for integration test
+ - missing override specifiers for `DeviceMockBuilder`
+
 ## [0.2.1] - 2022.10.05
 ### Changed 
  - Nonempty_Pointer dependency to v0.1.2
