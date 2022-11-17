@@ -1,6 +1,6 @@
 {
     "project_template": "cpp",
-    "project_template_version": "Release_v0.0.0",
+    "project_template_version": "0.1.14",
     "project_name_long": "Information Model",
     "project_name_short": "Information_Model",
     "project_description": "This module contains the modelling language for Device abstractions, which are created by various Technology Adapters. It is used to decouple real devices from their Data Consumers.",
