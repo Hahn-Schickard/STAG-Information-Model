@@ -2,16 +2,15 @@ from conans import ConanFile, CMake, tools
 from conans.tools import load
 import re
 import os
-import shutil
 
 
 class PackageConan(ConanFile):
     license = "Apache 2.0"
     topics = ("conan", "stag", "modelling", "lwm2m", "technology-adapter")
     requires = [
-        "gtest/1.10.0",
-        "Variant_Visitor/0.1.0@hahn-schickard/stable",
-        "Nonempty_Pointer/0.1.2@hahn-schickard/stable",
+        "gtest/[~1.11]",
+        "Variant_Visitor/[~0.1]@hahn-schickard/stable",
+        "Nonempty_Pointer/[~0.1]@hahn-schickard/stable",
     ]
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
@@ -52,6 +51,7 @@ class PackageConan(ConanFile):
         self._cmake = CMake(self)
         self._cmake.verbose = True
         self._cmake.definitions['STATIC_CODE_ANALYSIS'] = False
+        self._cmake.definitions['RUN_TESTS'] = False
         self._cmake.definitions['USE_CONAN'] = True
         self._cmake.configure()
         return self._cmake
@@ -71,3 +71,6 @@ class PackageConan(ConanFile):
         self.cpp_info.libs = tools.collect_libs(self)
         self.output.info('Collected libs: \n{}'.format(
             '\n'.join(self.cpp_info.libs)))
+
+    def package_id(self):
+        self.info.header_only()
