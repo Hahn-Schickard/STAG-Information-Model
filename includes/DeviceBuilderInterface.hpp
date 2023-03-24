@@ -4,6 +4,8 @@
 #include "DataVariant.hpp"
 #include "Device.hpp"
 
+#include "Nonempty_Pointer/NonemptyPtr.hpp"
+
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,6 +16,7 @@ namespace Information_Model {
 using ReadFunctor = std::function<DataVariant()>;
 using WriteFunctor = std::function<void(DataVariant)>;
 using ExecuteFunctor = std::function<bool(std::string)>;
+using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
  * @enum ElementTypeEnum
@@ -35,12 +38,14 @@ enum class ElementType {
  * a device within the Information Model.
  *
  */
-class DeviceBuilderInterface {
-public:
+struct DeviceBuilderInterface {
+  using Result = NonemptyPointer::NonemptyPtr<UniqueDevicePtr>;
+
   virtual ~DeviceBuilderInterface() = default;
 
   /**
-   * @brief Create a base element for the device.
+   * @brief Create a base element for the device. This method MUST be called
+   * before any add* method is called.
    *
    * This method MUST be called first when creating a new device, because this
    * method initializes the base implementation as well as assigns the device
@@ -449,9 +454,9 @@ public:
    *
    * If the device creation was not properly finished, throws an exception.
    *
-   * @return DevicePtr
+   * @return NonemptyPtr<std::unique_ptr<Device>>
    */
-  virtual DevicePtr getResult() {
+  virtual Result getResult() {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
