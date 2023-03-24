@@ -4,8 +4,6 @@
 #include "DataVariant.hpp"
 #include "Device.hpp"
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
-
 #include <functional>
 #include <memory>
 #include <optional>
@@ -39,7 +37,6 @@ enum class ElementType {
  *
  */
 struct DeviceBuilderInterface {
-  using Result = NonemptyPointer::NonemptyPtr<UniqueDevicePtr>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -456,7 +453,7 @@ struct DeviceBuilderInterface {
    *
    * @return NonemptyPtr<std::unique_ptr<Device>>
    */
-  virtual Result getResult() {
+  virtual UniqueDevicePtr getResult() {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }

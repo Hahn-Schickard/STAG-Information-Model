@@ -43,10 +43,7 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
-  EXPECT_NO_THROW({
-    NonemptyDevicePtr result = move(builder->getResult());
-    device = result.base();
-  });
+  EXPECT_NO_THROW(device = move(builder->getResult()));
 
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234", device->getElementId());
@@ -83,10 +80,7 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_EQ(subgroup_ref_id, "1234:0.0");
 
   DevicePtr device;
-  EXPECT_NO_THROW({
-    NonemptyDevicePtr result = move(builder->getResult());
-    device = result.base();
-  });
+  EXPECT_NO_THROW(device = move(builder->getResult()));
 
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234", device->getElementId());
@@ -118,10 +112,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
-  EXPECT_NO_THROW({
-    NonemptyDevicePtr result = move(builder->getResult());
-    device = result.base();
-  });
+  EXPECT_NO_THROW(device = move(builder->getResult()));
 
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234", device->getElementId());
@@ -168,10 +159,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
-  EXPECT_NO_THROW({
-    NonemptyDevicePtr result = move(builder->getResult());
-    device = result.base();
-  });
+  EXPECT_NO_THROW(device = move(builder->getResult()));
 
   auto base_group = device->getDeviceElementGroup();
   EXPECT_EQ("1234", device->getElementId());

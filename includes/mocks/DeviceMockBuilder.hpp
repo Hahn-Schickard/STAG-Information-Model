@@ -28,7 +28,7 @@ public:
       const std::string& name,
       const std::string& desc) override {
     if (!device_) {
-      auto tmp = std::make_unique<::testing::NiceMock<MockDevice>>(
+      device_ = std::make_unique<::testing::NiceMock<MockDevice>>(
           unique_id, name, desc);
     } else {
       throw std::runtime_error(
@@ -178,9 +178,9 @@ public:
     return ref_id;
   }
 
-  DeviceBuilderInterface::Result getResult() override {
+  UniqueDevicePtr getResult() override {
     if (device_) {
-      return DeviceBuilderInterface::Result(std::move(device_));
+      return std::move(device_);
     } else {
       throw std::runtime_error("Device base was not built!");
     }
