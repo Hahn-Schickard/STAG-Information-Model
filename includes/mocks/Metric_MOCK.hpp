@@ -14,6 +14,7 @@ namespace testing {
 class MockMetric : public Metric {
   DataType type_;
   DataVariant value_;
+  std::optional<std::function<DataVariant()>> callback_ = std::nullopt;
 
 public:
   MockMetric()
@@ -38,8 +39,9 @@ public:
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
-    ON_CALL(*this, getMetricValue).WillByDefault([callback]() -> DataVariant {
-      return callback();
+    callback_ = callback;
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      return callback_.value()();
     });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }

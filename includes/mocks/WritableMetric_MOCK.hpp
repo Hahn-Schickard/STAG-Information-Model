@@ -15,6 +15,8 @@ namespace testing {
 class MockWritableMetric : public WritableMetric {
   DataType type_;
   DataVariant value_;
+  std::optional<std::function<DataVariant()>> read_ = std::nullopt;
+  std::optional<std::function<void(DataVariant)>> write_ = std::nullopt;
 
 public:
   MockWritableMetric()
@@ -37,16 +39,20 @@ public:
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
-    ON_CALL(*this, getMetricValue).WillByDefault(callback);
+    read_ = callback;
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      return read_.value()();
+    });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   void delegateToFake(std::function<DataVariant()> reader,
       std::function<void(DataVariant)> writer) {
-    ON_CALL(*this, getMetricValue).WillByDefault(reader);
-    ON_CALL(*this, setMetricValue)
-        .WillByDefault([this, writer](DataVariant value) { writer(value); });
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    write_ = writer;
+    ON_CALL(*this, setMetricValue).WillByDefault([this](DataVariant value) {
+      write_.value()(value);
+    });
+    delegateToFake(reader);
   }
 
   ~MockWritableMetric() { ::testing::Mock::VerifyAndClear(this); }
