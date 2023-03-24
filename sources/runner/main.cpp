@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Information_Model;
 
-void print(DevicePtr device);
+void print(const DevicePtr& device);
 void print(NonemptyDeviceElementPtr element, size_t offset);
 void print(NonemptyWritableMetricPtr element, size_t offset);
 void print(NonemptyMetricPtr element, size_t offset);
@@ -83,8 +83,7 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(
-      element->specific_interface,
+  match(element->specific_interface,
       [offset](NonemptyDeviceElementGroupPtr interface) {
         print(interface, offset);
       },
@@ -93,7 +92,7 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
           NonemptyWritableMetricPtr interface) { print(interface, offset); });
 }
 
-void print(DevicePtr device) {
+void print(const DevicePtr& device) {
   cout << "Device name: " << device->getElementName() << endl;
   cout << "Device id: " << device->getElementId() << endl;
   cout << "Described as: " << device->getElementDescription() << endl;
