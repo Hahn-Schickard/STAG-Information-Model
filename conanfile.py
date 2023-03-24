@@ -10,7 +10,7 @@ class PackageConan(ConanFile):
     requires = [
         "gtest/[~1.11]",
         "Variant_Visitor/[~0.1]@hahn-schickard/stable",
-        "Nonempty_Pointer/[~0.1]@hahn-schickard/stable",
+        "Nonempty_Pointer/[~0.2]@hahn-schickard/stable",
     ]
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
