@@ -17,6 +17,7 @@ void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
 int main() {
   try {
     DevicePtr device;
+    string read_target_id;
     {
       auto* builder = new Information_Model::testing::DeviceMockBuilder();
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
@@ -28,6 +29,7 @@ int main() {
           DataType::BOOLEAN);
       auto integer_ref_id = builder->addReadableMetric(
           "Integer", "Mocked readable metric", DataType::INTEGER);
+      read_target_id = integer_ref_id;
       auto string_ref_id = builder->addReadableMetric(
           "String", "Mocked readable metric", DataType::STRING);
 
@@ -36,6 +38,13 @@ int main() {
     }
 
     print(device);
+
+    auto read_target_metric = get<NonemptyMetricPtr>(
+        device->getDeviceElement(read_target_id)->specific_interface);
+    auto value = get<intmax_t>(read_target_metric->getMetricValue());
+
+    cout << "Reading " << read_target_id << " metric value as " << value
+         << endl;
 
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
