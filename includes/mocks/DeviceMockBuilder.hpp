@@ -19,7 +19,7 @@ namespace testing {
  *
  */
 class DeviceMockBuilder : public DeviceBuilderInterface {
-  MockDevicePtr device_;
+  std::unique_ptr<MockDevice> device_;
 
 public:
   DeviceMockBuilder() = default;
@@ -28,7 +28,7 @@ public:
       const std::string& name,
       const std::string& desc) override {
     if (!device_) {
-      device_ = std::make_shared<::testing::NiceMock<MockDevice>>(
+      device_ = std::make_unique<::testing::NiceMock<MockDevice>>(
           unique_id, name, desc);
     } else {
       throw std::runtime_error(
@@ -173,14 +173,12 @@ public:
       __attribute__((unused)) auto suppress = execute_cb;
       break;
     }
-    default: {
-      break;
-    }
+    default: { break; }
     }
     return ref_id;
   }
 
-  DevicePtr getResult() override {
+  UniqueDevicePtr getResult() override {
     if (device_) {
       return std::move(device_);
     } else {

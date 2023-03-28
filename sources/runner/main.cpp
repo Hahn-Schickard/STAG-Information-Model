@@ -33,7 +33,7 @@ int main() {
       auto string_ref_id = builder->addReadableMetric(
           "String", "Mocked readable metric", DataType::STRING);
 
-      device = builder->getResult();
+      device = move(builder->getResult());
       delete builder;
     }
 
