@@ -16,16 +16,52 @@ namespace testing {
  * functions in your test cases!
  *
  */
-class MockDeviceElementGroup : public DeviceElementGroup {
-  using DeviceElementsMap =
-      std::unordered_map<std::string, NonemptyDeviceElementPtr>;
-  DeviceElementsMap elements_map_;
-  size_t element_count_;
-  std::string element_id_;
+struct MockDeviceElementGroup : public DeviceElementGroup {
+  MockDeviceElementGroup(const std::string& ref_id)
+      : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
+    ON_CALL(*this, getSubelements).WillByDefault([this]() -> DeviceElements {
+      std::vector<NonemptyDeviceElementPtr> subelements;
+      // NOLINTNEXTLINE
+      for (auto element_pair : elements_map_) {
+        subelements.push_back(element_pair.second);
+      }
+      return subelements;
+    });
 
+    ON_CALL(*this, getSubelement)
+        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
+          size_t target_level = getTreeLevel(ref_id) - 1;
+          size_t current_level = getTreeLevel(element_id_);
+          // Check if a given element is in a sub group
+          if (target_level != current_level) {
+            auto next_id = getNextElementID(ref_id, target_level);
+            auto next_element = getSubelement(next_id);
+            // Check if next element exists and is a group
+            if (next_element) {
+              auto next_group = std::get_if<NonemptyDeviceElementGroupPtr>(
+                  &next_element->specific_interface);
+              if (next_group)
+                return (*next_group)->getSubelement(ref_id);
+            }
+          } // If not, check if it is in this group
+          else if (elements_map_.find(ref_id) != elements_map_.end()) {
+            return elements_map_.at(ref_id).base();
+          }
+          // If not, return an empty shared_ptr
+          return DeviceElementPtr();
+        });
+  }
+
+  MOCK_METHOD(DeviceElements, getSubelements, (), (override));
+  MOCK_METHOD(DeviceElementPtr,
+      getSubelement,
+      (const std::string& /* ref_id */),
+      (override));
+
+private:
   /**
-   * @brief Counts number of occurencies of a given pattern from a given cut of
-   * marker. USED INTERNALLY
+   * @brief Counts number of occurrences of a given pattern from a given cut
+   * of marker. USED INTERNALLY
    *
    * @param input
    * @param pattern
@@ -103,7 +139,8 @@ class MockDeviceElementGroup : public DeviceElementGroup {
   }
 
   /**
-   * @brief Generateds a new element reference ID based on the ID of this group
+   * @brief Generates a new element reference ID based on the ID of this
+   * group
    *
    * @return std::string
    */
@@ -114,42 +151,6 @@ class MockDeviceElementGroup : public DeviceElementGroup {
                                  : "." + std::to_string(element_count_));
     element_count_++;
     return base_id + sub_element_id;
-  }
-
-public:
-  MockDeviceElementGroup(const std::string& ref_id)
-      : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
-    ON_CALL(*this, getSubelements).WillByDefault([this]() -> DeviceElements {
-      std::vector<NonemptyDeviceElementPtr> subelements;
-      // NOLINTNEXTLINE
-      for (auto element_pair : elements_map_) {
-        subelements.push_back(element_pair.second);
-      }
-      return subelements;
-    });
-
-    ON_CALL(*this, getSubelement)
-        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
-          size_t target_level = getTreeLevel(ref_id) - 1;
-          size_t current_level = getTreeLevel(element_id_);
-          // Check if a given element is in a sub group
-          if (target_level != current_level) {
-            auto next_id = getNextElementID(ref_id, target_level);
-            auto next_element = getSubelement(next_id);
-            // Check if next element exists and is a group
-            if (next_element) {
-              auto next_group = std::get_if<NonemptyDeviceElementGroupPtr>(
-                  &next_element->specific_interface);
-              if (next_group)
-                return (*next_group)->getSubelement(ref_id);
-            }
-          } // If not, check if it is in this group
-          else if (elements_map_.find(ref_id) != elements_map_.end()) {
-            return elements_map_.at(ref_id).base();
-          }
-          // If not, return an empty shared_ptr
-          return DeviceElementPtr();
-        });
   }
 
   /**
@@ -243,15 +244,13 @@ public:
     return ref_id;
   }
 
-  MOCK_METHOD(DeviceElements, getSubelements, (), (override));
-  MOCK_METHOD(DeviceElementPtr,
-      getSubelement,
-      (const std::string& /* ref_id */),
-      (override));
+  std::unordered_map<std::string, NonemptyDeviceElementPtr> elements_map_;
+  size_t element_count_;
+  std::string element_id_;
+  friend class DeviceMockBuilder;
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
 } // namespace testing
 } // namespace Information_Model
-
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
