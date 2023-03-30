@@ -7,6 +7,14 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
+
+/**
+ * @brief Base modeling entity for Information Model
+ *
+ * Contains meta information of the modeled entity.
+ *
+ * MUST ONLY be inherited by Device or DeviceElement classes
+ */
 class NamedElement {
   std::string name_;
   std::string desc_;
