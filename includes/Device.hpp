@@ -10,6 +10,18 @@
 #include <string>
 
 namespace Information_Model {
+/**
+ * @brief An interface to the Device model
+ *
+ * Contains all of the modeled functionality of a singular addressable
+ * sensor/actor system
+ *
+ * Each Device MUST have a reference ID (saved as ref_id), which will be used to
+ * address any modeled functionality by Data Consumer Adapter Implementations
+ *
+ * This class is implemented in Information Model Manager Project and is built
+ * via DeviceBuilderInterface
+ */
 class Device : public NamedElement {
 protected:
   Device(const std::string& ref_id,
