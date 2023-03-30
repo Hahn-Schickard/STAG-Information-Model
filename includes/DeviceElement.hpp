@@ -11,7 +11,20 @@
 
 namespace Information_Model {
 
+/**
+ * @brief Base Modeling element for any singular entity within the Device.
+ *
+ * This class describes the modeled entity as well as provides the user with a
+ * generic way of accessing the entity's functionality
+ */
 struct DeviceElement : NamedElement {
+  /**
+   * @brief Contains modeled entity's functionality
+   *
+   * @see DeviceElementGroup
+   * @see Metric
+   * @see WritableMetric
+   */
   using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr>;
@@ -24,6 +37,11 @@ struct DeviceElement : NamedElement {
       : NamedElement(ref_id, name, desc),
         specific_interface(std::move(interface)) {}
 
+  /**
+   * @brief Provides a generic way of accessing the modeled entity's
+   * functionality can be used as an argument for Variant_Visitor:match()
+   * function
+   */
   const SpecificInterface specific_interface;
 };
 
