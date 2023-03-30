@@ -14,9 +14,10 @@ namespace testing {
 
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
- * This class should be used by Data Consumer Adapter implementations to build a
- * mock Device instance during unit and integration test stages
  *
+ * This class should be used by Data Consumer Adapter implementations to build a
+ * mock/fake Device instance to test interactions with Information Model without
+ * having access to real Device instances
  */
 class DeviceMockBuilder : public DeviceBuilderInterface {
   std::unique_ptr<MockDevice> device_;
