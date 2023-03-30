@@ -11,6 +11,16 @@
 namespace Information_Model {
 class DeviceElement;
 
+/**
+ * @brief An interface to DeviceElementGroup
+ *
+ * This class groups other modeling entities together under a single collection
+ *
+ * This class is implemented in Information Model Manager Project and is built
+ * via DeviceBuilderInterface::addDeviceElementGroup() or
+ * DeviceBuilderInterface::addDeviceElement() with type set to
+ * ElementType::GROUP
+ */
 class DeviceElementGroup {
 protected:
   DeviceElementGroup() = default;
