@@ -26,6 +26,29 @@ enum class ElementType {
   FUNCTION /*!< Metric with execute access */
 };
 
+inline std::string toString(ElementType type) {
+  switch (type) {
+  case ElementType::GROUP: {
+    return "Group";
+  }
+  case ElementType::READABLE: {
+    return "Readable";
+  }
+  case ElementType::WRITABLE: {
+    return "Writable";
+  }
+  case ElementType::OBSERVABLE: {
+    return "Observable";
+  }
+  case ElementType::FUNCTION: {
+    return "Function";
+  }
+  default: {
+    throw std::logic_error("Could not decode ElementType enum value");
+  }
+  }
+}
+
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
