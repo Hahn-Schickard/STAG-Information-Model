@@ -73,6 +73,8 @@ struct DeviceElement : NamedElement {
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
                    specific_interface)) {
       return ElementType::WRITABLE;
+    } else {
+      throw std::runtime_error("Could not resolve ElementType");
     }
   }
 };
