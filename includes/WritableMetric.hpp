@@ -13,13 +13,15 @@ namespace Information_Model {
 /**
  * @brief An interface to a read and writable Metric.
  *
- * This class models a single writable element for various senors/actors
+ * Models a single writable element for various sensors/actors
  *
- * If this metric does not support active value reading (Readable part),
- * getMetricValue() calls will return the default value for set DataVariant type
+ * If this metric does not support active value reading (the readable part), all
+ * calls to getMetricValue() will return the default value for set DataVariant
+ * type
  *
- * This class is implemented in Information Model Manager Project and is built
- * via DeviceBuilderInterface::addWritableMetric() or
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addWritableMetric() or
  * DeviceBuilderInterface::addDeviceElement() with type set to
  * ElementType::WRITABLE
  */

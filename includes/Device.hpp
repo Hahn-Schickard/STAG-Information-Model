@@ -19,8 +19,9 @@ namespace Information_Model {
  * Each Device MUST have a reference ID (saved as ref_id), which will be used to
  * address any modeled functionality by Data Consumer Adapter Implementations
  *
- * This class is implemented in Information Model Manager Project and is built
- * via DeviceBuilderInterface
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface
  */
 class Device : public NamedElement {
 protected:

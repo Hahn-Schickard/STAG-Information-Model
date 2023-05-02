@@ -34,11 +34,17 @@ enum class ElementType {
 /**
  * @brief An Interface to Device Builder class
  *
- * This Interface is used by Technology Adapter implementations to build
- * a device within the Information Model. It is implemented Information Model
- * Manager Project and SHOULD be acquired via
- * TechnologyAdapter::getDeviceBuilder() method
+ * Used by Technology Adapter implementations to build a device within the
+ * Information Model.
  *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and
+ * SHOULD be acquired via TechnologyAdapter::getDeviceBuilder() method.
+ *
+ * To test interactions with this interface, please set
+ * testing::DeviceBuilderInterfaceMock class as a DeviceBuilderPtr when creating
+ * a new TechnologyAdapter instance by calling
+ * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
 

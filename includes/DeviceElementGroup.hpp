@@ -14,10 +14,11 @@ class DeviceElement;
 /**
  * @brief An interface to DeviceElementGroup
  *
- * This class groups other modeling entities together under a single collection
+ * Groups other modeling entities together in a single collection
  *
- * This class is implemented in Information Model Manager Project and is built
- * via DeviceBuilderInterface::addDeviceElementGroup() or
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addDeviceElementGroup() or
  * DeviceBuilderInterface::addDeviceElement() with type set to
  * ElementType::GROUP
  */

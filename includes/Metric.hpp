@@ -13,10 +13,11 @@ namespace Information_Model {
 /**
  * @brief An interface to read only Metric.
  *
- * This class models a single read only element for various senors/actors
+ * This interface models a single read only element for various sensors/actors
  *
- * This class is implemented in Information Model Manager Project and is built
- * via DeviceBuilderInterface::addReadableMetric() or
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addReadableMetric() or
  * DeviceBuilderInterface::addDeviceElement() with type set to
  * ElementType::READABLE
  */

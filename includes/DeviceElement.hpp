@@ -14,7 +14,7 @@ namespace Information_Model {
 /**
  * @brief Base Modeling element for any singular entity within the Device.
  *
- * This class describes the modeled entity as well as provides the user with a
+ * Describes the modeled entity as well as provides the user with a
  * generic way of accessing the entity's functionality
  */
 struct DeviceElement : NamedElement {
@@ -39,7 +39,9 @@ struct DeviceElement : NamedElement {
 
   /**
    * @brief Provides a generic way of accessing the modeled entity's
-   * functionality can be used as an argument for Variant_Visitor:match()
+   * functionality
+   *
+   * This variant can be used as an argument for Variant_Visitor:match() helper
    * function
    */
   const SpecificInterface specific_interface;
