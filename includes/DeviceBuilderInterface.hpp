@@ -17,21 +17,6 @@ using ExecuteFunctor = std::function<bool(std::string)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
- * @enum ElementTypeEnum
- * @brief ElementType enumeration, specifying the available DeviceElement
- * types.
- *
- */
-enum class ElementType {
-  GROUP, /*!< Grouping element, aka list */
-  READABLE, /*!< Metric with read access */
-  WRITABLE, /*!< Metric with write access */
-  OBSERVABLE, /*!< Metric with read access and ability to self report
-                 changes */
-  FUNCTION /*!< Metric with execute access */
-};
-
-/**
  * @brief This Interface is used by Technology Adapter implementations to build
  * a device within the Information Model.
  *

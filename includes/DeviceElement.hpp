@@ -11,6 +11,21 @@
 
 namespace Information_Model {
 
+/**
+ * @enum ElementTypeEnum
+ * @brief ElementType enumeration, specifying the available DeviceElement
+ * types.
+ *
+ */
+enum class ElementType {
+  GROUP, /*!< Grouping element, aka list */
+  READABLE, /*!< Metric with read access */
+  WRITABLE, /*!< Metric with write access */
+  OBSERVABLE, /*!< Metric with read access and ability to self report
+                 changes */
+  FUNCTION /*!< Metric with execute access */
+};
+
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
