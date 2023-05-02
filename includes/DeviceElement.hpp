@@ -40,6 +40,18 @@ struct DeviceElement : NamedElement {
         specific_interface(std::move(interface)) {}
 
   const SpecificInterface specific_interface;
+
+  ElementType getElementType() {
+    if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(
+            specific_interface)) {
+      return ElementType::GROUP;
+    } else if (std::holds_alternative<NonemptyMetricPtr>(specific_interface)) {
+      return ElementType::READABLE;
+    } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
+                   specific_interface)) {
+      return ElementType::WRITABLE;
+    }
+  }
 };
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
