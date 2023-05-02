@@ -13,7 +13,7 @@ namespace Information_Model {
 /**
  * @brief An interface to read only Metric.
  *
- * This interface models a single read only element for various sensors/actors
+ * Models a single read only element for various sensors/actors
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
