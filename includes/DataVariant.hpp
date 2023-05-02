@@ -158,6 +158,30 @@ inline DataVariant setVariant(DataType type) {
   }
 }
 
+inline DataType toDataType(DataVariant variant) {
+  if (std::holds_alternative<bool>(variant)) {
+    return DataType::BOOLEAN;
+  } else if (std::holds_alternative<intmax_t>(variant)) {
+    return DataType::INTEGER;
+  } else if (std::holds_alternative<uintmax_t>(variant)) {
+    return DataType::UNSIGNED_INTEGER;
+  } else if (std::holds_alternative<double>(variant)) {
+    return DataType::DOUBLE;
+  } else if (std::holds_alternative<DateTime>(variant)) {
+    return DataType::TIME;
+  } else if (std::holds_alternative<std::vector<uint8_t>>(variant)) {
+    return DataType::OPAQUE;
+  } else if (std::holds_alternative<std::string>(variant)) {
+    return DataType::STRING;
+  } else {
+    return DataType::UNKNOWN;
+  }
+}
+
+inline bool matchVariantType(DataVariant variant, DataType type) {
+  return toDataType(variant) == type;
+}
+
 inline std::string toString(DataVariant variant) {
   std::string result;
   match(
