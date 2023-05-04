@@ -457,6 +457,15 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
+
+  protected: 
+  DeviceElementPtr makeDeviceElement(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DeviceElement::SpecificInterface&& interface){
+        auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
+        return std::make_shared<DeviceElement>(obj);
+      }
 };
 } // namespace Information_Model
 

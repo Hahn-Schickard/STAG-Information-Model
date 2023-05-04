@@ -73,7 +73,7 @@ public:
           std::optional<WriteFunctor> /* write_cb */,
           std::optional<ExecuteFunctor> /* execute_cb */),
       (override));
-  MOCK_METHOD(DeviceBuilderInterface::Result, getResult, (), (override));
+  MOCK_METHOD(UniqueDevicePtr, getResult, (), (override));
 };
 } // namespace testing
 } // namespace Information_Model
