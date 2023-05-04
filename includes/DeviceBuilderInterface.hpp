@@ -265,7 +265,10 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
   }
-
+  /**
+   * @addtogroup FunctionModeling Function Modelling
+   * @{
+   */
   /**
    * @brief Adds a function to the device root level DeviceElementGroup.
    *
@@ -333,7 +336,7 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for subgroup");
   }
-
+  /** @}*/
   /**
    * @brief Provides a generalized approach to creating any device element.
    *
