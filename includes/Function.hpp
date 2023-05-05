@@ -13,6 +13,29 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
+struct ResultReturningNotSupported : public std::runtime_error {
+  ResultReturningNotSupported()
+      : std::runtime_error(
+            "Function does not support returning execution results") {}
+};
+
+struct CallerNotFound : public std::runtime_error {
+  CallerNotFound(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("No caller with id: " + std::to_string(call_id) +
+            " for Function " + name + " call exists") {}
+};
+
+struct CallCanceled : public std::runtime_error {
+  CallCanceled(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
+            " canceled the execution call for Function " + name) {}
+};
+
+struct FunctionCallTimedout : public std::runtime_error {
+  FunctionCallTimedout(const std::string& name)
+      : std::runtime_error("Function " + name + " call timedout") {}
+};
+
 /**
  * @addtogroup FunctionModeling Function Modelling
  * @{
@@ -68,6 +91,8 @@ struct Function {
    * @brief Executes the modeled functionality without waiting for the execution
    * result
    *
+   * @throws std::runtime_error - if base implementation was called
+   *
    * @param parameters
    */
   virtual void execute(Parameters /*parameters*/ = Parameters()) {
@@ -81,8 +106,12 @@ struct Function {
    *
    * Blocks until the execution result is available or a timeout occurs
    *
-   * @throws std::runtime_error - if modeled functionality does not support
-   * returning execution result
+   * If execution call timesout, the request will be canceled and an exception
+   * will be thrown
+   *
+   * @throws ResultReturningNotSupported - if modeled functionality does not
+   * support returning execution result
+   * @throws FunctionCallTimedout - if execution call has timeout
    *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs
@@ -90,7 +119,7 @@ struct Function {
    */
   virtual DataVariant call(
       uintmax_t /*timeout*/ = 100, Parameters /*parameters*/ = Parameters()) {
-    throw std::runtime_error("Function does not support returning results");
+    throw ResultReturningNotSupported();
   }
 
   /**
@@ -99,14 +128,14 @@ struct Function {
    *
    * Blocks until the execution call is dispatched
    *
-   * @throws std::runtime_error - if modeled functionality does not support
-   * returning execution result
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
    *
    * @param parameters
    * @return ResultFuture
    */
   virtual ResultFuture asyncCall(Parameters /*parameters*/ = Parameters()) {
-    throw std::runtime_error("Function does not support returning results");
+    throw ResultReturningNotSupported();
   }
 
   /**
@@ -115,8 +144,9 @@ struct Function {
    * The linked future result (the second Function::ResultFuture parameter) will
    * throw an exception to indicate that it was canceled
    *
-   * @throws std::runtime_error - if the given call_id does not indicate a
+   * @throws CallerNotFound - if the given call_id does not indicate a
    * previous asynchronous call
+   * @throws std::runtime_error - if base implementation was called
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
@@ -131,6 +161,8 @@ struct Function {
    * If the modeled Function does not support returning a result, this method
    * will return DataType::UNKNOWN
    *
+   * @throws std::runtime_error - if base implementation was called
+   *
    * @return DataType
    */
   virtual DataType getResultDataType() {
@@ -140,7 +172,8 @@ struct Function {
 
   /**
    * @brief Returns an index map of supported Parameter types
-
+   *
+   * @throws std::runtime_error - if base implementation was called
    *
    * @return ParameterTypes
    */
