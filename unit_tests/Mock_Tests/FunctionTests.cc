@@ -136,6 +136,81 @@ TEST_P(FunctionParametrizedTests, throwsCallerNotFoundOnCancelAsyncCall) {
   EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
 }
 
+struct Executor {
+  Executor() = default;
+  /**
+   * @brief Create a new Executor Functor with an execution delay
+   *
+   * @param response_delay - number of miliseconds to wait before responding
+   */
+  Executor(uintmax_t response_delay) : response_delay_(response_delay) {}
+
+  Function::ResultFuture operator()(Function::Parameters /*params*/) {
+    auto call_id = result_promises_.size();
+    auto promise = std::promise<DataVariant>();
+    auto result_future = std::make_pair(call_id, promise.get_future());
+    result_promises_.emplace(call_id, std::move(promise));
+    return std::move(result_future);
+  }
+
+  void operator()(uintmax_t call_id) {
+    auto iter = result_promises_.find(call_id);
+    if (iter != result_promises_.end()) {
+      iter->second.set_exception(
+          std::make_exception_ptr(CallCanceled(call_id, "ExternalExecutor")));
+      iter = result_promises_.erase(iter);
+    } else {
+      throw CallerNotFound(call_id, "ExternalExecutor");
+    }
+  }
+
+  void respond(uintmax_t call_id, DataVariant value = DataVariant()) {
+    if (response_delay_ > 0) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(response_delay_));
+    }
+    auto iter = result_promises_.find(call_id);
+    if (iter != result_promises_.end()) {
+      iter->second.set_value(value);
+      iter = result_promises_.erase(iter);
+    } else {
+      throw CallerNotFound(call_id, "ExternalExecutor");
+    }
+  }
+
+  void respond(uintmax_t call_id, const std::exception& exception) {
+    if (response_delay_ > 0) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(response_delay_));
+    }
+    auto iter = result_promises_.find(call_id);
+    if (iter != result_promises_.end()) {
+      iter->second.set_exception(std::make_exception_ptr(exception));
+      iter = result_promises_.erase(iter);
+    } else {
+      throw CallerNotFound(call_id, "ExternalExecutor");
+    }
+  }
+
+  void respondToAll(DataVariant value) {
+    for (auto iter = result_promises_.begin(); iter != result_promises_.end();
+         iter++) {
+      iter->second.set_value(value);
+    }
+    result_promises_.clear();
+  }
+
+  void respondToAll(const std::exception& exception) {
+    for (auto iter = result_promises_.begin(); iter != result_promises_.end();
+         iter++) {
+      iter->second.set_exception(std::make_exception_ptr(exception));
+    }
+    result_promises_.clear();
+  }
+
+private:
+  uintmax_t response_delay_ = 0;
+  std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
+};
+
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canGetResultDataType) {
   EXPECT_CALL(*function_mock.get(), getResultDataType()).Times(AtLeast(1));
