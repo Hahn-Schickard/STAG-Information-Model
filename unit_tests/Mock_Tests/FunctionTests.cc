@@ -212,6 +212,29 @@ private:
 };
 
 // NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
+  EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
+  try {
+    auto future_result = function->asyncCall();
+    auto executor = Executor();
+    MockFunction::Executor execute = [&executor](Function::Parameters params) {
+      return executor.execute(params);
+    };
+    MockFunction::Canceler cancel = [&executor](uintmax_t call_id) {
+      executor.cancel(call_id);
+    };
+    function_mock->delegateToFake(execute, cancel);
+    EXPECT_THROW(future_result.second.get(), std::logic_error);
+  } catch (exception& ex) {
+    if (expectations->result_type_ != DataType::UNKNOWN) {
+      FAIL() << "Caught an unexpected exception: " << ex.what();
+    } else {
+      SUCCEED();
+    }
+  }
+}
+
+// NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canGetResultDataType) {
   EXPECT_CALL(*function_mock.get(), getResultDataType()).Times(AtLeast(1));
   EXPECT_EQ(expectations->result_type_, function->getResultDataType());
