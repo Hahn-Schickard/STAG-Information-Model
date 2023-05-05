@@ -62,20 +62,20 @@ struct MockFunction : public Function {
             }
           });
       ON_CALL(*this, asyncCall).WillByDefault(async_call);
-      ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
-        auto iter = result_promises_.find(call_id);
-        if (iter != result_promises_.end()) {
-          iter->second.set_exception(
-              std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
-          iter = result_promises_.erase(
-              iter); // @TODO: is this safe? Can we erase the promise before
-                     // std::future<>::get() was called? Is this erased
-                     // correctly?
-        } else {
-          throw CallerNotFound(call_id, "MockFunction");
-        }
-      });
     }
+    ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
+      auto iter = result_promises_.find(call_id);
+      if (iter != result_promises_.end()) {
+        iter->second.set_exception(
+            std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
+        iter = result_promises_.erase(
+            iter); // @TODO: is this safe? Can we erase the promise before
+                   // std::future<>::get() was called? Is this erased
+                   // correctly?
+      } else {
+        throw CallerNotFound(call_id, "MockFunction");
+      }
+    });
     ON_CALL(*this, getResultDataType)
         .WillByDefault(::testing::Return(result_type_));
     ON_CALL(*this, getSupportedParameterTypes)
