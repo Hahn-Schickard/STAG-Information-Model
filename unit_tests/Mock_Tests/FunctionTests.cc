@@ -137,6 +137,8 @@ TEST_P(FunctionParametrizedTests, throwsCallerNotFoundOnCancelAsyncCall) {
 }
 
 struct Executor {
+  Executor(const Executor&) = delete;
+
   Executor() = default;
   /**
    * @brief Create a new Executor Functor with an execution delay
@@ -145,7 +147,9 @@ struct Executor {
    */
   Executor(uintmax_t response_delay) : response_delay_(response_delay) {}
 
-  Function::ResultFuture operator()(Function::Parameters /*params*/) {
+  Executor& operator()(const Executor&) = delete;
+
+  Function::ResultFuture execute(Function::Parameters /*params*/) {
     auto call_id = result_promises_.size();
     auto promise = std::promise<DataVariant>();
     auto result_future = std::make_pair(call_id, promise.get_future());
@@ -153,7 +157,7 @@ struct Executor {
     return std::move(result_future);
   }
 
-  void operator()(uintmax_t call_id) {
+  void cancel(uintmax_t call_id) {
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
       iter->second.set_exception(
@@ -217,13 +221,14 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
   try {
     auto future_result = function->asyncCall();
     auto executor = Executor();
-    MockFunction::Executor execute = [&executor](Function::Parameters params) {
+    MockFunction::Executor execute_cb = [&executor](
+                                            Function::Parameters params) {
       return executor.execute(params);
     };
-    MockFunction::Canceler cancel = [&executor](uintmax_t call_id) {
+    MockFunction::Canceler cancel_cb = [&executor](uintmax_t call_id) {
       executor.cancel(call_id);
     };
-    function_mock->delegateToFake(execute, cancel);
+    function_mock->delegateToFake(execute_cb, cancel_cb);
     EXPECT_THROW(future_result.second.get(), std::logic_error);
   } catch (exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
