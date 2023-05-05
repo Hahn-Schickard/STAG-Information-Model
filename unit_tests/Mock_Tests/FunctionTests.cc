@@ -111,6 +111,7 @@ TEST_P(FunctionParametrizedTests, canAsyncCall) {
   }
 }
 
+// NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   try {
