@@ -130,6 +130,13 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
 }
 
 // NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, throwsCallerNotFoundOnCancelAsyncCall) {
+  EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
+      .Times(AtLeast(1));
+  EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
+}
+
+// NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canGetResultDataType) {
   EXPECT_CALL(*function_mock.get(), getResultDataType()).Times(AtLeast(1));
   EXPECT_EQ(expectations->result_type_, function->getResultDataType());
