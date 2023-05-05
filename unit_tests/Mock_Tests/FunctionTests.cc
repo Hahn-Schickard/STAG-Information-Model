@@ -127,6 +127,12 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
   }
 }
 
+// NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, canGetResultDataType) {
+  EXPECT_CALL(*function_mock.get(), getResultDataType()).Times(AtLeast(1));
+  EXPECT_EQ(expectations->result_type_, function->getResultDataType());
+}
+
 struct SetMetricTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
