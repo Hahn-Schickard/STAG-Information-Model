@@ -116,6 +116,8 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   try {
     auto future_result = function->asyncCall();
+    EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
+        .Times(AtLeast(1));
     function->cancelAsyncCall(future_result.first);
     EXPECT_THROW(future_result.second.get(), CallCanceled);
   } catch (exception& ex) {
