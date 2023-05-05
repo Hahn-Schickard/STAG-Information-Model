@@ -85,17 +85,6 @@ struct SetMetricTestNameSuffix {
 vector<FunctionExpectations> makeFunctionTestParameters() {
   vector<FunctionExpectations> params;
   params.emplace_back("doAndReturnNothing");
-  //   params.emplace_back("Bool", DataType::BOOLEAN, DataVariant((bool)true));
-  //   params.emplace_back("Int", DataType::INTEGER, DataVariant((intmax_t)26));
-  //   params.emplace_back(
-  //       "UInt", DataType::UNSIGNED_INTEGER, DataVariant((uintmax_t)74));
-  //   params.emplace_back("Double", DataType::DOUBLE,
-  //   DataVariant((double)20.2)); params.emplace_back(
-  //       "Opaque", DataType::OPAQUE, DataVariant(vector<uint8_t>{0, 1, 2,
-  //       3}));
-  //   params.emplace_back(
-  //       "String", DataType::STRING, DataVariant(string("Hello world!")));
-  //   params.emplace_back("Time", DataType::TIME, DataVariant(DateTime()));
   return params;
 }
 
