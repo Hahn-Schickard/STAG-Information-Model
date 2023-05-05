@@ -216,6 +216,89 @@ private:
 };
 
 // NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, canUseExternalExecutor) {
+  if (expectations->result_type_ != DataType::UNKNOWN) {
+    auto executor = Executor();
+    MockFunction::Executor execute_cb = [&executor](
+                                            Function::Parameters params) {
+      return executor.execute(params);
+    };
+    MockFunction::Canceler cancel_cb = [&executor](uintmax_t call_id) {
+      executor.cancel(call_id);
+    };
+    function_mock->delegateToFake(execute_cb, cancel_cb);
+
+    { // Function::execute() tests
+      EXPECT_CALL(*function_mock.get(), execute(::testing::_))
+          .Times(AtLeast(2));
+
+      auto execute_result_future =
+          std::async(std::launch::async, [this]() { function->execute(); });
+      executor.respondToAll(DataVariant());
+
+      EXPECT_NO_THROW(execute_result_future.get());
+
+      auto execute_exception_future =
+          std::async(std::launch::async, [this]() { function->execute(); });
+      executor.respondToAll(std::domain_error("Test exception throwing"));
+
+      EXPECT_THROW(execute_exception_future.get(), std::domain_error);
+    }
+    { // Function::call() tests
+      EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
+          .Times(AtLeast(2));
+
+      auto call_result_future =
+          std::async(std::launch::async, [this]() { return function->call(); });
+      executor.respondToAll(expectations->result_value_.value());
+
+      try {
+        auto call_result = call_result_future.get();
+        EXPECT_EQ(expectations->result_value_.value(), call_result);
+      } catch (exception& ex) {
+        FAIL() << "Caught an unexpected exception" << ex.what();
+      }
+
+      auto call_exception_future =
+          std::async(std::launch::async, [this]() { return function->call(); });
+      executor.respondToAll(std::domain_error("Test exception throwing"));
+
+      EXPECT_THROW(call_exception_future.get(), std::domain_error);
+    }
+    { // Function::asyncCall() tests
+      EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
+          .Times(AtLeast(2));
+
+      auto async_call_result_future = function->asyncCall();
+      executor.respondToAll(expectations->result_value_.value());
+
+      try {
+        auto async_call_result = async_call_result_future.second.get();
+        EXPECT_EQ(expectations->result_value_.value(), async_call_result);
+      } catch (exception& ex) {
+        FAIL() << "Caught an unexpected exception" << ex.what();
+      }
+
+      auto async_call_exception_future = function->asyncCall();
+      executor.respondToAll(std::domain_error("Test exception throwing"));
+
+      EXPECT_THROW(async_call_exception_future.second.get(), std::domain_error);
+    }
+    { // Function::cancelAsyncCall() tests
+      EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
+          .Times(AtLeast(2));
+
+      auto async_call_result_future = function->asyncCall();
+
+      EXPECT_NO_THROW(
+          function->cancelAsyncCall(async_call_result_future.first));
+
+      EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
+    }
+  }
+}
+
+// NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   try {
