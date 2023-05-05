@@ -33,6 +33,9 @@ struct MockFunction : public Function {
       ON_CALL(*this, call)
           .WillByDefault(::testing::Throw(std::runtime_error(
               "Function does not support returning results")));
+      ON_CALL(*this, asyncCall)
+          .WillByDefault(::testing::Throw(std::runtime_error(
+              "Function does not support returning results")));
     } else {
       auto async_call =
           [this](
