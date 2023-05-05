@@ -14,7 +14,7 @@ namespace Information_Model {
  * @{
  */
 struct MockFunction : public Function {
-  using Executer = std::function<Function::ResultFuture(Function::Parameters)>;
+  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
 
   MockFunction() : MockFunction(DataType::UNKNOWN) {}
@@ -99,7 +99,7 @@ struct MockFunction : public Function {
       Function::ParameterTypes, getSupportedParameterTypes, (), (override));
 
   void respond(uintmax_t call_id, DataVariant value) {
-    if (!executer_.has_value()) {
+    if (!executor_.has_value()) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_value(value);
@@ -114,7 +114,7 @@ struct MockFunction : public Function {
   }
 
   void respond(uintmax_t call_id, const std::exception& exception) {
-    if (!executer_.has_value()) {
+    if (!executor_.has_value()) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_exception(std::make_exception_ptr(exception));
@@ -129,7 +129,7 @@ struct MockFunction : public Function {
   }
 
   void respondToAll(DataVariant value) {
-    if (!executer_.has_value()) {
+    if (!executor_.has_value()) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
         iter->second.set_value(value);
@@ -142,7 +142,7 @@ struct MockFunction : public Function {
   }
 
   void respondToAll(const std::exception& exception) {
-    if (!executer_.has_value()) {
+    if (!executor_.has_value()) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
         iter->second.set_exception(std::make_exception_ptr(exception));
@@ -154,15 +154,15 @@ struct MockFunction : public Function {
     }
   }
 
-  void delegateToFake(Executer executer, Canceler canceler) {
+  void delegateToFake(Executor executor, Canceler canceler) {
     respondToAll(std::logic_error("Assigned a new external execution handler"));
-    executer_ = executer;
+    executor_ = executor;
     canceler_ = canceler;
     ON_CALL(*this, call)
         .WillByDefault([this](uintmax_t timeout,
                            Function::Parameters params) -> DataVariant {
           auto result_future =
-              std::async(std::launch::async, executer_.value(), params);
+              std::async(std::launch::async, executor_.value(), params);
           auto status =
               result_future.wait_for(std::chrono::milliseconds(timeout));
           if (status == std::future_status::ready) {
@@ -171,7 +171,7 @@ struct MockFunction : public Function {
             throw FunctionCallTimedout("MockFunction");
           }
         });
-    ON_CALL(*this, asyncCall).WillByDefault(executer_.value());
+    ON_CALL(*this, asyncCall).WillByDefault(executor_.value());
     ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_.value());
   }
 
@@ -182,7 +182,7 @@ private:
   Function::ParameterTypes supported_params_;
   std::optional<DataVariant> result_value_;
   std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
-  std::optional<Executer> executer_;
+  std::optional<Executor> executor_;
   std::optional<Canceler> canceler_;
 };
 
