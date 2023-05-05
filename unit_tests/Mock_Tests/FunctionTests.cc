@@ -45,30 +45,33 @@ class FunctionParametrizedTests
 protected:
   void SetUp() override {
     expectations = make_shared<FunctionExpectations>(GetParam());
-    function = make_shared<MockFunction>(expectations->result_type_,
+    function_mock = make_shared<MockFunction>(expectations->result_type_,
         expectations->supported_params_,
         expectations->result_value_);
+    function = function_mock;
   }
 
   FunctionExpectationsPtr expectations;
+  MockFunctionPtr function_mock;
   FunctionPtr function;
 };
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canExecute) {
-  EXPECT_CALL(*function.get(), execute(::testing::_)).Times(AtLeast(1));
+  EXPECT_CALL(*function_mock.get(), execute(::testing::_)).Times(AtLeast(1));
   ASSERT_NO_THROW(function->execute());
 }
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canCall) {
-  EXPECT_CALL(*function.get(), call(::testing::_)).Times(AtLeast(1));
+  EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
+      .Times(AtLeast(1));
   ASSERT_NO_THROW(function->call());
 }
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canAsyncCall) {
-  EXPECT_CALL(*function.get(), asyncCall(::testing::_)).Times(AtLeast(1));
+  EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   ASSERT_NO_THROW(function->asyncCall());
 }
 
