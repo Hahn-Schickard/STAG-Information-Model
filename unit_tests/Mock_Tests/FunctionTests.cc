@@ -67,7 +67,12 @@ TEST_P(FunctionParametrizedTests, canCall) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
   try {
-    function->call();
+    auto resul_future = std::async(
+        std::launch::async, [this]() { return function->call(1000); });
+    function_mock->respondToAll(
+        expectations->result_value_.value_or(DataVariant()));
+    auto result = resul_future.get();
+    EXPECT_EQ(expectations->result_value_, result);
   } catch (exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
@@ -78,10 +83,39 @@ TEST_P(FunctionParametrizedTests, canCall) {
 }
 
 // NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, canCallTimesOut) {
+  EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
+      .Times(AtLeast(1));
+  if (expectations->result_type_ != DataType::UNKNOWN) {
+    auto resul_future =
+        std::async(std::launch::async, [this]() { return function->call(1); });
+    std::this_thread::sleep_for(10ms);
+    EXPECT_THROW(resul_future.get(), FunctionCallTimedout);
+  } else {
+    EXPECT_THROW(function->call(), ResultReturningNotSupported);
+  }
+}
+
+// NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canAsyncCall) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   try {
     function->asyncCall();
+  } catch (exception& ex) {
+    if (expectations->result_type_ != DataType::UNKNOWN) {
+      FAIL() << "Caught an unexpected exception: " << ex.what();
+    } else {
+      SUCCEED();
+    }
+  }
+}
+
+TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
+  EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
+  try {
+    auto future_result = function->asyncCall();
+    function->cancelAsyncCall(future_result.first);
+    EXPECT_THROW(future_result.second.get(), CallCanceled);
   } catch (exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
