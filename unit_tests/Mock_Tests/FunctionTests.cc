@@ -133,6 +133,14 @@ TEST_P(FunctionParametrizedTests, canGetResultDataType) {
   EXPECT_EQ(expectations->result_type_, function->getResultDataType());
 }
 
+// NOLINTNEXTLINE
+TEST_P(FunctionParametrizedTests, canGetSupportedParameterTypes) {
+  EXPECT_CALL(*function_mock.get(), getSupportedParameterTypes())
+      .Times(AtLeast(1));
+  EXPECT_EQ(
+      expectations->supported_params_, function->getSupportedParameterTypes());
+}
+
 struct SetMetricTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
