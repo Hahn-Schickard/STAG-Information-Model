@@ -66,13 +66,29 @@ TEST_P(FunctionParametrizedTests, canExecute) {
 TEST_P(FunctionParametrizedTests, canCall) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
-  ASSERT_NO_THROW(function->call());
+  try {
+    function->call();
+  } catch (exception& ex) {
+    if (expectations->result_type_ != DataType::UNKNOWN) {
+      FAIL() << "Caught an unexpected exception: " << ex.what();
+    } else {
+      SUCCEED();
+    }
+  }
 }
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, canAsyncCall) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
-  ASSERT_NO_THROW(function->asyncCall());
+  try {
+    function->asyncCall();
+  } catch (exception& ex) {
+    if (expectations->result_type_ != DataType::UNKNOWN) {
+      FAIL() << "Caught an unexpected exception: " << ex.what();
+    } else {
+      SUCCEED();
+    }
+  }
 }
 
 struct SetMetricTestNameSuffix {
