@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #include <memory>
 #include <string>
+#include <thread>
 
 using namespace Information_Model;
 using namespace Information_Model::testing;
