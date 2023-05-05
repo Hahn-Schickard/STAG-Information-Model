@@ -5,6 +5,7 @@
 
 #include "gmock/gmock.h"
 #include <chrono>
+#include <future>
 
 namespace Information_Model {
 
@@ -13,6 +14,9 @@ namespace Information_Model {
  * @{
  */
 struct MockFunction : public Function {
+  using Executer = std::function<Function::ResultFuture(Function::Parameters)>;
+  using Canceler = std::function<void(uintmax_t)>;
+
   MockFunction() : MockFunction(DataType::UNKNOWN) {}
 
   MockFunction(Function::ParameterTypes supported_params)
@@ -31,11 +35,9 @@ struct MockFunction : public Function {
         supported_params_(supported_params), result_value_(result_value) {
     if (!result_value_.has_value()) {
       ON_CALL(*this, call)
-          .WillByDefault(::testing::Throw(std::runtime_error(
-              "Function does not support returning results")));
+          .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
       ON_CALL(*this, asyncCall)
-          .WillByDefault(::testing::Throw(std::runtime_error(
-              "Function does not support returning results")));
+          .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
       auto async_call =
           [this](
@@ -56,23 +58,21 @@ struct MockFunction : public Function {
               return result.second.get();
             } else {
               cancelAsyncCall(result.first);
-              return DataVariant();
+              throw FunctionCallTimedout("MockFunction");
             }
           });
       ON_CALL(*this, asyncCall).WillByDefault(async_call);
       ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
         auto iter = result_promises_.find(call_id);
         if (iter != result_promises_.end()) {
-          iter->second.set_exception(std::make_exception_ptr(
-              std::runtime_error("Asynchronous was cancelled")));
+          iter->second.set_exception(
+              std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
           iter = result_promises_.erase(
               iter); // @TODO: is this safe? Can we erase the promise before
                      // std::future<>::get() was called? Is this erased
                      // correctly?
         } else {
-          std::string error_msg = "No asynchronous call with id " +
-              std::to_string(call_id) + " exists";
-          throw std::runtime_error(error_msg);
+          throw CallerNotFound(call_id, "MockFunction");
         }
       });
     }
@@ -98,6 +98,83 @@ struct MockFunction : public Function {
   MOCK_METHOD(
       Function::ParameterTypes, getSupportedParameterTypes, (), (override));
 
+  void respond(uintmax_t call_id, DataVariant value) {
+    if (!executer_.has_value()) {
+      auto iter = result_promises_.find(call_id);
+      if (iter != result_promises_.end()) {
+        iter->second.set_value(value);
+        iter = result_promises_.erase(iter); // @TODO: same as previous todo
+      } else {
+        throw CallerNotFound(call_id, "MockFunction");
+      }
+    } else {
+      throw std::logic_error(
+          "Execution calls are handled by an external function");
+    }
+  }
+
+  void respond(uintmax_t call_id, const std::exception& exception) {
+    if (!executer_.has_value()) {
+      auto iter = result_promises_.find(call_id);
+      if (iter != result_promises_.end()) {
+        iter->second.set_exception(std::make_exception_ptr(exception));
+        iter = result_promises_.erase(iter); // @TODO: same as previous todo
+      } else {
+        throw CallerNotFound(call_id, "MockFunction");
+      }
+    } else {
+      throw std::logic_error(
+          "Execution calls are handled by an external function");
+    }
+  }
+
+  void respondToAll(DataVariant value) {
+    if (!executer_.has_value()) {
+      for (auto iter = result_promises_.begin(); iter != result_promises_.end();
+           iter++) {
+        iter->second.set_value(value);
+      }
+      result_promises_.clear(); // @TODO: same as previous todo
+    } else {
+      throw std::logic_error(
+          "Execution calls are handled by an external function");
+    }
+  }
+
+  void respondToAll(const std::exception& exception) {
+    if (!executer_.has_value()) {
+      for (auto iter = result_promises_.begin(); iter != result_promises_.end();
+           iter++) {
+        iter->second.set_exception(std::make_exception_ptr(exception));
+      }
+      result_promises_.clear(); // @TODO: same as previous todo
+    } else {
+      throw std::logic_error(
+          "Execution calls are handled by an external function");
+    }
+  }
+
+  void delegateToFake(Executer executer, Canceler canceler) {
+    respondToAll(std::logic_error("Assigned a new external execution handler"));
+    executer_ = executer;
+    canceler_ = canceler;
+    ON_CALL(*this, call)
+        .WillByDefault([this](uintmax_t timeout,
+                           Function::Parameters params) -> DataVariant {
+          auto result_future =
+              std::async(std::launch::async, executer_.value(), params);
+          auto status =
+              result_future.wait_for(std::chrono::milliseconds(timeout));
+          if (status == std::future_status::ready) {
+            return result_future.get().second.get();
+          } else {
+            throw FunctionCallTimedout("MockFunction");
+          }
+        });
+    ON_CALL(*this, asyncCall).WillByDefault(executer_.value());
+    ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_.value());
+  }
+
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
 private:
@@ -105,6 +182,8 @@ private:
   Function::ParameterTypes supported_params_;
   std::optional<DataVariant> result_value_;
   std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
+  std::optional<Executer> executer_;
+  std::optional<Canceler> canceler_;
 };
 
 namespace testing {
