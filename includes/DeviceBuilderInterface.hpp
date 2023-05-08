@@ -464,7 +464,7 @@ struct DeviceBuilderInterface {
       const std::string& desc,
       DeviceElement::SpecificInterface&& interface){
         auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
-        return std::make_shared<DeviceElement>(obj);
+        return std::make_shared<DeviceElement>(std::move(obj));
       }
 };
 } // namespace Information_Model
