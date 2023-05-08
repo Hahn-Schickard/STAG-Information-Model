@@ -464,6 +464,9 @@ struct DeviceBuilderInterface {
       const std::string& desc,
       DeviceElement::SpecificInterface&& interface){
         auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
+        // We can only call DeviceElement() from within DeviceBuilderInterface 
+        // class due to access the specifier. Thus we must first create the 
+        // object locally and then pass it to std::make_shared<>() function.
         return std::make_shared<DeviceElement>(std::move(obj));
       }
 };
