@@ -438,6 +438,8 @@ string sanitizeValueName(DataVariant value) {
           val = val * -1; // std::abs resolution fails due to auto
         }
         result += std::to_string(val);
+        result = regex_replace(
+            result, regex("\\."), "_"); // fix floating point string
       },
       [&result](DateTime val) { result = val.toString(); },
       [&result](vector<uint8_t> value) {
