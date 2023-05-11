@@ -248,7 +248,7 @@ protected:
     MockFunction::Canceler cancel_cb = [this](uintmax_t call_id) {
       executor->cancel(call_id);
     };
-    function_mock->delegateToFake(execute_cb, cancel_cb);
+    function_mock->delegateToFake(move(execute_cb), move(cancel_cb));
   }
 
   FunctionExpectationsPtr expectations;
