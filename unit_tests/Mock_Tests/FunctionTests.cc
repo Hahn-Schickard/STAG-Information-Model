@@ -441,8 +441,10 @@ string sanitizeValueName(DataVariant value) {
         result = regex_replace(
             result, regex("\\."), "_"); // fix floating point string
       },
-      [&result](DateTime val) { result = val.toString(); },
-      [&result](vector<uint8_t> value) {
+      [&result](DateTime /*val*/) {
+        result; /*don't bother, the value is too complex*/
+      },
+      [&result](vector<uint8_t> val) {
         stringstream ss;
         ss << hex << setfill('0');
         for (auto byte : value) {
