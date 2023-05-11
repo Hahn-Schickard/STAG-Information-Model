@@ -102,7 +102,7 @@ TEST_P(FunctionParametrizedTests, canAsyncCall) {
   EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_)).Times(AtLeast(1));
   try {
     function->asyncCall();
-  } catch (exception& ex) {
+  } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
@@ -120,7 +120,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
         .Times(AtLeast(1));
     function->cancelAsyncCall(future_result.first);
     EXPECT_THROW(future_result.second.get(), CallCanceled);
-  } catch (exception& ex) {
+  } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
@@ -313,7 +313,7 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
     };
     function_mock->delegateToFake(execute_cb, cancel_cb);
     EXPECT_THROW(future_result.second.get(), std::logic_error);
-  } catch (exception& ex) {
+  } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
