@@ -54,14 +54,6 @@ struct DeviceElement : NamedElement {
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr>;
 
-  DeviceElement() = default;
-  DeviceElement(const std::string& ref_id,
-      const std::string& name,
-      const std::string& desc,
-      SpecificInterface&& interface)
-      : NamedElement(ref_id, name, desc),
-        specific_interface(std::move(interface)) {}
-
   const SpecificInterface specific_interface;
 
   ElementType getElementType() {
@@ -77,6 +69,17 @@ struct DeviceElement : NamedElement {
       throw std::runtime_error("Could not resolve ElementType");
     }
   }
+
+private:
+  DeviceElement() = default;
+  DeviceElement(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc,
+      SpecificInterface&& interface)
+      : NamedElement(ref_id, name, desc),
+        specific_interface(std::move(interface)) {}
+
+  friend struct DeviceBuilderInterface;
 };
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
