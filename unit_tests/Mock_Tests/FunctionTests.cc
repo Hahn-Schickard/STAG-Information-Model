@@ -81,7 +81,7 @@ TEST_P(FunctionParametrizedTests, canCall) {
         expectations->result_value_.value_or(DataVariant()));
     auto result = resul_future.get();
     EXPECT_EQ(expectations->result_value_, result);
-  } catch (exception& ex) {
+  } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
