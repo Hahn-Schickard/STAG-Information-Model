@@ -2,8 +2,6 @@
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 
 #include "../DeviceElementGroup.hpp"
-#include "Metric_MOCK.hpp"
-#include "WritableMetric_MOCK.hpp"
 
 #include "gmock/gmock.h"
 #include <optional>
