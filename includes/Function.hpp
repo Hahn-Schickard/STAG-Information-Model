@@ -87,6 +87,8 @@ struct Function {
    */
   using ResultFuture = std::pair<uintmax_t, std::future<DataVariant>>;
 
+  virtual ~Function() = default;
+
   /**
    * @brief Executes the modeled functionality without waiting for the execution
    * result
