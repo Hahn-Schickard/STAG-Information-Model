@@ -2,6 +2,7 @@
 
 #include "gtest/gtest.h"
 #include <memory>
+#include <regex>
 #include <string>
 #include <thread>
 
