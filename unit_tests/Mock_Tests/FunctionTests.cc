@@ -181,13 +181,13 @@ struct Executor {
     }
   }
 
-  void respond(uintmax_t call_id, const std::exception& exception) {
+  void respond(uintmax_t call_id, std::exception_ptr exception) {
     if (response_delay_ > 0) {
       std::this_thread::sleep_for(std::chrono::milliseconds(response_delay_));
     }
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
-      iter->second.set_exception(std::make_exception_ptr(exception));
+      iter->second.set_exception(exception);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -202,10 +202,10 @@ struct Executor {
     result_promises_.clear();
   }
 
-  void respondToAll(const std::exception& exception) {
+  void respondToAll(std::exception_ptr exception) {
     for (auto iter = result_promises_.begin(); iter != result_promises_.end();
          iter++) {
-      iter->second.set_exception(std::make_exception_ptr(exception));
+      iter->second.set_exception(exception);
     }
     result_promises_.clear();
   }
