@@ -4,6 +4,9 @@
 #include "../DeviceBuilderInterface.hpp"
 #include "DeviceElementGroup_MOCK.hpp"
 #include "Device_MOCK.hpp"
+#include "Function_MOCK.hpp"
+#include "Metric_MOCK.hpp"
+#include "WritableMetric_MOCK.hpp"
 
 #include <gmock/gmock.h>
 #include <optional>
@@ -146,7 +149,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType data_type,
       std::optional<ReadFunctor> read_cb,
       std::optional<WriteFunctor> write_cb,
-      std::optional<ExecuteFunctor> execute_cb) {
+      std::optional<Function::ParameterTypes> supported_params,
+      std::optional<ExecuteFunctor> execute_cb,
+      std::optional<CancelFunctor> cancel_cb) {
     switch (type) {
     case ElementType::GROUP: {
       auto group =
@@ -183,9 +188,14 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       return makeDeviceElement(ref_id, name, desc, NonemptyMetricPtr(readable));
     }
     case ElementType::FUNCTION: {
-      // @TODO: implement function support
-      __attribute__((unused)) auto suppress = execute_cb;
-      throw std::invalid_argument("Function metric types are not implemented");
+      auto executable = std::make_shared<::testing::NiceMock<MockFunction>>(
+          data_type, supported_params.value_or(Function::ParameterTypes()));
+      if (execute_cb.has_value() && cancel_cb.has_value()) {
+        executable->delegateToFake(execute_cb.value(), cancel_cb.value());
+      }
+
+      return makeDeviceElement(
+          ref_id, name, desc, NonemptyFunctionPtr(executable));
     }
     default: {
       throw std::invalid_argument("Requested to build unsupported ElementType");
@@ -200,11 +210,21 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType data_type = DataType::UNKNOWN,
       std::optional<ReadFunctor> read_cb = std::nullopt,
       std::optional<WriteFunctor> write_cb = std::nullopt,
-      std::optional<ExecuteFunctor> execute_cb = std::nullopt) override {
+      std::optional<Function::ParameterTypes> supported_params = std::nullopt,
+      std::optional<ExecuteFunctor> execute_cb = std::nullopt,
+      std::optional<CancelFunctor> cancel_cb = std::nullopt) override {
     auto group = getGroupImplementation(group_refid);
     auto new_id = group->generateReferenceID();
-    auto element = buildDeviceElement(
-        new_id, name, desc, type, data_type, read_cb, write_cb, execute_cb);
+    auto element = buildDeviceElement(new_id,
+        name,
+        desc,
+        type,
+        data_type,
+        read_cb,
+        write_cb,
+        supported_params,
+        execute_cb,
+        cancel_cb);
     group->addDeviceElement(NonemptyDeviceElementPtr(element));
 
     return new_id;
