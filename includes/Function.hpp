@@ -141,7 +141,7 @@ struct Function {
   /**
    * @brief Cancels a given asynchronous call
    *
-   * The linked future result (the second Function::ResultFuture parameter) will
+   * The linked result future (the second Function::ResultFuture parameter) will
    * throw an exception to indicate that it was canceled
    *
    * @throws CallerNotFound - if the given call_id does not indicate a
@@ -153,6 +153,20 @@ struct Function {
   virtual void cancelAsyncCall(uintmax_t /*call_id*/) {
     throw std::runtime_error(
         "Called based implementation of Function::cancelAsyncCall()");
+  }
+
+  /**
+   * @brief Cancels all asynchronous call executions
+   *
+   * All result promises, that have not been fulfilled, will be canceled. All
+   * linked result futures will throw an exception to indicate that it was
+   * canceled
+   *
+   * @throws std::runtime_error - if base implementation was called
+   */
+  virtual void cancelAllAsyncCalls() {
+    throw std::runtime_error(
+        "Called based implementation of Function::cancelAllAsyncCalls()");
   }
 
   /**
