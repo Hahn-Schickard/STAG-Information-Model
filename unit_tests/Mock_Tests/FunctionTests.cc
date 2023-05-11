@@ -157,6 +157,7 @@ struct Executor {
   Executor& operator()(const Executor&) = delete;
 
   Function::ResultFuture execute(Function::Parameters /*params*/) {
+    std::lock_guard<std::mutex> lock(execute_mx_);
     auto call_id = result_promises_.size();
     auto promise = std::promise<DataVariant>();
     auto result_future = std::make_pair(call_id, promise.get_future());
@@ -182,6 +183,7 @@ struct Executor {
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
       iter->second.set_value(value);
+      std::lock_guard<std::mutex> lock(erase_mx_);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -195,6 +197,7 @@ struct Executor {
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
       iter->second.set_exception(exception);
+      std::lock_guard<std::mutex> lock(erase_mx_);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -206,6 +209,7 @@ struct Executor {
          iter++) {
       iter->second.set_value(value);
     }
+    std::lock_guard<std::mutex> lock(erase_mx_);
     result_promises_.clear();
   }
 
@@ -214,10 +218,13 @@ struct Executor {
          iter++) {
       iter->second.set_exception(exception);
     }
+    std::lock_guard<std::mutex> lock(erase_mx_);
     result_promises_.clear();
   }
 
 private:
+  std::mutex execute_mx_;
+  std::mutex erase_mx_;
   uintmax_t response_delay_ = 0;
   std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
 };
