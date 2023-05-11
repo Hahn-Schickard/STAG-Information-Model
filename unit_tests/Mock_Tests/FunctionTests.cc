@@ -442,7 +442,7 @@ string sanitizeValueName(DataVariant value) {
             result, regex("\\."), "_"); // fix floating point string
       },
       [&result](DateTime /*val*/) {
-        result; /*don't bother, the value is too complex*/
+        /*don't bother, the value is too complex*/
       },
       [&result](vector<uint8_t> val) {
         stringstream ss;
