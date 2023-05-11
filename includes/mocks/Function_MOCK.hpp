@@ -39,42 +39,36 @@ struct MockFunction : public Function {
       ON_CALL(*this, asyncCall)
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
-      auto async_call =
-          [this](
-              Function::Parameters /*parameters*/) -> Function::ResultFuture {
-        auto call_id = result_promises_.size();
-        auto promise = std::promise<DataVariant>();
-        auto result_future = std::make_pair(call_id, promise.get_future());
-        result_promises_.emplace(call_id, std::move(promise));
-        return std::move(result_future);
-      };
       ON_CALL(*this, call)
-          .WillByDefault([this, async_call](
-                             uintmax_t timeout, Function::Parameters params) {
-            auto result = async_call(params);
-            auto status =
-                result.second.wait_for(std::chrono::milliseconds(timeout));
-            if (status == std::future_status::ready) {
-              return result.second.get();
-            } else {
-              cancelAsyncCall(result.first);
-              throw FunctionCallTimedout("MockFunction");
-            }
+          .WillByDefault(
+              [this](uintmax_t timeout, Function::Parameters /*params*/) {
+                auto result = allocateAsyncCall();
+                auto status =
+                    result.second.wait_for(std::chrono::milliseconds(timeout));
+                if (status == std::future_status::ready) {
+                  return result.second.get();
+                } else {
+                  cancelAsyncCall(result.first);
+                  throw FunctionCallTimedout("MockFunction");
+                }
+              });
+      ON_CALL(*this, asyncCall)
+          .WillByDefault([this](Function::Parameters /*params*/) {
+            return allocateAsyncCall();
           });
-      ON_CALL(*this, asyncCall).WillByDefault(async_call);
     }
     ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_exception(
             std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
-        iter = result_promises_.erase(
-            iter); // @TODO: is this safe? Can we erase the promise before
-                   // std::future<>::get() was called? Is this erased
-                   // correctly?
+        iter = result_promises_.erase(iter);
       } else {
         throw CallerNotFound(call_id, "MockFunction");
       }
+    });
+    ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
+      cancelAllCalls();
     });
     ON_CALL(*this, getResultDataType)
         .WillByDefault(::testing::Return(result_type_));
@@ -94,16 +88,25 @@ struct MockFunction : public Function {
       (Function::Parameters /*parameters*/),
       (override));
   MOCK_METHOD(void, cancelAsyncCall, (uintmax_t /*call_id*/), (override));
+  MOCK_METHOD(void, cancelAllAsyncCalls, (), (override));
   MOCK_METHOD(DataType, getResultDataType, (), (override));
   MOCK_METHOD(
       Function::ParameterTypes, getSupportedParameterTypes, (), (override));
+
+  Function::ResultFuture allocateAsyncCall() {
+    auto call_id = result_promises_.size();
+    auto promise = std::promise<DataVariant>();
+    auto result_future = std::make_pair(call_id, promise.get_future());
+    result_promises_.emplace(call_id, std::move(promise));
+    return std::move(result_future);
+  }
 
   void respond(uintmax_t call_id, DataVariant value) {
     if (!executor_.has_value()) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_value(value);
-        iter = result_promises_.erase(iter); // @TODO: same as previous todo
+        iter = result_promises_.erase(iter);
       } else {
         throw CallerNotFound(call_id, "MockFunction");
       }
@@ -113,12 +116,12 @@ struct MockFunction : public Function {
     }
   }
 
-  void respond(uintmax_t call_id, const std::exception& exception) {
+  void respond(uintmax_t call_id, std::exception_ptr exception) {
     if (!executor_.has_value()) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
-        iter->second.set_exception(std::make_exception_ptr(exception));
-        iter = result_promises_.erase(iter); // @TODO: same as previous todo
+        iter->second.set_exception(exception);
+        iter = result_promises_.erase(iter);
       } else {
         throw CallerNotFound(call_id, "MockFunction");
       }
@@ -134,20 +137,34 @@ struct MockFunction : public Function {
            iter++) {
         iter->second.set_value(value);
       }
-      result_promises_.clear(); // @TODO: same as previous todo
+      result_promises_.clear();
     } else {
       throw std::logic_error(
           "Execution calls are handled by an external function");
     }
   }
 
-  void respondToAll(const std::exception& exception) {
+  void respondToAll(std::exception_ptr exception) {
     if (!executor_.has_value()) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
-        iter->second.set_exception(std::make_exception_ptr(exception));
+        iter->second.set_exception(exception);
       }
-      result_promises_.clear(); // @TODO: same as previous todo
+      result_promises_.clear();
+    } else {
+      throw std::logic_error(
+          "Execution calls are handled by an external function");
+    }
+  }
+
+  void cancelAllCalls() {
+    if (!executor_.has_value()) {
+      for (auto iter = result_promises_.begin(); iter != result_promises_.end();
+           iter++) {
+        iter->second.set_exception(
+            std::make_exception_ptr(CallCanceled(iter->first, "MockFunction")));
+      }
+      result_promises_.clear();
     } else {
       throw std::logic_error(
           "Execution calls are handled by an external function");
@@ -155,7 +172,8 @@ struct MockFunction : public Function {
   }
 
   void delegateToFake(Executor executor, Canceler canceler) {
-    respondToAll(std::logic_error("Assigned a new external execution handler"));
+    respondToAll(std::make_exception_ptr(
+        std::logic_error("Assigned a new external execution handler")));
     executor_ = executor;
     canceler_ = canceler;
     ON_CALL(*this, call)
