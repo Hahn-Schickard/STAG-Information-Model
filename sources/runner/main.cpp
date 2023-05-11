@@ -12,6 +12,7 @@ void print(const DevicePtr& device);
 void print(NonemptyDeviceElementPtr element, size_t offset);
 void print(NonemptyWritableMetricPtr element, size_t offset);
 void print(NonemptyMetricPtr element, size_t offset);
+void print(NonemptyFunctionPtr element, size_t offset);
 void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
 
 int main() {
@@ -75,6 +76,25 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
+string stringifyFunctionParams(Function::ParameterTypes params) {
+  string result;
+  for (auto param : params) {
+    result += toString(param.second.first) + ",";
+  }
+  if (!result.empty()) {
+    result.pop_back(); // remove last ,
+  }
+  return result;
+}
+
+void print(NonemptyFunctionPtr element, size_t offset) {
+  cout << string(offset, ' ') << "Executes "
+       << toString(element->getResultDataType()) << "call("
+       << stringifyFunctionParams(element->getSupportedParameterTypes()) << ")"
+       << endl;
+  cout << endl;
+}
+
 void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
@@ -89,7 +109,8 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
       },
       [offset](NonemptyMetricPtr interface) { print(interface, offset); },
       [offset](
-          NonemptyWritableMetricPtr interface) { print(interface, offset); });
+          NonemptyWritableMetricPtr interface) { print(interface, offset); },
+      [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
 }
 
 void print(const DevicePtr& device) {
