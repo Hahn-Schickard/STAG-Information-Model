@@ -77,6 +77,10 @@ TEST_P(FunctionParametrizedTests, canCall) {
   try {
     auto resul_future = std::async(
         std::launch::async, [this]() { return function->call(1000); });
+    this_thread::sleep_for(
+        100ms); // if we do not give enough time for the thread to allocate the
+                // response future, we will respond before a call was created,
+                // thus hanging the test
     function_mock->respondToAll(
         expectations->result_value_.value_or(DataVariant()));
     auto result = resul_future.get();
@@ -263,9 +267,13 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(1));
 
-    auto call_result_future =
-        std::async(std::launch::async, [this]() { return function->call(); });
-    executor->respondToAll(expectations->result_value_.value());
+    auto call_result_future = std::async(
+        std::launch::async, [this]() { return function->call(1000); });
+    this_thread::sleep_for(
+        100ms); // if we do not give enough time for the thread to allocate the
+                // response future, we will respond before a call was created,
+                // thus hanging the test
+    executor->respondToAll(expectations->result_value_.value_or(DataVariant()));
 
     try {
       auto call_result = call_result_future.get();
@@ -285,6 +293,10 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
 
     auto call_exception_future =
         std::async(std::launch::async, [this]() { return function->call(); });
+    this_thread::sleep_for(
+        100ms); // if we do not give enough time for the thread to allocate the
+                // response future, we will respond before a call was created,
+                // thus hanging the test
     executor->respondToAll(
         std::make_exception_ptr(std::domain_error("Test exception throwing")));
 
