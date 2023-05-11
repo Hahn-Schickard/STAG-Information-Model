@@ -261,7 +261,7 @@ protected:
 TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
   if (expectations->result_type_ != DataType::UNKNOWN) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
-        .Times(AtLeast(2));
+        .Times(AtLeast(1));
 
     auto call_result_future =
         std::async(std::launch::async, [this]() { return function->call(); });
@@ -269,10 +269,19 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
 
     try {
       auto call_result = call_result_future.get();
-      EXPECT_EQ(expectations->result_value_.value(), call_result);
+      EXPECT_EQ(
+          expectations->result_value_.value_or(DataVariant()), call_result);
     } catch (const exception& ex) {
       FAIL() << "Caught an unexpected exception" << ex.what();
     }
+  }
+}
+
+// NOLINTNEXTLINE
+TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
+  if (expectations->result_type_ != DataType::UNKNOWN) {
+    EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
+        .Times(AtLeast(1));
 
     auto call_exception_future =
         std::async(std::launch::async, [this]() { return function->call(); });
@@ -287,17 +296,26 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
 TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
   if (expectations->result_type_ != DataType::UNKNOWN) {
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
-        .Times(AtLeast(2));
+        .Times(AtLeast(1));
 
     auto async_call_result_future = function->asyncCall();
-    executor->respondToAll(expectations->result_value_.value());
+    executor->respondToAll(expectations->result_value_.value_or(DataVariant()));
 
     try {
       auto async_call_result = async_call_result_future.second.get();
-      EXPECT_EQ(expectations->result_value_.value(), async_call_result);
+      EXPECT_EQ(expectations->result_value_.value_or(DataVariant()),
+          async_call_result);
     } catch (const exception& ex) {
       FAIL() << "Caught an unexpected exception" << ex.what();
     }
+  }
+}
+
+// NOLINTNEXTLINE
+TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
+  if (expectations->result_type_ != DataType::UNKNOWN) {
+    EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
+        .Times(AtLeast(1));
 
     auto async_call_exception_future = function->asyncCall();
     executor->respondToAll(
