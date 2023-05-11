@@ -361,7 +361,7 @@ TEST_P(FunctionParametrizedTests, canGetSupportedParameterTypes) {
       expectations->supported_params_, function->getSupportedParameterTypes());
 }
 
-struct SetMetricTestNameSuffix {
+struct SetFunctionTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
     return info.param.name_;
@@ -465,4 +465,4 @@ vector<FunctionExpectations> makeFunctionTestParameters() {
 INSTANTIATE_TEST_SUITE_P(FunctionTests,
     FunctionParametrizedTests,
     ::testing::ValuesIn(makeFunctionTestParameters()),
-    SetMetricTestNameSuffix());
+    SetFunctionTestNameSuffix());
