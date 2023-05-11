@@ -360,6 +360,78 @@ struct SetMetricTestNameSuffix {
   }
 };
 
+Function::ParameterTypes makeSupportedTypes(vector<DataType> types) {
+  Function::ParameterTypes result;
+  for (auto type : types) {
+    result.emplace(result.size(), make_pair(type, false));
+  }
+  return result;
+}
+
+// We do no want to use toString(DataType), since that returns long strings with
+// spaces, which will not work for test name generation
+string makeExpectationName(DataType type) {
+  switch (type) {
+  case DataType::BOOLEAN:
+    return "Bool";
+  case DataType::INTEGER:
+    return "Int";
+  case DataType::UNSIGNED_INTEGER:
+    return "UInt";
+  case DataType::DOUBLE:
+    return "Double";
+  case DataType::TIME:
+    return "Time";
+  case DataType::OPAQUE:
+    return "Opaque";
+  case DataType::STRING:
+    return "String";
+  case DataType::UNKNOWN:
+  default:
+    return "Unknown";
+  }
+}
+
+string sanitizeValueName(DataVariant value) {
+  string result;
+  match(value,
+      [&result](bool val) { result = val ? "True" : "False"; },
+      [&result](auto val) {
+        if (val < 0) {
+          result = "Neg";
+        }
+        result += std::to_string(val);
+      },
+      [&result](DateTime val) { result = val.toString(); },
+      [&result](vector<uint8_t> value) {
+        stringstream ss;
+        ss << hex << setfill('0');
+        for (auto byte : value) {
+          ss << hex << setw(2) << static_cast<int>(byte);
+        }
+        result = ss.str();
+      },
+      [&result](
+          string val) { result = regex_replace(val, regex("\\s"), "_"); });
+  return result;
+}
+
+void expandFunctionTestParameters(vector<FunctionExpectations>& expectations,
+    vector<DataType> types,
+    optional<DataVariant> return_value = nullopt) {
+  string name = "accept";
+  for (auto type : types) {
+    name += makeExpectationName(type);
+  }
+  if (return_value.has_value()) {
+    auto value = return_value.value();
+    auto return_type = toDataType(value);
+    name +=
+        "Return" + makeExpectationName(return_type) + sanitizeValueName(value);
+  }
+  expectations.emplace_back(name, makeSupportedTypes(types));
+}
+
 vector<FunctionExpectations> makeFunctionTestParameters() {
   vector<FunctionExpectations> params;
   params.emplace_back("doAndReturnNothing");
