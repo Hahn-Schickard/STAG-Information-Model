@@ -28,6 +28,9 @@ struct MockFunction : public Function {
   MockFunction(DataType result_type, std::optional<DataVariant> result_value)
       : MockFunction(result_type, Function::ParameterTypes(), result_value) {}
 
+  MockFunction(DataType result_type, Function::ParameterTypes supported_params)
+      : MockFunction(result_type, supported_params, setVariant(result_type)) {}
+
   MockFunction(DataType result_type,
       Function::ParameterTypes supported_params,
       std::optional<DataVariant> result_value)
