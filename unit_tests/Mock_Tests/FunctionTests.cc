@@ -447,7 +447,7 @@ string sanitizeValueName(DataVariant value) {
       [&result](vector<uint8_t> val) {
         stringstream ss;
         ss << hex << setfill('0');
-        for (auto byte : value) {
+        for (auto byte : val) {
           ss << hex << setw(2) << static_cast<int>(byte);
         }
         result = ss.str();
