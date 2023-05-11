@@ -229,25 +229,43 @@ private:
   std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
 };
 
-// NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, canUseExternalCall) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
-    auto executor = Executor();
-    MockFunction::Executor execute_cb = [&executor](
-                                            Function::Parameters params) {
-      return executor.execute(params);
+using ExecutorPtr = std::shared_ptr<Executor>;
+
+class ExternalFunctionExecutorParametrizedTests
+    : public ::testing::TestWithParam<FunctionExpectations> {
+protected:
+  void SetUp() override {
+    expectations = make_shared<FunctionExpectations>(GetParam());
+    function_mock = make_shared<MockFunction>(expectations->result_type_,
+        expectations->supported_params_,
+        expectations->result_value_);
+    function = function_mock;
+
+    executor = make_shared<Executor>();
+    MockFunction::Executor execute_cb = [this](Function::Parameters params) {
+      return executor->execute(params);
     };
-    MockFunction::Canceler cancel_cb = [&executor](uintmax_t call_id) {
-      executor.cancel(call_id);
+    MockFunction::Canceler cancel_cb = [this](uintmax_t call_id) {
+      executor->cancel(call_id);
     };
     function_mock->delegateToFake(execute_cb, cancel_cb);
+  }
 
+  FunctionExpectationsPtr expectations;
+  MockFunctionPtr function_mock;
+  FunctionPtr function;
+  ExecutorPtr executor;
+};
+
+// NOLINTNEXTLINE
+TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
+  if (expectations->result_type_ != DataType::UNKNOWN) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(2));
 
     auto call_result_future =
         std::async(std::launch::async, [this]() { return function->call(); });
-    executor.respondToAll(expectations->result_value_.value());
+    executor->respondToAll(expectations->result_value_.value());
 
     try {
       auto call_result = call_result_future.get();
@@ -258,7 +276,7 @@ TEST_P(FunctionParametrizedTests, canUseExternalCall) {
 
     auto call_exception_future =
         std::async(std::launch::async, [this]() { return function->call(); });
-    executor.respondToAll(
+    executor->respondToAll(
         std::make_exception_ptr(std::domain_error("Test exception throwing")));
 
     EXPECT_THROW(call_exception_future.get(), std::domain_error);
@@ -266,23 +284,13 @@ TEST_P(FunctionParametrizedTests, canUseExternalCall) {
 }
 
 // NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, canUseExternalAsyncCall) {
+TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
   if (expectations->result_type_ != DataType::UNKNOWN) {
-    auto executor = Executor();
-    MockFunction::Executor execute_cb = [&executor](
-                                            Function::Parameters params) {
-      return executor.execute(params);
-    };
-    MockFunction::Canceler cancel_cb = [&executor](uintmax_t call_id) {
-      executor.cancel(call_id);
-    };
-    function_mock->delegateToFake(execute_cb, cancel_cb);
-
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
         .Times(AtLeast(2));
 
     auto async_call_result_future = function->asyncCall();
-    executor.respondToAll(expectations->result_value_.value());
+    executor->respondToAll(expectations->result_value_.value());
 
     try {
       auto async_call_result = async_call_result_future.second.get();
@@ -292,7 +300,7 @@ TEST_P(FunctionParametrizedTests, canUseExternalAsyncCall) {
     }
 
     auto async_call_exception_future = function->asyncCall();
-    executor.respondToAll(
+    executor->respondToAll(
         std::make_exception_ptr(std::domain_error("Test exception throwing")));
 
     EXPECT_THROW(async_call_exception_future.second.get(), std::domain_error);
@@ -300,18 +308,8 @@ TEST_P(FunctionParametrizedTests, canUseExternalAsyncCall) {
 }
 
 // NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, canUseExternalCancelAsyncCall) {
+TEST_P(ExternalFunctionExecutorParametrizedTests, canCancelAsyncCall) {
   if (expectations->result_type_ != DataType::UNKNOWN) {
-    auto executor = Executor();
-    MockFunction::Executor execute_cb = [&executor](
-                                            Function::Parameters params) {
-      return executor.execute(params);
-    };
-    MockFunction::Canceler cancel_cb = [&executor](uintmax_t call_id) {
-      executor.cancel(call_id);
-    };
-    function_mock->delegateToFake(execute_cb, cancel_cb);
-
     EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
         .Times(AtLeast(2));
 
@@ -464,5 +462,11 @@ vector<FunctionExpectations> makeFunctionTestParameters() {
 // NOLINTNEXTLINE
 INSTANTIATE_TEST_SUITE_P(FunctionTests,
     FunctionParametrizedTests,
+    ::testing::ValuesIn(makeFunctionTestParameters()),
+    SetFunctionTestNameSuffix());
+
+// NOLINTNEXTLINE
+INSTANTIATE_TEST_SUITE_P(FunctionTests,
+    ExternalFunctionExecutorParametrizedTests,
     ::testing::ValuesIn(makeFunctionTestParameters()),
     SetFunctionTestNameSuffix());
