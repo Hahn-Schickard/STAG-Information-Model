@@ -26,6 +26,12 @@ struct FunctionExpectations {
       : FunctionExpectations(
             name, DataType::UNKNOWN, supported_params, std::nullopt) {}
 
+  FunctionExpectations(const std::string& name, DataType result_type)
+      : FunctionExpectations(name,
+            result_type,
+            Function::ParameterTypes(),
+            setVariant(result_type)) {}
+
   FunctionExpectations(
       const std::string& name, DataType result_type, DataVariant result_value)
       : FunctionExpectations(
