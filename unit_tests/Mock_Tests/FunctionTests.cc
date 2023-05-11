@@ -433,9 +433,24 @@ void expandFunctionTestParameters(vector<FunctionExpectations>& expectations,
 }
 
 vector<FunctionExpectations> makeFunctionTestParameters() {
-  vector<FunctionExpectations> params;
-  params.emplace_back("doAndReturnNothing");
-  return params;
+  vector<FunctionExpectations> expectations;
+  expectations.emplace_back("acceptAndReturnNothing");
+  expectations.emplace_back("returnDefaultBoolForNoParams", DataType::BOOLEAN);
+  expectations.emplace_back("returnDefaultIntForNoParams", DataType::INTEGER);
+  expectations.emplace_back(
+      "returnDefaultUintForNoParams", DataType::UNSIGNED_INTEGER);
+  expectations.emplace_back("returnDefaultDoubleForNoParams", DataType::DOUBLE);
+  expectations.emplace_back("returnDefaultStringForNoParams", DataType::STRING);
+  expectations.emplace_back("returnDefaultOpaqueForNoParams", DataType::OPAQUE);
+  expectations.emplace_back("returnDefaultTimeForNoParams", DataType::TIME);
+  expandFunctionTestParameters(expectations, {DataType::BOOLEAN});
+  expandFunctionTestParameters(expectations, {DataType::INTEGER});
+  expandFunctionTestParameters(expectations, {DataType::UNSIGNED_INTEGER});
+  expandFunctionTestParameters(expectations, {DataType::DOUBLE});
+  expandFunctionTestParameters(expectations, {DataType::STRING});
+  expandFunctionTestParameters(expectations, {DataType::OPAQUE});
+  expandFunctionTestParameters(expectations, {DataType::TIME});
+  return expectations;
 }
 
 // NOLINTNEXTLINE
