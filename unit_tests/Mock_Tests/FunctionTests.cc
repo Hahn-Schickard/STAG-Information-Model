@@ -435,6 +435,7 @@ string sanitizeValueName(DataVariant value) {
       [&result](auto val) {
         if (val < 0) {
           result = "Neg";
+          val = val * -1; // std::abs resolution fails due to auto
         }
         result += std::to_string(val);
       },
