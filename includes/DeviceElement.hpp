@@ -21,10 +21,9 @@ struct DeviceElement : NamedElement {
       const std::string& name,
       const std::string& desc,
       SpecificInterface&& interface)
-      : NamedElement(ref_id, name, desc),
-        specific_interface(std::move(interface)) {}
+      : NamedElement(ref_id, name, desc), functionality(std::move(interface)) {}
 
-  const SpecificInterface specific_interface;
+  const SpecificInterface functionality; // NOLINT
 };
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;

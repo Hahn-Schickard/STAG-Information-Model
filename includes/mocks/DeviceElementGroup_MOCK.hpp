@@ -39,7 +39,7 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
             // Check if next element exists and is a group
             if (next_element) {
               auto next_group = std::get_if<NonemptyDeviceElementGroupPtr>(
-                  &next_element->specific_interface);
+                  &next_element->functionality);
               if (next_group)
                 return (*next_group)->getSubelement(ref_id);
             }
