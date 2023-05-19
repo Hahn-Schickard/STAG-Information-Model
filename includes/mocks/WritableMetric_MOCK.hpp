@@ -32,6 +32,7 @@ public:
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
+  MOCK_METHOD(bool, isWriteOnly, (), (override));
 
   void delegateToFake() {
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));

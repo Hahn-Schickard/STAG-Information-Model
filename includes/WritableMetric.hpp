@@ -36,6 +36,17 @@ public:
         "Called based implementation of WritableMetric::getDataType()");
   }
 
+  /**
+   * @brief Checks if the modeled metric does not supports value reading
+   *
+   * @return true
+   * @return false
+   */
+  virtual bool isWriteOnly() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::isWriteOnly()");
+  }
+
   virtual ~WritableMetric() = default;
 };
 
