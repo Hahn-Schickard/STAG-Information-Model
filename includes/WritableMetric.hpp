@@ -26,6 +26,14 @@ public:
         "Called based implementation of WritableMetric::getMetricValue()");
   }
 
+  /**
+   * @brief Writes the given DataVariant as a metric value to the modeled
+   * sensor/actor system
+   *
+   * @throws std::invalid_argument if provided argument does not match the
+   * modeled value type
+   *
+   */
   virtual void setMetricValue(DataVariant /*value*/) {
     throw std::runtime_error(
         "Called based implementation of WritableMetric::setMetricValue()");
