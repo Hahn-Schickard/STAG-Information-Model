@@ -37,6 +37,7 @@ public:
   void delegateToFake() {
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
   void delegateToFake(std::function<DataVariant()> callback) {
@@ -45,6 +46,7 @@ public:
       return read_.value()();
     });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
   void delegateToFake(std::function<DataVariant()> reader,
@@ -54,6 +56,7 @@ public:
       write_.value()(value);
     });
     delegateToFake(reader);
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
   ~MockWritableMetric() { ::testing::Mock::VerifyAndClear(this); }
