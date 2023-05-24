@@ -91,9 +91,11 @@ struct MockFunction : public Function {
       (override));
   MOCK_METHOD(void, cancelAsyncCall, (uintmax_t /*call_id*/), (override));
   MOCK_METHOD(void, cancelAllAsyncCalls, (), (override));
-  MOCK_METHOD(DataType, getResultDataType, (), (override));
-  MOCK_METHOD(
-      Function::ParameterTypes, getSupportedParameterTypes, (), (override));
+  MOCK_METHOD(DataType, getResultDataType, (), (const, override));
+  MOCK_METHOD(Function::ParameterTypes,
+      getSupportedParameterTypes,
+      (),
+      (const, override));
 
   Function::ResultFuture allocateAsyncCall() {
     auto call_id = result_promises_.size();
