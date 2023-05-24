@@ -124,6 +124,67 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
         write_cb);
   }
 
+  std::string addFunction(const std::string& name, const std::string& desc) {
+    return addDeviceElement(std::string(), name, desc, ElementType::FUNCTION);
+  }
+
+  std::string addFunction(
+      const std::string& name, const std::string& desc, DataType result_type) {
+    return addDeviceElement(
+        std::string(), name, desc, ElementType::FUNCTION, result_type);
+  }
+
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      Function::ParameterTypes supported_params) {
+    return addDeviceElement(std::string(),
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params);
+  }
+
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      std::optional<Function::ParameterTypes> supported_params,
+      ExecuteFunctor execute_cb,
+      CancelFunctor cancel_cb) override {
+    return addDeviceElement(std::string(),
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params,
+        execute_cb,
+        cancel_cb);
+  }
+
+  std::string addFunction(const std::string& group_refid,
+      const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      std::optional<Function::ParameterTypes> supported_params,
+      ExecuteFunctor execute_cb,
+      CancelFunctor cancel_cb) override {
+    return addDeviceElement(group_refid,
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params,
+        execute_cb,
+        cancel_cb);
+  }
+
   MockDeviceElementGroupPtr getGroupImplementation(const std::string& ref_id) {
     if (device_) {
       if (ref_id.empty()) {
