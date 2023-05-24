@@ -11,9 +11,38 @@ namespace Information_Model {
  *
  */
 struct WritableMetric : public Metric {
+  virtual DataVariant getMetricValue() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::getMetricValue()");
+  }
+
+  /**
+   * @brief Writes the given DataVariant as a metric value to the modeled
+   * sensor/actor system
+   *
+   * @throws std::invalid_argument if provided argument does not match the
+   * modeled value type
+   *
+   */
   virtual void setMetricValue(DataVariant /*value*/) {
     throw std::runtime_error(
         "Called based implementation of WritableMetric::setMetricValue()");
+  }
+
+  virtual DataType getDataType() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::getDataType()");
+  }
+
+  /**
+   * @brief Checks if the modeled metric does not supports value reading
+   *
+   * @return true
+   * @return false
+   */
+  virtual bool isWriteOnly() {
+    throw std::runtime_error(
+        "Called based implementation of WritableMetric::isWriteOnly()");
   }
 
   virtual ~WritableMetric() = default;
