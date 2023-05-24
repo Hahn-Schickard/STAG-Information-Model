@@ -10,12 +10,14 @@
 #include <string>
 
 namespace Information_Model {
-
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr>;
 
+  const SpecificInterface specific_interface;
+
+private:
   DeviceElement() = default;
   DeviceElement(const std::string& ref_id,
       const std::string& name,
@@ -24,7 +26,7 @@ struct DeviceElement : NamedElement {
       : NamedElement(ref_id, name, desc),
         specific_interface(std::move(interface)) {}
 
-  const SpecificInterface specific_interface;
+  friend struct DeviceBuilderInterface;
 };
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
