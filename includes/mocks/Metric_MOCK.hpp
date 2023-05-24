@@ -11,44 +11,41 @@ namespace testing {
  * @brief Metric mock implementation. Use only for testing!
  *
  */
-class MockMetric : public Metric {
-  DataType type_;
-  DataVariant value_;
-  std::optional<std::function<DataVariant()>> callback_ = std::nullopt;
+struct MockMetric : public Metric {
+  using Reader = std::function<DataVariant()>;
 
-public:
-  MockMetric()
-      : Metric(), type_(DataType::UNKNOWN), value_(DataVariant((bool)false)) {}
+  MockMetric() : MockMetric(DataType::BOOLEAN) {}
 
-  MockMetric(DataType type)
-      : Metric(), type_(type), value_(setVariant(type_)) {}
+  MockMetric(DataType type) : MockMetric(type, setVariant(type)) {}
 
   MockMetric(DataType type, const DataVariant& variant)
       : Metric(), type_(type), value_(variant) {}
+
+  ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
-    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      return value_;
-    });
-    ON_CALL(*this, getDataType).WillByDefault([this]() -> DataType {
-      return type_;
-    });
+    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
-  void delegateToFake(std::function<DataVariant()> callback) {
-    callback_ = callback;
+  void delegateToFake(Reader reader) {
+    read_ = reader;
     ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      return callback_.value()();
+      auto reader = read_.value();
+      return reader();
     });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
-  virtual ~MockMetric() {}
+protected:
+  DataType type_;
+  DataVariant value_;
+  std::optional<Reader> read_ = std::nullopt;
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;

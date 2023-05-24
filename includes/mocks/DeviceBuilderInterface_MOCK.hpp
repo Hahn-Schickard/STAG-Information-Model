@@ -12,8 +12,7 @@ namespace testing {
  * Adapter Implementations to test in unit and/or integration test stages
  *
  */
-class DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
-public:
+struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
   MOCK_METHOD(void,
       buildDeviceBase,
       (const std::string& /* unique_id */,
