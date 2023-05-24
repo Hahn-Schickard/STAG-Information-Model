@@ -92,6 +92,7 @@ enum class DataType {
   TIME, /*!< Information_Model::DateTime */
   OPAQUE, /*!< std::vector<uint8_t> */
   STRING, /*!< std::string */
+  NONE, /*!< void */
   UNKNOWN /*!< fallback type */
 };
 
@@ -111,6 +112,8 @@ inline std::string toString(DataType type) {
     return "Opaque byte array";
   case DataType::STRING:
     return "String";
+  case DataType::NONE:
+    return "None";
   case DataType::UNKNOWN:
   default:
     return "Unknown";
@@ -151,6 +154,8 @@ inline DataVariant setVariant(DataType type) {
     return DataVariant(std::vector<uint8_t>());
   case DataType::STRING:
     return DataVariant(std::string());
+  case DataType::NONE:
+    throw std::domain_error("Data variant is not used to model None data type");
   case DataType::UNKNOWN:
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
