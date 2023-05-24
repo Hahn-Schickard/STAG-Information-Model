@@ -115,12 +115,31 @@ struct Function {
    * support returning execution result
    * @throws FunctionCallTimedout - if execution call has timeout
    *
+   * @param timeout - number of miliseconds until a timeout occurs
+   * @return DataVariant
+   */
+  DataVariant call(uintmax_t timeout = 100) {
+    return call(Parameters{}, timeout);
+  }
+
+  /**
+   * @brief Calls the modeled functionality and waits to return the execution
+   * result
+   *
+   * Blocks until the execution result is available or a timeout occurs
+   *
+   * If execution call timesout, the request will be canceled and an exception
+   * will be thrown
+   *
+   * @throws ResultReturningNotSupported - if modeled functionality does not
+   * support returning execution result
+   * @throws FunctionCallTimedout - if execution call has timeout
+   *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
    */
-  virtual DataVariant call(
-      uintmax_t /*timeout*/ = 100, Parameters /*parameters*/ = Parameters()) {
+  virtual DataVariant call(Parameters /*parameters*/, uintmax_t /*timeout*/) {
     throw ResultReturningNotSupported();
   }
 

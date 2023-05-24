@@ -43,18 +43,17 @@ struct MockFunction : public Function {
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
       ON_CALL(*this, call)
-          .WillByDefault(
-              [this](uintmax_t timeout, Function::Parameters /*params*/) {
-                auto result = allocateAsyncCall();
-                auto status =
-                    result.second.wait_for(std::chrono::milliseconds(timeout));
-                if (status == std::future_status::ready) {
-                  return result.second.get();
-                } else {
-                  cancelAsyncCall(result.first);
-                  throw FunctionCallTimedout("MockFunction");
-                }
-              });
+          .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
+            auto result = allocateAsyncCall();
+            auto status =
+                result.second.wait_for(std::chrono::milliseconds(timeout));
+            if (status == std::future_status::ready) {
+              return result.second.get();
+            } else {
+              cancelAsyncCall(result.first);
+              throw FunctionCallTimedout("MockFunction");
+            }
+          });
       ON_CALL(*this, asyncCall)
           .WillByDefault([this](Function::Parameters /*params*/) {
             return allocateAsyncCall();
@@ -84,7 +83,7 @@ struct MockFunction : public Function {
   MOCK_METHOD(void, execute, (Function::Parameters /*parameters*/), (override));
   MOCK_METHOD(DataVariant,
       call,
-      (uintmax_t /*timeout*/, Function::Parameters /*parameters*/),
+      (Function::Parameters /*parameters*/, uintmax_t /*timeout*/),
       (override));
   MOCK_METHOD(Function::ResultFuture,
       asyncCall,
@@ -180,8 +179,8 @@ struct MockFunction : public Function {
     executor_ = executor;
     canceler_ = canceler;
     ON_CALL(*this, call)
-        .WillByDefault([this](uintmax_t timeout,
-                           Function::Parameters params) -> DataVariant {
+        .WillByDefault([this](Function::Parameters params,
+                           uintmax_t timeout) -> DataVariant {
           auto result_future =
               std::async(std::launch::async, executor_.value(), params);
           auto status =
