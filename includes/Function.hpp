@@ -200,7 +200,7 @@ struct Function {
    *
    * @return DataType
    */
-  virtual const DataType getResultDataType() const {
+  virtual DataType getResultDataType() const {
     throw std::runtime_error(
         "Called based implementation of Function::getResultDataType()");
   }
@@ -212,7 +212,7 @@ struct Function {
    *
    * @return ParameterTypes
    */
-  virtual const ParameterTypes getSupportedParameterTypes() const {
+  virtual ParameterTypes getSupportedParameterTypes() const {
     throw std::runtime_error("Called based implementation of "
                              "Function::getSupportedParameterTypes()");
   }
