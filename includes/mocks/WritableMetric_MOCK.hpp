@@ -32,6 +32,22 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
   // redeclare metric mocks, so they are accessible
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(DataType, getDataType, (), (override));
+  MOCK_METHOD(bool, isWriteOnly, (), (override));
+
+  void delegateToFake() {
+    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
+  }
+
+  void delegateToFake(std::function<DataVariant()> callback) {
+    read_ = callback;
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      return read_.value()();
+    });
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
+  }
 
   void delegateToFake(Reader reader, Writer writer) {
     write_ = writer;
@@ -40,6 +56,7 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
       writer(value);
     });
     delegateToFake(reader);
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
 private:
