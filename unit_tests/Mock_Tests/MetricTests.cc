@@ -9,28 +9,28 @@ using namespace Information_Model::testing;
 using namespace std;
 using ::testing::AtLeast;
 
-struct Expectations {
+struct MetricExpectations {
   const string name_;
   const DataType type_;
   const DataVariant value_;
 
-  Expectations(const Expectations& other) = default;
+  MetricExpectations(const MetricExpectations& other) = default;
 
-  Expectations(const string& name, DataType type, DataVariant value)
+  MetricExpectations(const string& name, DataType type, DataVariant value)
       : name_(name), type_(type), value_(value) {}
 };
 
-using ExpectationsPtr = shared_ptr<Expectations>;
+using MetricExpectationsPtr = shared_ptr<MetricExpectations>;
 
 class MetricMultipleParametersTests
-    : public ::testing::TestWithParam<Expectations> {
+    : public ::testing::TestWithParam<MetricExpectations> {
 protected:
   void SetUp() override {
-    expectations = make_shared<Expectations>(GetParam());
+    expectations = make_shared<MetricExpectations>(GetParam());
     metric = make_shared<MockMetric>(expectations->type_, expectations->value_);
   }
 
-  ExpectationsPtr expectations;
+  MetricExpectationsPtr expectations;
   MetricPtr metric;
 };
 
@@ -58,17 +58,15 @@ TEST_P(MetricMultipleParametersTests, canGetValue) {
   EXPECT_EQ(expectations->value_, tested);
 }
 
-struct SetTestNameSuffix {
+struct SetMetricTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
     return info.param.name_;
   }
 };
 
-using TestParameters = std::vector<Expectations>;
-
-TestParameters makeTestParameters() {
-  TestParameters params;
+vector<MetricExpectations> makeMetricTestParameters() {
+  vector<MetricExpectations> params;
   params.emplace_back("Bool", DataType::BOOLEAN, DataVariant((bool)true));
   params.emplace_back("Int", DataType::INTEGER, DataVariant((intmax_t)26));
   params.emplace_back(
@@ -85,5 +83,5 @@ TestParameters makeTestParameters() {
 // NOLINTNEXTLINE
 INSTANTIATE_TEST_SUITE_P(MetricTests,
     MetricMultipleParametersTests,
-    ::testing::ValuesIn(makeTestParameters()),
-    SetTestNameSuffix());
+    ::testing::ValuesIn(makeMetricTestParameters()),
+    SetMetricTestNameSuffix());

@@ -40,7 +40,7 @@ int main() {
     print(device);
 
     auto read_target_metric = get<NonemptyMetricPtr>(
-        device->getDeviceElement(read_target_id)->specific_interface);
+        device->getDeviceElement(read_target_id)->functionality);
     auto value = get<intmax_t>(read_target_metric->getMetricValue());
 
     cout << "Reading " << read_target_id << " metric value as " << value
@@ -83,7 +83,7 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(element->specific_interface,
+  match(element->functionality,
       [offset](NonemptyDeviceElementGroupPtr interface) {
         print(interface, offset);
       },

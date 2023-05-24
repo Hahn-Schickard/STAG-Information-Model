@@ -18,10 +18,7 @@ namespace testing {
  * mock Device instance during unit and integration test stages
  *
  */
-class DeviceMockBuilder : public DeviceBuilderInterface {
-  std::unique_ptr<MockDevice> device_;
-
-public:
+struct DeviceMockBuilder : public DeviceBuilderInterface {
   DeviceMockBuilder() = default;
 
   void buildDeviceBase(const std::string& unique_id,
@@ -134,11 +131,65 @@ public:
             std::get<NonemptyDeviceElementGroupPtr>(
                 device_->getDeviceElementGroup()
                     ->getSubelement(ref_id)
-                    ->specific_interface)
+                    ->functionality)
                 .base());
       }
     } else {
       throw std::runtime_error("Device base was not built!");
+    }
+  }
+
+  DeviceElementPtr buildDeviceElement(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc,
+      ElementType type,
+      DataType data_type,
+      std::optional<ReadFunctor> read_cb,
+      std::optional<WriteFunctor> write_cb,
+      std::optional<ExecuteFunctor> execute_cb) {
+    switch (type) {
+    case ElementType::GROUP: {
+      auto group =
+          std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
+
+      return makeDeviceElement(
+          ref_id, name, desc, NonemptyDeviceElementGroupPtr(group));
+    }
+    case ElementType::WRITABLE: {
+      auto writable =
+          std::make_shared<::testing::NiceMock<MockWritableMetric>>(data_type);
+      if (read_cb.has_value()) {
+        if (write_cb.has_value()) {
+          writable->delegateToFake(read_cb.value(), write_cb.value());
+        } else {
+          writable->delegateToFake(read_cb.value());
+        }
+      } else {
+        writable->delegateToFake();
+      }
+
+      return makeDeviceElement(
+          ref_id, name, desc, NonemptyWritableMetricPtr(writable));
+    }
+    case ElementType::READABLE: {
+      auto readable =
+          std::make_shared<::testing::NiceMock<MockMetric>>(data_type);
+      if (read_cb.has_value()) {
+        readable->delegateToFake(read_cb.value());
+      } else {
+        readable->delegateToFake();
+      }
+
+      return makeDeviceElement(ref_id, name, desc, NonemptyMetricPtr(readable));
+    }
+    case ElementType::FUNCTION: {
+      // @TODO: implement function support
+      __attribute__((unused)) auto suppress = execute_cb;
+      throw std::invalid_argument("Function metric types are not implemented");
+    }
+    default: {
+      throw std::invalid_argument("Requested to build unsupported ElementType");
+    }
     }
   }
 
@@ -150,32 +201,13 @@ public:
       std::optional<ReadFunctor> read_cb = std::nullopt,
       std::optional<WriteFunctor> write_cb = std::nullopt,
       std::optional<ExecuteFunctor> execute_cb = std::nullopt) override {
-    std::string ref_id("");
-
     auto group = getGroupImplementation(group_refid);
+    auto new_id = group->generateReferenceID();
+    auto element = buildDeviceElement(
+        new_id, name, desc, type, data_type, read_cb, write_cb, execute_cb);
+    group->addDeviceElement(NonemptyDeviceElementPtr(element));
 
-    switch (type) {
-    case ElementType::GROUP: {
-      ref_id = group->addSubgroup(name, desc);
-      break;
-    };
-    case ElementType::WRITABLE: {
-      ref_id =
-          group->addWritableMetric(name, desc, data_type, read_cb, write_cb);
-      break;
-    }
-    case ElementType::READABLE: {
-      ref_id = group->addReadableMetric(name, desc, data_type, read_cb);
-      break;
-    }
-    case ElementType::FUNCTION: {
-      // @TODO: implement function support
-      __attribute__((unused)) auto suppress = execute_cb;
-      break;
-    }
-    default: { break; }
-    }
-    return ref_id;
+    return new_id;
   }
 
   UniqueDevicePtr getResult() override {
@@ -185,6 +217,9 @@ public:
       throw std::runtime_error("Device base was not built!");
     }
   }
+
+private:
+  std::unique_ptr<MockDevice> device_;
 };
 } // namespace testing
 } // namespace Information_Model

@@ -1,13 +1,7 @@
 #ifndef __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
 #define __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
 
-#include "DataVariant.hpp"
-
-#include <memory>
-#include <stdexcept>
-#include <string>
-
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Metric.hpp"
 
 namespace Information_Model {
 /**
@@ -16,11 +10,7 @@ namespace Information_Model {
  * default data type value (for example: bool = true, int = 0, string = "");
  *
  */
-class WritableMetric {
-protected:
-  WritableMetric() = default;
-
-public:
+struct WritableMetric : public Metric {
   virtual DataVariant getMetricValue() {
     throw std::runtime_error(
         "Called based implementation of WritableMetric::getMetricValue()");
@@ -56,6 +46,9 @@ public:
   }
 
   virtual ~WritableMetric() = default;
+
+protected:
+  WritableMetric() = default;
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
