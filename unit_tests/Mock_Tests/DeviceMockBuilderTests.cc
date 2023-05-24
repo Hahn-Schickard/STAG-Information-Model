@@ -56,7 +56,7 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
   EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
-      group_element->specific_interface));
+      group_element->functionality));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -93,7 +93,7 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
   EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
-      group_element->specific_interface));
+      group_element->functionality));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -135,7 +135,7 @@ TEST(DeviceMockBuilderTests, canAddSubSubGroup) {
   EXPECT_EQ(group_name, group_element->getElementName());
   EXPECT_EQ(group_desc, group_element->getElementDescription());
   EXPECT_TRUE(std::holds_alternative<NonemptyDeviceElementGroupPtr>(
-      group_element->specific_interface));
+      group_element->functionality));
 
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
@@ -167,9 +167,9 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
   EXPECT_TRUE(
-      std::holds_alternative<NonemptyMetricPtr>(element->specific_interface));
+      std::holds_alternative<NonemptyMetricPtr>(element->functionality));
 
-  auto metric = std::get<NonemptyMetricPtr>(element->specific_interface);
+  auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
   EXPECT_CALL(*mocked_metric, getDataType());
@@ -215,7 +215,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_EQ(element_desc, element->getElementDescription());
 
   auto writable_metric =
-      std::get<NonemptyWritableMetricPtr>(element->specific_interface);
+      std::get<NonemptyWritableMetricPtr>(element->functionality);
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
@@ -281,9 +281,9 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
   EXPECT_TRUE(
-      std::holds_alternative<NonemptyMetricPtr>(element->specific_interface));
+      std::holds_alternative<NonemptyMetricPtr>(element->functionality));
 
-  auto metric = std::get<NonemptyMetricPtr>(element->specific_interface);
+  auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
   EXPECT_CALL(*mocked_metric, getDataType());
@@ -340,7 +340,7 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   EXPECT_EQ(element_desc, element->getElementDescription());
 
   auto writable_metric =
-      std::get<NonemptyWritableMetricPtr>(element->specific_interface);
+      std::get<NonemptyWritableMetricPtr>(element->functionality);
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 

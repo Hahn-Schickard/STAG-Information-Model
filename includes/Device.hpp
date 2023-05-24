@@ -10,14 +10,7 @@
 #include <string>
 
 namespace Information_Model {
-class Device : public NamedElement {
-protected:
-  Device(const std::string& ref_id,
-      const std::string& name,
-      const std::string& desc)
-      : NamedElement(ref_id, name, desc) {}
-
-public:
+struct Device : public NamedElement {
   virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
@@ -29,6 +22,12 @@ public:
   }
 
   virtual ~Device() = default;
+
+protected:
+  Device(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc)
+      : NamedElement(ref_id, name, desc) {}
 };
 
 using DevicePtr = std::shared_ptr<Device>;

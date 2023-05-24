@@ -51,24 +51,23 @@ inline std::string toString(ElementType type) {
 }
 
 struct DeviceElement : NamedElement {
-  using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
+  using SpecificInterface = std::variant< // clang-format off
+      NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr,
-      NonemptyFunctionPtr>;
+      NonemptyFunctionPtr>; // clang-format on
 
-  const SpecificInterface specific_interface;
+  const SpecificInterface functionality; // NOLINT
 
   ElementType getElementType() {
-    if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(
-            specific_interface)) {
+    if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {
       return ElementType::GROUP;
-    } else if (std::holds_alternative<NonemptyMetricPtr>(specific_interface)) {
+    } else if (std::holds_alternative<NonemptyMetricPtr>(functionality)) {
       return ElementType::READABLE;
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
-                   specific_interface)) {
+                   functionality)) {
       return ElementType::WRITABLE;
-    } else if (std::holds_alternative<NonemptyFunctionPtr>(
-                   specific_interface)) {
+    } else if (std::holds_alternative<NonemptyFunctionPtr>(functionality)) {
       return ElementType::FUNCTION;
     } else {
       throw std::runtime_error("Could not resolve ElementType");
@@ -81,8 +80,7 @@ private:
       const std::string& name,
       const std::string& desc,
       SpecificInterface&& interface)
-      : NamedElement(ref_id, name, desc),
-        specific_interface(std::move(interface)) {}
+      : NamedElement(ref_id, name, desc), functionality(std::move(interface)) {}
 
   friend struct DeviceBuilderInterface;
 };
