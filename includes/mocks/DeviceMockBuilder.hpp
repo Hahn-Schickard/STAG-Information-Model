@@ -131,7 +131,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
             std::get<NonemptyDeviceElementGroupPtr>(
                 device_->getDeviceElementGroup()
                     ->getSubelement(ref_id)
-                    ->specific_interface)
+                    ->functionality)
                 .base());
       }
     } else {
