@@ -9,13 +9,9 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
-class DeviceElement;
+struct DeviceElement;
 
-class DeviceElementGroup {
-protected:
-  DeviceElementGroup() = default;
-
-public:
+struct DeviceElementGroup {
   /** aka std::vector<NonemptyDeviceElementPtr> */
   using DeviceElements =
       std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
@@ -32,6 +28,9 @@ public:
   }
 
   virtual ~DeviceElementGroup() = default;
+
+protected:
+  DeviceElementGroup() = default;
 };
 
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;

@@ -17,21 +17,6 @@ using ExecuteFunctor = std::function<bool(std::string)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
- * @enum ElementTypeEnum
- * @brief ElementType enumeration, specifying the available DeviceElement
- * types.
- *
- */
-enum class ElementType {
-  GROUP, /*!< Grouping element, aka list */
-  READABLE, /*!< Metric with read access */
-  WRITABLE, /*!< Metric with write access */
-  OBSERVABLE, /*!< Metric with read access and ability to self report
-                 changes */
-  FUNCTION /*!< Metric with execute access */
-};
-
-/**
  * @brief This Interface is used by Technology Adapter implementations to build
  * a device within the Information Model.
  *
@@ -457,6 +442,18 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
+
+  protected: 
+  DeviceElementPtr makeDeviceElement(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DeviceElement::SpecificInterface&& interface){
+        auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
+        // We can only call DeviceElement() from within DeviceBuilderInterface 
+        // class due to access the specifier. Thus we must first create the 
+        // object locally and then pass it to std::make_shared<>() function.
+        return std::make_shared<DeviceElement>(std::move(obj));
+      }
 };
 } // namespace Information_Model
 

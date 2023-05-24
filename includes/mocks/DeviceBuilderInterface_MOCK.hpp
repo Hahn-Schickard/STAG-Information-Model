@@ -12,8 +12,7 @@ namespace testing {
  * Adapter Implementations to test in unit and/or integration test stages
  *
  */
-class DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
-public:
+struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
   MOCK_METHOD(void,
       buildDeviceBase,
       (const std::string& /* unique_id */,
@@ -73,7 +72,7 @@ public:
           std::optional<WriteFunctor> /* write_cb */,
           std::optional<ExecuteFunctor> /* execute_cb */),
       (override));
-  MOCK_METHOD(DeviceBuilderInterface::Result, getResult, (), (override));
+  MOCK_METHOD(UniqueDevicePtr, getResult, (), (override));
 };
 } // namespace testing
 } // namespace Information_Model
