@@ -1,5 +1,6 @@
 #include "DeviceMockBuilder.hpp"
 
+#include "Function.hpp"
 #include "Metric.hpp"
 #include "WritableMetric.hpp"
 
@@ -31,8 +32,9 @@ int main() {
       auto integer_ref_id = builder->addReadableMetric(
           "Integer", "Mocked readable metric", DataType::INTEGER);
       read_target_id = integer_ref_id;
-      auto string_ref_id = builder->addReadableMetric(
-          "String", "Mocked readable metric", DataType::STRING);
+      builder->addWritableMetric(
+          "String", "Mocked writable metric", DataType::STRING);
+      builder->addFunction("Boolean", "Mocked function", DataType::BOOLEAN);
 
       device = move(builder->getResult());
       delete builder;
@@ -89,7 +91,7 @@ string stringifyFunctionParams(Function::ParameterTypes params) {
 
 void print(NonemptyFunctionPtr element, size_t offset) {
   cout << string(offset, ' ') << "Executes "
-       << toString(element->getResultDataType()) << "call("
+       << toString(element->getResultDataType()) << " call("
        << stringifyFunctionParams(element->getSupportedParameterTypes()) << ")"
        << endl;
   cout << endl;
