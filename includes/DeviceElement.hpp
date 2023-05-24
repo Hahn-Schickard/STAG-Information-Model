@@ -10,12 +10,65 @@
 #include <string>
 
 namespace Information_Model {
+
+/**
+ * @enum ElementTypeEnum
+ * @brief ElementType enumeration, specifying the available DeviceElement
+ * types.
+ *
+ */
+enum class ElementType {
+  GROUP, /*!< Grouping element, aka list */
+  READABLE, /*!< Metric with read access */
+  WRITABLE, /*!< Metric with write access */
+  OBSERVABLE, /*!< Metric with read access and ability to self report
+                 changes */
+  FUNCTION /*!< Metric with execute access */
+};
+
+inline std::string toString(ElementType type) {
+  switch (type) {
+  case ElementType::GROUP: {
+    return "Group";
+  }
+  case ElementType::READABLE: {
+    return "Readable";
+  }
+  case ElementType::WRITABLE: {
+    return "Writable";
+  }
+  case ElementType::OBSERVABLE: {
+    return "Observable";
+  }
+  case ElementType::FUNCTION: {
+    return "Function";
+  }
+  default: {
+    throw std::logic_error("Could not decode ElementType enum value");
+  }
+  }
+}
+
 struct DeviceElement : NamedElement {
   using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr>;
 
   const SpecificInterface specific_interface;
+
+  ElementType getElementType() {
+    if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(
+            specific_interface)) {
+      return ElementType::GROUP;
+    } else if (std::holds_alternative<NonemptyMetricPtr>(specific_interface)) {
+      return ElementType::READABLE;
+    } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
+                   specific_interface)) {
+      return ElementType::WRITABLE;
+    } else {
+      throw std::runtime_error("Could not resolve ElementType");
+    }
+  }
 
 private:
   DeviceElement() = default;
