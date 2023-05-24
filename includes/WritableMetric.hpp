@@ -6,11 +6,15 @@
 namespace Information_Model {
 /**
  * @brief A read and writable metric. If this metric does not support active
- * value reading (Readable part), Information_Model::DataVariant will be set to
- * default data type value (for example: bool = true, int = 0, string = "");
+ * value reading (Readable part), getMetricValue() calls will throw a generic
+ * std::logic_error exception
  *
  */
 struct WritableMetric : public Metric {
+  DataVariant getMetricValue() override {
+    throw std::logic_error("This metric does not support read functionality");
+  }
+
   virtual void setMetricValue(DataVariant /*value*/) {
     throw std::runtime_error(
         "Called based implementation of WritableMetric::setMetricValue()");
