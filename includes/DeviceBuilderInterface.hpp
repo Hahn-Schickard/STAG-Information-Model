@@ -442,6 +442,18 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
+
+  protected: 
+  DeviceElementPtr makeDeviceElement(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DeviceElement::SpecificInterface&& interface){
+        auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
+        // We can only call DeviceElement() from within DeviceBuilderInterface 
+        // class due to access the specifier. Thus we must first create the 
+        // object locally and then pass it to std::make_shared<>() function.
+        return std::make_shared<DeviceElement>(std::move(obj));
+      }
 };
 } // namespace Information_Model
 

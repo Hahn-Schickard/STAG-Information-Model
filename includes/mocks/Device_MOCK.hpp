@@ -17,10 +17,7 @@ namespace testing {
  * @brief Device class mock, use for testing only!
  *
  */
-class MockDevice : public Device {
-  NonemptyDeviceElementGroupPtr base_group_;
-
-public:
+struct MockDevice : public Device {
   MockDevice(const std::string& ref_id,
       const std::string& name,
       const std::string& desc)
@@ -46,6 +43,9 @@ public:
       getDeviceElement,
       (const std::string& /*ref_id*/),
       (override));
+
+private:
+  NonemptyDeviceElementGroupPtr base_group_;
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
