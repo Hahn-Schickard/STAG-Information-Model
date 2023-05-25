@@ -466,7 +466,7 @@ struct DeviceBuilderInterface {
    *
    * If the device creation was not properly finished, throws an exception.
    *
-   * @return NonemptyPtr<std::unique_ptr<Device>>
+   * @return UniqueDevicePtr
    */
   virtual UniqueDevicePtr getResult() {
     throw std::runtime_error("Called base implementation of "
