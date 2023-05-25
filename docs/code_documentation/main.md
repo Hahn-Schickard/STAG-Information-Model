@@ -10,10 +10,13 @@ The entire Information Model consists of seven interfaces, one concrete class, t
 | Information Model Class Diagram |
 | :---- |
 | @image html images/Simplified_Information_Model.png width=800px | 
-| <details>
-<summary>Full Information Model</summary>
+
+And the full class diagram is available bellow:
+
+<details>
+<summary>Full Information Model Class Diagram</summary>
 @image html images/Full_Information_Model.png width=1600px
-</details> |
+</details>
 
 ### NamedElement
 NamedElement (marked as element 1. NamedElement in the diagram above) is the base class for every single interface within the STAG Information Model, it contains static Meta information, like the human readable name of the element, element’s reference ID and its description.
