@@ -14,6 +14,10 @@ using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 
 /**
+ * @addtogroup GroupModeling Device Element Group Modelling
+ * @{
+ */
+/**
  * @brief An interface to DeviceElementGroup
  *
  * Groups other modeling entities together in a single collection
@@ -46,6 +50,8 @@ protected:
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
 using NonemptyDeviceElementGroupPtr =
     NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP

@@ -13,6 +13,10 @@
 namespace Information_Model {
 
 /**
+ * @addtogroup ElementModeling Device Element Modelling
+ * @{
+ */
+/**
  * @enum ElementTypeEnum
  * @brief ElementType enumeration, specifying the available DeviceElement
  * types.
@@ -107,6 +111,8 @@ private:
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_HPP

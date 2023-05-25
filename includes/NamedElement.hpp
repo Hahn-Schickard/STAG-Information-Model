@@ -9,6 +9,10 @@
 namespace Information_Model {
 
 /**
+ * @addtogroup NamedElementModeling Named Element Modelling
+ * @{
+ */
+/**
  * @brief Base modeling entity for Information Model
  *
  * Contains meta information of the modeled entity.
@@ -36,6 +40,8 @@ public:
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
 using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_NAMED_ELEMENT_HPP_

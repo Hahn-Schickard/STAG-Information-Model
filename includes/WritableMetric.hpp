@@ -5,6 +5,10 @@
 
 namespace Information_Model {
 /**
+ * @addtogroup WritableModeling Writable Metric Modelling
+ * @{
+ */
+/**
  * @brief An interface to a read and writable Metric.
  *
  * Models a single writable element for various sensors/actors
@@ -63,6 +67,8 @@ protected:
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
 using NonemptyWritableMetricPtr =
     NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP

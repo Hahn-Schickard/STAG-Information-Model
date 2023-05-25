@@ -11,6 +11,10 @@
 
 namespace Information_Model {
 /**
+ * @addtogroup ReadableModeling Metric Modelling
+ * @{
+ */
+/**
  * @brief An interface to read only Metric.
  *
  * Models a single read only element for various sensors/actors
@@ -40,6 +44,8 @@ protected:
 
 using MetricPtr = std::shared_ptr<Metric>;
 using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_METRIC_HPP

@@ -37,7 +37,7 @@ struct FunctionCallTimedout : public std::runtime_error {
 };
 
 /**
- * @addtogroup FunctionModeling Function Modelling
+ * @addtogroup ExecutableModeling Function Modelling
  * @{
  */
 /**
@@ -139,7 +139,8 @@ struct Function {
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
    */
-  virtual DataVariant call(Parameters /*parameters*/, uintmax_t /*timeout*/ = 100) {
+  virtual DataVariant call(
+      Parameters /*parameters*/, uintmax_t /*timeout*/ = 100) {
     throw ResultReturningNotSupported();
   }
 

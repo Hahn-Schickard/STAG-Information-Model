@@ -11,6 +11,10 @@
 
 namespace Information_Model {
 /**
+ * @addtogroup DeviceModeling Device Modelling
+ * @{
+ */
+/**
  * @brief An interface to the Device model
  *
  * Contains all of the modeled functionality of a singular addressable
@@ -45,6 +49,8 @@ protected:
 
 using DevicePtr = std::shared_ptr<Device>;
 using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_HPP
