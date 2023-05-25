@@ -1,6 +1,6 @@
 # Naming Conventions
 
-##	NamedElement Reference ID 
+## NamedElement Reference ID
 
 Every Device has a unique reference ID that is used as a base for every DeviceElement instance of that device. This way the user can see which DeviceElement instance is linked to which Device. 
 
@@ -27,7 +27,7 @@ The resulting reference IDs would be:
     Example: element_2.sub_element_2.sub_sub_element_1
 ```
 
-## DeviceElement Naming Convention
+## DeviceElement Naming Convention 
 
 Each DeviceElement instance is named after the functionality it provides, for example, if we have a DeviceElementGroup that organizes electric power measurements, we would name that group Power Measurements, or simply Power, and each power measurement within said group Phase 1 Power, Phase 2 Power, etc… 
 Each DeviceElementGroup, Metric, WritableMetric and ObservableMetric SHOULD be a noun and SHOULD NOT include the word DeviceElement in the name. 
