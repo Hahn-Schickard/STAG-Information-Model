@@ -139,7 +139,7 @@ struct Function {
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
    */
-  virtual DataVariant call(Parameters /*parameters*/, uintmax_t /*timeout*/) {
+  virtual DataVariant call(Parameters /*parameters*/, uintmax_t /*timeout*/ = 100) {
     throw ResultReturningNotSupported();
   }
 
