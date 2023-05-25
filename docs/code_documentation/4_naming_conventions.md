@@ -22,9 +22,9 @@ The resulting reference IDs would be:
 ```
     Example: element_1
     Example: element_2
-    Example: element_2. sub_element_1
-    Example: element_2. sub_element_2
-    Example: element_2. sub_element_2. sub_sub_element_1
+    Example: element_2.sub_element_1
+    Example: element_2.sub_element_2
+    Example: element_2.sub_element_2.sub_sub_element_1
 ```
 
 ## DeviceElement Naming Convention
