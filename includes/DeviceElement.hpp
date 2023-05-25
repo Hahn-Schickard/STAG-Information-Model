@@ -2,6 +2,7 @@
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_HPP
 
 #include "DeviceElementGroup.hpp"
+#include "Function.hpp"
 #include "Metric.hpp"
 #include "NamedElement.hpp"
 #include "WritableMetric.hpp"
@@ -50,9 +51,11 @@ inline std::string toString(ElementType type) {
 }
 
 struct DeviceElement : NamedElement {
-  using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
+  using SpecificInterface = std::variant< // clang-format off
+      NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
-      NonemptyWritableMetricPtr>;
+      NonemptyWritableMetricPtr,
+      NonemptyFunctionPtr>; // clang-format on
 
   const SpecificInterface functionality; // NOLINT
 
@@ -64,6 +67,8 @@ struct DeviceElement : NamedElement {
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
                    functionality)) {
       return ElementType::WRITABLE;
+    } else if (std::holds_alternative<NonemptyFunctionPtr>(functionality)) {
+      return ElementType::FUNCTION;
     } else {
       throw std::runtime_error("Could not resolve ElementType");
     }

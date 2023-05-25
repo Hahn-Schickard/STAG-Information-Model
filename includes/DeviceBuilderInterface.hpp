@@ -3,6 +3,7 @@
 
 #include "DataVariant.hpp"
 #include "Device.hpp"
+#include "Function.hpp"
 
 #include <functional>
 #include <memory>
@@ -13,7 +14,9 @@
 namespace Information_Model {
 using ReadFunctor = std::function<DataVariant()>;
 using WriteFunctor = std::function<void(DataVariant)>;
-using ExecuteFunctor = std::function<bool(std::string)>;
+using ExecuteFunctor =
+    std::function<Function::ResultFuture(Function::Parameters)>;
+using CancelFunctor = std::function<void(uintmax_t)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
@@ -265,7 +268,10 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
   }
-
+  /**
+   * @addtogroup FunctionModeling Function Modelling
+   * @{
+   */
   /**
    * @brief Adds a function to the device root level DeviceElementGroup.
    *
@@ -281,14 +287,18 @@ struct DeviceBuilderInterface {
    *
    * @param name
    * @param desc
-   * @param data_type
-   * @param read_cb
-   * @param write_cb
+   * @param result_type
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*name*/,
       const std::string& /*desc*/,
-      ExecuteFunctor /*execute_cb*/) {
+      DataType /*result_type*/,
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      ExecuteFunctor /*execute_cb*/,
+      CancelFunctor /*cancel_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for root group");
@@ -320,20 +330,24 @@ struct DeviceBuilderInterface {
    * @param name
    * @param desc
    * @param type
-   * @param data_type
-   * @param read_cb
-   * @param write_cb
+   * @param result_type
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*group_refid*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
-      ExecuteFunctor /*execute_cb*/) {
+      DataType /*result_type*/,
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      ExecuteFunctor /*execute_cb*/,
+      CancelFunctor /*cancel_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for subgroup");
   }
-
+  /** @}*/
   /**
    * @brief Provides a generalized approach to creating any device element.
    *
@@ -416,6 +430,9 @@ struct DeviceBuilderInterface {
    * @param data_type
    * @param read_cb
    * @param write_cb
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addDeviceElement( // clang-format off
@@ -426,7 +443,9 @@ struct DeviceBuilderInterface {
       DataType /* data_type */,
       std::optional<ReadFunctor> /* read_cb */,
       std::optional<WriteFunctor> /* write_cb */,
-      std::optional<ExecuteFunctor> /* execute_cb */) {
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      std::optional<ExecuteFunctor> /* execute_cb */,
+      std::optional<CancelFunctor> /*cancel_cb*/) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
