@@ -21,11 +21,7 @@ namespace Information_Model {
  * DeviceBuilderInterface::addDeviceElement() with type set to
  * ElementType::READABLE
  */
-class Metric {
-protected:
-  Metric() = default;
-
-public:
+struct Metric {
   virtual DataVariant getMetricValue() {
     throw std::runtime_error(
         "Called based implementation of Metric::getMetricValue()");
@@ -37,6 +33,9 @@ public:
   }
 
   virtual ~Metric() = default;
+
+protected:
+  Metric() = default;
 };
 
 using MetricPtr = std::shared_ptr<Metric>;

@@ -9,7 +9,9 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
-class DeviceElement;
+struct DeviceElement;
+using DeviceElementPtr = std::shared_ptr<DeviceElement>;
+using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 
 /**
  * @brief An interface to DeviceElementGroup
@@ -22,27 +24,23 @@ class DeviceElement;
  * DeviceBuilderInterface::addDeviceElement() with type set to
  * ElementType::GROUP
  */
-class DeviceElementGroup {
-protected:
-  DeviceElementGroup() = default;
-
-public:
-  /** aka std::vector<NonemptyDeviceElementPtr> */
-  using DeviceElements =
-      std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
+struct DeviceElementGroup {
+  using DeviceElements = std::vector<NonemptyDeviceElementPtr>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
 
-  virtual std::shared_ptr<DeviceElement> getSubelement(
-      const std::string& /*ref_id*/) {
+  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
 
   virtual ~DeviceElementGroup() = default;
+
+protected:
+  DeviceElementGroup() = default;
 };
 
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;

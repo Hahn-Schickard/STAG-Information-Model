@@ -12,8 +12,7 @@ namespace testing {
  * Adapter Implementations to test in unit and/or integration test stages
  *
  */
-class DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
-public:
+struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
   MOCK_METHOD(void,
       buildDeviceBase,
       (const std::string& /* unique_id */,
@@ -63,6 +62,25 @@ public:
           WriteFunctor /* write_cb */),
       (override));
   MOCK_METHOD(std::string,
+      addFunction,
+      (const std::string& /* name */,
+          const std::string& /* desc */,
+          DataType /* data_type */,
+          std::optional<Function::ParameterTypes> /*supported_params*/,
+          ExecuteFunctor /*execute_cb*/,
+          CancelFunctor /*cancel_cb*/),
+      (override));
+  MOCK_METHOD(std::string,
+      addFunction,
+      (const std::string& /* group_refid */,
+          const std::string& /* name */,
+          const std::string& /* desc */,
+          DataType /* data_type */,
+          std::optional<Function::ParameterTypes> /*supported_params*/,
+          ExecuteFunctor /*execute_cb*/,
+          CancelFunctor /*cancel_cb*/),
+      (override));
+  MOCK_METHOD(std::string,
       addDeviceElement,
       (const std::string& /* group_refid */,
           const std::string& /* name */,
@@ -73,7 +91,7 @@ public:
           std::optional<WriteFunctor> /* write_cb */,
           std::optional<ExecuteFunctor> /* execute_cb */),
       (override));
-  MOCK_METHOD(DeviceBuilderInterface::Result, getResult, (), (override));
+  MOCK_METHOD(UniqueDevicePtr, getResult, (), (override));
 };
 } // namespace testing
 } // namespace Information_Model

@@ -1,5 +1,6 @@
 #include "DeviceMockBuilder.hpp"
 
+#include "Function.hpp"
 #include "Metric.hpp"
 #include "WritableMetric.hpp"
 
@@ -12,6 +13,7 @@ void print(const DevicePtr& device);
 void print(NonemptyDeviceElementPtr element, size_t offset);
 void print(NonemptyWritableMetricPtr element, size_t offset);
 void print(NonemptyMetricPtr element, size_t offset);
+void print(NonemptyFunctionPtr element, size_t offset);
 void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
 
 int main() {
@@ -30,8 +32,9 @@ int main() {
       auto integer_ref_id = builder->addReadableMetric(
           "Integer", "Mocked readable metric", DataType::INTEGER);
       read_target_id = integer_ref_id;
-      auto string_ref_id = builder->addReadableMetric(
-          "String", "Mocked readable metric", DataType::STRING);
+      builder->addWritableMetric(
+          "String", "Mocked writable metric", DataType::STRING);
+      builder->addFunction("Boolean", "Mocked function", DataType::BOOLEAN);
 
       device = move(builder->getResult());
       delete builder;
@@ -40,7 +43,7 @@ int main() {
     print(device);
 
     auto read_target_metric = get<NonemptyMetricPtr>(
-        device->getDeviceElement(read_target_id)->specific_interface);
+        device->getDeviceElement(read_target_id)->functionality);
     auto value = get<intmax_t>(read_target_metric->getMetricValue());
 
     cout << "Reading " << read_target_id << " metric value as " << value
@@ -75,6 +78,25 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
+string stringifyFunctionParams(Function::ParameterTypes params) {
+  string result;
+  for (auto param : params) {
+    result += toString(param.second.first) + ",";
+  }
+  if (!result.empty()) {
+    result.pop_back(); // remove last ,
+  }
+  return result;
+}
+
+void print(NonemptyFunctionPtr element, size_t offset) {
+  cout << string(offset, ' ') << "Executes "
+       << toString(element->getResultDataType()) << " call("
+       << stringifyFunctionParams(element->getSupportedParameterTypes()) << ")"
+       << endl;
+  cout << endl;
+}
+
 void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
@@ -83,13 +105,14 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(element->specific_interface,
+  match(element->functionality,
       [offset](NonemptyDeviceElementGroupPtr interface) {
         print(interface, offset);
       },
       [offset](NonemptyMetricPtr interface) { print(interface, offset); },
       [offset](
-          NonemptyWritableMetricPtr interface) { print(interface, offset); });
+          NonemptyWritableMetricPtr interface) { print(interface, offset); },
+      [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
 }
 
 void print(const DevicePtr& device) {

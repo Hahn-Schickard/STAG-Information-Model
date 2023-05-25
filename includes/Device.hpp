@@ -23,14 +23,7 @@ namespace Information_Model {
  * This interface is implemented in Information Model Manager Project and is
  * built via DeviceBuilderInterface
  */
-class Device : public NamedElement {
-protected:
-  Device(const std::string& ref_id,
-      const std::string& name,
-      const std::string& desc)
-      : NamedElement(ref_id, name, desc) {}
-
-public:
+struct Device : public NamedElement {
   virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
@@ -42,6 +35,12 @@ public:
   }
 
   virtual ~Device() = default;
+
+protected:
+  Device(const std::string& ref_id,
+      const std::string& name,
+      const std::string& desc)
+      : NamedElement(ref_id, name, desc) {}
 };
 
 using DevicePtr = std::shared_ptr<Device>;
