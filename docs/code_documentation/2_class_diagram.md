@@ -6,7 +6,7 @@ The entire Information Model consists of seven interfaces, one concrete class, t
 | :---- |
 | @image html images/Simplified_Information_Model.png width=800px | 
 
-And the full class diagram is available bellow:
+And the full class diagram is available below:
 
 <details>
 <summary>Full Information Model Class Diagram</summary>
