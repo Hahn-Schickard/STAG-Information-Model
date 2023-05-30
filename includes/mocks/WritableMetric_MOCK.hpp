@@ -40,13 +40,22 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
-  void delegateToFake(std::function<DataVariant()> callback) {
-    read_ = callback;
+  void delegateToFake(Reader reader) {
+    read_ = reader;
     ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
       return read_.value()();
     });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
+  }
+
+  void delegateToFake(Writer writer) {
+    write_ = writer;
+    ON_CALL(*this, getMetricValue)
+        .WillByDefault(::testing::Throw(std::logic_error(
+            "This metric does not support read functionality")));
+    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
   void delegateToFake(Reader reader, Writer writer) {
