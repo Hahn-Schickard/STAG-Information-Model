@@ -26,11 +26,23 @@ namespace Information_Model {
  * ElementType::READABLE
  */
 struct Metric {
+  /**
+   * @brief Read the latest available metric value
+   *
+   * @throws std::logic_error if internal getter callback does not exist
+   *
+   * @return DataVariant
+   */
   virtual DataVariant getMetricValue() {
     throw std::runtime_error(
         "Called based implementation of Metric::getMetricValue()");
   }
 
+  /**
+   * @brief Get the modeled data type
+   *
+   * @return DataType
+   */
   virtual DataType getDataType() {
     throw std::runtime_error(
         "Called based implementation of Metric::getDataType()");
