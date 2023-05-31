@@ -2,6 +2,7 @@
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_HPP
 
 #include "DeviceElementGroup.hpp"
+#include "Function.hpp"
 #include "Metric.hpp"
 #include "NamedElement.hpp"
 #include "WritableMetric.hpp"
@@ -11,6 +12,10 @@
 
 namespace Information_Model {
 
+/**
+ * @addtogroup ElementModeling Device Element Modelling
+ * @{
+ */
 /**
  * @enum ElementTypeEnum
  * @brief ElementType enumeration, specifying the available DeviceElement
@@ -49,11 +54,33 @@ inline std::string toString(ElementType type) {
   }
 }
 
-struct DeviceElement : NamedElement {
-  using SpecificInterface = std::variant<NonemptyDeviceElementGroupPtr,
+/**
+ * @brief Base Modeling element for any singular entity within the Device.
+ *
+ * Describes the modeled entity as well as provides the user with a
+ * generic way of accessing the entity's functionality
+ */
+struct DeviceElement : public NamedElement {
+  /**
+   * @brief Contains modeled entity's functionality
+   *
+   * @see DeviceElementGroup
+   * @see Metric
+   * @see WritableMetric
+   */
+  using SpecificInterface = std::variant< // clang-format off
+      NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
-      NonemptyWritableMetricPtr>;
+      NonemptyWritableMetricPtr,
+      NonemptyFunctionPtr>; // clang-format on
 
+  /**
+   * @brief Provides a generic way of accessing the modeled entity's
+   * functionality
+   *
+   * This variant can be used as an argument for Variant_Visitor:match()
+   * helper function
+   */
   const SpecificInterface functionality; // NOLINT
 
   ElementType getElementType() {
@@ -64,6 +91,8 @@ struct DeviceElement : NamedElement {
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
                    functionality)) {
       return ElementType::WRITABLE;
+    } else if (std::holds_alternative<NonemptyFunctionPtr>(functionality)) {
+      return ElementType::FUNCTION;
     } else {
       throw std::runtime_error("Could not resolve ElementType");
     }
@@ -82,6 +111,8 @@ private:
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_HPP

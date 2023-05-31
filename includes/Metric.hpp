@@ -11,8 +11,19 @@
 
 namespace Information_Model {
 /**
- * @brief Read only Metric of a given type.
+ * @addtogroup ReadableModeling Metric Modelling
+ * @{
+ */
+/**
+ * @brief An interface to read only Metric.
  *
+ * Models a single read only element for various sensors/actors
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addReadableMetric() or
+ * DeviceBuilderInterface::addDeviceElement() with type set to
+ * ElementType::READABLE
  */
 struct Metric {
   /**
@@ -45,6 +56,8 @@ protected:
 
 using MetricPtr = std::shared_ptr<Metric>;
 using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_METRIC_HPP

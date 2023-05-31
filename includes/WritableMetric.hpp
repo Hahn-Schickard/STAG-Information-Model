@@ -5,8 +5,23 @@
 
 namespace Information_Model {
 /**
- * @brief A read and writable metric.
+ * @addtogroup WritableModeling Writable Metric Modelling
+ * @{
+ */
+/**
+ * @brief An interface to a read and writable Metric.
  *
+ * Models a single writable element for various sensors/actors
+ *
+ * If this metric does not support active value reading (the readable part), all
+ * calls to getMetricValue() will return the default value for set DataVariant
+ * type
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addWritableMetric() or
+ * DeviceBuilderInterface::addDeviceElement() with type set to
+ * ElementType::WRITABLE
  */
 struct WritableMetric : public Metric {
   /**
@@ -42,6 +57,8 @@ protected:
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
 using NonemptyWritableMetricPtr =
     NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP

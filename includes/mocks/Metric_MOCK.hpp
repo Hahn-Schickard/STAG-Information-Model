@@ -8,6 +8,10 @@
 namespace Information_Model {
 namespace testing {
 /**
+ * @addtogroup ReadableModeling Metric Modelling
+ * @{
+ */
+/**
  * @brief Metric mock implementation. Use only for testing!
  *
  */
@@ -49,6 +53,8 @@ protected:
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;
+
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 

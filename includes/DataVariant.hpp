@@ -12,7 +12,10 @@
 #include <vector>
 
 namespace Information_Model {
-
+/**
+ * @addtogroup DataTypeModelling Data Type Modelling
+ * @{
+ */
 /**
  * @brief POSIX time wrapper class with inbuilt comparators
  *
@@ -204,6 +207,8 @@ inline std::string toString(DataVariant variant) {
 
   return result;
 }
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DATA_VARIANT_HPP_

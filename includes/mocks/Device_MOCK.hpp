@@ -14,6 +14,10 @@ namespace Information_Model {
  */
 namespace testing {
 /**
+ * @addtogroup DeviceModeling Device Modelling
+ * @{
+ */
+/**
  * @brief Device class mock, use for testing only!
  *
  */
@@ -49,6 +53,8 @@ private:
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
+
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 #endif //__INFORMATION_MODEL_DEVICE_MOCK_HPP

@@ -3,6 +3,7 @@
 
 #include "DataVariant.hpp"
 #include "Device.hpp"
+#include "Function.hpp"
 
 #include <functional>
 #include <memory>
@@ -13,18 +14,35 @@
 namespace Information_Model {
 using ReadFunctor = std::function<DataVariant()>;
 using WriteFunctor = std::function<void(DataVariant)>;
-using ExecuteFunctor = std::function<bool(std::string)>;
+using ExecuteFunctor =
+    std::function<Function::ResultFuture(Function::Parameters)>;
+using CancelFunctor = std::function<void(uintmax_t)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
  * @brief This Interface is used by Technology Adapter implementations to build
  * a device within the Information Model.
  *
+ * Used by Technology Adapter implementations to build a device within the
+ * Information Model.
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and
+ * SHOULD be acquired via TechnologyAdapter::getDeviceBuilder() method.
+ *
+ * To test interactions with this interface, please set
+ * testing::DeviceBuilderInterfaceMock class as a DeviceBuilderPtr when creating
+ * a new TechnologyAdapter instance by calling
+ * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
 
   virtual ~DeviceBuilderInterface() = default;
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   /**
    * @brief Create a base element for the device. This method MUST be called
    * before any add* method is called.
@@ -43,7 +61,12 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::buildDeviceBase");
   }
+  /** @}*/
 
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   /**
    * @brief Adds a group element to the device root level DeviceElementGroup.
    *
@@ -100,6 +123,12 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElementGroup");
   }
+  /** @}*/
+
+  /**
+   * @addtogroup ReadableModeling Metric Modelling
+   * @{
+   */
   /**
    * @brief Adds a readable metric with a given data type to the device root
    * level DeviceElementGroup.
@@ -167,7 +196,12 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
   }
+  /** @}*/
 
+  /**
+   * @addtogroup WritableModeling Writable Metric Modelling
+   * @{
+   */
   /**
    * @brief Adds a writable metric with a given data type to the device root
    * level DeviceElementGroup.
@@ -240,6 +274,7 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
   }
+  /** @}*/
 
   /**
    * @todo Decide on how to best create a binding to an Observable
@@ -267,6 +302,10 @@ struct DeviceBuilderInterface {
   }
 
   /**
+   * @addtogroup ExecutableModeling Function Modelling
+   * @{
+   */
+  /**
    * @brief Adds a function to the device root level DeviceElementGroup.
    *
    * This method creates a new Function instance, adds it to the root
@@ -281,14 +320,18 @@ struct DeviceBuilderInterface {
    *
    * @param name
    * @param desc
-   * @param data_type
-   * @param read_cb
-   * @param write_cb
+   * @param result_type
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*name*/,
       const std::string& /*desc*/,
-      ExecuteFunctor /*execute_cb*/) {
+      DataType /*result_type*/,
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      ExecuteFunctor /*execute_cb*/,
+      CancelFunctor /*cancel_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for root group");
@@ -320,20 +363,29 @@ struct DeviceBuilderInterface {
    * @param name
    * @param desc
    * @param type
-   * @param data_type
-   * @param read_cb
-   * @param write_cb
+   * @param result_type
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addFunction(const std::string& /*group_refid*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
-      ExecuteFunctor /*execute_cb*/) {
+      DataType /*result_type*/,
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      ExecuteFunctor /*execute_cb*/,
+      CancelFunctor /*cancel_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for subgroup");
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ElementModeling Device Element Modelling
+   * @{
+   */
   /**
    * @brief Provides a generalized approach to creating any device element.
    *
@@ -416,6 +468,9 @@ struct DeviceBuilderInterface {
    * @param data_type
    * @param read_cb
    * @param write_cb
+   * @param supported_params
+   * @param execute_cb
+   * @param cancel_cb
    * @return std::string
    */
   virtual std::string addDeviceElement( // clang-format off
@@ -426,24 +481,36 @@ struct DeviceBuilderInterface {
       DataType /* data_type */,
       std::optional<ReadFunctor> /* read_cb */,
       std::optional<WriteFunctor> /* write_cb */,
-      std::optional<ExecuteFunctor> /* execute_cb */) {
+      std::optional<Function::ParameterTypes> /*supported_params*/,
+      std::optional<ExecuteFunctor> /* execute_cb */,
+      std::optional<CancelFunctor> /*cancel_cb*/) {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
+    /** @}*/
 
+  /**
+  * @addtogroup DeviceModeling Device Modelling
+  * @{
+  */
   /**
    * @brief Checks if the built result is valid and returns it.
    *
    * If the device creation was not properly finished, throws an exception.
    *
-   * @return NonemptyPtr<std::unique_ptr<Device>>
+   * @return UniqueDevicePtr
    */
   virtual UniqueDevicePtr getResult() {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
+  /** @}*/
 
   protected: 
+  /**
+ * @addtogroup ElementModeling Device Element Modelling
+ * @{
+ */
   DeviceElementPtr makeDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
@@ -454,6 +521,7 @@ struct DeviceBuilderInterface {
         // object locally and then pass it to std::make_shared<>() function.
         return std::make_shared<DeviceElement>(std::move(obj));
       }
+  /** @}*/
 };
 } // namespace Information_Model
 

@@ -1,28 +1,29 @@
-
 /* This doxygen theme was developed by aklapatch @ https://github.com/aklapatch/doxygenTheme */
 /* function descriptions */
 .memtitle {
-    padding: 8px;
-    border-top: 1px solid #999;
-    border-left: 1px solid #999;
-    border-right: 1px solid #999;
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-    margin-bottom: -1px;
-    background-image: url();
-    background-repeat: repeat-x;
-    background-color: #fff;
-    line-height: 1.25;
-    font-weight: 600;
-    float: left;
+	padding: 8px;
+	border-top: 1px solid #999;
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	margin-bottom: -1px;
+	background-image: url();
+	background-repeat: repeat-x;
+	background-color: #fff;
+	line-height: 1.25;
+	font-weight: 600;
+	float: left;
 }
 
 dt {
-    font-weight: 600;
+	font-weight: 600;
 }
 
-p.reference, p.definition {
-	font: 400 14px/22px -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;;
+p.reference,
+p.definition {
+	font: 400 14px/22px -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+	;
 	margin-top: 0px;
 	margin-bottom: 5px;
 	padding-top: 8px;
@@ -30,40 +31,51 @@ p.reference, p.definition {
 }
 
 /* parameter names */
-.params .paramname, .retval .paramname, .tparams .paramname {
-    font-weight: 600;
-    vertical-align: top;
+.params .paramname,
+.retval .paramname,
+.tparams .paramname {
+	font-weight: 600;
+	vertical-align: top;
 }
 
 /* parameter data types */
 .paramtype {
-    white-space: nowrap;
-    color: #008141;
+	white-space: nowrap;
+	color: #008141;
 }
 
 /* headers */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 600;
 }
 
 /* parameter names */
 .paramname {
-    color: #db0303;
-    white-space: nowrap;
+	color: #db0303;
+	white-space: nowrap;
 }
 
 /* overall style */
-body, table, div, p, dl {
-    font-style: normal;
-    font-variant-ligatures: normal;
-    font-variant-caps: normal;
-    font-variant-numeric: normal;
-    font-variant-east-asian: normal;
-    font-weight: 500;
-    font-stretch: normal;
-    font-size: 14px;
-    line-height: 22px;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+body,
+table,
+div,
+p,
+dl {
+	font-style: normal;
+	font-variant-ligatures: normal;
+	font-variant-caps: normal;
+	font-variant-numeric: normal;
+	font-variant-east-asian: normal;
+	font-weight: 500;
+	font-stretch: normal;
+	font-size: 14px;
+	line-height: 22px;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 }
 
 /* #vendorlogo {
@@ -78,6 +90,7 @@ body, table, div, p, dl {
 	margin: 0;
 	padding: 2px 0;
 }
+
 /* title area */
 
 #titlearea {
@@ -85,6 +98,7 @@ body, table, div, p, dl {
 	margin: 0;
 	width: 100%;
 	border-bottom: none;
+	background: white;
 }
 
 h2.groupheader {
@@ -100,51 +114,53 @@ h2.groupheader {
 }
 
 /* function description text box */
-.memdoc, dl.reflist dd {
+.memdoc,
+dl.reflist dd {
 
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    padding: 0px 10px 0px 10px;
-    background-color: #FFF;
-    border-top-width: 0;
-    background-image: none;
-    background-repeat: repeat-x;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0);
-    -moz-border-radius-bottomleft: 4px;
-    -moz-border-radius-bottomright: 4px;
-    -moz-box-shadow: rgba(0, 0, 0, 0) 5px 5px 5px;
-    -webkit-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0);
+	border-bottom: none;
+	border-left: none;
+	border-right: none;
+	padding: 0px 10px 0px 10px;
+	background-color: #FFF;
+	border-top-width: 0;
+	background-image: none;
+	background-repeat: repeat-x;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0);
+	-moz-border-radius-bottomleft: 4px;
+	-moz-border-radius-bottomright: 4px;
+	-moz-box-shadow: rgba(0, 0, 0, 0) 5px 5px 5px;
+	-webkit-border-bottom-left-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0);
 }
 
 /* function prototype text box */
-.memproto, dl.reflist dt {
+.memproto,
+dl.reflist dt {
 	border-bottom: 1px solid #999;
-    border-top: 1px solid #999;
-    border-left: 1px solid #999;
-    border-right: 1px solid #999;
-    padding: 0px 0 0px 0;
-    color: #000;
-    font-weight: bold;
-    text-shadow: none;
-    background-color: #f9f9f9;
-    box-shadow: none;
-    border-top-right-radius: 4px;
-    -moz-box-shadow: none;
-    -moz-border-radius-topright: 4px;
-    -webkit-box-shadow: none;
-    -webkit-border-top-right-radius: 4px;
+	border-top: 1px solid #999;
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+	padding: 0px 0 0px 0;
+	color: #000;
+	font-weight: bold;
+	text-shadow: none;
+	background-color: #f9f9f9;
+	box-shadow: none;
+	border-top-right-radius: 4px;
+	-moz-box-shadow: none;
+	-moz-border-radius-topright: 4px;
+	-webkit-box-shadow: none;
+	-webkit-border-top-right-radius: 4px;
 }
 
 /* function prototype */
 .memname td {
 
-    vertical-align: bottom;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+	vertical-align: bottom;
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
 
 }
 
@@ -153,6 +169,7 @@ h2.groupheader {
 .icon {
 	background-color: #026ea1;
 }
+
 /* arrows for treenav */
 
 .arrow {
@@ -168,20 +185,25 @@ h2.groupheader {
 	width: 16px;
 	height: 22px;
 }
+
 /* colors and fonts for description pages */
 
-table, div, p, dl {
+table,
+div,
+p,
+dl {
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 	font-weight: normal;
 	color: black;
 }
 
-.sm li, .sm a {
-    position: relative;
-    color: black;
+.sm li,
+.sm a {
+	position: relative;
+	color: black;
 }
 
-img{
+img {
 	object-fit: contain;
 }
 
@@ -189,7 +211,7 @@ img[alt~="Vendor-Logo"] {
 	height: 100%;
 	width: 100%;
 	max-height: 100px;
- }
+}
 
 body {
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
@@ -201,24 +223,26 @@ body {
 }
 
 /* file member function descriptions */
-.memberdecls td, .fieldtable tr {
+.memberdecls td,
+.fieldtable tr {
 
-    -webkit-transition-property: background-color, box-shadow;
-    -webkit-transition-duration: 0.5s;
-    -moz-transition-property: background-color, box-shadow;
-    -moz-transition-duration: 0.5s;
-    -ms-transition-property: background-color, box-shadow;
-    -ms-transition-duration: 0.5s;
-    -o-transition-property: background-color, box-shadow;
-    -o-transition-duration: 0.5s;
-    transition-property: background-color, box-shadow;
-    transition-duration: 0.5s;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
 	font-weight: 501;
 }
 
 /* function descriptor */
-td.mdescLeft, td.mdescRight {
+td.mdescLeft,
+td.mdescRight {
 	padding: 0 8px 4px 8px;
 	color: #000;
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
@@ -226,31 +250,34 @@ td.mdescLeft, td.mdescRight {
 }
 
 /* headers for #include descriptions */
-tt, code, kbd, samp {
-    display: inline-block;
-    direction: ltr;
-    background-color: #f8f8f8;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-    font-weight: 550;
+tt,
+code,
+kbd,
+samp {
+	display: inline-block;
+	direction: ltr;
+	background-color: #f8f8f8;
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+	font-weight: 550;
 }
 
 /* list for file members */
 div.contents {
-	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-    font-weight: 550;
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+	font-weight: 550;
 }
 
 /* links to a class or struct on the class list page */
 a.el {
-	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-    font-weight: 550;
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+	font-weight: 550;
 }
 
 /* header dividers */
 hr {
-    height: 0;
-    border: none;
-    border-top: 1px solid #eee;
+	height: 0;
+	border: none;
+	border-top: 1px solid #eee;
 }
 
 #side-nav {
@@ -261,19 +288,24 @@ hr {
 	left: 0;
 	width: 250;
 }
+
 /* nav tree arrow symbol */
 
 #nav-sync img {
 	opacity: 0;
 }
+
 #nav-sync img:hover {
 	opacity: 0.9;
 }
+
 /* The main page button */
 
-.sm-dox>li:first-child>a, .sm-dox>li:first-child> :not(ul) a {
+.sm-dox>li:first-child>a,
+.sm-dox>li:first-child> :not(ul) a {
 	padding-right: 12px;
 }
+
 /* content of for all class members list */
 
 #doc-content {
@@ -285,6 +317,7 @@ hr {
 	-webkit-overflow-scrolling: touch;
 	background-color: #FFF;
 }
+
 /* label for which tree menu you are on (displays in the doc menu */
 
 .title {
@@ -294,6 +327,7 @@ hr {
 	margin: -2px 0 0 2px;
 	background-color: white;
 }
+
 /* title for each section (class List, Class index) */
 
 #titlearea {
@@ -302,12 +336,14 @@ hr {
 	width: 100%;
 	border-bottom: none;
 }
+
 /* title for each section (class List, Class index) */
 
 div.headertitle {
 	padding: none;
 	background-color: white;
 }
+
 /* actual header for each section */
 
 div.header {
@@ -317,6 +353,7 @@ div.header {
 	margin: 0;
 	border-bottom: 1px solid #eee;
 }
+
 /* for class and function lists */
 
 table.directory {
@@ -338,6 +375,15 @@ table.directory {
 	font-feature-settings: normal;
 	font-variation-settings: normal;
 }
+
+.directory tr.even {
+	background: #e5e4e2;
+}
+
+.directory tr.odd {
+	background: #f4f0ec;
+}
+
 /* main page, classes, files banner */
 
 .sm-dox {
@@ -346,6 +392,7 @@ table.directory {
 	line-height: 36px;
 	background-color: #7fbdff;
 }
+
 /* item list on botton left */
 
 .navpath li.navelem a {
@@ -358,6 +405,7 @@ table.directory {
 	text-shadow: none;
 	text-decoration: none;
 }
+
 .navpath li {
 	list-style-type: none;
 	float: left;
@@ -368,9 +416,14 @@ table.directory {
 	background-position: right;
 	color: #364D7C;
 }
+
 /* top menu, Classes button */
 
-.sm-dox a, .sm-dox a:focus, .sm-dox a:active, .sm-dox a.highlighted, .sm-dox a.highlighted {
+.sm-dox a,
+.sm-dox a:focus,
+.sm-dox a:active,
+.sm-dox a.highlighted,
+.sm-dox a.highlighted {
 	padding-right: 12px;
 	background-image: none;
 	background-repeat: no-repeat;
@@ -381,15 +434,19 @@ table.directory {
 }
 
 .sm-dox a.has-submenu {
-    padding-right: 24px;
+	padding-right: 24px;
 }
 
 .sm a {
 	display: block;
 }
+
 /* top menu, main buttons label */
 
-.sm-dox a, .sm-dox a:focus, .sm-dox a:visited, .sm-dox a:visited {
+.sm-dox a,
+.sm-dox a:focus,
+.sm-dox a:visited,
+.sm-dox a:visited {
 	font-family: "Lucida Grande", "Geneva", "Helvetica", Arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
@@ -397,6 +454,7 @@ table.directory {
 	color: #000;
 	text-shadow: none;
 }
+
 /* hover over class/main page, files buttons */
 
 .sm-dox a:hover {
@@ -419,11 +477,11 @@ table.directory {
 }
 
 .sm-dox ul a:hover {
-    background-image: none;
-    background-repeat: repeat-x;
-    color: white;
-    background-color: #000;
-    text-shadow: none;
+	background-image: none;
+	background-repeat: repeat-x;
+	color: white;
+	background-color: #000;
+	text-shadow: none;
 }
 
 /* top list items */
@@ -465,9 +523,11 @@ table.directory {
 	-webkit-box-shadow: 0 5px 9px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 5px 9px rgba(0, 0, 0, 0.2);
 }
+
 .sm-dox ul a:hover {
 	background-image: none;
 }
+
 /* dividers for class/function lists */
 
 div.directory {
@@ -476,6 +536,7 @@ div.directory {
 	border-bottom: 1px solid #eee;
 	width: 100%;
 }
+
 /* for navigation tree links */
 
 #nav-tree .label a {
@@ -487,6 +548,7 @@ div.directory {
 	font-weight: 700;
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 }
+
 /* hovering over tree view items */
 
 #nav-tree .label a:hover {
@@ -499,12 +561,14 @@ div.directory {
 	font-family: "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
 	background-color: #FFF
 }
+
 /* nav tree labels */
 
 #nav-tree .label {
 	font-weight: 700;
 	font-family: "Lucida Grande", Geneva, Helvetica, Arial, sans-serif;
 }
+
 /* still for the navtree, but not labels */
 
 #nav-tree {
@@ -529,10 +593,10 @@ span.lineno a {
 }
 
 div.fragment {
-    padding: 0 0 1px 0;
-    margin: 4px 8px 4px 2px;
-    background-color: #FBFCFD;
-    border: 1px solid #eee;
+	padding: 0 0 1px 0;
+	margin: 4px 8px 4px 2px;
+	background-color: #FBFCFD;
+	border: 1px solid #eee;
 }
 
 .permalink {
@@ -547,6 +611,7 @@ div.fragment {
 	color: #fff;
 	background-color: #000;
 }
+
 /* selected nav tree link */
 
 #nav-tree .selected a {
@@ -554,6 +619,7 @@ div.fragment {
 	background-repeat: repeat-x;
 	color: #fff;
 }
+
 /* visited nav tree link */
 
 #nav-tree .visited a {
@@ -561,6 +627,7 @@ div.fragment {
 	background-repeat: repeat-x;
 	color: #127FCF;
 }
+
 /* bar separator for tree view */
 
 .ui-resizable-e {
@@ -575,19 +642,24 @@ div.fragment {
 	width: 0;
 	background-color: black;
 }
+
 /* visited links in general */
 
 a:visited {
 	color: #4d95c4;
 }
+
 /* bottom bar */
 
-a.code, a.code:visited, a.line, a.line:visited {
-    color: #4d95c4;
+a.code,
+a.code:visited,
+a.line,
+a.line:visited {
+	color: #4d95c4;
 }
 
 .contents a:visited {
-    color: #4d95c4;
+	color: #4d95c4;
 }
 
 .navpath ul {
@@ -604,6 +676,7 @@ a.code, a.code:visited, a.line, a.line:visited {
 	padding: 0;
 	background-color: #181818;
 }
+
 /* text 'Generated by doxygen' */
 
 .navpath li.footer {
@@ -625,6 +698,7 @@ a.code, a.code:visited, a.line, a.line:visited {
 	src: url("../fonts/RobotoSlab/roboto-slab.eot");
 	src: url("../fonts/RobotoSlab/roboto-slab-v7-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/RobotoSlab/roboto-slab-v7-regular.woff2") format("woff2"), url("../fonts/RobotoSlab/roboto-slab-v7-regular.woff") format("woff"), url("../fonts/RobotoSlab/roboto-slab-v7-regular.ttf") format("truetype")
 }
+
 @font-face {
 	font-family: "Roboto Slab";
 	font-style: normal;

@@ -2,8 +2,6 @@
 #define __INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
 
 #include "../DeviceElementGroup.hpp"
-#include "Metric_MOCK.hpp"
-#include "WritableMetric_MOCK.hpp"
 
 #include "gmock/gmock.h"
 #include <optional>
@@ -11,6 +9,10 @@
 
 namespace Information_Model {
 namespace testing {
+/**
+ * @addtogroup GroupModeling Device Element Group Modelling
+ * @{
+ */
 /**
  * @brief DeviceElementGroup mock, use for testing only! Only use mocked
  * functions in your test cases!
@@ -164,6 +166,8 @@ private:
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
+
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP
