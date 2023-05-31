@@ -1,4 +1,3 @@
-
 # Class Diagrams
 The entire Information Model consists of seven interfaces, one concrete class, two enumerations and one variant. A simplified class diagram is shown below. 
 
