@@ -28,11 +28,6 @@ struct WritableMetric : public Metric {
         "Called based implementation of WritableMetric::setMetricValue()");
   }
 
-  virtual DataType getDataType() {
-    throw std::runtime_error(
-        "Called based implementation of WritableMetric::getDataType()");
-  }
-
   /**
    * @brief Checks if the modeled metric does not supports value reading
    *
