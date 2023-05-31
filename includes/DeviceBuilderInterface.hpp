@@ -23,11 +23,26 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
  * @brief This Interface is used by Technology Adapter implementations to build
  * a device within the Information Model.
  *
+ * Used by Technology Adapter implementations to build a device within the
+ * Information Model.
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and
+ * SHOULD be acquired via TechnologyAdapter::getDeviceBuilder() method.
+ *
+ * To test interactions with this interface, please set
+ * testing::DeviceBuilderInterfaceMock class as a DeviceBuilderPtr when creating
+ * a new TechnologyAdapter instance by calling
+ * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
 
   virtual ~DeviceBuilderInterface() = default;
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   /**
    * @brief Create a base element for the device. This method MUST be called
    * before any add* method is called.
@@ -46,7 +61,12 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::buildDeviceBase");
   }
+  /** @}*/
 
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   /**
    * @brief Adds a group element to the device root level DeviceElementGroup.
    *
@@ -103,6 +123,12 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElementGroup");
   }
+  /** @}*/
+
+  /**
+   * @addtogroup ReadableModeling Metric Modelling
+   * @{
+   */
   /**
    * @brief Adds a readable metric with a given data type to the device root
    * level DeviceElementGroup.
@@ -170,7 +196,12 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
   }
+  /** @}*/
 
+  /**
+   * @addtogroup WritableModeling Writable Metric Modelling
+   * @{
+   */
   /**
    * @brief Adds a writable metric with a given data type to the device root
    * level DeviceElementGroup.
@@ -243,6 +274,7 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
   }
+  /** @}*/
 
   /**
    * @todo Decide on how to best create a binding to an Observable
@@ -268,8 +300,9 @@ struct DeviceBuilderInterface {
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
   }
+
   /**
-   * @addtogroup FunctionModeling Function Modelling
+   * @addtogroup ExecutableModeling Function Modelling
    * @{
    */
   /**
@@ -348,6 +381,11 @@ struct DeviceBuilderInterface {
         "DeviceBuilderInterface::addFunction for subgroup");
   }
   /** @}*/
+
+  /**
+   * @addtogroup ElementModeling Device Element Modelling
+   * @{
+   */
   /**
    * @brief Provides a generalized approach to creating any device element.
    *
@@ -449,20 +487,30 @@ struct DeviceBuilderInterface {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::addDeviceElement");
   }
+    /** @}*/
 
+  /**
+  * @addtogroup DeviceModeling Device Modelling
+  * @{
+  */
   /**
    * @brief Checks if the built result is valid and returns it.
    *
    * If the device creation was not properly finished, throws an exception.
    *
-   * @return NonemptyPtr<std::unique_ptr<Device>>
+   * @return UniqueDevicePtr
    */
   virtual UniqueDevicePtr getResult() {
     throw std::runtime_error("Called base implementation of "
                              "DeviceBuilderInterface::getResult");
   }
+  /** @}*/
 
   protected: 
+  /**
+ * @addtogroup ElementModeling Device Element Modelling
+ * @{
+ */
   DeviceElementPtr makeDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
@@ -473,6 +521,7 @@ struct DeviceBuilderInterface {
         // object locally and then pass it to std::make_shared<>() function.
         return std::make_shared<DeviceElement>(std::move(obj));
       }
+  /** @}*/
 };
 } // namespace Information_Model
 

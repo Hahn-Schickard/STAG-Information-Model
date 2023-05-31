@@ -9,6 +9,10 @@
 namespace Information_Model {
 namespace testing {
 /**
+ * @addtogroup WritableModeling Writable Metric Modelling
+ * @{
+ */
+/**
  * @brief WritableMetric mock implementation. Use only for testing!
  *
  */
@@ -73,6 +77,8 @@ private:
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
+
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 

@@ -17,13 +17,23 @@ namespace testing {
 
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
- * This class should be used by Data Consumer Adapter implementations to build a
- * mock Device instance during unit and integration test stages
  *
+ * This class SHOULD be used by Data Consumer Adapter implementations to build a
+ * mock/fake Device instance to test interactions with Information Model without
+ * having access to real Device instances.
+ *
+ * This class MAY be used in Technology Adapter Implementations,
+ * when a fake Device instance is required to test interactions with the Device
+ * Model. For example, printing out the built Device instances in a system
+ * integration test.
  */
 struct DeviceMockBuilder : public DeviceBuilderInterface {
   DeviceMockBuilder() = default;
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   void buildDeviceBase(const std::string& unique_id,
       const std::string& name,
       const std::string& desc) override {
@@ -36,7 +46,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
           "DeviceMockBuilder::getResult() before starting to build a new one!");
     }
   }
+  /** @}*/
 
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   std::string addDeviceElementGroup(
       const std::string& name, const std::string& desc) override {
     return addDeviceElement(
@@ -49,7 +64,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(
         group_refid, name, desc, ElementType::GROUP, DataType::UNKNOWN);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ReadableModeling Metric Modelling
+   * @{
+   */
   std::string addReadableMetric(
       const std::string& name, const std::string& desc, DataType data_type) {
     return addDeviceElement(
@@ -80,7 +100,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(
         group_refid, name, desc, ElementType::READABLE, data_type);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup WritableModeling Writable Metric Modelling
+   * @{
+   */
   std::string addWritableMetric(
       const std::string& name, const std::string& desc, DataType data_type) {
     return addDeviceElement(
@@ -123,7 +148,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
         read_cb,
         write_cb);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ExecutableModeling Function Modelling
+   * @{
+   */
   std::string addFunction(const std::string& name, const std::string& desc) {
     return addDeviceElement(std::string(), name, desc, ElementType::FUNCTION);
   }
@@ -184,7 +214,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
         execute_cb,
         cancel_cb);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   MockDeviceElementGroupPtr getGroupImplementation(const std::string& ref_id) {
     if (device_) {
       if (ref_id.empty()) {
@@ -202,7 +237,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       throw std::runtime_error("Device base was not built!");
     }
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ElementModeling Device Element Modelling
+   * @{
+   */
   DeviceElementPtr buildDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
@@ -290,7 +330,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
 
     return new_id;
   }
+  /** @}*/
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   UniqueDevicePtr getResult() override {
     if (device_) {
       return std::move(device_);
@@ -298,6 +343,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       throw std::runtime_error("Device base was not built!");
     }
   }
+  /** @}*/
 
 private:
   std::unique_ptr<MockDevice> device_;

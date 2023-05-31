@@ -10,19 +10,33 @@
 
 namespace Information_Model {
 struct DeviceElement;
+using DeviceElementPtr = std::shared_ptr<DeviceElement>;
+using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 
+/**
+ * @addtogroup GroupModeling Device Element Group Modelling
+ * @{
+ */
+/**
+ * @brief An interface to DeviceElementGroup
+ *
+ * Groups other modeling entities together in a single collection
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilderInterface::addDeviceElementGroup() or
+ * DeviceBuilderInterface::addDeviceElement() with type set to
+ * ElementType::GROUP
+ */
 struct DeviceElementGroup {
-  /** aka std::vector<NonemptyDeviceElementPtr> */
-  using DeviceElements =
-      std::vector<NonemptyPointer::NonemptyPtr<std::shared_ptr<DeviceElement>>>;
+  using DeviceElements = std::vector<NonemptyDeviceElementPtr>;
 
   virtual DeviceElements getSubelements() {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
 
-  virtual std::shared_ptr<DeviceElement> getSubelement(
-      const std::string& /*ref_id*/) {
+  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
@@ -36,6 +50,8 @@ protected:
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
 using NonemptyDeviceElementGroupPtr =
     NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_HPP

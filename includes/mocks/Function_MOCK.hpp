@@ -10,7 +10,7 @@
 namespace Information_Model {
 
 /**
- * @addtogroup FunctionModeling Function Modelling
+ * @addtogroup ExecutableModeling Function Modelling
  * @{
  */
 struct MockFunction : public Function {
