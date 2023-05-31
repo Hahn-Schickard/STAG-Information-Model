@@ -7,6 +7,18 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
+
+/**
+ * @addtogroup NamedElementModeling Named Element Modelling
+ * @{
+ */
+/**
+ * @brief Base modeling entity for Information Model
+ *
+ * Contains meta information of the modeled entity.
+ *
+ * MUST ONLY be inherited by Device or DeviceElement classes
+ */
 class NamedElement {
   std::string name_;
   std::string desc_;
@@ -28,6 +40,8 @@ public:
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
 using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_NAMED_ELEMENT_HPP_

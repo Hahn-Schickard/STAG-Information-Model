@@ -4,6 +4,9 @@
 #include "../DeviceBuilderInterface.hpp"
 #include "DeviceElementGroup_MOCK.hpp"
 #include "Device_MOCK.hpp"
+#include "Function_MOCK.hpp"
+#include "Metric_MOCK.hpp"
+#include "WritableMetric_MOCK.hpp"
 
 #include <gmock/gmock.h>
 #include <optional>
@@ -14,13 +17,23 @@ namespace testing {
 
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
- * This class should be used by Data Consumer Adapter implementations to build a
- * mock Device instance during unit and integration test stages
  *
+ * This class SHOULD be used by Data Consumer Adapter implementations to build a
+ * mock/fake Device instance to test interactions with Information Model without
+ * having access to real Device instances.
+ *
+ * This class MAY be used in Technology Adapter Implementations,
+ * when a fake Device instance is required to test interactions with the Device
+ * Model. For example, printing out the built Device instances in a system
+ * integration test.
  */
 struct DeviceMockBuilder : public DeviceBuilderInterface {
   DeviceMockBuilder() = default;
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   void buildDeviceBase(const std::string& unique_id,
       const std::string& name,
       const std::string& desc) override {
@@ -33,7 +46,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
           "DeviceMockBuilder::getResult() before starting to build a new one!");
     }
   }
+  /** @}*/
 
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   std::string addDeviceElementGroup(
       const std::string& name, const std::string& desc) override {
     return addDeviceElement(
@@ -46,7 +64,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(
         group_refid, name, desc, ElementType::GROUP, DataType::UNKNOWN);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ReadableModeling Metric Modelling
+   * @{
+   */
   std::string addReadableMetric(
       const std::string& name, const std::string& desc, DataType data_type) {
     return addDeviceElement(
@@ -77,7 +100,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(
         group_refid, name, desc, ElementType::READABLE, data_type);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup WritableModeling Writable Metric Modelling
+   * @{
+   */
   std::string addWritableMetric(
       const std::string& name, const std::string& desc, DataType data_type) {
     return addDeviceElement(
@@ -120,7 +148,78 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
         read_cb,
         write_cb);
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ExecutableModeling Function Modelling
+   * @{
+   */
+  std::string addFunction(const std::string& name, const std::string& desc) {
+    return addDeviceElement(std::string(), name, desc, ElementType::FUNCTION);
+  }
+
+  std::string addFunction(
+      const std::string& name, const std::string& desc, DataType result_type) {
+    return addDeviceElement(
+        std::string(), name, desc, ElementType::FUNCTION, result_type);
+  }
+
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      Function::ParameterTypes supported_params) {
+    return addDeviceElement(std::string(),
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params);
+  }
+
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      std::optional<Function::ParameterTypes> supported_params,
+      ExecuteFunctor execute_cb,
+      CancelFunctor cancel_cb) override {
+    return addDeviceElement(std::string(),
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params,
+        execute_cb,
+        cancel_cb);
+  }
+
+  std::string addFunction(const std::string& group_refid,
+      const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      std::optional<Function::ParameterTypes> supported_params,
+      ExecuteFunctor execute_cb,
+      CancelFunctor cancel_cb) override {
+    return addDeviceElement(group_refid,
+        name,
+        desc,
+        ElementType::FUNCTION,
+        result_type,
+        std::nullopt,
+        std::nullopt,
+        supported_params,
+        execute_cb,
+        cancel_cb);
+  }
+  /** @}*/
+
+  /**
+   * @addtogroup GroupModeling Device Element Group Modelling
+   * @{
+   */
   MockDeviceElementGroupPtr getGroupImplementation(const std::string& ref_id) {
     if (device_) {
       if (ref_id.empty()) {
@@ -138,7 +237,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       throw std::runtime_error("Device base was not built!");
     }
   }
+  /** @}*/
 
+  /**
+   * @addtogroup ElementModeling Device Element Modelling
+   * @{
+   */
   DeviceElementPtr buildDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
@@ -146,7 +250,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType data_type,
       std::optional<ReadFunctor> read_cb,
       std::optional<WriteFunctor> write_cb,
-      std::optional<ExecuteFunctor> execute_cb) {
+      std::optional<Function::ParameterTypes> supported_params,
+      std::optional<ExecuteFunctor> execute_cb,
+      std::optional<CancelFunctor> cancel_cb) {
     switch (type) {
     case ElementType::GROUP: {
       auto group =
@@ -183,9 +289,14 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       return makeDeviceElement(ref_id, name, desc, NonemptyMetricPtr(readable));
     }
     case ElementType::FUNCTION: {
-      // @TODO: implement function support
-      __attribute__((unused)) auto suppress = execute_cb;
-      throw std::invalid_argument("Function metric types are not implemented");
+      auto executable = std::make_shared<::testing::NiceMock<MockFunction>>(
+          data_type, supported_params.value_or(Function::ParameterTypes()));
+      if (execute_cb.has_value() && cancel_cb.has_value()) {
+        executable->delegateToFake(execute_cb.value(), cancel_cb.value());
+      }
+
+      return makeDeviceElement(
+          ref_id, name, desc, NonemptyFunctionPtr(executable));
     }
     default: {
       throw std::invalid_argument("Requested to build unsupported ElementType");
@@ -200,16 +311,31 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType data_type = DataType::UNKNOWN,
       std::optional<ReadFunctor> read_cb = std::nullopt,
       std::optional<WriteFunctor> write_cb = std::nullopt,
-      std::optional<ExecuteFunctor> execute_cb = std::nullopt) override {
+      std::optional<Function::ParameterTypes> supported_params = std::nullopt,
+      std::optional<ExecuteFunctor> execute_cb = std::nullopt,
+      std::optional<CancelFunctor> cancel_cb = std::nullopt) override {
     auto group = getGroupImplementation(group_refid);
     auto new_id = group->generateReferenceID();
-    auto element = buildDeviceElement(
-        new_id, name, desc, type, data_type, read_cb, write_cb, execute_cb);
+    auto element = buildDeviceElement(new_id,
+        name,
+        desc,
+        type,
+        data_type,
+        read_cb,
+        write_cb,
+        supported_params,
+        execute_cb,
+        cancel_cb);
     group->addDeviceElement(NonemptyDeviceElementPtr(element));
 
     return new_id;
   }
+  /** @}*/
 
+  /**
+   * @addtogroup DeviceModeling Device Modelling
+   * @{
+   */
   UniqueDevicePtr getResult() override {
     if (device_) {
       return std::move(device_);
@@ -217,6 +343,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       throw std::runtime_error("Device base was not built!");
     }
   }
+  /** @}*/
 
 private:
   std::unique_ptr<MockDevice> device_;
