@@ -8,9 +8,11 @@
 namespace Information_Model {
 namespace testing {
 /**
- * @brief DeviceBuilderInterfaceMock provides a mock class for Technology
+ * @brief DeviceBuilderInterface mock class for Technology
  * Adapter Implementations to test in unit and/or integration test stages
  *
+ * @attention
+ * Use for testing only
  */
 struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
   /**
