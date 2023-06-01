@@ -392,6 +392,15 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     const Interface interface; // NOLINT
   };
 
+  /**
+   * @brief Create any DeviceElement instance in a generic way
+   *
+   * @param group_ref_id
+   * @param name
+   * @param desc
+   * @param functionality
+   * @return std::string
+   */
   std::string addDeviceElement(const std::string& group_ref_id,
       const std::string& name,
       const std::string& desc,
