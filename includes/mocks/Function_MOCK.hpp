@@ -8,7 +8,7 @@
 #include <future>
 
 namespace Information_Model {
-
+namespace testing {
 /**
  * @addtogroup ExecutableModeling Function Modelling
  * @{
@@ -208,7 +208,6 @@ private:
   std::optional<Canceler> canceler_;
 };
 
-namespace testing {
 using MockFunctionPtr = std::shared_ptr<MockFunction>;
 /** @}*/
 } // namespace testing
