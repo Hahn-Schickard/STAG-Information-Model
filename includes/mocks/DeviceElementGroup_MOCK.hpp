@@ -14,8 +14,11 @@ namespace testing {
  * @{
  */
 /**
- * @brief DeviceElementGroup mock, use for testing only! Only use mocked
- * functions in your test cases!
+ * @brief DeviceElementGroup mock with default fake method implementations and
+ * ability to add custom fake functionality
+ *
+ * @attention
+ * Use for testing only
  *
  */
 struct MockDeviceElementGroup : public DeviceElementGroup {

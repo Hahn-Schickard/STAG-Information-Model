@@ -14,7 +14,6 @@
 
 namespace Information_Model {
 namespace testing {
-
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
  *
@@ -26,6 +25,9 @@ namespace testing {
  * when a fake Device instance is required to test interactions with the Device
  * Model. For example, printing out the built Device instances in a system
  * integration test.
+ *
+ * @attention
+ * Use for testing only
  */
 struct DeviceMockBuilder : public DeviceBuilderInterface {
   DeviceMockBuilder() = default;

@@ -13,6 +13,14 @@ namespace testing {
  * @addtogroup ExecutableModeling Function Modelling
  * @{
  */
+/**
+ * @brief Function mock implementation with default fake method implementations
+ * and ability to add custom fake functionality
+ *
+ * @attention
+ * Use only for testing
+ *
+ */
 struct MockFunction : public Function {
   using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;

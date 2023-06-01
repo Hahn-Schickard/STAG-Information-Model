@@ -12,7 +12,10 @@ namespace testing {
  * @{
  */
 /**
- * @brief Metric mock implementation. Use only for testing!
+ * @brief Metric mock implementation with ability to easily convert into a Fake
+ *
+ * @attention
+ * Use only for testing
  *
  */
 struct MockMetric : public Metric {

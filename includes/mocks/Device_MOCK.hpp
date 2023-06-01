@@ -18,7 +18,12 @@ namespace testing {
  * @{
  */
 /**
- * @brief Device class mock, use for testing only!
+ * @brief Device class mock, with default fake method implementations
+ *
+ * Used by DeviceMockBuilder
+ *
+ * @attention
+ * Use for testing only
  *
  */
 struct MockDevice : public Device {
