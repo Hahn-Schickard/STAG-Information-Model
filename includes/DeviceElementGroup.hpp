@@ -24,9 +24,7 @@ using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addDeviceElementGroup() or
- * DeviceBuilderInterface::addDeviceElement() with type set to
- * ElementType::GROUP
+ * built via DeviceBuilderInterface::addDeviceElementGroup()
  */
 struct DeviceElementGroup {
   using DeviceElements = std::vector<NonemptyDeviceElementPtr>;

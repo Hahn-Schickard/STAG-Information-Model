@@ -99,7 +99,7 @@ struct DeviceBuilderInterface {
    * DeviceElement ID of the newly created DeviceElementGroup.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -167,7 +167,7 @@ struct DeviceBuilderInterface {
    * DeviceElement ID of the newly created Metric.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -242,7 +242,7 @@ struct DeviceBuilderInterface {
    * DeviceElement ID of the newly created WritableMetric.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -346,7 +346,7 @@ struct DeviceBuilderInterface {
    * DeviceElement ID of the newly created Function.
    *
    * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this

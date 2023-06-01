@@ -47,9 +47,7 @@ struct FunctionCallTimedout : public std::runtime_error {
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addFunction() or
- * DeviceBuilderInterface::addDeviceElement() with type set to
- * ElementType::FUNCTION
+ * built via DeviceBuilderInterface::addFunction()
  */
 
 struct Function {
