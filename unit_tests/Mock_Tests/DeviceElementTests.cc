@@ -67,8 +67,8 @@ protected:
       builder->addWritableMetric(expectations->name_,
           expectations->desc_,
           expectations->data_type_,
-          makeDefaultReader(expectations->data_type_),
-          makeDefaultWriter(expectations->data_type_));
+          makeDefaultWriter(expectations->data_type_),
+          makeDefaultReader(expectations->data_type_));
       break;
     }
     default: {
