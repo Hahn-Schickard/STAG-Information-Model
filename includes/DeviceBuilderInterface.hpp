@@ -108,7 +108,7 @@ struct DeviceBuilderInterface {
    * If the specified parent DeviceElementGroup is a subgroup itself, the
    * returned string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used in the nth level of subgroups as well.
    *
@@ -176,7 +176,7 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
@@ -251,7 +251,7 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
@@ -355,7 +355,7 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
