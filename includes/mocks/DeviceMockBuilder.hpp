@@ -49,9 +49,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       device_ = std::make_unique<::testing::NiceMock<MockDevice>>(
           unique_id, name, desc);
     } else {
-      throw std::runtime_error("A device is already beeing built! Call "
-                               "DeviceMockBuilder::getResult() before "
-                               "starting to build a new one!");
+      throw std::runtime_error( //
+          "A device is already beeing built! Call "
+          "DeviceMockBuilder::getResult() before starting to build a new one!");
     }
   }
   /** @}*/
