@@ -41,8 +41,11 @@ struct MockMetric : public Metric {
   void delegateToFake(Reader reader) {
     read_ = reader;
     ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      auto reader = read_.value();
-      return reader();
+      if (read_) {
+        return read_();
+      } else {
+        return value_;
+      }
     });
     ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
@@ -52,7 +55,7 @@ struct MockMetric : public Metric {
 protected:
   DataType type_;
   DataVariant value_;
-  std::optional<Reader> read_ = std::nullopt;
+  Reader read_ = nullptr;
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;

@@ -49,11 +49,7 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
   }
 
   void delegateToFake(Reader reader) {
-    read_ = reader;
-    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      return read_.value()();
-    });
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    MockMetric::delegateToFake(reader);
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
@@ -66,18 +62,19 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
-  void delegateToFake(Reader reader, Writer writer) {
+  void delegateToFake(Writer writer, Reader reader) {
     write_ = writer;
     ON_CALL(*this, setMetricValue).WillByDefault([this](DataVariant value) {
-      auto writer = write_.value();
-      writer(value);
+      if (write_) {
+        write_(value);
+      }
     });
     delegateToFake(reader);
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
 private:
-  std::optional<Writer> write_ = std::nullopt;
+  Writer write_ = nullptr;
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;

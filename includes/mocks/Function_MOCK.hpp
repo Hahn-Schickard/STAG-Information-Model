@@ -114,7 +114,7 @@ struct MockFunction : public Function {
   }
 
   void respond(uintmax_t call_id, DataVariant value) {
-    if (!executor_.has_value()) {
+    if (!executor_) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_value(value);
@@ -129,7 +129,7 @@ struct MockFunction : public Function {
   }
 
   void respond(uintmax_t call_id, std::exception_ptr exception) {
-    if (!executor_.has_value()) {
+    if (!executor_) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
         iter->second.set_exception(exception);
@@ -144,7 +144,7 @@ struct MockFunction : public Function {
   }
 
   void respondToAll(DataVariant value) {
-    if (!executor_.has_value()) {
+    if (!executor_) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
         iter->second.set_value(value);
@@ -157,7 +157,7 @@ struct MockFunction : public Function {
   }
 
   void respondToAll(std::exception_ptr exception) {
-    if (!executor_.has_value()) {
+    if (!executor_) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
         iter->second.set_exception(exception);
@@ -170,7 +170,7 @@ struct MockFunction : public Function {
   }
 
   void cancelAllCalls() {
-    if (!executor_.has_value()) {
+    if (!executor_) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
         iter->second.set_exception(
@@ -186,23 +186,31 @@ struct MockFunction : public Function {
   void delegateToFake(Executor executor, Canceler canceler) {
     respondToAll(std::make_exception_ptr(
         std::logic_error("Assigned a new external execution handler")));
-    executor_ = executor;
-    canceler_ = canceler;
-    ON_CALL(*this, call)
-        .WillByDefault([this](Function::Parameters params,
-                           uintmax_t timeout) -> DataVariant {
-          auto result_future =
-              std::async(std::launch::async, executor_.value(), params);
-          auto status =
-              result_future.wait_for(std::chrono::milliseconds(timeout));
-          if (status == std::future_status::ready) {
-            return result_future.get().second.get();
-          } else {
-            throw FunctionCallTimedout("MockFunction");
-          }
-        });
-    ON_CALL(*this, asyncCall).WillByDefault(executor_.value());
-    ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_.value());
+    if (executor && canceler) {
+      executor_ = executor;
+      canceler_ = canceler;
+      ON_CALL(*this, call)
+          .WillByDefault([this](Function::Parameters params,
+                             uintmax_t timeout) -> DataVariant {
+            auto result_future =
+                std::async(std::launch::async, executor_, params);
+            auto status =
+                result_future.wait_for(std::chrono::milliseconds(timeout));
+            if (status == std::future_status::ready) {
+              return result_future.get().second.get();
+            } else {
+              throw FunctionCallTimedout("MockFunction");
+            }
+          });
+      ON_CALL(*this, asyncCall).WillByDefault(executor_);
+      ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_);
+    } else {
+      throw std::invalid_argument(
+          "Both Executor and Canceler callables must be nonempty. Empty "
+          "callables are not allowed, because Executor and Canceler callables "
+          "are required to properly handle memory allocation for result "
+          "futures");
+    }
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
@@ -212,8 +220,8 @@ private:
   Function::ParameterTypes supported_params_;
   std::optional<DataVariant> result_value_;
   std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
-  std::optional<Executor> executor_;
-  std::optional<Canceler> canceler_;
+  Executor executor_;
+  Canceler canceler_;
 };
 
 using MockFunctionPtr = std::shared_ptr<MockFunction>;

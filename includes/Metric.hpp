@@ -21,9 +21,7 @@ namespace Information_Model {
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addReadableMetric() or
- * DeviceBuilderInterface::addDeviceElement() with type set to
- * ElementType::READABLE
+ * built via DeviceBuilderInterface::addReadableMetric()
  */
 struct Metric {
   /**

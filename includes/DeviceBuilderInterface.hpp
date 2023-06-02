@@ -12,11 +12,6 @@
 #include <string>
 
 namespace Information_Model {
-using ReadFunctor = std::function<DataVariant()>;
-using WriteFunctor = std::function<void(DataVariant)>;
-using ExecuteFunctor =
-    std::function<Function::ResultFuture(Function::Parameters)>;
-using CancelFunctor = std::function<void(uintmax_t)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
@@ -36,6 +31,10 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
  * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
+  using Reader = std::function<DataVariant()>;
+  using Writer = std::function<void(DataVariant)>;
+  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
+  using Canceler = std::function<void(uintmax_t)>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -85,9 +84,8 @@ struct DeviceBuilderInterface {
    * @return std::string
    */
   virtual std::string addDeviceElementGroup(
-      const std::string& /*name*/, const std::string& /*desc*/) {
-    throw std::runtime_error("Called base implementation of "
-                             "DeviceBuilderInterface::addDeviceElementGroup");
+      const std::string& name, const std::string& desc) {
+    return addDeviceElementGroup(std::string(), name, desc);
   }
 
   /**
@@ -98,8 +96,8 @@ struct DeviceBuilderInterface {
    * specified DeviceElementGroup of the currently built device and returns the
    * DeviceElement ID of the newly created DeviceElementGroup.
    *
-   * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -108,16 +106,16 @@ struct DeviceBuilderInterface {
    * If the specified parent DeviceElementGroup is a subgroup itself, the
    * returned string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used in the nth level of subgroups as well.
    *
-   * @param group_refid
+   * @param group_ref_id
    * @param name
    * @param desc
    * @return std::string
    */
-  virtual std::string addDeviceElementGroup(const std::string& /*group_refid*/,
+  virtual std::string addDeviceElementGroup(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/) {
     throw std::runtime_error("Called base implementation of "
@@ -149,13 +147,11 @@ struct DeviceBuilderInterface {
    * @param read_cb
    * @return std::string
    */
-  virtual std::string addReadableMetric(const std::string& /*name*/,
-      const std::string& /*desc*/,
-      DataType /*data_type*/,
-      ReadFunctor /*read_cb*/) {
-    throw std::runtime_error(
-        "Called base implementation of "
-        "DeviceBuilderInterface::addReadableMetric for root group");
+  std::string addReadableMetric(const std::string& name,
+      const std::string& desc,
+      DataType data_type,
+      Reader read_cb) {
+    return addReadableMetric(std::string(), name, desc, data_type, read_cb);
   }
 
   /**
@@ -166,8 +162,8 @@ struct DeviceBuilderInterface {
    * DeviceElementGroup of the currently built device and returns the
    * DeviceElement ID of the newly created Metric.
    *
-   * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -176,22 +172,22 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
-   * @param group_refid
+   * @param group_ref_id
    * @param name
    * @param desc
    * @param data_type
    * @param read_cb
    * @return std::string
    */
-  virtual std::string addReadableMetric(const std::string& /*group_refid*/,
+  virtual std::string addReadableMetric(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      ReadFunctor /*read_cb*/) {
+      Reader /*read_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
@@ -223,14 +219,13 @@ struct DeviceBuilderInterface {
    * @param write_cb
    * @return std::string
    */
-  virtual std::string addWritableMetric(const std::string& /*name*/,
-      const std::string& /*desc*/,
-      DataType /*data_type*/,
-      std::optional<ReadFunctor> /*read_cb*/,
-      WriteFunctor /*write_cb*/) {
-    throw std::runtime_error(
-        "Called base implementation of "
-        "DeviceBuilderInterface::addWritableMetric for root group");
+  std::string addWritableMetric(const std::string& name,
+      const std::string& desc,
+      DataType data_type,
+      Writer write_cb,
+      Reader read_cb = nullptr) {
+    return addWritableMetric(
+        std::string(), name, desc, data_type, write_cb, read_cb);
   }
 
   /**
@@ -241,8 +236,8 @@ struct DeviceBuilderInterface {
    * DeviceElementGroup of the currently built device and returns the
    * DeviceElement ID of the newly created WritableMetric.
    *
-   * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -251,11 +246,11 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
-   * @param group_refid
+   * @param group_ref_id
    * @param name
    * @param desc
    * @param type
@@ -264,12 +259,12 @@ struct DeviceBuilderInterface {
    * @param write_cb
    * @return std::string
    */
-  virtual std::string addWritableMetric(const std::string& /*group_refid*/,
+  virtual std::string addWritableMetric(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      std::optional<ReadFunctor> /*read_cb*/,
-      WriteFunctor /*write_cb*/) {
+      Writer /*write_cb*/,
+      Reader /*read_cb*/ = nullptr) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
@@ -281,18 +276,17 @@ struct DeviceBuilderInterface {
    *
    */
 
-  virtual std::string addObservableMetric(const std::string& /*name*/,
-      const std::string& /*desc*/ /* @todo: Observer binding mechanism */) {
-    throw std::runtime_error(
-        "Called base implementation of "
-        "DeviceBuilderInterface::addObservableMetric for root group");
+  std::string addObservableMetric(const std::string& name,
+      const std::string& desc,
+      DataType data_type /* @todo: Observer binding mechanism */) {
+    return addObservableMetric(std::string(), name, desc, data_type);
   }
 
   /**
    * @todo Decide on how to best create a binding to an Observable
    *
    */
-  virtual std::string addObservableMetric(const std::string& /*group_refid*/,
+  virtual std::string addObservableMetric(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/ /* @todo: Observer binding mechanism */) {
@@ -326,15 +320,19 @@ struct DeviceBuilderInterface {
    * @param cancel_cb
    * @return std::string
    */
-  virtual std::string addFunction(const std::string& /*name*/,
-      const std::string& /*desc*/,
-      DataType /*result_type*/,
-      std::optional<Function::ParameterTypes> /*supported_params*/,
-      ExecuteFunctor /*execute_cb*/,
-      CancelFunctor /*cancel_cb*/) {
-    throw std::runtime_error(
-        "Called base implementation of "
-        "DeviceBuilderInterface::addFunction for root group");
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      DataType result_type,
+      Executor execute_cb,
+      Canceler cancel_cb,
+      Function::ParameterTypes supported_params = {}) {
+    return addFunction(std::string(),
+        name,
+        desc,
+        result_type,
+        execute_cb,
+        cancel_cb,
+        supported_params);
   }
 
   /**
@@ -345,8 +343,8 @@ struct DeviceBuilderInterface {
    * DeviceElementGroup of the currently built device and returns the
    * DeviceElement ID of the newly created Function.
    *
-   * The requested group_refid argument is obtained from the previous
-   * addDeviceElementGroup() or addDeviceElement() call.
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
    *
    * The returned string will be based on the unique id, provided by the user
    * with the previously called buildDeviceBase() method. The format of this
@@ -355,27 +353,27 @@ struct DeviceBuilderInterface {
    * If specified parent DeviceElementGroup is a subgroup itself, the returned
    * string will represent it as a new ID element as such:
    * @code {cpp}
-   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:SUBPARENT_ELEMENT_ID:ELEMENT_ID.
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
    * @endcode
    * A similar format will be used nth level of subgroup as well.
    *
-   * @param group_refid
+   * @param group_ref_id
    * @param name
    * @param desc
    * @param type
    * @param result_type
-   * @param supported_params
    * @param execute_cb
+   * @param supported_params
    * @param cancel_cb
    * @return std::string
    */
-  virtual std::string addFunction(const std::string& /*group_refid*/,
+  virtual std::string addFunction(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*result_type*/,
-      std::optional<Function::ParameterTypes> /*supported_params*/,
-      ExecuteFunctor /*execute_cb*/,
-      CancelFunctor /*cancel_cb*/) {
+      Executor /*execute_cb*/,
+      Canceler /*cancel_cb*/,
+      Function::ParameterTypes /*supported_params*/ = {}) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addFunction for subgroup");
@@ -383,116 +381,9 @@ struct DeviceBuilderInterface {
   /** @}*/
 
   /**
-   * @addtogroup ElementModeling Device Element Modelling
+   * @addtogroup DeviceModeling Device Modelling
    * @{
    */
-  /**
-   * @brief Provides a generalized approach to creating any device element.
-   *
-   * To add a new root DeviceElementGroup call this method as follows:
-   * @code {cpp}
-   * addDeviceElement("",name,desc)
-   * @endcode
-   *
-   * To add a new DeviceElementGroup to an existing DeviceElementGroup call this
-   * method as follows:
-   * @code {cpp}
-   * addDeviceElement(parent_id,name,desc)
-   * @endcode
-   * The requested parent_id argument is obtained from previous
-   * addDeviceElementGroup() or addDeviceElement() call.
-   *
-   * To add a new root Readable metric call this method as follows:
-   * @code {cpp}
-   * addDeviceElement("",name,desc,ElementType::READABLE,data_type,read_cb)
-   * @endcode
-   * Where data_type specifies the desired DataType that this Metric
-   * will model and read_cb specifies the functor callback used when trying to
-   * access the value.
-   *
-   * To add a new Readable metric to an existing DeviceElementGroup call this
-   * method as follows:
-   * @code {cpp}
-   * addDeviceElement(parent_id,name,ElementType::READABLE,data_type,read_cb)
-   * @endcode
-   * The requested parent_id argument is obtained from previous
-   * addDeviceElementGroup() or addDeviceElement() call, data_type
-   * specifies the desired DataType that this Metric will model and read_cb
-   * specifies the functor callback used when trying to access the value.
-   *
-   * To add a new root Writable Metric call this method as follows:
-   * @code {cpp}
-   * addDeviceElement("",name,desc,ElementType::WRITABLE,data_type,read_cb,
-   *     write_cb)
-   * @endcode
-   * Where data_type specifies the desired DataType that this Metric
-   * will model, read_cb specifies the functor callback used when trying to
-   * access the value and write_cb specifies the functor callback used when
-   * trying to set the value. All WritableMetric instances are also
-   * Readable instances! If you want to create a Write-Only Metric, set the
-   * read_cb to a std::nullopt.
-   *
-   * To add a new Writable Metric to an existing DeviceElementGroup call this
-   * method as follows:
-   * @code {cpp}
-   * addDeviceElement(parent_id,name,desc,ElementType::WRITABLE,data_type,read_cb,
-   *     write_cb)
-   * @endcode
-   * The requested parent_id argument is obtained from  previous
-   * addDeviceElementGroup() or addDeviceElement() call, data_type
-   * specifies the desired DataType that this Metric will model, read_cb
-   * specifies the functor callback used when trying to access the value
-   * and write_cb specifies the functor callback used when trying to set the
-   * value. All WritableMetric instances are also Readable instances! If
-   * you want to create a Write-Only Metric, set the read_cb to a std::nullopt.
-   *
-   * To add a new root Function call this method as follows:
-   * @code {cpp}
-   * addDeviceElement("",name,desc,ElementType::FUNCTION, execute_cb)
-   * @endcode
-   * Where execute_cb specifies the execute function callback.
-   *
-   * To add a new Function to an existing DeviceElementGroup call this
-   * method as follows:
-   * @code {cpp}
-   * addDeviceElement(parent_id,name,desc,ElementType::FUNCTION,execute_cb)
-   * @endcode
-   * The requested parent_id argument is obtained from  previous
-   * addDeviceElementGroup() or addDeviceElement() call and execute_cb specifies
-   * the execute function callback.
-   *
-   * @param group_refid
-   * @param name
-   * @param desc
-   * @param type
-   * @param data_type
-   * @param read_cb
-   * @param write_cb
-   * @param supported_params
-   * @param execute_cb
-   * @param cancel_cb
-   * @return std::string
-   */
-  virtual std::string addDeviceElement( // clang-format off
-      const std::string& /*group_refid*/,
-      const std::string& /*name*/, 
-      const std::string& /*desc*/,
-      ElementType /* type */,
-      DataType /* data_type */,
-      std::optional<ReadFunctor> /* read_cb */,
-      std::optional<WriteFunctor> /* write_cb */,
-      std::optional<Function::ParameterTypes> /*supported_params*/,
-      std::optional<ExecuteFunctor> /* execute_cb */,
-      std::optional<CancelFunctor> /*cancel_cb*/) {
-    throw std::runtime_error("Called base implementation of "
-                             "DeviceBuilderInterface::addDeviceElement");
-  }
-    /** @}*/
-
-  /**
-  * @addtogroup DeviceModeling Device Modelling
-  * @{
-  */
   /**
    * @brief Checks if the built result is valid and returns it.
    *
@@ -506,21 +397,21 @@ struct DeviceBuilderInterface {
   }
   /** @}*/
 
-  protected: 
+protected:
   /**
- * @addtogroup ElementModeling Device Element Modelling
- * @{
- */
+   * @addtogroup ElementModeling Device Element Modelling
+   * @{
+   */
   DeviceElementPtr makeDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
-      DeviceElement::SpecificInterface&& interface){
-        auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
-        // We can only call DeviceElement() from within DeviceBuilderInterface 
-        // class due to access the specifier. Thus we must first create the 
-        // object locally and then pass it to std::make_shared<>() function.
-        return std::make_shared<DeviceElement>(std::move(obj));
-      }
+      DeviceElement::SpecificInterface&& interface) {
+    auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
+    // We can only call DeviceElement() from within DeviceBuilderInterface
+    // class due to access the specifier. Thus we must first create the
+    // object locally and then pass it to std::make_shared<>() function.
+    return std::make_shared<DeviceElement>(std::move(obj));
+  }
   /** @}*/
 };
 } // namespace Information_Model
