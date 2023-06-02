@@ -13,7 +13,11 @@ namespace testing {
  * @{
  */
 /**
- * @brief WritableMetric mock implementation. Use only for testing!
+ * @brief WritableMetric mock implementation with ability to easily convert into
+ * a Fake
+ *
+ * @attention
+ * Use only for testing
  *
  */
 struct MockWritableMetric : public WritableMetric, public MockMetric {
