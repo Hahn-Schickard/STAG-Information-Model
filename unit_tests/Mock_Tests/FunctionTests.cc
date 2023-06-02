@@ -152,7 +152,7 @@ struct Executor {
 
   Executor() = default;
   /**
-   * @brief Create a new Executor Functor with an execution delay
+   * @brief Create a new Executor callable with an execution delay
    *
    * @param response_delay - number of miliseconds to wait before responding
    */

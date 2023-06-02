@@ -206,8 +206,8 @@ struct MockFunction : public Function {
       ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_);
     } else {
       throw std::invalid_argument(
-          "Both Executor and Canceler functors must be nonempty. Empty "
-          "functors are not allowed, because Executor and Canceler functors "
+          "Both Executor and Canceler callables must be nonempty. Empty "
+          "callables are not allowed, because Executor and Canceler callables "
           "are required to properly handle memory allocation for result "
           "futures");
     }
