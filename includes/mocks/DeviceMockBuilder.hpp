@@ -262,13 +262,14 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
           supported_params; // NOLINT(readability-identifier-naming)
     };
 
-    using Interface = std::variant<std::monostate, Read, Write, Execute>;
+    using Group = std::monostate;
+    using Interface = std::variant<Group, Read, Write, Execute>;
 
     /**
      * @brief Creates basic information for a DeviceElementGroupMock
      *
      */
-    Functionality() : data_type(DataType::NONE), interface(std::monostate()) {}
+    Functionality() : data_type(DataType::NONE), interface(Group()) {}
 
     /**
      * @brief Creates basic information for a simple MetricMock with default
