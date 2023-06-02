@@ -49,7 +49,7 @@ struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          ReadFunctor /* read_cb */),
+          DeviceBuilderInterface::Reader /* read_cb */),
       (override));
   /** @}*/
 
@@ -63,8 +63,8 @@ struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          WriteFunctor /* write_cb */,
-          ReadFunctor /* read_cb */),
+          DeviceBuilderInterface::Writer /* write_cb */,
+          DeviceBuilderInterface::Reader /* read_cb */),
       (override));
   /** @}*/
 
@@ -78,8 +78,8 @@ struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          ExecuteFunctor /*execute_cb*/,
-          CancelFunctor /*cancel_cb*/,
+          DeviceBuilderInterface::Executor /*execute_cb*/,
+          DeviceBuilderInterface::Canceler /*cancel_cb*/,
           Function::ParameterTypes /*supported_params*/),
       (override));
   /** @}*/

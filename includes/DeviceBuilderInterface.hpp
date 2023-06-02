@@ -12,11 +12,6 @@
 #include <string>
 
 namespace Information_Model {
-using ReadFunctor = std::function<DataVariant()>;
-using WriteFunctor = std::function<void(DataVariant)>;
-using ExecuteFunctor =
-    std::function<Function::ResultFuture(Function::Parameters)>;
-using CancelFunctor = std::function<void(uintmax_t)>;
 using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
@@ -36,6 +31,10 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
  * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
+  using Reader = std::function<DataVariant()>;
+  using Writer = std::function<void(DataVariant)>;
+  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
+  using Canceler = std::function<void(uintmax_t)>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -151,7 +150,7 @@ struct DeviceBuilderInterface {
   std::string addReadableMetric(const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ReadFunctor read_cb) {
+      Reader read_cb) {
     return addReadableMetric(std::string(), name, desc, data_type, read_cb);
   }
 
@@ -188,7 +187,7 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      ReadFunctor /*read_cb*/) {
+      Reader /*read_cb*/) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
@@ -223,8 +222,8 @@ struct DeviceBuilderInterface {
   std::string addWritableMetric(const std::string& name,
       const std::string& desc,
       DataType data_type,
-      WriteFunctor write_cb,
-      ReadFunctor read_cb = nullptr) {
+      Writer write_cb,
+      Reader read_cb = nullptr) {
     return addWritableMetric(
         std::string(), name, desc, data_type, write_cb, read_cb);
   }
@@ -264,8 +263,8 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      WriteFunctor /*write_cb*/,
-      ReadFunctor /*read_cb*/ = nullptr) {
+      Writer /*write_cb*/,
+      Reader /*read_cb*/ = nullptr) {
     throw std::runtime_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
@@ -324,8 +323,8 @@ struct DeviceBuilderInterface {
   std::string addFunction(const std::string& name,
       const std::string& desc,
       DataType result_type,
-      ExecuteFunctor execute_cb,
-      CancelFunctor cancel_cb,
+      Executor execute_cb,
+      Canceler cancel_cb,
       Function::ParameterTypes supported_params = {}) {
     return addFunction(std::string(),
         name,
@@ -372,8 +371,8 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*result_type*/,
-      ExecuteFunctor /*execute_cb*/,
-      CancelFunctor /*cancel_cb*/,
+      Executor /*execute_cb*/,
+      Canceler /*cancel_cb*/,
       Function::ParameterTypes /*supported_params*/ = {}) {
     throw std::runtime_error(
         "Called base implementation of "

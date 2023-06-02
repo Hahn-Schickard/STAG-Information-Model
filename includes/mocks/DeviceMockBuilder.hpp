@@ -98,7 +98,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ReadFunctor read_cb) override {
+      Reader read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb));
   }
@@ -130,8 +130,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      WriteFunctor write_cb,
-      ReadFunctor read_cb) override {
+      Writer write_cb,
+      Reader read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb, write_cb));
   }
@@ -177,8 +177,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      ExecuteFunctor execute_cb,
-      CancelFunctor cancel_cb,
+      Executer execute_cb,
+      Canceler cancel_cb,
       Function::ParameterTypes supported_params) override {
     return addDeviceElement(group_ref_id,
         name,
@@ -221,9 +221,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      */
     struct Read {
       Read() = default;
-      Read(ReadFunctor read_cb) : callback(read_cb) {}
+      Read(Reader read_cb) : callback(read_cb) {}
 
-      const ReadFunctor callback; // NOLINT(readability-identifier-naming)
+      const Reader callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -232,12 +232,12 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      */
     struct Write {
       Write() = default;
-      Write(WriteFunctor write_cb) : callback(write_cb) {}
-      Write(ReadFunctor read_cb, WriteFunctor write_cb)
+      Write(Writer write_cb) : callback(write_cb) {}
+      Write(Reader read_cb, Writer write_cb)
           : read_part(read_cb), callback(write_cb) {}
 
       const Read read_part; // NOLINT(readability-identifier-naming)
-      const WriteFunctor callback; // NOLINT(readability-identifier-naming)
+      const Writer callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -248,16 +248,16 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       Execute() = default;
       Execute(Function::ParameterTypes supported_parameters)
           : supported_params(supported_parameters) {}
-      Execute(ExecuteFunctor execute_cb, CancelFunctor cancel_cb)
+      Execute(Executer execute_cb, Canceler cancel_cb)
           : call(execute_cb), cancel(cancel_cb) {}
-      Execute(ExecuteFunctor execute_cb,
-          CancelFunctor cancel_cb,
+      Execute(Executer execute_cb,
+          Canceler cancel_cb,
           Function::ParameterTypes supported_parameters)
           : call(execute_cb), cancel(cancel_cb),
             supported_params(supported_parameters) {}
 
-      const ExecuteFunctor call; // NOLINT(readability-identifier-naming)
-      const CancelFunctor cancel; // NOLINT(readability-identifier-naming)
+      const Executer call; // NOLINT(readability-identifier-naming)
+      const Canceler cancel; // NOLINT(readability-identifier-naming)
       const Function::ParameterTypes
           supported_params; // NOLINT(readability-identifier-naming)
     };
@@ -286,7 +286,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * @param type
      * @param read_cb
      */
-    Functionality(DataType type, ReadFunctor read_cb)
+    Functionality(DataType type, Reader read_cb)
         : data_type(type), interface(Read(read_cb)) {}
 
     /**
@@ -294,13 +294,13 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * DataType and write capability
      *
      * @attention
-     * Set WriteFunctor to nullptr, if faking write functionality is not
+     * Set Writer to nullptr, if faking write functionality is not
      * required
      *
      * @param type
      * @param write_cb
      */
-    Functionality(DataType type, WriteFunctor write_cb)
+    Functionality(DataType type, Writer write_cb)
         : data_type(type), interface(Write(write_cb)) {}
 
     /**
@@ -308,18 +308,18 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * DataType and read and write capabilities
      *
      * @attention
-     * Set ReadFunctor to nullptr, if default read capability is sufficient for
+     * Set Reader to nullptr, if default read capability is sufficient for
      * your use case
      *
      * @attention
-     * Set WriteFunctor to nullptr, if faking write functionality is not
+     * Set Writer to nullptr, if faking write functionality is not
      * required
      *
      * @param type
      * @param read_cb
      * @param write_cb
      */
-    Functionality(DataType type, ReadFunctor read_cb, WriteFunctor write_cb)
+    Functionality(DataType type, Reader read_cb, Writer write_cb)
         : data_type(type), interface(Write(read_cb, write_cb)) {}
 
     /**
@@ -348,9 +348,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * @param execute_cb
      * @param cancel_cb
      */
-    Functionality(DataType result_type,
-        ExecuteFunctor execute_cb,
-        CancelFunctor cancel_cb)
+    Functionality(DataType result_type, Executer execute_cb, Canceler cancel_cb)
         : data_type(result_type), interface(Execute(execute_cb, cancel_cb)) {}
 
     /**
@@ -370,8 +368,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * @param supported_params
      */
     Functionality(DataType result_type,
-        ExecuteFunctor execute_cb,
-        CancelFunctor cancel_cb,
+        Executer execute_cb,
+        Canceler cancel_cb,
         Function::ParameterTypes supported_params)
         : data_type(result_type),
           interface(Execute(execute_cb, cancel_cb, supported_params)) {}
@@ -444,13 +442,13 @@ private:
       ElementType type, DataType data_type) {
     switch (type) {
     case ElementType::READABLE: {
-      return Functionality(data_type, ReadFunctor());
+      return Functionality(data_type, Reader());
     }
     case ElementType::WRITABLE: {
-      return Functionality(data_type, ReadFunctor(), WriteFunctor());
+      return Functionality(data_type, Reader(), Writer());
     }
     case ElementType::FUNCTION: {
-      return Functionality(data_type, ExecuteFunctor(), CancelFunctor(), {});
+      return Functionality(data_type, Executer(), Canceler(), {});
     }
     case ElementType::GROUP: {
       return Functionality();

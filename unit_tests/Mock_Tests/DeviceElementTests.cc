@@ -27,11 +27,11 @@ struct DeviceElementExpectations {
 
 using DeviceElementExpectationsPtr = shared_ptr<DeviceElementExpectations>;
 
-ReadFunctor makeDefaultReader(DataType type) {
+DeviceBuilderInterface::Reader makeDefaultReader(DataType type) {
   return [type]() -> DataVariant { return setVariant(type); };
 }
 
-WriteFunctor makeDefaultWriter(DataType type) {
+DeviceBuilderInterface::Writer makeDefaultWriter(DataType type) {
   return [type](DataVariant value) {
     if (!matchVariantType(value, type)) {
       string error_msg = "Incorrect data variant. Metric expects " +
