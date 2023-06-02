@@ -177,7 +177,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Executer execute_cb,
+      Executor execute_cb,
       Canceler cancel_cb,
       Function::ParameterTypes supported_params) override {
     return addDeviceElement(group_ref_id,
@@ -248,15 +248,15 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       Execute() = default;
       Execute(Function::ParameterTypes supported_parameters)
           : supported_params(supported_parameters) {}
-      Execute(Executer execute_cb, Canceler cancel_cb)
+      Execute(Executor execute_cb, Canceler cancel_cb)
           : call(execute_cb), cancel(cancel_cb) {}
-      Execute(Executer execute_cb,
+      Execute(Executor execute_cb,
           Canceler cancel_cb,
           Function::ParameterTypes supported_parameters)
           : call(execute_cb), cancel(cancel_cb),
             supported_params(supported_parameters) {}
 
-      const Executer call; // NOLINT(readability-identifier-naming)
+      const Executor call; // NOLINT(readability-identifier-naming)
       const Canceler cancel; // NOLINT(readability-identifier-naming)
       const Function::ParameterTypes
           supported_params; // NOLINT(readability-identifier-naming)
@@ -348,7 +348,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * @param execute_cb
      * @param cancel_cb
      */
-    Functionality(DataType result_type, Executer execute_cb, Canceler cancel_cb)
+    Functionality(DataType result_type, Executor execute_cb, Canceler cancel_cb)
         : data_type(result_type), interface(Execute(execute_cb, cancel_cb)) {}
 
     /**
@@ -368,7 +368,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
      * @param supported_params
      */
     Functionality(DataType result_type,
-        Executer execute_cb,
+        Executor execute_cb,
         Canceler cancel_cb,
         Function::ParameterTypes supported_params)
         : data_type(result_type),
@@ -448,7 +448,7 @@ private:
       return Functionality(data_type, Reader(), Writer());
     }
     case ElementType::FUNCTION: {
-      return Functionality(data_type, Executer(), Canceler(), {});
+      return Functionality(data_type, Executor(), Canceler(), {});
     }
     case ElementType::GROUP: {
       return Functionality();
