@@ -221,7 +221,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       Read() = default;
       Read(ReadFunctor read_cb) : callback(read_cb) {}
 
-      const ReadFunctor callback; // NOLINT
+      const ReadFunctor callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -234,8 +234,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       Write(ReadFunctor read_cb, WriteFunctor write_cb)
           : read_part(read_cb), callback(write_cb) {}
 
-      const Read read_part; // NOLINT
-      const WriteFunctor callback; // NOLINT
+      const Read read_part; // NOLINT(readability-identifier-naming)
+      const WriteFunctor callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -254,9 +254,10 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
           : call(execute_cb), cancel(cancel_cb),
             supported_params(supported_parameters) {}
 
-      const ExecuteFunctor call; // NOLINT
-      const CancelFunctor cancel; // NOLINT
-      const Function::ParameterTypes supported_params; // NOLINT
+      const ExecuteFunctor call; // NOLINT(readability-identifier-naming)
+      const CancelFunctor cancel; // NOLINT(readability-identifier-naming)
+      const Function::ParameterTypes
+          supported_params; // NOLINT(readability-identifier-naming)
     };
 
     using Interface = std::variant<std::monostate, Read, Write, Execute>;
@@ -388,8 +389,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     Write getWrite() const { return std::get<Write>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
-    const DataType data_type; // NOLINT
-    const Interface interface; // NOLINT
+    const DataType data_type; // NOLINT(readability-identifier-naming)
+    const Interface interface; // NOLINT(readability-identifier-naming)
   };
 
   /**
