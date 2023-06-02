@@ -441,6 +441,7 @@ private:
     switch (type) {
     case ElementType::READABLE: {
       return Functionality(data_type, ReadFunctor());
+    }
     case ElementType::WRITABLE: {
       return Functionality(data_type, ReadFunctor(), WriteFunctor());
     }
@@ -454,7 +455,6 @@ private:
       std::string error_msg =
           "ElementType " + toString(type) + " is not supported";
       throw std::invalid_argument(error_msg);
-    }
     }
     }
   }
