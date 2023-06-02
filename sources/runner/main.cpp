@@ -78,22 +78,10 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
-string stringifyFunctionParams(Function::ParameterTypes params) {
-  string result;
-  for (auto param : params) {
-    result += toString(param.second.first) + ",";
-  }
-  if (!result.empty()) {
-    result.pop_back(); // remove last ,
-  }
-  return result;
-}
-
 void print(NonemptyFunctionPtr element, size_t offset) {
   cout << string(offset, ' ') << "Executes "
        << toString(element->getResultDataType()) << " call("
-       << stringifyFunctionParams(element->getSupportedParameterTypes()) << ")"
-       << endl;
+       << toString(element->getSupportedParameterTypes()) << ")" << endl;
   cout << endl;
 }
 
