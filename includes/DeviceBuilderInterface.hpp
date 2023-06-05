@@ -33,7 +33,8 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
 struct DeviceBuilderInterface {
   using Reader = std::function<DataVariant()>;
   using Writer = std::function<void(DataVariant)>;
-  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
+  using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
+  using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
 
   virtual ~DeviceBuilderInterface() = default;

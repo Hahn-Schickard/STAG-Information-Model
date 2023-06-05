@@ -22,7 +22,8 @@ namespace testing {
  *
  */
 struct MockFunction : public Function {
-  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
+  using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
+  using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
 
   MockFunction() : MockFunction(DataType::UNKNOWN) {}
@@ -53,12 +54,11 @@ struct MockFunction : public Function {
       ON_CALL(*this, call)
           .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
             auto result = allocateAsyncCall();
-            auto status =
-                result.second.wait_for(std::chrono::milliseconds(timeout));
+            auto status = result.wait_for(std::chrono::milliseconds(timeout));
             if (status == std::future_status::ready) {
-              return result.second.get();
+              return result.get();
             } else {
-              cancelAsyncCall(result.first);
+              cancelAsyncCall(result.call_id);
               throw FunctionCallTimedout("MockFunction");
             }
           });
@@ -105,12 +105,16 @@ struct MockFunction : public Function {
       (),
       (const, override));
 
+  void clearCall(uintmax_t call_id) { result_promises_.erase(call_id); }
+
   Function::ResultFuture allocateAsyncCall() {
     auto call_id = result_promises_.size();
     auto promise = std::promise<DataVariant>();
-    auto result_future = std::make_pair(call_id, promise.get_future());
+    auto result_future = ResultFuture(promise.get_future(),
+        call_id,
+        std::bind(&MockFunction::clearCall, this, std::placeholders::_1));
     result_promises_.emplace(call_id, std::move(promise));
-    return std::move(result_future);
+    return result_future;
   }
 
   void respond(uintmax_t call_id, DataVariant value) {
@@ -202,7 +206,14 @@ struct MockFunction : public Function {
               throw FunctionCallTimedout("MockFunction");
             }
           });
-      ON_CALL(*this, asyncCall).WillByDefault(executor_);
+      ON_CALL(*this, asyncCall)
+          .WillByDefault([this](Function::Parameters params) {
+            auto result_future = executor_(params);
+            return ResultFuture(std::move(result_future.second),
+                result_future.first,
+                std::bind(
+                    &MockFunction::clearCall, this, std::placeholders::_1));
+          });
       ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_);
     } else {
       throw std::invalid_argument(

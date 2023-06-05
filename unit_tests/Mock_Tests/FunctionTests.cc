@@ -129,8 +129,8 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
     auto future_result = function->asyncCall();
     EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
         .Times(AtLeast(1));
-    function->cancelAsyncCall(future_result.first);
-    EXPECT_THROW(future_result.second.get(), CallCanceled);
+    function->cancelAsyncCall(future_result.call_id);
+    EXPECT_THROW(future_result.get(), CallCanceled);
   } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
@@ -148,7 +148,11 @@ TEST_P(FunctionParametrizedTests, throwsCallerNotFoundOnCancelAsyncCall) {
 }
 
 struct Executor {
+  using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
+
   Executor(const Executor&) = delete;
+
+  Executor& operator()(const Executor&) = delete;
 
   Executor() = default;
   /**
@@ -158,10 +162,8 @@ struct Executor {
    */
   Executor(uintmax_t response_delay) : response_delay_(response_delay) {}
 
-  Executor& operator()(const Executor&) = delete;
-
-  Function::ResultFuture execute(Function::Parameters /*params*/) {
-    std::lock_guard<std::mutex> lock(execute_mx_);
+  ExecutorResult execute(Function::Parameters /*params*/) {
+    auto execute_lock = std::lock_guard(execute_mx_);
     auto call_id = result_promises_.size();
     auto promise = std::promise<DataVariant>();
     auto result_future = std::make_pair(call_id, promise.get_future());
@@ -174,6 +176,7 @@ struct Executor {
     if (iter != result_promises_.end()) {
       iter->second.set_exception(
           std::make_exception_ptr(CallCanceled(call_id, "ExternalExecutor")));
+      auto clear_lock = std::lock_guard(erase_mx_);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -187,7 +190,7 @@ struct Executor {
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
       iter->second.set_value(value);
-      std::lock_guard<std::mutex> lock(erase_mx_);
+      auto clear_lock = std::lock_guard(erase_mx_);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -201,7 +204,7 @@ struct Executor {
     auto iter = result_promises_.find(call_id);
     if (iter != result_promises_.end()) {
       iter->second.set_exception(exception);
-      std::lock_guard<std::mutex> lock(erase_mx_);
+      auto clear_lock = std::lock_guard(erase_mx_);
       iter = result_promises_.erase(iter);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
@@ -213,7 +216,7 @@ struct Executor {
          iter++) {
       iter->second.set_value(value);
     }
-    std::lock_guard<std::mutex> lock(erase_mx_);
+    auto clear_lock = std::lock_guard(erase_mx_);
     result_promises_.clear();
   }
 
@@ -222,7 +225,7 @@ struct Executor {
          iter++) {
       iter->second.set_exception(exception);
     }
-    std::lock_guard<std::mutex> lock(erase_mx_);
+    auto clear_lock = std::lock_guard(erase_mx_);
     result_promises_.clear();
   }
 
@@ -314,7 +317,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
     executor->respondToAll(expectations->result_value_.value_or(DataVariant()));
 
     try {
-      auto async_call_result = async_call_result_future.second.get();
+      auto async_call_result = async_call_result_future.get();
       EXPECT_EQ(expectations->result_value_.value_or(DataVariant()),
           async_call_result);
     } catch (const exception& ex) {
@@ -333,7 +336,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
     executor->respondToAll(
         std::make_exception_ptr(std::domain_error("Test exception throwing")));
 
-    EXPECT_THROW(async_call_exception_future.second.get(), std::domain_error);
+    EXPECT_THROW(async_call_exception_future.get(), std::domain_error);
   }
 }
 
@@ -345,7 +348,8 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCancelAsyncCall) {
 
     auto async_call_result_future = function->asyncCall();
 
-    EXPECT_NO_THROW(function->cancelAsyncCall(async_call_result_future.first));
+    EXPECT_NO_THROW(
+        function->cancelAsyncCall(async_call_result_future.call_id));
 
     EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
   }
@@ -365,7 +369,7 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
       executor.cancel(call_id);
     };
     function_mock->delegateToFake(execute_cb, cancel_cb);
-    EXPECT_THROW(future_result.second.get(), std::logic_error);
+    EXPECT_THROW(future_result.get(), std::logic_error);
   } catch (const exception& ex) {
     if (expectations->result_type_ != DataType::UNKNOWN) {
       FAIL() << "Caught an unexpected exception: " << ex.what();

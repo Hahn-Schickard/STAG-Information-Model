@@ -79,12 +79,29 @@ struct Function {
   using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
 
   /**
-   * @brief Async response buffer
+   * @brief Async response future wrapper
    *
-   * @param First - async call id
-   * @param Second - result buffer
    */
-  using ResultFuture = std::pair<uintmax_t, std::future<DataVariant>>;
+  struct ResultFuture : std::future<DataVariant> {
+    using CallClearer = std::function<void(uintmax_t)>;
+
+    ResultFuture(std::future<DataVariant>&& future_result,
+        uintmax_t caller,
+        CallClearer clearer)
+        : std::future<DataVariant>(std::move(future_result)), call_id(caller),
+          clear_caller(clearer) {}
+
+    DataVariant get() {
+      auto result = std::future<DataVariant>::get();
+      clear_caller(call_id);
+      return result;
+    }
+
+    const uintmax_t call_id; // NOLINT(readability-identifier-naming)
+
+  private:
+    const CallClearer clear_caller; // NOLINT(readability-identifier-naming)
+  };
 
   virtual ~Function() = default;
 
