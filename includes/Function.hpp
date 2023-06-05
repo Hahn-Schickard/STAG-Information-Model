@@ -190,35 +190,13 @@ struct Function {
         "Called based implementation of Function::cancelAllAsyncCalls()");
   }
 
-  /**
-   * @brief Returns the supported result type
-   *
-   * If the modeled Function does not support returning a result, this method
-   * will return DataType::UNKNOWN
-   *
-   * @throws std::runtime_error - if base implementation was called
-   *
-   * @return DataType
-   */
-  virtual DataType getResultDataType() const {
-    throw std::runtime_error(
-        "Called based implementation of Function::getResultDataType()");
-  }
-
-  /**
-   * @brief Returns an index map of supported Parameter types
-   *
-   * @throws std::runtime_error - if base implementation was called
-   *
-   * @return ParameterTypes
-   */
-  virtual ParameterTypes getSupportedParameterTypes() const {
-    throw std::runtime_error("Called based implementation of "
-                             "Function::getSupportedParameterTypes()");
-  }
+  const DataType result_type; // NOLINT(readability-identifier-naming)
+  const ParameterTypes
+      supported_parameters; // NOLINT(readability-identifier-naming)
 
 protected:
-  Function() = default;
+  Function(DataType type, ParameterTypes parameters)
+      : result_type(type), supported_parameters(parameters) {}
 }; // namespace Information_Model
 
 /**
