@@ -79,9 +79,8 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
 }
 
 void print(NonemptyFunctionPtr element, size_t offset) {
-  cout << string(offset, ' ') << "Executes "
-       << toString(element->getResultDataType()) << " call("
-       << toString(element->getSupportedParameterTypes()) << ")" << endl;
+  cout << string(offset, ' ') << "Executes " << toString(element->result_type)
+       << " call(" << toString(element->supported_parameters) << ")" << endl;
   cout << endl;
 }
 
