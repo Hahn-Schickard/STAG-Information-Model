@@ -1,5 +1,6 @@
 #include "Information_Model/mocks/DeviceMockBuilder.hpp"
 
+#include "Information_Model/Function.hpp"
 #include "Information_Model/Metric.hpp"
 #include "Information_Model/WritableMetric.hpp"
 
@@ -70,6 +71,13 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
+void print(NonemptyFunctionPtr element, size_t offset) {
+  cout << string(offset, ' ') << "Executes "
+       << toString(element->getResultDataType()) << " call("
+       << toString(element->getSupportedParameterTypes()) << ")" << endl;
+  cout << endl;
+}
+
 void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
@@ -84,7 +92,8 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
       },
       [offset](NonemptyMetricPtr interface) { print(interface, offset); },
       [offset](
-          NonemptyWritableMetricPtr interface) { print(interface, offset); });
+          NonemptyWritableMetricPtr interface) { print(interface, offset); },
+      [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
 }
 
 void print(DevicePtr device) {

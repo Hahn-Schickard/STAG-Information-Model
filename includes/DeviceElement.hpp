@@ -99,7 +99,7 @@ struct DeviceElement : public NamedElement {
   }
 
 private:
-  DeviceElement() = default;
+  DeviceElement() = delete;
   DeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,

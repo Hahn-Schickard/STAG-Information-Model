@@ -24,6 +24,8 @@ class NamedElement {
   std::string desc_;
   std::string refID_;
 
+  NamedElement() = delete;
+
 protected:
   NamedElement(const std::string& ref_id,
       const std::string& name,

@@ -5,6 +5,7 @@
 
 #include <future>
 #include <memory>
+#include <numeric>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -291,6 +292,16 @@ inline void addSupportedParameter(Function::Parameters& map,
         " is not supported";
     throw std::invalid_argument(error_msg);
   }
+}
+
+inline std::string toString(Function::ParameterTypes params) {
+  return std::accumulate(std::next(params.begin()),
+      params.end(),
+      toString(params[0].first),
+      [](std::string& result,
+          std::pair<uintmax_t, Function::ParameterType> parameter) {
+        return result + ", " + toString(parameter.second.first);
+      });
 }
 
 using FunctionPtr = std::shared_ptr<Function>;
