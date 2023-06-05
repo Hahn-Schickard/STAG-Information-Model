@@ -10,17 +10,19 @@
 using namespace std;
 using namespace Information_Model;
 
-void print(DevicePtr device);
+void print(const DevicePtr& device);
 void print(NonemptyDeviceElementPtr element, size_t offset);
 void print(NonemptyWritableMetricPtr element, size_t offset);
 void print(NonemptyMetricPtr element, size_t offset);
+void print(NonemptyFunctionPtr element, size_t offset);
 void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
 
 int main() {
   try {
     DevicePtr device;
+    string read_target_id;
     {
-      auto builder = new Information_Model::testing::DeviceMockBuilder();
+      auto* builder = new Information_Model::testing::DeviceMockBuilder();
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
       auto subgroup_1_ref_id =
           builder->addDeviceElementGroup("Group 1", "First group");
@@ -30,22 +32,28 @@ int main() {
           DataType::BOOLEAN);
       auto integer_ref_id = builder->addReadableMetric(
           "Integer", "Mocked readable metric", DataType::INTEGER);
-      auto string_ref_id = builder->addReadableMetric(
-          "String", "Mocked readable metric", DataType::STRING);
+      read_target_id = integer_ref_id;
+      builder->addWritableMetric(
+          "String", "Mocked writable metric", DataType::STRING);
+      builder->addFunction("Boolean", "Mocked function", DataType::BOOLEAN);
 
-      device = builder->getResult();
+      device = move(builder->getResult());
       delete builder;
     }
 
     print(device);
 
-    cout << "Integration test successful." << endl;
+    auto read_target_metric = get<NonemptyMetricPtr>(
+        device->getDeviceElement(read_target_id)->functionality);
+    auto value = get<intmax_t>(read_target_metric->getMetricValue());
+
+    cout << "Reading " << read_target_id << " metric value as " << value
+         << endl;
+
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
-    cerr << "An unhandled exception occurred while running the integration "
-            "test. Exception: "
+    cerr << "An unhandled exception occurred during mock test. Exception: "
          << ex.what() << endl;
-    cout << "Integration test failed." << endl;
     return EXIT_FAILURE;
   }
 }
@@ -72,9 +80,8 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
 }
 
 void print(NonemptyFunctionPtr element, size_t offset) {
-  cout << string(offset, ' ') << "Executes "
-       << toString(element->getResultDataType()) << " call("
-       << toString(element->getSupportedParameterTypes()) << ")" << endl;
+  cout << string(offset, ' ') << "Executes " << toString(element->result_type)
+       << " call(" << toString(element->supported_parameters) << ")" << endl;
   cout << endl;
 }
 
@@ -96,7 +103,7 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
       [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
 }
 
-void print(DevicePtr device) {
+void print(const DevicePtr& device) {
   cout << "Device name: " << device->getElementName() << endl;
   cout << "Device id: " << device->getElementId() << endl;
   cout << "Described as: " << device->getElementDescription() << endl;
