@@ -42,7 +42,7 @@ struct MockFunction : public Function {
   MockFunction(DataType result_type,
       Function::ParameterTypes supported_params,
       std::optional<DataVariant> result_value)
-      : Function(), result_type_(result_type),
+      : Function(result_type, supported_params), result_type_(result_type),
         supported_params_(supported_params), result_value_(result_value) {
     if (!result_value_.has_value()) {
       ON_CALL(*this, call)
@@ -80,10 +80,6 @@ struct MockFunction : public Function {
     ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
       cancelAllCalls();
     });
-    ON_CALL(*this, getResultDataType)
-        .WillByDefault(::testing::Return(result_type_));
-    ON_CALL(*this, getSupportedParameterTypes)
-        .WillByDefault(::testing::Return(supported_params_));
   }
 
   ~MockFunction() { ::testing::Mock::VerifyAndClear(this); }
@@ -99,11 +95,6 @@ struct MockFunction : public Function {
       (override));
   MOCK_METHOD(void, cancelAsyncCall, (uintmax_t /*call_id*/), (override));
   MOCK_METHOD(void, cancelAllAsyncCalls, (), (override));
-  MOCK_METHOD(DataType, getResultDataType, (), (const, override));
-  MOCK_METHOD(Function::ParameterTypes,
-      getSupportedParameterTypes,
-      (),
-      (const, override));
 
   Function::ResultFuture allocateAsyncCall() {
     auto call_id = result_promises_.size();

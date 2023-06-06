@@ -376,17 +376,13 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
 }
 
 // NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, canGetResultDataType) {
-  EXPECT_CALL(*function_mock.get(), getResultDataType()).Times(AtLeast(1));
-  EXPECT_EQ(expectations->result_type_, function->getResultDataType());
+TEST_P(FunctionParametrizedTests, hasResultDataType) {
+  EXPECT_EQ(expectations->result_type_, function->result_type);
 }
 
 // NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, canGetSupportedParameterTypes) {
-  EXPECT_CALL(*function_mock.get(), getSupportedParameterTypes())
-      .Times(AtLeast(1));
-  EXPECT_EQ(
-      expectations->supported_params_, function->getSupportedParameterTypes());
+TEST_P(FunctionParametrizedTests, hasSupportedParameterTypes) {
+  EXPECT_EQ(expectations->supported_params_, function->supported_parameters);
 }
 
 struct SetFunctionTestNameSuffix {
