@@ -26,6 +26,12 @@ struct CallerNotFound : public std::runtime_error {
             " for Function " + name + " call exists") {}
 };
 
+struct CallerIDExists : public std::runtime_error {
+  CallerIDExists(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
+            " for Function " + name + " was already dispatched") {}
+};
+
 struct CallCanceled : public std::runtime_error {
   CallCanceled(uintmax_t call_id, const std::string& name)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
@@ -113,6 +119,8 @@ struct Function {
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
    * @throws FunctionCallTimedout - if execution call has timeout
+   * @throws CallerIDExists - if internal execute call back return a caller id
+   * that is already assigned
    *
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
@@ -133,6 +141,8 @@ struct Function {
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
    * @throws FunctionCallTimedout - if execution call has timeout
+   * @throws CallerIDExists - if internal execute call back return a caller id
+   * that is already assigned
    *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs
@@ -151,6 +161,8 @@ struct Function {
    *
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
+   * @throws CallerIDExists - if internal execute call back return a caller id
+   * that is already assigned
    *
    * @param parameters
    * @return ResultFuture
