@@ -516,6 +516,8 @@ private:
 
   std::unique_ptr<MockDevice> device_;
 };
+
+using DeviceMockBuilderPtr = std::shared_ptr<DeviceMockBuilder>;
 } // namespace testing
 } // namespace Information_Model
 
