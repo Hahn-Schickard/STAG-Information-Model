@@ -20,9 +20,9 @@ namespace Information_Model {
  * MUST ONLY be inherited by Device or DeviceElement classes
  */
 class NamedElement {
+  std::string refID_;
   std::string name_;
   std::string desc_;
-  std::string refID_;
 
   NamedElement() = delete;
 
@@ -30,14 +30,14 @@ protected:
   NamedElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc)
-      : name_(name), desc_(desc), refID_(ref_id) {}
+      : refID_(ref_id), name_(name), desc_(desc) {}
 
 public:
+  virtual ~NamedElement() = default;
+
+  const std::string getElementId() const { return refID_; }
   const std::string getElementName() const { return name_; }
   const std::string getElementDescription() const { return desc_; }
-  const std::string getElementId() const { return refID_; }
-
-  virtual ~NamedElement() = default;
 };
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
