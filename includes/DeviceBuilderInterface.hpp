@@ -414,6 +414,8 @@ protected:
   }
   /** @}*/
 };
+
+using DeviceBuilderInterfacePtr = std::shared_ptr<DeviceBuilderInterface>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_INTERFACE_HPP
