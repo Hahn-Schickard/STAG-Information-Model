@@ -41,6 +41,18 @@ struct Device : public NamedElement {
 
   virtual ~Device() = default;
 
+  bool operator==(const Device& other) const {
+    try {
+      auto result = NamedElement::operator==(other);
+      auto this_elements = *(getDeviceElementGroup().get());
+      auto other_elements = *(other.getDeviceElementGroup().get());
+      result &= (this_elements == other_elements);
+      return result;
+    } catch (const std::exception& /* ex */) {
+      return false;
+    }
+  }
+
 protected:
   Device(const std::string& ref_id,
       const std::string& name,
@@ -50,6 +62,10 @@ protected:
 
 using DevicePtr = std::shared_ptr<Device>;
 using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
+
+inline bool operator==(const DevicePtr& lhs, const DevicePtr& rhs) {
+  return *lhs == *rhs;
+}
 
 /** @}*/
 } // namespace Information_Model

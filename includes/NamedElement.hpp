@@ -38,10 +38,25 @@ public:
   const std::string getElementId() const { return refID_; }
   const std::string getElementName() const { return name_; }
   const std::string getElementDescription() const { return desc_; }
+
+  bool operator==(const NamedElement& other) const {
+    if (refID_ == other.refID_) {
+      if (name_ == other.name_) {
+        if (desc_ == other.desc_) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 };
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
 using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
+
+inline bool operator==(const NamedElementPtr& lhs, const NamedElementPtr& rhs) {
+  return *lhs == *rhs;
+}
 
 /** @}*/
 } // namespace Information_Model

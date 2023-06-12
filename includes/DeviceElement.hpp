@@ -98,6 +98,21 @@ struct DeviceElement : public NamedElement {
     }
   }
 
+  bool operator==(const DeviceElement& other) const {
+    try {
+      auto result = NamedElement::operator==(other);
+      if (getElementType() == other.getElementType()) {
+        if (getElementType() == ElementType::GROUP) {
+          result &= *(std::get<NonemptyDeviceElementGroupPtr>(functionality)) ==
+              *(std::get<NonemptyDeviceElementGroupPtr>(other.functionality));
+        }
+      }
+      return result;
+    } catch (const std::exception& /* ex */) {
+      return false;
+    }
+  }
+
 private:
   DeviceElement() = delete;
   DeviceElement(const std::string& ref_id,
@@ -111,6 +126,11 @@ private:
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
+
+inline bool operator==(
+    const DeviceElementPtr& lhs, const DeviceElementPtr& rhs) {
+  return *lhs == *rhs;
+}
 
 /** @}*/
 } // namespace Information_Model
