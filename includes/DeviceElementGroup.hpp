@@ -29,12 +29,12 @@ using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 struct DeviceElementGroup {
   using DeviceElements = std::vector<NonemptyDeviceElementPtr>;
 
-  virtual DeviceElements getSubelements() {
+  virtual DeviceElements getSubelements() const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
 
-  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
+  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }

@@ -57,11 +57,11 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
         });
   }
 
-  MOCK_METHOD(DeviceElements, getSubelements, (), (override));
+  MOCK_METHOD(DeviceElements, getSubelements, (), (const override));
   MOCK_METHOD(DeviceElementPtr,
       getSubelement,
       (const std::string& /* ref_id */),
-      (override));
+      (const override));
 
 private:
   /**

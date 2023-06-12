@@ -45,13 +45,15 @@ struct MockDevice : public Device {
         });
   }
 
-  MOCK_METHOD(
-      NonemptyDeviceElementGroupPtr, getDeviceElementGroup, (), (override));
+  MOCK_METHOD(NonemptyDeviceElementGroupPtr,
+      getDeviceElementGroup,
+      (),
+      (const override));
 
   MOCK_METHOD(DeviceElementPtr,
       getDeviceElement,
       (const std::string& /*ref_id*/),
-      (override));
+      (const override));
 
 private:
   NonemptyDeviceElementGroupPtr base_group_;

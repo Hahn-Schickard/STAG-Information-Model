@@ -28,12 +28,13 @@ namespace Information_Model {
  * built via DeviceBuilderInterface
  */
 struct Device : public NamedElement {
-  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
+  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
 
-  virtual DeviceElementPtr getDeviceElement(const std::string& /* ref_id */) {
+  virtual DeviceElementPtr getDeviceElement(
+      const std::string& /* ref_id */) const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElement");
   }

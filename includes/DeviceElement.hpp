@@ -83,7 +83,7 @@ struct DeviceElement : public NamedElement {
    */
   const SpecificInterface functionality; // NOLINT
 
-  ElementType getElementType() {
+  ElementType getElementType() const {
     if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {
       return ElementType::GROUP;
     } else if (std::holds_alternative<NonemptyMetricPtr>(functionality)) {
