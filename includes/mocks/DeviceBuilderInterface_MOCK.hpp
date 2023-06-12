@@ -14,7 +14,7 @@ namespace testing {
  * @attention
  * Use for testing only
  */
-struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
+struct DeviceBuilderMock : public DeviceBuilderInterface {
   /**
    * @addtogroup DeviceModeling Device Modelling
    * @{

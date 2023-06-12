@@ -26,7 +26,7 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
  * SHOULD be acquired via TechnologyAdapter::getDeviceBuilder() method.
  *
  * To test interactions with this interface, please set
- * testing::DeviceBuilderInterfaceMock class as a DeviceBuilderPtr when creating
+ * testing::DeviceBuilderMock class as a DeviceBuilderPtr when creating
  * a new TechnologyAdapter instance by calling
  * TechnologyAdapter::setInterfaces() method.
  */
