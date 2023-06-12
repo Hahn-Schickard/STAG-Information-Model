@@ -91,8 +91,7 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
   MOCK_METHOD(UniqueDevicePtr, getResult, (), (override));
   /** @}*/
 };
-using DeviceBuilderInterfaceMockPtr =
-    std::shared_ptr<DeviceBuilderInterfaceMock>;
+using DeviceBuilderMockPtr = std::shared_ptr<DeviceBuilderMock>;
 } // namespace testing
 } // namespace Information_Model
 
