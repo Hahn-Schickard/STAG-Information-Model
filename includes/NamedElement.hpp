@@ -40,14 +40,9 @@ public:
   const std::string getElementDescription() const { return desc_; }
 
   bool operator==(const NamedElement& other) const {
-    if (refID_ == other.refID_) {
-      if (name_ == other.name_) {
-        if (desc_ == other.desc_) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return (refID_ == other.refID_) && //
+        (name_ == other.name_) && //
+        (desc_ == other.desc_); //
   }
 };
 
