@@ -42,20 +42,19 @@ struct DeviceElementGroup {
   virtual ~DeviceElementGroup() = default;
 
   bool operator==(const DeviceElementGroup& other) const {
+    auto result = true;
     auto this_elements = getSubelements();
     auto other_elements = other.getSubelements();
     if (this_elements.size() == other_elements.size()) {
       if (this_elements.size() > 1) {
-        auto result = false;
         for (size_t i = 0; i < this_elements.size(); ++i) {
           auto this_element = this_elements[i].get();
           auto other_element = other_elements[i].get();
           result &= (this_element == other_element);
         }
-        return result;
       }
     }
-    return false;
+    return result;
   }
 
 protected:
