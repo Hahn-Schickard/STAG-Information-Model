@@ -52,6 +52,9 @@ struct DeviceElementGroup {
           auto other_element = other_elements[i].get();
           result = result && (this_element == other_element);
         }
+      } else {
+        // if both groups are empty
+        result = true;
       }
     }
     return result;
