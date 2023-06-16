@@ -103,8 +103,10 @@ struct DeviceElement : public NamedElement {
       auto result = NamedElement::operator==(other);
       if (getElementType() == other.getElementType()) {
         if (getElementType() == ElementType::GROUP) {
-          result &= *(std::get<NonemptyDeviceElementGroupPtr>(functionality)) ==
-              *(std::get<NonemptyDeviceElementGroupPtr>(other.functionality));
+          result = result &&
+              *(std::get<NonemptyDeviceElementGroupPtr>(functionality)) ==
+                  *(std::get<NonemptyDeviceElementGroupPtr>(
+                      other.functionality));
         }
       }
       return result;

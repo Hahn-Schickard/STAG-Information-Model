@@ -46,7 +46,7 @@ struct Device : public NamedElement {
       auto result = NamedElement::operator==(other);
       auto this_elements = *(getDeviceElementGroup().get());
       auto other_elements = *(other.getDeviceElementGroup().get());
-      result &= (this_elements == other_elements);
+      result = result && (this_elements == other_elements);
       return result;
     } catch (const std::exception& /* ex */) {
       return false;

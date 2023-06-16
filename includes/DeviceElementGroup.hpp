@@ -50,7 +50,7 @@ struct DeviceElementGroup {
         for (size_t i = 0; i < this_elements.size(); ++i) {
           auto this_element = this_elements[i].get();
           auto other_element = other_elements[i].get();
-          result &= (this_element == other_element);
+          result = result && (this_element == other_element);
         }
       }
     }
