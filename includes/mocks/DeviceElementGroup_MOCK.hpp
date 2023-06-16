@@ -63,6 +63,25 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
       (const std::string& /* ref_id */),
       (const override));
 
+  /**
+   * @brief Generates a new element reference ID based on the ID of this
+   * group
+   *
+   * @return std::string
+   */
+  std::string generateReferenceID() {
+    auto base_id = element_id_;
+    std::string sub_element_id =
+        ((base_id.back() == ':') ? std::to_string(element_count_)
+                                 : "." + std::to_string(element_count_));
+    element_count_++;
+    return base_id + sub_element_id;
+  }
+
+  void addDeviceElement(NonemptyDeviceElementPtr element) {
+    elements_map_.emplace(element->getElementId(), element);
+  }
+
 private:
   /**
    * @brief Counts number of occurrences of a given pattern from a given cut
@@ -143,29 +162,9 @@ private:
     return tmp;
   }
 
-  /**
-   * @brief Generates a new element reference ID based on the ID of this
-   * group
-   *
-   * @return std::string
-   */
-  std::string generateReferenceID() {
-    auto base_id = element_id_;
-    std::string sub_element_id =
-        ((base_id.back() == ':') ? std::to_string(element_count_)
-                                 : "." + std::to_string(element_count_));
-    element_count_++;
-    return base_id + sub_element_id;
-  }
-
-  void addDeviceElement(NonemptyDeviceElementPtr element) {
-    elements_map_.emplace(element->getElementId(), element);
-  }
-
   std::unordered_map<std::string, NonemptyDeviceElementPtr> elements_map_;
   size_t element_count_;
   std::string element_id_;
-  friend struct DeviceMockBuilder;
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
