@@ -42,7 +42,7 @@ struct DeviceElementGroup {
   virtual ~DeviceElementGroup() = default;
 
   bool operator==(const DeviceElementGroup& other) const {
-    auto result = true;
+    auto result = false;
     auto this_elements = getSubelements();
     auto other_elements = other.getSubelements();
     if (this_elements.size() == other_elements.size()) {
