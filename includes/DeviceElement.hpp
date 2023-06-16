@@ -115,6 +115,10 @@ struct DeviceElement : public NamedElement {
     }
   }
 
+  bool operator!=(const DeviceElement& other) const {
+    return !operator==(other);
+  }
+
 private:
   DeviceElement() = delete;
   DeviceElement(const std::string& ref_id,

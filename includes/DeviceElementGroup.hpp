@@ -47,6 +47,7 @@ struct DeviceElementGroup {
     auto other_elements = other.getSubelements();
     if (this_elements.size() == other_elements.size()) {
       // if groups have the same number of elements
+      result = true;
       if (this_elements.size() > 1) {
         // if groups have elements
         for (size_t i = 0; i < this_elements.size(); ++i) {
@@ -54,12 +55,13 @@ struct DeviceElementGroup {
           auto other_element = other_elements[i].get();
           result = result && (this_element == other_element);
         }
-      } else {
-        // if both groups are empty
-        result = true;
       }
     }
     return result;
+  }
+
+  bool operator!=(const DeviceElementGroup& other) const {
+    return !operator==(other);
   }
 
 protected:

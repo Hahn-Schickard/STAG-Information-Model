@@ -53,6 +53,8 @@ struct Device : public NamedElement {
     }
   }
 
+  bool operator!=(const Device& other) const { return !operator==(other); }
+
 protected:
   Device(const std::string& ref_id,
       const std::string& name,

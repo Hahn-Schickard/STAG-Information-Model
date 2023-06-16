@@ -44,6 +44,10 @@ public:
         (name_ == other.name_) && //
         (desc_ == other.desc_); //
   }
+
+  bool operator!=(const NamedElement& other) const {
+    return !operator==(other);
+  }
 };
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
