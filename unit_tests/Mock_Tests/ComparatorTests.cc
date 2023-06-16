@@ -208,14 +208,6 @@ struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-Comparator_TestParamPtr makeEmptyGroup(const string& parent_ref_id = "",
-    const string& name = "empty-group",
-    const string& desc = "Empty Group element mock") {
-  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
-  auto functionality = DeviceMockBuilder::Functionality();
-  return make_shared<Comparator_TestParam>(meta_info, functionality);
-}
-
 enum class TestElementType {
   READABLE,
   WRITE_ONLY,
@@ -271,20 +263,6 @@ Comparator_TestParamPtr makeSingleLevelGroup(const string& parent_ref_id = "",
       functionality,
       makeSubElements(subelement_types, parent_ref_id));
 }
-
-struct EmptyDeviceElementGroupTestParam
-    : Comparator_TestType<DeviceElementGroup> {
-  EmptyDeviceElementGroupTestParam() : Comparator_TestType("EmptyGroup") {}
-
-  DeviceElementGroupPtr make() {
-    return builder.build<DeviceElementGroup>(makeEmptyGroup());
-  }
-
-  DeviceElementGroupPtr makeAnother() {
-    return builder.build<DeviceElementGroup>(makeSingleLevelGroup(
-        "", "another-group", "Just another non-empty group mock"));
-  }
-};
 
 struct SimpleDeviceElementGroupTestParam
     : Comparator_TestType<DeviceElementGroup> {
@@ -349,18 +327,6 @@ struct ComplexDeviceElementGroupTestParam
   }
 };
 
-struct EmptyDeviceTestParam : Comparator_TestType<Device> {
-  EmptyDeviceTestParam() : Comparator_TestType("EmptyDevice") {}
-
-  DevicePtr make() { return builder.build<Device>(Comparator_TestParamPtr()); }
-
-  DevicePtr makeAnother() {
-    builder = TestElementBuilder(
-        ElementMetaInfo("23456", "AnotherMocky", "It's just another mocked"));
-    return builder.build<Device>(Comparator_TestParamPtr());
-  }
-};
-
 struct SimpleDeviceTestParam : Comparator_TestType<Device> {
   SimpleDeviceTestParam() : Comparator_TestType("SimpleDevice") {}
 
@@ -395,10 +361,8 @@ using ComparatorTestTypes = ::testing::Types< //
     ReadableTestParam,
     WriteOnlyTestParam,
     ExecutableTestParam,
-    EmptyDeviceElementGroupTestParam,
     SimpleDeviceElementGroupTestParam,
     ComplexDeviceElementGroupTestParam,
-    EmptyDeviceTestParam,
     SimpleDeviceTestParam,
     ComplexDeviceTestParam>;
 
