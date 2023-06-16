@@ -62,11 +62,6 @@ protected:
 
 using DevicePtr = std::shared_ptr<Device>;
 using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
-
-inline bool operator==(const DevicePtr& lhs, const DevicePtr& rhs) {
-  return *lhs == *rhs;
-}
-
 /** @}*/
 } // namespace Information_Model
 

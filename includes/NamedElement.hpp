@@ -48,11 +48,6 @@ public:
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
 using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
-
-inline bool operator==(const NamedElementPtr& lhs, const NamedElementPtr& rhs) {
-  return *lhs == *rhs;
-}
-
 /** @}*/
 } // namespace Information_Model
 

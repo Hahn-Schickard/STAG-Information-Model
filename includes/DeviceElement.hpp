@@ -128,12 +128,6 @@ private:
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
-
-inline bool operator==(
-    const DeviceElementPtr& lhs, const DeviceElementPtr& rhs) {
-  return *lhs == *rhs;
-}
-
 /** @}*/
 } // namespace Information_Model
 

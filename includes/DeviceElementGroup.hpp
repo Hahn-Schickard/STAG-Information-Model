@@ -69,12 +69,6 @@ protected:
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
 using NonemptyDeviceElementGroupPtr =
     NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
-
-inline bool operator==(
-    const DeviceElementGroupPtr& lhs, const DeviceElementGroupPtr& rhs) {
-  return *lhs == *rhs;
-}
-
 /** @}*/
 } // namespace Information_Model
 
