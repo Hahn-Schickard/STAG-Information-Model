@@ -11,6 +11,8 @@ template <typename ElementType> struct Comparator_TestType {
 
   Comparator_TestType(const string& name_) : name(name_) {}
 
+  ElementTypePtr makeEmpty() { return ElementTypePtr(); }
+
   ElementTypePtr make() {
     throw logic_error("Requested Element type is not supported");
   }
@@ -276,6 +278,11 @@ using ComparatorTestTypes = ::testing::Types< //
 TYPED_TEST_SUITE(Comparator_TestSuite, ComparatorTestTypes);
 
 TYPED_TEST(Comparator_TestSuite, isEqual) {
+  auto empty = this->param.makeEmpty();
+
+  EXPECT_TRUE(empty ? false : true) << " comparator empty ptr is not empty";
+  EXPECT_EQ(empty, empty) << " comparator empty ptr is not equal to itself";
+
   auto tested = this->param.make();
 
   EXPECT_EQ(tested, tested)
@@ -289,6 +296,10 @@ TYPED_TEST(Comparator_TestSuite, isEqual) {
 
 TYPED_TEST(Comparator_TestSuite, isNotEqual) {
   auto tested = this->param.make();
+  auto empty = this->param.makeEmpty();
+  EXPECT_NE(tested, empty)
+      << this->param.name
+      << " comparator tested ptr is the same as an empty ptr";
 
   auto another = this->param.makeAnother();
   EXPECT_NE(tested, another)
