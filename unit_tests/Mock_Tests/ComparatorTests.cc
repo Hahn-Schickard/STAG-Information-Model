@@ -352,3 +352,17 @@ TEST(DeviceElementGroupComparisonTests, emptyGroupsAreEqual) {
   EXPECT_EQ(*first_group, *second_group)
       << "First group is not equal to the second one";
 }
+
+TEST(DeviceElementGroupComparisonTests, emptyGroupIsNotEqualToNotEmpty) {
+  auto builder = TestElementBuilder();
+  auto empty_group_info = make_shared<TestElementInfo>(
+      ElementMetaInfo("", "empty-group", "Just an empty group mock"));
+  auto first_group = builder.build<DeviceElementGroup>(empty_group_info);
+  builder.resetBuilder();
+  auto second_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup());
+
+  EXPECT_NE(first_group, second_group)
+      << "First group points to the same pointer as second group";
+  EXPECT_NE(*first_group, *second_group)
+      << "First group is equal to the second one";
+}
