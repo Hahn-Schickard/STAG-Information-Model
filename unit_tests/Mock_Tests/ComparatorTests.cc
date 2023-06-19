@@ -117,6 +117,15 @@ struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
+TestElementInfoPtr makeEmptyGroup(const string& parent_ref_id = "",
+    const string& name = "empty-group",
+    const string& desc = "Group element mock without any elements") {
+  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
+  auto functionality = DeviceMockBuilder::Functionality();
+
+  return make_shared<TestElementInfo>(meta_info, functionality);
+}
+
 enum class TestElementType {
   READABLE,
   WRITE_ONLY,
@@ -172,6 +181,26 @@ TestElementInfoPtr makeSingleLevelGroup(const string& parent_ref_id = "",
       functionality,
       makeSubElements(subelement_types, parent_ref_id));
 }
+
+struct EmptyDeviceElementGroupTestParam
+    : Comparator_TestType<DeviceElementGroup> {
+  EmptyDeviceElementGroupTestParam() : Comparator_TestType("EmptyGroup") {}
+
+  DeviceElementGroupPtr make() {
+    return builder.build<DeviceElementGroup>(makeEmptyGroup());
+  }
+
+  DeviceElementGroupPtr makeAnother() {
+    vector<TestElementType> subelement_types = {
+        TestElementType::READABLE,
+        TestElementType::WRITABLE,
+    };
+    return builder.build<DeviceElementGroup>(makeSingleLevelGroup("",
+        "another-group",
+        "Just another simple element group mock",
+        subelement_types));
+  }
+};
 
 struct SimpleDeviceElementGroupTestParam
     : Comparator_TestType<DeviceElementGroup> {
@@ -270,6 +299,7 @@ using ComparatorTestTypes = ::testing::Types< //
     ReadableTestParam,
     WriteOnlyTestParam,
     ExecutableTestParam,
+    EmptyDeviceElementGroupTestParam,
     SimpleDeviceElementGroupTestParam,
     ComplexDeviceElementGroupTestParam,
     SimpleDeviceTestParam,
