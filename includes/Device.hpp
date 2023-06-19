@@ -44,9 +44,9 @@ struct Device : public NamedElement {
   bool operator==(const Device& other) const {
     try {
       auto result = NamedElement::operator==(other);
-      auto this_elements = *(getDeviceElementGroup().get());
-      auto other_elements = *(other.getDeviceElementGroup().get());
-      result = result && (this_elements == other_elements);
+      auto this_elements = getDeviceElementGroup().base();
+      auto other_elements = other.getDeviceElementGroup().base();
+      result = result && (*this_elements == *other_elements);
       return result;
     } catch (const std::exception& /* ex */) {
       return false;
