@@ -366,3 +366,95 @@ TEST(DeviceElementGroupComparisonTests, emptyGroupIsNotEqualToNotEmpty) {
   EXPECT_NE(*first_group, *second_group)
       << "First group is equal to the second one";
 }
+
+TEST(DeviceElementGroupComparisonTests,
+    sameSizedDifferentElementGroupsAreNotEqual) {
+  { // 2 element group, each element type is different
+    auto builder = TestElementBuilder();
+    auto first_group_elements = vector<TestElementType>{
+        TestElementType::READABLE, TestElementType::WRITABLE};
+    auto first_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "first-group", "first group mock", first_group_elements));
+    builder.resetBuilder();
+    auto second_group_elements = vector<TestElementType>{
+        TestElementType::EXECUTABLE, TestElementType::WRITE_ONLY};
+    auto second_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "second-group", "second group mock", second_group_elements));
+    builder.resetBuilder();
+
+    EXPECT_EQ(first_group->getSubelements().size(),
+        second_group->getSubelements().size())
+        << "Groups are of different sizes";
+    EXPECT_NE(first_group, second_group)
+        << "First group points to the same pointer as second group";
+    EXPECT_NE(*first_group, *second_group)
+        << "First group is equal to the second one";
+  }
+  { // 2 element group, first element is different
+    auto builder = TestElementBuilder();
+    auto first_group_elements = vector<TestElementType>{
+        TestElementType::READABLE, TestElementType::WRITABLE};
+    auto first_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "first-group", "first group mock", first_group_elements));
+    builder.resetBuilder();
+    auto second_group_elements = vector<TestElementType>{
+        TestElementType::EXECUTABLE, TestElementType::WRITABLE};
+    auto second_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "second-group", "second group mock", second_group_elements));
+    builder.resetBuilder();
+
+    EXPECT_EQ(first_group->getSubelements().size(),
+        second_group->getSubelements().size())
+        << "Groups are of different sizes";
+    EXPECT_NE(first_group, second_group)
+        << "First group points to the same pointer as second group";
+    EXPECT_NE(*first_group, *second_group)
+        << "First group is equal to the second one";
+  }
+  { // 2 element group, last element is different
+    auto builder = TestElementBuilder();
+    auto first_group_elements = vector<TestElementType>{
+        TestElementType::READABLE, TestElementType::WRITABLE};
+    auto first_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "first-group", "first group mock", first_group_elements));
+    builder.resetBuilder();
+    auto second_group_elements = vector<TestElementType>{
+        TestElementType::READABLE, TestElementType::EXECUTABLE};
+    auto second_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "second-group", "second group mock", second_group_elements));
+    builder.resetBuilder();
+
+    EXPECT_EQ(first_group->getSubelements().size(),
+        second_group->getSubelements().size())
+        << "Groups are of different sizes";
+    EXPECT_NE(first_group, second_group)
+        << "First group points to the same pointer as second group";
+    EXPECT_NE(*first_group, *second_group)
+        << "First group is equal to the second one";
+  }
+  { // 3 element group, middle element is different
+    auto builder = TestElementBuilder();
+    auto first_group_elements =
+        vector<TestElementType>{TestElementType::READABLE,
+            TestElementType::EXECUTABLE,
+            TestElementType::WRITABLE};
+    auto first_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "first-group", "first group mock", first_group_elements));
+    builder.resetBuilder();
+    auto second_group_elements =
+        vector<TestElementType>{TestElementType::READABLE,
+            TestElementType::WRITE_ONLY,
+            TestElementType::WRITABLE};
+    auto second_group = builder.build<DeviceElementGroup>(makeSingleLevelGroup(
+        "", "second-group", "second group mock", second_group_elements));
+    builder.resetBuilder();
+
+    EXPECT_EQ(first_group->getSubelements().size(),
+        second_group->getSubelements().size())
+        << "Groups are of different sizes";
+    EXPECT_NE(first_group, second_group)
+        << "First group points to the same pointer as second group";
+    EXPECT_NE(*first_group, *second_group)
+        << "First group is equal to the second one";
+  }
+}
