@@ -280,11 +280,11 @@ TYPED_TEST(Comparator_TestSuite, isEqual) {
 
   EXPECT_EQ(tested, tested)
       << this->param.name
-      << " comparator tested ptr is the same as another ptr";
+      << " comparator tested ptr does not point to the same ptr";
 
   EXPECT_EQ(*tested, *tested)
       << this->param.name
-      << " comparator tested value is the same as another value";
+      << " comparator tested value does not contain the same value";
 }
 
 TYPED_TEST(Comparator_TestSuite, isNotEqual) {
@@ -293,8 +293,8 @@ TYPED_TEST(Comparator_TestSuite, isNotEqual) {
   auto another = this->param.makeAnother();
   EXPECT_NE(tested, another)
       << this->param.name
-      << " comparator tested ptr does not point to the same ptr";
+      << " comparator tested ptr is the same as another ptr";
   EXPECT_NE(*tested, *another)
       << this->param.name
-      << " comparator tested value does not contain the same value";
+      << " comparator tested value is the same as another value";
 }
