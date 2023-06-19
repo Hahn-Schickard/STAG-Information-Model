@@ -196,13 +196,13 @@ struct Function {
    *
    * @throws CallerNotFound - if the given call_id does not indicate a
    * previous asynchronous call
-   * @throws std::runtime_error - if base implementation was called
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
   virtual void cancelAsyncCall(uintmax_t /*call_id*/) {
-    throw std::runtime_error(
-        "Called based implementation of Function::cancelAsyncCall()");
+    throw ResultReturningNotSupported();
   }
 
   /**
@@ -212,12 +212,10 @@ struct Function {
    * linked result futures will throw an exception to indicate that it was
    * canceled
    *
-   * @throws std::runtime_error - if base implementation was called
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
    */
-  virtual void cancelAllAsyncCalls() {
-    throw std::runtime_error(
-        "Called based implementation of Function::cancelAllAsyncCalls()");
-  }
+  virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 
   const DataType result_type; // NOLINT(readability-identifier-naming)
   const ParameterTypes
