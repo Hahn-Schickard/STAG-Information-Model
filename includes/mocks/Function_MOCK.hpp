@@ -50,6 +50,10 @@ struct MockFunction : public Function {
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
       ON_CALL(*this, asyncCall)
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
+      ON_CALL(*this, cancelAsyncCall)
+          .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
+      ON_CALL(*this, cancelAllAsyncCalls)
+          .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
       ON_CALL(*this, call)
           .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
@@ -66,20 +70,20 @@ struct MockFunction : public Function {
           .WillByDefault([this](Function::Parameters /*params*/) {
             return allocateAsyncCall();
           });
+      ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
+        auto iter = result_promises_.find(call_id);
+        if (iter != result_promises_.end()) {
+          iter->second.set_exception(
+              std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
+          iter = result_promises_.erase(iter);
+        } else {
+          throw CallerNotFound(call_id, "MockFunction");
+        }
+      });
+      ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
+        cancelAllCalls();
+      });
     }
-    ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
-      auto iter = result_promises_.find(call_id);
-      if (iter != result_promises_.end()) {
-        iter->second.set_exception(
-            std::make_exception_ptr(CallCanceled(call_id, "MockFunction")));
-        iter = result_promises_.erase(iter);
-      } else {
-        throw CallerNotFound(call_id, "MockFunction");
-      }
-    });
-    ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
-      cancelAllCalls();
-    });
   }
 
   ~MockFunction() { ::testing::Mock::VerifyAndClear(this); }
@@ -178,40 +182,43 @@ struct MockFunction : public Function {
     }
   }
 
-  void delegateToFake(Executor executor, Canceler canceler) {
+  void delegateToFake(Executor executor, Canceler canceler = nullptr) {
     respondToAll(std::make_exception_ptr(
         std::logic_error("Assigned a new external execution handler")));
-    if (executor && canceler) {
+    if (executor) {
       executor_ = executor;
       canceler_ = canceler;
-      ON_CALL(*this, call)
-          .WillByDefault([this](Function::Parameters params,
-                             uintmax_t timeout) -> DataVariant {
-            auto result_future =
-                std::async(std::launch::async, executor_, params);
-            auto status =
-                result_future.wait_for(std::chrono::milliseconds(timeout));
-            if (status == std::future_status::ready) {
-              return result_future.get().second.get();
-            } else {
-              throw FunctionCallTimedout("MockFunction");
-            }
-          });
-      ON_CALL(*this, asyncCall)
-          .WillByDefault([this](Function::Parameters params) {
-            auto result_future = executor_(params);
-            return ResultFuture(std::move(result_future.second),
-                result_future.first,
-                std::bind(
-                    &MockFunction::clearCall, this, std::placeholders::_1));
-          });
-      ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_);
+      if (canceler_) {
+        ON_CALL(*this, call)
+            .WillByDefault([this](Function::Parameters params,
+                               uintmax_t timeout) -> DataVariant {
+              auto result_future =
+                  std::async(std::launch::async, executor_, params);
+              auto status =
+                  result_future.wait_for(std::chrono::milliseconds(timeout));
+              if (status == std::future_status::ready) {
+                return result_future.get().second.get();
+              } else {
+                throw FunctionCallTimedout("MockFunction");
+              }
+            });
+        ON_CALL(*this, asyncCall)
+            .WillByDefault([this](Function::Parameters params) {
+              auto result_future = executor_(params);
+              return ResultFuture(std::move(result_future.second),
+                  result_future.first,
+                  std::bind(
+                      &MockFunction::clearCall, this, std::placeholders::_1));
+            });
+        ON_CALL(*this, cancelAsyncCall).WillByDefault(canceler_);
+      } else {
+        ON_CALL(*this, call)
+            .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
+        ON_CALL(*this, asyncCall)
+            .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
+      }
     } else {
-      throw std::invalid_argument(
-          "Both Executor and Canceler callables must be nonempty. Empty "
-          "callables are not allowed, because Executor and Canceler callables "
-          "are required to properly handle memory allocation for result "
-          "futures");
+      throw std::invalid_argument("Executor callable MUST NOT be empty");
     }
   }
 
