@@ -10,6 +10,9 @@
 
 namespace Information_Model {
 struct DeviceElement;
+inline bool operator==(const DeviceElement& lhs, const DeviceElement& rhs);
+inline bool operator!=(const DeviceElement& lhs, const DeviceElement& rhs);
+
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 
