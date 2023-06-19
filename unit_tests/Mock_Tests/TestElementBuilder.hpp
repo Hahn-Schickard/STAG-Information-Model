@@ -43,6 +43,12 @@ struct TestElementBuilder : DeviceMockBuilder {
     buildDeviceBase(device_info.ref_ID_, device_info.name_, device_info.desc_);
   }
 
+  void resetBuilder(ElementMetaInfo device_info = ElementMetaInfo(
+                        "12345", "Mocky", "It's mocked")) {
+    device_.reset();
+    buildDeviceBase(device_info.ref_ID_, device_info.name_, device_info.desc_);
+  }
+
   template <typename Element>
   std::shared_ptr<Element> build(TestElementInfoPtr /* param */) {
     throw std::logic_error(
