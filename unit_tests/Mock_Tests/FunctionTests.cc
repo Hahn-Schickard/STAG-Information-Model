@@ -19,13 +19,12 @@ struct FunctionExpectations {
 
   FunctionExpectations(const std::string& name)
       : FunctionExpectations(
-            name, DataType::UNKNOWN, Function::ParameterTypes(), std::nullopt) {
-  }
+            name, DataType::NONE, Function::ParameterTypes(), std::nullopt) {}
 
   FunctionExpectations(
       const std::string& name, Function::ParameterTypes supported_params)
       : FunctionExpectations(
-            name, DataType::UNKNOWN, supported_params, std::nullopt) {}
+            name, DataType::NONE, supported_params, std::nullopt) {}
 
   FunctionExpectations(const std::string& name, DataType result_type)
       : FunctionExpectations(name,
@@ -86,7 +85,7 @@ TEST_P(FunctionParametrizedTests, canCall) {
     auto result = resul_future.get();
     EXPECT_EQ(expectations->result_value_, result);
   } catch (const exception& ex) {
-    if (expectations->result_type_ != DataType::UNKNOWN) {
+    if (expectations->result_type_ != DataType::NONE) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -98,7 +97,7 @@ TEST_P(FunctionParametrizedTests, canCall) {
 TEST_P(FunctionParametrizedTests, canCallTimesOut) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     auto resul_future =
         std::async(std::launch::async, [this]() { return function->call(1); });
     std::this_thread::sleep_for(10ms);
@@ -114,7 +113,7 @@ TEST_P(FunctionParametrizedTests, canAsyncCall) {
   try {
     function->asyncCall();
   } catch (const exception& ex) {
-    if (expectations->result_type_ != DataType::UNKNOWN) {
+    if (expectations->result_type_ != DataType::NONE) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -132,7 +131,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
     function->cancelAsyncCall(future_result.call_id);
     EXPECT_THROW(future_result.get(), CallCanceled);
   } catch (const exception& ex) {
-    if (expectations->result_type_ != DataType::UNKNOWN) {
+    if (expectations->result_type_ != DataType::NONE) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -271,7 +270,7 @@ protected:
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(1));
 
@@ -295,7 +294,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(1));
 
@@ -314,7 +313,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
         .Times(AtLeast(1));
 
@@ -333,7 +332,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
         .Times(AtLeast(1));
 
@@ -347,7 +346,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canCancelAsyncCall) {
-  if (expectations->result_type_ != DataType::UNKNOWN) {
+  if (expectations->result_type_ != DataType::NONE) {
     EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
         .Times(AtLeast(2));
 
@@ -376,7 +375,7 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
     function_mock->delegateToFake(execute_cb, cancel_cb);
     EXPECT_THROW(future_result.get(), std::logic_error);
   } catch (const exception& ex) {
-    if (expectations->result_type_ != DataType::UNKNOWN) {
+    if (expectations->result_type_ != DataType::NONE) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -427,7 +426,7 @@ string makeExpectationName(DataType type) {
     return "Opaque";
   case DataType::STRING:
     return "String";
-  case DataType::UNKNOWN:
+  case DataType::NONE:
   default:
     return "Unknown";
   }
