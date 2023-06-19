@@ -52,24 +52,25 @@ struct TestElementBuilder : DeviceMockBuilder {
 template <>
 DeviceElementPtr TestElementBuilder::build<DeviceElement>(
     TestElementInfoPtr param) {
-  DeviceElementPtr result;
   auto group = getGroupImplementation(param->meta_info.ref_ID_);
   auto ref_id = group->generateReferenceID();
+  // allocate ptr, so we can declare variant with Nonempty values
+  std::unique_ptr<DeviceElement::SpecificInterface> interface;
   if (param->functionality.type() != ElementType::GROUP) {
-    auto interface = buildSpecificInterface(param->functionality);
-    result = makeDeviceElement( //
-        ref_id,
-        param->meta_info.name_,
-        param->meta_info.desc_,
-        move(interface));
+    interface = std::make_unique<DeviceElement::SpecificInterface>(
+        buildSpecificInterface(param->functionality));
   } else {
-    auto sub_group =
+    auto group =
         std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
-    result = makeDeviceElement(ref_id,
-        param->meta_info.name_,
-        param->meta_info.desc_,
-        NonemptyDeviceElementGroupPtr(sub_group));
+    auto nonempty_group = NonemptyDeviceElementGroupPtr(std::move(group));
+    interface = std::make_unique<DeviceElement::SpecificInterface>(
+        std::move(nonempty_group));
   }
+  auto result = makeDeviceElement( //
+      ref_id,
+      param->meta_info.name_,
+      param->meta_info.desc_,
+      std::move(*interface));
   group->addDeviceElement(NonemptyDeviceElementPtr(result));
   return result;
 }
@@ -77,24 +78,21 @@ DeviceElementPtr TestElementBuilder::build<DeviceElement>(
 template <>
 DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
     TestElementInfoPtr param) {
-  auto base_group = getGroupImplementation(param->meta_info.ref_ID_);
-  auto ref_id = base_group->generateReferenceID();
-  auto group =
-      std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
-  auto element = makeDeviceElement(ref_id,
-      param->meta_info.name_,
-      param->meta_info.desc_,
-      NonemptyDeviceElementGroupPtr(group));
-  base_group->addDeviceElement(NonemptyDeviceElementPtr(element));
+  auto element = build<DeviceElement>(param);
   for (auto subelement_info : param->subelements) {
     // assign new group id as parent
-    subelement_info->meta_info.ref_ID_ = ref_id;
-    auto subelement = build<DeviceElement>(subelement_info);
+    subelement_info->meta_info.ref_ID_ = element->getElementId();
+    if (subelement_info->functionality.type() != ElementType::GROUP) {
+      auto subelement = build<DeviceElement>(subelement_info);
+    } else {
+      auto subgroup = build<DeviceElementGroup>(subelement_info);
+    }
     // subelements are automaticaly added to this group in
     // build<DeviceElement>() call, thus there is no need to call
     // group->addDeviceElement(NonemptyDeviceElementPtr(subelement))
   }
-  return group;
+  auto group = std::get<NonemptyDeviceElementGroupPtr>(element->functionality);
+  return group.base();
 }
 
 template <>
