@@ -19,7 +19,8 @@ struct ElementMetaInfo {
 
 struct TestElementInfo {
   TestElementInfo(ElementMetaInfo meta_info_,
-      DeviceMockBuilder::Functionality functionality_,
+      DeviceMockBuilder::Functionality functionality_ =
+          DeviceMockBuilder::Functionality(),
       std::vector<std::shared_ptr<TestElementInfo>> subelements_ = {})
       : meta_info(meta_info_), functionality(functionality_),
         subelements(subelements_) {}
