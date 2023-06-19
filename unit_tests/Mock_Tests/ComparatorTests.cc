@@ -78,6 +78,11 @@ DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
   auto base_group = getGroupImplementation(param->meta_info.ref_ID_);
   auto ref_id = base_group->generateReferenceID();
   auto group = make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
+  auto element = makeDeviceElement(ref_id,
+      param->meta_info.name_,
+      param->meta_info.desc_,
+      NonemptyDeviceElementGroupPtr(group));
+  base_group->addDeviceElement(NonemptyDeviceElementPtr(element));
   for (auto subelement_info : param->subelements) {
     // assign new group id as parent
     subelement_info->meta_info.ref_ID_ = ref_id;
@@ -86,11 +91,6 @@ DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
     // build<DeviceElement>() call, thus there is no need to call
     // group->addDeviceElement(NonemptyDeviceElementPtr(subelement))
   }
-  auto element = makeDeviceElement(ref_id,
-      param->meta_info.name_,
-      param->meta_info.desc_,
-      NonemptyDeviceElementGroupPtr(group));
-  base_group->addDeviceElement(NonemptyDeviceElementPtr(element));
   return group;
 }
 
