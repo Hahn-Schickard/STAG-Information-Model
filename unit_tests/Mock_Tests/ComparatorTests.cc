@@ -1,107 +1,10 @@
-#include "Device.hpp"
-#include "mocks/DeviceMockBuilder.hpp"
+#include "TestElementBuilder.hpp"
 
 #include "gtest/gtest.h"
 
 using namespace Information_Model;
 using namespace Information_Model::testing;
 using namespace std;
-
-struct ElementMetaInfo {
-  ElementMetaInfo(const string& ref_id, const string& name, const string& desc)
-      : ref_ID_(ref_id), name_(name), desc_(desc) {}
-
-  string ref_ID_;
-  string name_;
-  string desc_;
-};
-
-struct Comparator_TestParam {
-  Comparator_TestParam(ElementMetaInfo meta_info_,
-      DeviceMockBuilder::Functionality functionality_,
-      vector<shared_ptr<Comparator_TestParam>> subelements_ = {})
-      : meta_info(meta_info_), functionality(functionality_),
-        subelements(subelements_) {}
-
-  // NOLINTNEXTLINE(readability-identifier-naming)
-  ElementMetaInfo meta_info;
-  // NOLINTNEXTLINE(readability-identifier-naming)
-  const DeviceMockBuilder::Functionality functionality;
-  // NOLINTNEXTLINE(readability-identifier-naming)
-  const vector<shared_ptr<Comparator_TestParam>> subelements;
-};
-
-using Comparator_TestParamPtr = shared_ptr<Comparator_TestParam>;
-
-struct TestElementBuilder : DeviceMockBuilder {
-  TestElementBuilder()
-      : TestElementBuilder(ElementMetaInfo("12345", "Mocky", "It's mocked")) {}
-
-  TestElementBuilder(ElementMetaInfo device_info) {
-    buildDeviceBase(device_info.ref_ID_, device_info.name_, device_info.desc_);
-  }
-
-  template <typename Element>
-  shared_ptr<Element> build(Comparator_TestParamPtr /* param */) {
-    throw logic_error("Element builder can not build the given element type");
-  }
-};
-
-template <>
-DeviceElementPtr TestElementBuilder::build<DeviceElement>(
-    Comparator_TestParamPtr param) {
-  DeviceElementPtr result;
-  auto group = getGroupImplementation(param->meta_info.ref_ID_);
-  auto ref_id = group->generateReferenceID();
-  if (param->functionality.type() != ElementType::GROUP) {
-    auto interface = buildSpecificInterface(param->functionality);
-    result = makeDeviceElement( //
-        ref_id,
-        param->meta_info.name_,
-        param->meta_info.desc_,
-        move(interface));
-  } else {
-    auto sub_group =
-        make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
-    result = makeDeviceElement(ref_id,
-        param->meta_info.name_,
-        param->meta_info.desc_,
-        NonemptyDeviceElementGroupPtr(sub_group));
-  }
-  group->addDeviceElement(NonemptyDeviceElementPtr(result));
-  return result;
-}
-
-template <>
-DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
-    Comparator_TestParamPtr param) {
-  auto base_group = getGroupImplementation(param->meta_info.ref_ID_);
-  auto ref_id = base_group->generateReferenceID();
-  auto group = make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
-  auto element = makeDeviceElement(ref_id,
-      param->meta_info.name_,
-      param->meta_info.desc_,
-      NonemptyDeviceElementGroupPtr(group));
-  base_group->addDeviceElement(NonemptyDeviceElementPtr(element));
-  for (auto subelement_info : param->subelements) {
-    // assign new group id as parent
-    subelement_info->meta_info.ref_ID_ = ref_id;
-    auto subelement = build<DeviceElement>(subelement_info);
-    // subelements are automaticaly added to this group in
-    // build<DeviceElement>() call, thus there is no need to call
-    // group->addDeviceElement(NonemptyDeviceElementPtr(subelement))
-  }
-  return group;
-}
-
-template <>
-DevicePtr TestElementBuilder::build<Device>(Comparator_TestParamPtr param) {
-  for (auto element : param->subelements) {
-    build<DeviceElement>(element);
-  }
-
-  return std::move(device_);
-}
 
 template <typename ElementType> struct Comparator_TestType {
   using ElementTypePtr = shared_ptr<ElementType>;
@@ -122,13 +25,13 @@ protected:
   TestElementBuilder builder = TestElementBuilder();
 };
 
-Comparator_TestParamPtr makeReadable(const string& parent_ref_id = "",
+TestElementInfoPtr makeReadable(const string& parent_ref_id = "",
     const string& name = "readable",
     const string& desc = "readable element mock") {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality(
       DataType::BOOLEAN, DeviceBuilderInterface::Reader());
-  return make_shared<Comparator_TestParam>(meta_info, functionality);
+  return make_shared<TestElementInfo>(meta_info, functionality);
 }
 
 struct ReadableTestParam : Comparator_TestType<DeviceElement> {
@@ -144,13 +47,13 @@ struct ReadableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-Comparator_TestParamPtr makeWriteOnly(const string& parent_ref_id = "",
+TestElementInfoPtr makeWriteOnly(const string& parent_ref_id = "",
     const string& name = "write-only",
     const string& desc = "write-only element mock") {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality(
       DataType::BOOLEAN, DeviceBuilderInterface::Writer());
-  return make_shared<Comparator_TestParam>(meta_info, functionality);
+  return make_shared<TestElementInfo>(meta_info, functionality);
 }
 
 struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
@@ -166,14 +69,14 @@ struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-Comparator_TestParamPtr makeWritable(const string& parent_ref_id = "",
+TestElementInfoPtr makeWritable(const string& parent_ref_id = "",
     const string& name = "read&write",
     const string& desc = "read&write element mock") {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality(DataType::BOOLEAN,
       DeviceBuilderInterface::Reader(),
       DeviceBuilderInterface::Writer());
-  return make_shared<Comparator_TestParam>(meta_info, functionality);
+  return make_shared<TestElementInfo>(meta_info, functionality);
 }
 
 struct WritableTestParam : Comparator_TestType<DeviceElement> {
@@ -189,14 +92,14 @@ struct WritableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-Comparator_TestParamPtr makeExecutable(const string& parent_ref_id = "",
+TestElementInfoPtr makeExecutable(const string& parent_ref_id = "",
     const string& name = "executable",
     const string& desc = "executable element mock") {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality(DataType::BOOLEAN,
       DeviceBuilderInterface::Executor(),
       DeviceBuilderInterface::Canceler());
-  return make_shared<Comparator_TestParam>(meta_info, functionality);
+  return make_shared<TestElementInfo>(meta_info, functionality);
 }
 
 struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
@@ -220,7 +123,7 @@ enum class TestElementType {
   EXECUTABLE
 };
 
-Comparator_TestParamPtr makeSubElement(
+TestElementInfoPtr makeSubElement(
     TestElementType type, const string& parent_ref_id) {
   switch (type) {
   case TestElementType::READABLE: {
@@ -239,16 +142,16 @@ Comparator_TestParamPtr makeSubElement(
   }
 }
 
-vector<Comparator_TestParamPtr> makeSubElements(
+vector<TestElementInfoPtr> makeSubElements(
     vector<TestElementType> subelement_types, const string& parent_ref_id) {
-  vector<Comparator_TestParamPtr> subelements;
+  vector<TestElementInfoPtr> subelements;
   for (auto subelement_type : subelement_types) {
     subelements.push_back(makeSubElement(subelement_type, parent_ref_id));
   }
   return subelements;
 }
 
-Comparator_TestParamPtr makeSingleLevelGroup(const string& parent_ref_id = "",
+TestElementInfoPtr makeSingleLevelGroup(const string& parent_ref_id = "",
     const string& name = "1-level-group",
     const string& desc =
         "Group element mock containing only Metric/Function elements",
@@ -263,7 +166,7 @@ Comparator_TestParamPtr makeSingleLevelGroup(const string& parent_ref_id = "",
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality();
 
-  return make_shared<Comparator_TestParam>(meta_info,
+  return make_shared<TestElementInfo>(meta_info,
       functionality,
       makeSubElements(subelement_types, parent_ref_id));
 }
@@ -288,7 +191,7 @@ struct SimpleDeviceElementGroupTestParam
   }
 };
 
-Comparator_TestParamPtr makeNestedGroup(const string& parent_ref_id = "",
+TestElementInfoPtr makeNestedGroup(const string& parent_ref_id = "",
     const string& name = "nested-group",
     const string& desc = "Nested Group element mock",
     vector<TestElementType> subsubelement_types = {TestElementType::READABLE,
@@ -301,11 +204,11 @@ Comparator_TestParamPtr makeNestedGroup(const string& parent_ref_id = "",
         TestElementType::EXECUTABLE}) {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
   auto functionality = DeviceMockBuilder::Functionality();
-  vector<Comparator_TestParamPtr> elements = {makeSingleLevelGroup(
+  vector<TestElementInfoPtr> elements = {makeSingleLevelGroup(
       "0", "subelement-group", "Subelement Group mock", subsubelement_types)};
   auto subelements = makeSubElements(subelement_types, parent_ref_id);
   elements.insert(elements.end(), subelements.begin(), subelements.end());
-  return make_shared<Comparator_TestParam>(meta_info, functionality, elements);
+  return make_shared<TestElementInfo>(meta_info, functionality, elements);
 }
 
 struct ComplexDeviceElementGroupTestParam
