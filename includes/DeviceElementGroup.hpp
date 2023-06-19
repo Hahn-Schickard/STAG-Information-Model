@@ -55,8 +55,8 @@ struct DeviceElementGroup {
         if (this_elements.size() > 1) {
           // if groups have elements
           for (size_t i = 0; i < this_elements.size(); ++i) {
-            auto this_element = this_elements[i].get();
-            auto other_element = other_elements[i].get();
+            const auto& this_element = *(this_elements[i].get());
+            const auto& other_element = *(other_elements[i].get());
             result = result && (this_element == other_element);
           }
         }
