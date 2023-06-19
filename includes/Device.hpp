@@ -48,7 +48,7 @@ struct Device : public NamedElement {
       auto other_elements = other.getDeviceElementGroup().base();
       result = result && (*this_elements == *other_elements);
       return result;
-    } catch (const std::exception& /* ex */) {
+    } catch (...) {
       return false;
     }
   }
