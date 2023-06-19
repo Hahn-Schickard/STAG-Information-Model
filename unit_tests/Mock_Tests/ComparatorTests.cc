@@ -7,9 +7,13 @@ using namespace Information_Model;
 using namespace Information_Model::testing;
 using namespace std;
 
-struct ElementMetaInfo : NamedElement {
+struct ElementMetaInfo {
   ElementMetaInfo(const string& ref_id, const string& name, const string& desc)
-      : NamedElement(ref_id, name, desc) {}
+      : ref_ID_(ref_id), name_(name), desc_(desc) {}
+
+  string ref_ID_;
+  string name_;
+  string desc_;
 };
 
 struct Comparator_TestParam {
@@ -34,9 +38,7 @@ struct TestElementBuilder : DeviceMockBuilder {
       : TestElementBuilder(ElementMetaInfo("12345", "Mocky", "It's mocked")) {}
 
   TestElementBuilder(ElementMetaInfo device_info) {
-    buildDeviceBase(device_info.getElementId(),
-        device_info.getElementName(),
-        device_info.getElementDescription());
+    buildDeviceBase(device_info.ref_ID_, device_info.name_, device_info.desc_);
   }
 
   template <typename Element>
@@ -49,21 +51,21 @@ template <>
 DeviceElementPtr TestElementBuilder::build<DeviceElement>(
     Comparator_TestParamPtr param) {
   DeviceElementPtr result;
-  auto group = getGroupImplementation(param->meta_info.getElementId());
+  auto group = getGroupImplementation(param->meta_info.ref_ID_);
   auto ref_id = group->generateReferenceID();
   if (param->functionality.type() != ElementType::GROUP) {
     auto interface = buildSpecificInterface(param->functionality);
     result = makeDeviceElement( //
         ref_id,
-        param->meta_info.getElementName(),
-        param->meta_info.getElementDescription(),
+        param->meta_info.name_,
+        param->meta_info.desc_,
         move(interface));
   } else {
     auto sub_group =
         make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
     result = makeDeviceElement(ref_id,
-        param->meta_info.getElementName(),
-        param->meta_info.getElementDescription(),
+        param->meta_info.name_,
+        param->meta_info.desc_,
         NonemptyDeviceElementGroupPtr(sub_group));
   }
   group->addDeviceElement(NonemptyDeviceElementPtr(result));
@@ -73,7 +75,7 @@ DeviceElementPtr TestElementBuilder::build<DeviceElement>(
 template <>
 DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
     Comparator_TestParamPtr param) {
-  auto base_group = getGroupImplementation(param->meta_info.getElementId());
+  auto base_group = getGroupImplementation(param->meta_info.ref_ID_);
   auto ref_id = base_group->generateReferenceID();
   auto group = make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
   for (auto subelement_info : param->subelements) {
@@ -83,8 +85,8 @@ DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
     // group->addDeviceElement(NonemptyDeviceElementPtr(subelement))
   }
   auto element = makeDeviceElement(ref_id,
-      param->meta_info.getElementName(),
-      param->meta_info.getElementDescription(),
+      param->meta_info.name_,
+      param->meta_info.desc_,
       NonemptyDeviceElementGroupPtr(group));
   base_group->addDeviceElement(NonemptyDeviceElementPtr(element));
   return group;
