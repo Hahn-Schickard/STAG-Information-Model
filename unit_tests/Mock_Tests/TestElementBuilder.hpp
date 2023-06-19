@@ -97,8 +97,13 @@ DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
 
 template <>
 DevicePtr TestElementBuilder::build<Device>(TestElementInfoPtr param) {
+  auto root_group = build<DeviceElementGroup>(param);
   for (auto element : param->subelements) {
-    build<DeviceElement>(element);
+    if (element->functionality.type() != ElementType::GROUP) {
+      auto subelement = build<DeviceElement>(element);
+    } else {
+      auto subgroup = build<DeviceElementGroup>(element);
+    }
   }
   return std::move(device_);
 }
