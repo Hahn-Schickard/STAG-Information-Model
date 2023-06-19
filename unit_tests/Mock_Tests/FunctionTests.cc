@@ -141,10 +141,15 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
 }
 
 // NOLINTNEXTLINE
-TEST_P(FunctionParametrizedTests, throwsCallerNotFoundOnCancelAsyncCall) {
+TEST_P(FunctionParametrizedTests, cancelAsyncCallThrowsException) {
   EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
       .Times(AtLeast(1));
-  EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
+  if (function->result_type != DataType::NONE) {
+    EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
+  } else {
+    EXPECT_THROW(
+        function->cancelAsyncCall(202020202), ResultReturningNotSupported);
+  }
 }
 
 struct Executor {
