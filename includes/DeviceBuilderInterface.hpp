@@ -301,7 +301,9 @@ struct DeviceBuilderInterface {
    * @{
    */
   /**
-   * @brief Adds a function to the device root level DeviceElementGroup.
+   * @brief Adds an executable function with a given return type, execute and
+   * cancel execution callable objects to the device root level
+   * DeviceElementGroup.
    *
    * This method creates a new Function instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
@@ -333,6 +335,84 @@ struct DeviceBuilderInterface {
         result_type,
         execute_cb,
         cancel_cb,
+        supported_params);
+  }
+
+  /**
+   * @brief Adds an executable function with a given execute callable object to
+   * the device root level DeviceElementGroup. Sets the built functions return
+   * type to DataType::NONE
+   *
+   * This method creates a new Function instance, adds it to the root
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function. The returned
+   * string will be based on the unique id, provided by the user with the
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
+   *
+   * @param name
+   * @param desc
+   * @param execute_cb
+   * @param supported_params
+   * @return std::string
+   */
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      Executor execute_cb,
+      Function::ParameterTypes supported_params = {}) {
+    return addFunction(std::string(),
+        name,
+        desc,
+        DataType::NONE,
+        execute_cb,
+        nullptr,
+        supported_params);
+  }
+
+  /**
+   * @brief Adds an executable function with a given execute callable object to
+   * to another DeviceElementGroup. The parent group element MUST exist. Sets
+   * the built functions return type to DataType::NONE
+   *
+   * This method creates a new Function instance, adds it to the specified
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function.
+   *
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
+   *
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   *
+   * If specified parent DeviceElementGroup is a subgroup itself, the returned
+   * string will represent it as a new ID element as such:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
+   *
+   * @param group_ref_id
+   * @param name
+   * @param desc
+   * @param execute_cb
+   * @param supported_params
+   * @return std::string
+   */
+  std::string addFunction(const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      Executor execute_cb,
+      Function::ParameterTypes supported_params = {}) {
+    return addFunction(group_ref_id,
+        name,
+        desc,
+        DataType::NONE,
+        execute_cb,
+        nullptr,
         supported_params);
   }
 
