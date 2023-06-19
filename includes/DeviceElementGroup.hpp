@@ -43,19 +43,23 @@ struct DeviceElementGroup {
 
   bool operator==(const DeviceElementGroup& other) const {
     auto result = false;
-    auto this_elements = getSubelements();
-    auto other_elements = other.getSubelements();
-    if (this_elements.size() == other_elements.size()) {
-      // if groups have the same number of elements
-      result = true;
-      if (this_elements.size() > 1) {
-        // if groups have elements
-        for (size_t i = 0; i < this_elements.size(); ++i) {
-          auto this_element = this_elements[i].get();
-          auto other_element = other_elements[i].get();
-          result = result && (this_element == other_element);
+    try {
+      auto this_elements = getSubelements();
+      auto other_elements = other.getSubelements();
+      if (this_elements.size() == other_elements.size()) {
+        // if groups have the same number of elements
+        result = true;
+        if (this_elements.size() > 1) {
+          // if groups have elements
+          for (size_t i = 0; i < this_elements.size(); ++i) {
+            auto this_element = this_elements[i].get();
+            auto other_element = other_elements[i].get();
+            result = result && (this_element == other_element);
+          }
         }
       }
+    } catch (...) {
+      result = false;
     }
     return result;
   }
