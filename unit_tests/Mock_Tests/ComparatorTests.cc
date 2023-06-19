@@ -24,7 +24,7 @@ struct Comparator_TestParam {
         subelements(subelements_) {}
 
   // NOLINTNEXTLINE(readability-identifier-naming)
-  const ElementMetaInfo meta_info;
+  ElementMetaInfo meta_info;
   // NOLINTNEXTLINE(readability-identifier-naming)
   const DeviceMockBuilder::Functionality functionality;
   // NOLINTNEXTLINE(readability-identifier-naming)
@@ -79,6 +79,8 @@ DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
   auto ref_id = base_group->generateReferenceID();
   auto group = make_shared<::testing::NiceMock<MockDeviceElementGroup>>(ref_id);
   for (auto subelement_info : param->subelements) {
+    // assign new group id as parent
+    subelement_info->meta_info.ref_ID_ = ref_id;
     auto subelement = build<DeviceElement>(subelement_info);
     // subelements are automaticaly added to this group in
     // build<DeviceElement>() call, thus there is no need to call
