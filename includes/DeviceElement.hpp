@@ -98,27 +98,6 @@ struct DeviceElement : public NamedElement {
     }
   }
 
-  bool operator==(const DeviceElement& other) const {
-    try {
-      auto result = NamedElement::operator==(other);
-      if (getElementType() == other.getElementType()) {
-        if (getElementType() == ElementType::GROUP) {
-          result = result &&
-              *(std::get<NonemptyDeviceElementGroupPtr>(functionality)) ==
-                  *(std::get<NonemptyDeviceElementGroupPtr>(
-                      other.functionality));
-        }
-      }
-      return result;
-    } catch (const std::exception& /* ex */) {
-      return false;
-    }
-  }
-
-  bool operator!=(const DeviceElement& other) const {
-    return !operator==(other);
-  }
-
 private:
   DeviceElement() = delete;
   DeviceElement(const std::string& ref_id,
@@ -129,6 +108,26 @@ private:
 
   friend struct DeviceBuilderInterface;
 };
+
+bool operator==(const DeviceElement& lhs, const DeviceElement& rhs) {
+  try {
+    auto result = (const NamedElement&)lhs == ((const NamedElement&)rhs);
+    if (lhs.getElementType() == rhs.getElementType()) {
+      if (lhs.getElementType() == ElementType::GROUP) {
+        result = result &&
+            *(std::get<NonemptyDeviceElementGroupPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyDeviceElementGroupPtr>(rhs.functionality));
+      }
+    }
+    return result;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool operator!=(const DeviceElement& lhs, const DeviceElement& rhs) {
+  return !(lhs == rhs);
+}
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
