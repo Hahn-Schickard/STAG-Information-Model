@@ -121,9 +121,8 @@ TestElementInfoPtr makeEmptyGroup(const string& parent_ref_id = "",
     const string& name = "empty-group",
     const string& desc = "Group element mock without any elements") {
   auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
-  auto functionality = DeviceMockBuilder::Functionality();
 
-  return make_shared<TestElementInfo>(meta_info, functionality);
+  return make_shared<TestElementInfo>(meta_info);
 }
 
 enum class TestElementType {
