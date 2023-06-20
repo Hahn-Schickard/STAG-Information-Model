@@ -13,6 +13,11 @@ template <typename ElementType> struct Comparator_TestType {
 
   ElementTypePtr makeEmpty() { return ElementTypePtr(); }
 
+  /**
+   * Sanity checks, test if the built parameter is not equal to an empty
+   * pointer, if the built parameter points to the same pointer and if it's
+   * value is the same
+   */
   ElementTypePtr make() {
     throw logic_error("Requested Element type is not supported");
   }
@@ -27,13 +32,24 @@ protected:
   TestElementBuilder builder = TestElementBuilder();
 };
 
-struct SameElementTypeTestParam : Comparator_TestType<DeviceElement> {
-  SameElementTypeTestParam() : Comparator_TestType("SameElementType") {}
+/**
+ * Test paramater for same element type test case
+ *
+ */
+struct DifferentRefIdsTestParam : Comparator_TestType<DeviceElement> {
+  DifferentRefIdsTestParam() : Comparator_TestType("Different Ref IDs") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeReadable());
   }
 
+  /**
+   * In this test case we check if two elements containing the same element type
+   * and meta information are the same when they are built for the same device.
+   *
+   * Expected result is that these elements are not equal, due to refID_ values
+   * being different
+   */
   DeviceElementPtr makeAnother() {
     // if we do not reset the builder, NamedElement refID_ values will be
     // different, thus elements will not be the same
@@ -41,74 +57,166 @@ struct SameElementTypeTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-struct ReadableTestParam : Comparator_TestType<DeviceElement> {
-  ReadableTestParam() : Comparator_TestType("Readable") {}
-
-  DeviceElementPtr make() {
-    return builder.build<DeviceElement>(makeReadable());
-  }
-
-  DeviceElementPtr makeAnother() {
-    builder.resetBuilder();
-    return builder.build<DeviceElement>(makeReadable(DataType::DOUBLE));
-  }
-};
-
-struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
-  WriteOnlyTestParam() : Comparator_TestType("WriteOnly") {}
-
-  DeviceElementPtr make() {
-    return builder.build<DeviceElement>(makeWriteOnly());
-  }
-
-  DeviceElementPtr makeAnother() {
-    builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWriteOnly(DataType::INTEGER));
-  }
-};
-
-struct WritableTestParam : Comparator_TestType<DeviceElement> {
-  WritableTestParam() : Comparator_TestType("Writable") {}
-
-  DeviceElementPtr make() {
-    return builder.build<DeviceElement>(makeWritable());
-  }
-
-  DeviceElementPtr makeAnother() {
-    builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWritable(DataType::STRING));
-  }
-};
-
-struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
-  ExecutableTestParam() : Comparator_TestType("Executable") {}
-
-  DeviceElementPtr make() {
-    return builder.build<DeviceElement>(makeExecutable());
-  }
-
-  DeviceElementPtr makeAnother() {
-    builder.resetBuilder();
-    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
-  }
-};
-
-struct ExecutableNotWritableTestParam : Comparator_TestType<DeviceElement> {
-  ExecutableNotWritableTestParam()
-      : Comparator_TestType("ExecutableNotWritable") {}
+/**
+ * Test paramater for DeviceElement with different element types test case
+ *
+ */
+struct DifferentElementTypesTestParam : Comparator_TestType<DeviceElement> {
+  DifferentElementTypesTestParam()
+      : Comparator_TestType("Different Element Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeExecutable(meta_info));
   }
 
+  /**
+   * In this test case we check if two DeviceElement instances, containing the
+   * same refID_, name and description are different because of their
+   * ElementType
+   *
+   * Expected result is that these elements are not equal, due to ElementType
+   * values being different
+   */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
     return builder.build<DeviceElement>(makeWritable(meta_info));
   }
 
 private:
-  const ElementMetaInfo meta_info = ElementMetaInfo(
-      "", "executableNotWritable", "Just another executable element mock");
+  const ElementMetaInfo meta_info =
+      ElementMetaInfo("", "element", "Just another element mock");
+};
+
+/**
+ * Test paramater for readable metric with differing value types test case
+ *
+ */
+struct DifferentReadableValuesTestParam : Comparator_TestType<DeviceElement> {
+  DifferentReadableValuesTestParam()
+      : Comparator_TestType("Different Metric Value Types") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeReadable());
+  }
+
+  /**
+   * In this test case we check if two metrics contain are of
+   * ElementType::READABLE type, have the same refID_, name and description, but
+   * different return types
+   *
+   * Expected result is that these elements are not equal, due to return type
+   * values being different
+   */
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeReadable(DataType::DOUBLE));
+  }
+};
+
+/**
+ * Test paramater for write-only metric (Writable metric without read callback)
+ * with differing value types test case
+ *
+ */
+struct DifferentWriteOnlyValuesTestParam : Comparator_TestType<DeviceElement> {
+  DifferentWriteOnlyValuesTestParam()
+      : Comparator_TestType("Different Write-only WritableMetric Value Types") {
+  }
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeWriteOnly());
+  }
+
+  /**
+   * In this test case we check if two metrics contain are of
+   * ElementType::WRITABLE type, have the same refID_, name and description, but
+   * different return types
+   *
+   * Expected result is that these elements are not equal, due to return type
+   * values being different
+   */
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeWriteOnly(DataType::INTEGER));
+  }
+};
+
+/**
+ * Test paramater for writable metric with differing value types test case
+ *
+ */
+struct DifferentWritableValuesTestParam : Comparator_TestType<DeviceElement> {
+  DifferentWritableValuesTestParam()
+      : Comparator_TestType("Different WritableMetric Value Types") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeWritable());
+  }
+
+  /**
+   * In this test case we check if two metrics contain are of
+   * ElementType::WRITABLE type, have the same refID_, name and description, but
+   * different return types
+   *
+   * Expected result is that these elements are not equal, due to return type
+   * values being different
+   */
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeWritable(DataType::STRING));
+  }
+};
+
+/**
+ * Test paramater for function with different return values test case
+ *
+ */
+struct DifferentExecuteReturnsTestParam : Comparator_TestType<DeviceElement> {
+  DifferentExecuteReturnsTestParam()
+      : Comparator_TestType("Different Function Return Types") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeExecutable());
+  }
+
+  /**
+   * In this test case we check if two metrics contain are of
+   * ElementType::FUNCTION type, have the same refID_, name, description and
+   * acceptable parameters, but different return types
+   *
+   * Expected result is that these elements are not equal, due to return type
+   * values being different
+   */
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
+  }
+};
+
+/**
+ * Test paramater for function with different acceptable parameters test case
+ *
+ */
+struct DifferentExecuteParamsTestParam : Comparator_TestType<DeviceElement> {
+  DifferentExecuteParamsTestParam()
+      : Comparator_TestType("Different Function parameters") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeExecutable());
+  }
+
+  /**
+   * In this test case we check if two metrics contain are of
+   * ElementType::FUNCTION type, have the same refID_, name, description and
+   * return types, but different acceptable parameters
+   *
+   * Expected result is that these elements are not equal, due to acceptable
+   * parameter values being different
+   */
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
+  }
 };
 
 struct EmptyDeviceElementGroupTestParam
@@ -209,11 +317,13 @@ template <typename T> struct Comparator_TestSuite : public ::testing::Test {
 };
 
 using ComparatorTestTypes = ::testing::Types< //
-    SameElementTypeTestParam,
-    ReadableTestParam,
-    WriteOnlyTestParam,
-    ExecutableTestParam,
-    ExecutableNotWritableTestParam,
+    DifferentRefIdsTestParam,
+    DifferentElementTypesTestParam,
+    DifferentReadableValuesTestParam,
+    DifferentWriteOnlyValuesTestParam,
+    DifferentWritableValuesTestParam,
+    DifferentExecuteReturnsTestParam,
+    DifferentExecuteParamsTestParam,
     EmptyDeviceElementGroupTestParam,
     SimpleDeviceElementGroupTestParam,
     ComplexDeviceElementGroupTestParam,
@@ -225,8 +335,10 @@ TYPED_TEST_SUITE(Comparator_TestSuite, ComparatorTestTypes);
 TYPED_TEST(Comparator_TestSuite, isEqual) {
   auto empty = this->param.makeEmpty();
 
-  EXPECT_TRUE(empty ? false : true) << " comparator empty ptr is not empty";
-  EXPECT_EQ(empty, empty) << " comparator empty ptr is not equal to itself";
+  EXPECT_TRUE(empty ? false : true)
+      << this->param.name << " comparator empty ptr is not empty";
+  EXPECT_EQ(empty, empty) << this->param.name
+                          << " comparator empty ptr is not equal to itself";
 
   auto tested = this->param.make();
 
