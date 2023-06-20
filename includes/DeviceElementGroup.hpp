@@ -10,8 +10,10 @@
 
 namespace Information_Model {
 struct DeviceElement;
-inline bool operator==(const DeviceElement& lhs, const DeviceElement& rhs);
-inline bool operator!=(const DeviceElement& lhs, const DeviceElement& rhs);
+inline bool operator==(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept;
+inline bool operator!=(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept;
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
@@ -44,7 +46,7 @@ struct DeviceElementGroup {
 
   virtual ~DeviceElementGroup() = default;
 
-  bool operator==(const DeviceElementGroup& other) const {
+  bool operator==(const DeviceElementGroup& other) const noexcept {
     auto result = false;
     try {
       auto this_elements = getSubelements();
@@ -67,7 +69,7 @@ struct DeviceElementGroup {
     return result;
   }
 
-  bool operator!=(const DeviceElementGroup& other) const {
+  bool operator!=(const DeviceElementGroup& other) const noexcept {
     return !operator==(other);
   }
 

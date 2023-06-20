@@ -41,7 +41,7 @@ struct Device : public NamedElement {
 
   virtual ~Device() = default;
 
-  bool operator==(const Device& other) const {
+  bool operator==(const Device& other) const noexcept {
     try {
       auto result = NamedElement::operator==(other);
       const auto& this_elements = *(getDeviceElementGroup().get());
@@ -53,7 +53,9 @@ struct Device : public NamedElement {
     }
   }
 
-  bool operator!=(const Device& other) const { return !operator==(other); }
+  bool operator!=(const Device& other) const noexcept {
+    return !operator==(other);
+  }
 
 protected:
   Device(const std::string& ref_id,

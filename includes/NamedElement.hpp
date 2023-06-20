@@ -39,13 +39,13 @@ public:
   const std::string getElementName() const { return name_; }
   const std::string getElementDescription() const { return desc_; }
 
-  bool operator==(const NamedElement& other) const {
+  bool operator==(const NamedElement& other) const noexcept {
     return (refID_ == other.refID_) && //
         (name_ == other.name_) && //
         (desc_ == other.desc_); //
   }
 
-  bool operator!=(const NamedElement& other) const {
+  bool operator!=(const NamedElement& other) const noexcept {
     return !operator==(other);
   }
 };

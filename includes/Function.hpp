@@ -202,9 +202,13 @@ struct Function {
         "Called based implementation of Function::cancelAllAsyncCalls()");
   }
 
-  bool operator==(const Function& other) const {
+  bool operator==(const Function& other) const noexcept {
     return (result_type == other.result_type) &&
         (parameters == other.parameters);
+  }
+
+  bool operator!=(const Function& other) const noexcept {
+    return !operator==(other);
   }
 
   const DataType result_type; // NOLINT(readability-identifier-naming)

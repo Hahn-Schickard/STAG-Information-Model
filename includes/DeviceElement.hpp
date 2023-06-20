@@ -109,7 +109,8 @@ private:
   friend struct DeviceBuilderInterface;
 };
 
-bool operator==(const DeviceElement& lhs, const DeviceElement& rhs) {
+inline bool operator==(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept {
   try {
     auto result = (const NamedElement&)lhs == ((const NamedElement&)rhs);
     result = result && (lhs.getElementType() == rhs.getElementType());
@@ -151,7 +152,8 @@ bool operator==(const DeviceElement& lhs, const DeviceElement& rhs) {
   }
 }
 
-bool operator!=(const DeviceElement& lhs, const DeviceElement& rhs) {
+inline bool operator!=(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept {
   return !(lhs == rhs);
 }
 

@@ -45,8 +45,12 @@ struct Metric {
    */
   DataType getDataType() const { return value_type_; }
 
-  bool operator==(const Metric& other) const {
+  bool operator==(const Metric& other) const noexcept {
     return value_type_ == other.getDataType();
+  }
+
+  bool operator!=(const Metric& other) const noexcept {
+    return !operator==(other);
   }
 
 protected:
