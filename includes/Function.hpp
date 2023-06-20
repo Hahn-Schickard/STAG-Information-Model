@@ -202,13 +202,17 @@ struct Function {
         "Called based implementation of Function::cancelAllAsyncCalls()");
   }
 
+  bool operator==(const Function& other) const {
+    return (result_type == other.result_type) &&
+        (parameters == other.parameters);
+  }
+
   const DataType result_type; // NOLINT(readability-identifier-naming)
-  const ParameterTypes
-      supported_parameters; // NOLINT(readability-identifier-naming)
+  const ParameterTypes parameters; // NOLINT(readability-identifier-naming)
 
 protected:
-  Function(DataType type, ParameterTypes parameters)
-      : result_type(type), supported_parameters(parameters) {}
+  Function(DataType type, ParameterTypes supported_parameters)
+      : result_type(type), parameters(supported_parameters) {}
 }; // namespace Information_Model
 
 /**

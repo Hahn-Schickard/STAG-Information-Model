@@ -382,7 +382,7 @@ TEST_P(FunctionParametrizedTests, hasResultDataType) {
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, hasSupportedParameterTypes) {
-  EXPECT_EQ(expectations->supported_params_, function->supported_parameters);
+  EXPECT_EQ(expectations->supported_params_, function->parameters);
 }
 
 struct SetFunctionTestNameSuffix {
