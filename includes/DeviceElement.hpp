@@ -114,10 +114,35 @@ bool operator==(const DeviceElement& lhs, const DeviceElement& rhs) {
     auto result = (const NamedElement&)lhs == ((const NamedElement&)rhs);
     result = result && (lhs.getElementType() == rhs.getElementType());
     if (result) {
-      if (lhs.getElementType() == ElementType::GROUP) {
+      switch (lhs.getElementType()) {
+      case ElementType::WRITABLE: {
+        result = result &&
+            *(std::get<NonemptyWritableMetricPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyWritableMetricPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::READABLE: {
+        result = result &&
+            *(std::get<NonemptyMetricPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyMetricPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::FUNCTION: {
+        result = result &&
+            *(std::get<NonemptyFunctionPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyFunctionPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::OBSERVABLE: {
+        throw false;
+      }
+      case ElementType::GROUP: {
         result = result &&
             *(std::get<NonemptyDeviceElementGroupPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyDeviceElementGroupPtr>(rhs.functionality));
+        break;
+      }
+      default: { throw false; }
       }
     }
     return result;
