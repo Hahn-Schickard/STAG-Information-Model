@@ -67,8 +67,7 @@ struct ReadableTestParam : Comparator_TestType<DeviceElement> {
 
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeReadable(
-        "", "another-readable", "Just another readable element mock"));
+    return builder.build<DeviceElement>(makeReadable(DataType::DOUBLE));
   }
 };
 
@@ -98,8 +97,7 @@ struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
 
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWriteOnly(
-        "", "another-write-only", "Just another write-only element mock"));
+    return builder.build<DeviceElement>(makeWriteOnly(DataType::INTEGER));
   }
 };
 
@@ -130,8 +128,7 @@ struct WritableTestParam : Comparator_TestType<DeviceElement> {
 
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWritable(
-        "", "another-writable", "Just another writable element mock"));
+    return builder.build<DeviceElement>(makeWritable(DataType::STRING));
   }
 };
 
@@ -164,8 +161,7 @@ struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
 
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeExecutable(
-        "", "another-executable", "Just another executable element mock"));
+    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
   }
 };
 
@@ -174,15 +170,17 @@ struct ExecutableNotWritableTestParam : Comparator_TestType<DeviceElement> {
       : Comparator_TestType("ExecutableNotWritable") {}
 
   DeviceElementPtr make() {
-    return builder.build<DeviceElement>(makeExecutable(
-        "", "executableNotWritable", "Just another executable element mock"));
+    return builder.build<DeviceElement>(makeExecutable(meta_info));
   }
 
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWritable(
-        "", "executableNotWritable", "Just another executable element mock"));
+    return builder.build<DeviceElement>(makeWritable(meta_info));
   }
+
+private:
+  const ElementMetaInfo meta_info = ElementMetaInfo(
+      "", "executableNotWritable", "Just another executable element mock");
 };
 
 TestElementInfoPtr makeEmptyGroup(const string& parent_ref_id = "",
