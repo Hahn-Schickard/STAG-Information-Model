@@ -117,6 +117,22 @@ struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
+struct ExecutableNotWritableTestParam : Comparator_TestType<DeviceElement> {
+  ExecutableNotWritableTestParam()
+      : Comparator_TestType("ExecutableNotWritable") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeExecutable(
+        "", "executableNotWritable", "Just another executable element mock"));
+  }
+
+  DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
+    return builder.build<DeviceElement>(makeWritable(
+        "", "executableNotWritable", "Just another executable element mock"));
+  }
+};
+
 TestElementInfoPtr makeEmptyGroup(const string& parent_ref_id = "",
     const string& name = "empty-group",
     const string& desc = "Group element mock without any elements") {
@@ -298,6 +314,7 @@ using ComparatorTestTypes = ::testing::Types< //
     ReadableTestParam,
     WriteOnlyTestParam,
     ExecutableTestParam,
+    ExecutableNotWritableTestParam,
     EmptyDeviceElementGroupTestParam,
     SimpleDeviceElementGroupTestParam,
     ComplexDeviceElementGroupTestParam,
