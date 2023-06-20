@@ -27,8 +27,6 @@ template <typename ElementType> struct Comparator_TestType {
   }
 
   const string& name;
-
-protected:
   TestElementBuilder builder = TestElementBuilder();
 };
 
@@ -349,6 +347,12 @@ TYPED_TEST(Comparator_TestSuite, isEqual) {
   EXPECT_EQ(*tested, *tested)
       << this->param.name
       << " comparator tested value does not contain the same value";
+
+  this->param.builder.resetBuilder();
+  auto tested_copy = this->param.make();
+  EXPECT_EQ(*tested, *tested_copy) << this->param.name
+                                   << " comparator tested value does not "
+                                      "contain the same value as copied value";
 }
 
 TYPED_TEST(Comparator_TestSuite, isNotEqual) {
