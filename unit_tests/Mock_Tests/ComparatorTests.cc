@@ -36,6 +36,20 @@ TestElementInfoPtr makeReadable(const string& parent_ref_id = "",
   return make_shared<TestElementInfo>(meta_info, functionality);
 }
 
+struct SameElementTypeTestParam : Comparator_TestType<DeviceElement> {
+  SameElementTypeTestParam() : Comparator_TestType("SameElementType") {}
+
+  DeviceElementPtr make() {
+    return builder.build<DeviceElement>(makeReadable());
+  }
+
+  DeviceElementPtr makeAnother() {
+    // if we do not reset the builder, NamedElement refID_ values will be
+    // different, thus elements will not be the same
+    return builder.build<DeviceElement>(makeReadable());
+  }
+};
+
 struct ReadableTestParam : Comparator_TestType<DeviceElement> {
   ReadableTestParam() : Comparator_TestType("Readable") {}
 
@@ -44,6 +58,7 @@ struct ReadableTestParam : Comparator_TestType<DeviceElement> {
   }
 
   DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
     return builder.build<DeviceElement>(makeReadable(
         "", "another-readable", "Just another readable element mock"));
   }
@@ -66,6 +81,7 @@ struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
   }
 
   DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
     return builder.build<DeviceElement>(makeWriteOnly(
         "", "another-write-only", "Just another write-only element mock"));
   }
@@ -89,6 +105,7 @@ struct WritableTestParam : Comparator_TestType<DeviceElement> {
   }
 
   DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
     return builder.build<DeviceElement>(makeWritable(
         "", "another-writable", "Just another writable element mock"));
   }
@@ -112,6 +129,7 @@ struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
   }
 
   DeviceElementPtr makeAnother() {
+    builder.resetBuilder();
     return builder.build<DeviceElement>(makeExecutable(
         "", "another-executable", "Just another executable element mock"));
   }
@@ -206,6 +224,7 @@ struct EmptyDeviceElementGroupTestParam
   }
 
   DeviceElementGroupPtr makeAnother() {
+    builder.resetBuilder();
     vector<TestElementType> subelement_types = {
         TestElementType::READABLE,
         TestElementType::WRITABLE,
@@ -226,6 +245,7 @@ struct SimpleDeviceElementGroupTestParam
   }
 
   DeviceElementGroupPtr makeAnother() {
+    builder.resetBuilder();
     vector<TestElementType> subelement_types = {
         TestElementType::READABLE,
         TestElementType::WRITABLE,
@@ -266,6 +286,7 @@ struct ComplexDeviceElementGroupTestParam
   }
 
   DeviceElementGroupPtr makeAnother() {
+    builder.resetBuilder();
     vector<TestElementType> subsubelement_types = {
         TestElementType::WRITE_ONLY, TestElementType::EXECUTABLE};
     vector<TestElementType> subelement_types = {
@@ -311,6 +332,7 @@ template <typename T> struct Comparator_TestSuite : public ::testing::Test {
 };
 
 using ComparatorTestTypes = ::testing::Types< //
+    SameElementTypeTestParam,
     ReadableTestParam,
     WriteOnlyTestParam,
     ExecutableTestParam,
