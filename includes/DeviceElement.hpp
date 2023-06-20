@@ -112,7 +112,8 @@ private:
 bool operator==(const DeviceElement& lhs, const DeviceElement& rhs) {
   try {
     auto result = (const NamedElement&)lhs == ((const NamedElement&)rhs);
-    if (lhs.getElementType() == rhs.getElementType()) {
+    result = result && (lhs.getElementType() == rhs.getElementType());
+    if (result) {
       if (lhs.getElementType() == ElementType::GROUP) {
         result = result &&
             *(std::get<NonemptyDeviceElementGroupPtr>(lhs.functionality)) ==
