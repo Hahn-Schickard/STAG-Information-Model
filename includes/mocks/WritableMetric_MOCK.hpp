@@ -22,11 +22,6 @@ namespace testing {
  */
 struct MockWritableMetric : public WritableMetric, public MockMetric {
   using Writer = std::function<void(DataVariant)>;
-  // bring in base methods for overload resolution
-  using MockMetric::delegateToFake;
-  // resolve method ambiguity
-  using MockMetric::getDataType;
-  using MockMetric::getMetricValue;
 
   MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
@@ -34,17 +29,17 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
       : MockWritableMetric(type, setVariant(type)) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)
-      : WritableMetric(), MockMetric(type, variant) {}
+      : WritableMetric(type), MockMetric(type, variant) {}
 
   MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
-  // redeclare metric mocks, so they are accessible
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(DataType, getDataType, (), (override));
   MOCK_METHOD(bool, isWriteOnly, (), (override));
 
+  // redeclare metric methods, so they are accessible
+  DataType getDataType() { return MockMetric::getDataType(); }
+  DataVariant getMetricValue() override { return MockMetric::getMetricValue(); }
+
   void delegateToFake() {
-    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    MockMetric::delegateToFake();
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
@@ -58,7 +53,6 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(::testing::Throw(std::logic_error(
             "This metric does not support read functionality")));
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
@@ -70,7 +64,6 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
       }
     });
     delegateToFake(reader);
-    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
 private:

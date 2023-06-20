@@ -36,20 +36,23 @@ struct Metric {
         "Called based implementation of Metric::getMetricValue()");
   }
 
+  virtual ~Metric() = default;
+
   /**
    * @brief Get the modeled data type
    *
    * @return DataType
    */
-  virtual DataType getDataType() {
-    throw std::runtime_error(
-        "Called based implementation of Metric::getDataType()");
+  DataType getDataType() const { return value_type_; }
+
+  bool operator==(const Metric& other) const {
+    return value_type_ == other.getDataType();
   }
 
-  virtual ~Metric() = default;
-
 protected:
-  Metric() = default;
+  Metric(DataType type) : value_type_(type) {}
+
+  DataType value_type_ = DataType::UNKNOWN;
 };
 
 using MetricPtr = std::shared_ptr<Metric>;

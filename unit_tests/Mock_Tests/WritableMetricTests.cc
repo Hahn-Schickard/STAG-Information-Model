@@ -34,8 +34,5 @@ TEST_F(WritableMetricTests, canSetIntegerValue) {
 
 // NOLINTNEXTLINE
 TEST_F(WritableMetricTests, canGetIntegerType) {
-  // Act
-  EXPECT_CALL(*integer.get(), getDataType()).Times(AtLeast(1));
-  // Assert
-  ASSERT_NO_THROW(integer->getDataType());
+  EXPECT_EQ(DataType::BOOLEAN, integer->getDataType());
 }
