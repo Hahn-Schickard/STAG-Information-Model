@@ -27,13 +27,21 @@ protected:
   TestElementBuilder builder = TestElementBuilder();
 };
 
-TestElementInfoPtr makeReadable(const string& parent_ref_id = "",
+ElementMetaInfo makeReadableInfo(const string& parent_id = "",
     const string& name = "readable",
     const string& desc = "readable element mock") {
-  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
+  return ElementMetaInfo(parent_id, name, desc);
+}
+
+TestElementInfoPtr makeReadable(DataType return_type = DataType::BOOLEAN,
+    const ElementMetaInfo& meta_info = makeReadableInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(
-      DataType::BOOLEAN, DeviceBuilderInterface::Reader());
+      return_type, DeviceBuilderInterface::Reader());
   return make_shared<TestElementInfo>(meta_info, functionality);
+}
+
+TestElementInfoPtr makeReadable(const ElementMetaInfo& meta_info) {
+  return makeReadable(DataType::BOOLEAN, meta_info);
 }
 
 struct SameElementTypeTestParam : Comparator_TestType<DeviceElement> {
@@ -64,13 +72,21 @@ struct ReadableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-TestElementInfoPtr makeWriteOnly(const string& parent_ref_id = "",
+ElementMetaInfo makeWriteOnlyInfo(const string& parent_id = "",
     const string& name = "write-only",
     const string& desc = "write-only element mock") {
-  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
+  return ElementMetaInfo(parent_id, name, desc);
+}
+
+TestElementInfoPtr makeWriteOnly(DataType return_type = DataType::BOOLEAN,
+    const ElementMetaInfo& meta_info = makeWriteOnlyInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(
-      DataType::BOOLEAN, DeviceBuilderInterface::Writer());
+      return_type, DeviceBuilderInterface::Writer());
   return make_shared<TestElementInfo>(meta_info, functionality);
+}
+
+TestElementInfoPtr makeWriteOnly(const ElementMetaInfo& meta_info) {
+  return makeWriteOnly(DataType::BOOLEAN, meta_info);
 }
 
 struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
@@ -87,14 +103,22 @@ struct WriteOnlyTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-TestElementInfoPtr makeWritable(const string& parent_ref_id = "",
-    const string& name = "read&write",
+ElementMetaInfo makeWritableInfo(const string& parent_id = "",
+    const string& name = "read&writable",
     const string& desc = "read&write element mock") {
-  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
-  auto functionality = DeviceMockBuilder::Functionality(DataType::BOOLEAN,
+  return ElementMetaInfo(parent_id, name, desc);
+}
+
+TestElementInfoPtr makeWritable(DataType return_type = DataType::BOOLEAN,
+    const ElementMetaInfo& meta_info = makeWritableInfo()) {
+  auto functionality = DeviceMockBuilder::Functionality(return_type,
       DeviceBuilderInterface::Reader(),
       DeviceBuilderInterface::Writer());
   return make_shared<TestElementInfo>(meta_info, functionality);
+}
+
+TestElementInfoPtr makeWritable(const ElementMetaInfo& meta_info) {
+  return makeWritable(DataType::BOOLEAN, meta_info);
 }
 
 struct WritableTestParam : Comparator_TestType<DeviceElement> {
@@ -111,14 +135,24 @@ struct WritableTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-TestElementInfoPtr makeExecutable(const string& parent_ref_id = "",
+ElementMetaInfo makeExecutableInfo(const string& parent_id = "",
     const string& name = "executable",
     const string& desc = "executable element mock") {
-  auto meta_info = ElementMetaInfo(parent_ref_id, name, desc);
-  auto functionality = DeviceMockBuilder::Functionality(DataType::BOOLEAN,
+  return ElementMetaInfo(parent_id, name, desc);
+}
+
+TestElementInfoPtr makeExecutable(DataType return_type = DataType::BOOLEAN,
+    Function::ParameterTypes supported_params = {},
+    const ElementMetaInfo& meta_info = makeExecutableInfo()) {
+  auto functionality = DeviceMockBuilder::Functionality(return_type,
       DeviceBuilderInterface::Executor(),
-      DeviceBuilderInterface::Canceler());
+      DeviceBuilderInterface::Canceler(),
+      supported_params);
   return make_shared<TestElementInfo>(meta_info, functionality);
+}
+
+TestElementInfoPtr makeExecutable(const ElementMetaInfo& meta_info) {
+  return makeExecutable(DataType::BOOLEAN, {}, meta_info);
 }
 
 struct ExecutableTestParam : Comparator_TestType<DeviceElement> {
@@ -171,16 +205,16 @@ TestElementInfoPtr makeSubElement(
     TestElementType type, const string& parent_ref_id) {
   switch (type) {
   case TestElementType::READABLE: {
-    return makeReadable(parent_ref_id);
+    return makeReadable(makeReadableInfo(parent_ref_id));
   }
   case TestElementType::WRITE_ONLY: {
-    return makeWriteOnly(parent_ref_id);
+    return makeWriteOnly(makeWriteOnlyInfo(parent_ref_id));
   }
   case TestElementType::WRITABLE: {
-    return makeWritable(parent_ref_id);
+    return makeWritable(makeWritableInfo(parent_ref_id));
   }
   case TestElementType::EXECUTABLE: {
-    return makeExecutable(parent_ref_id);
+    return makeExecutable(makeExecutableInfo(parent_ref_id));
   }
   default: { throw logic_error(""); }
   }
