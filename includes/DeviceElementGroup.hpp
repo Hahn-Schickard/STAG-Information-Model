@@ -51,9 +51,9 @@ struct DeviceElementGroup {
     try {
       auto this_elements = getSubelements();
       auto other_elements = other.getSubelements();
-      if (this_elements.size() == other_elements.size()) {
+      result = (this_elements.size() == other_elements.size());
+      if (result) {
         // if groups have the same number of elements
-        result = true;
         if (this_elements.size() > 0) {
           // if groups have elements
           for (size_t i = 0; i < this_elements.size(); ++i) {
