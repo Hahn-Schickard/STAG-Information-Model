@@ -254,6 +254,40 @@ struct EmptyGroupNotEqualToNotEmptyTestParam
  * Test paramater for different single level DeviceElementGroups test case
  *
  */
+struct DifferentSingleElementGroupsTestParam
+    : Comparator_TestType<DeviceElementGroup> {
+  DifferentSingleElementGroupsTestParam()
+      : Comparator_TestType("Different single element groups") {}
+
+  DeviceElementGroupPtr make() {
+    vector<TestElementType> subelement_types = {TestElementType::READABLE};
+    return builder.build<DeviceElementGroup>(
+        makeSingleLevelGroup(meta_info, subelement_types));
+  }
+
+  /**
+   * In this test case we check if one DeviceElementGroup with a single element
+   * is equal to a another DeviceElementGroup with another single element
+   *
+   * Expected result is that these elements are not equal, because the contained
+   * elements are different
+   */
+  DeviceElementGroupPtr makeAnother() {
+    builder.resetBuilder();
+    vector<TestElementType> subelement_types = {TestElementType::WRITABLE};
+    return builder.build<DeviceElementGroup>(
+        makeSingleLevelGroup(meta_info, subelement_types));
+  }
+
+private:
+  const ElementMetaInfo meta_info = ElementMetaInfo(
+      "", "single-element-group", "Just a group mock with a single element");
+};
+
+/**
+ * Test paramater for different single level DeviceElementGroups test case
+ *
+ */
 struct DifferentSingleLevelGroupsTestParam
     : Comparator_TestType<DeviceElementGroup> {
   DifferentSingleLevelGroupsTestParam()
@@ -392,6 +426,7 @@ using ComparatorTestTypes = ::testing::Types< //
     DifferentExecuteReturnsTestParam,
     DifferentExecuteParamsTestParam,
     EmptyGroupNotEqualToNotEmptyTestParam,
+    DifferentSingleElementGroupsTestParam,
     DifferentSingleLevelGroupsTestParam,
     DifferentTwoLevelNestedGroupsTestParam,
     DifferentSingleLevelDevicesTestParam,
