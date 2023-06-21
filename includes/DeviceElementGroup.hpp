@@ -17,6 +17,12 @@ using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
  * @addtogroup GroupModeling Device Element Group Modelling
  * @{
  */
+
+struct DeviceElementNotFound : public std::runtime_error {
+  DeviceElementNotFound(const std::string& ref_id)
+      : std::runtime_error(
+            "DeviceElement with reference id " + ref_id + " was not found") {}
+};
 /**
  * @brief An interface to DeviceElementGroup
  *
