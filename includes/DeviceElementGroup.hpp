@@ -40,6 +40,14 @@ struct DeviceElementGroup {
         "Called base implementation of DeviceElements::getSubelements");
   }
 
+  /**
+   * @brief Searches and returns a DeviceElement that matches a given reference
+   * id
+   *
+   * @throws DeviceElementNotFound if no DeviceElement with given ref_id exists
+   * within this group
+   *
+   */
   virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
