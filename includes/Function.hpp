@@ -14,6 +14,11 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
+/**
+ * @addtogroup ExecutableModeling Function Modelling
+ * @{
+ */
+
 struct ResultReturningNotSupported : public std::runtime_error {
   ResultReturningNotSupported()
       : std::runtime_error(
@@ -43,10 +48,6 @@ struct FunctionCallTimedout : public std::runtime_error {
       : std::runtime_error("Function " + name + " call timedout") {}
 };
 
-/**
- * @addtogroup ExecutableModeling Function Modelling
- * @{
- */
 /**
  * @brief An interface to a Function.
  *
