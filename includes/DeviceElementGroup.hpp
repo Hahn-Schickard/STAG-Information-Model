@@ -34,6 +34,12 @@ using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 struct DeviceElementGroup {
   using DeviceElements = std::vector<NonemptyDeviceElementPtr>;
 
+  /**
+   * @brief Returns a vector of contained elements ordered by DeviceElement
+   * reference ids in an ascending order
+   *
+   * @return DeviceElements
+   */
   virtual DeviceElements getSubelements() const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
