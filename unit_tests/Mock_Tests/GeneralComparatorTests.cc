@@ -217,14 +217,26 @@ struct DifferentExecuteParamsTestParam : Comparator_TestType<DeviceElement> {
   }
 };
 
-struct EmptyDeviceElementGroupTestParam
+/**
+ * Test paramater for empty DeviceElementGroup comparison win non-empty
+ * DeviceElementGroup test case
+ *
+ */
+struct EmptyGroupNotEqualToNotEmptyTestParam
     : Comparator_TestType<DeviceElementGroup> {
-  EmptyDeviceElementGroupTestParam() : Comparator_TestType("EmptyGroup") {}
+  EmptyGroupNotEqualToNotEmptyTestParam()
+      : Comparator_TestType("Empty Group not equal to not-empty Group") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeEmptyGroup());
   }
 
+  /**
+   * In this test case we check if an empty DeviceElementGroup is equal to a
+   * non-empty DeviceElementGroup
+   *
+   * Expected result is that these elements are not equal
+   */
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subelement_types = {
@@ -238,14 +250,26 @@ struct EmptyDeviceElementGroupTestParam
   }
 };
 
-struct SimpleDeviceElementGroupTestParam
+/**
+ * Test paramater for different single level DeviceElementGroups test case
+ *
+ */
+struct DifferentSingleLevelGroupsTestParam
     : Comparator_TestType<DeviceElementGroup> {
-  SimpleDeviceElementGroupTestParam() : Comparator_TestType("SimpleGroup") {}
+  DifferentSingleLevelGroupsTestParam()
+      : Comparator_TestType("Different single level groups") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeSingleLevelGroup());
   }
 
+  /**
+   * In this test case we check if an one single level DeviceElementGroup is
+   * equal to a another single level DeviceElementGroup
+   *
+   * Expected result is that these elements are not equal, because the contained
+   * elements are different
+   */
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subelement_types = {
@@ -259,14 +283,26 @@ struct SimpleDeviceElementGroupTestParam
   }
 };
 
-struct ComplexDeviceElementGroupTestParam
+/**
+ * Test paramater for different two level nested DeviceElementGroups test case
+ *
+ */
+struct DifferentTwoLevelNestedGroupsTestParam
     : Comparator_TestType<DeviceElementGroup> {
-  ComplexDeviceElementGroupTestParam() : Comparator_TestType("ComplexGroup") {}
+  DifferentTwoLevelNestedGroupsTestParam()
+      : Comparator_TestType("Different two level nested groups") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeNestedGroup());
   }
 
+  /**
+   * In this test case we check if one DeviceElementGroup with a single nested
+   * group is equal to a another DeviceElementGroup with another nested group
+   *
+   * Expected result is that these elements are not equal, because the contained
+   * elements are different
+   */
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subsubelement_types = {
@@ -284,11 +320,23 @@ struct ComplexDeviceElementGroupTestParam
   }
 };
 
-struct SimpleDeviceTestParam : Comparator_TestType<Device> {
-  SimpleDeviceTestParam() : Comparator_TestType("SimpleDevice") {}
+/**
+ * Test paramater for different single level Devices test case
+ *
+ */
+struct DifferentSingleLevelDevicesTestParam : Comparator_TestType<Device> {
+  DifferentSingleLevelDevicesTestParam()
+      : Comparator_TestType("SimpleDevice") {}
 
   DevicePtr make() { return builder.build<Device>(makeSingleLevelGroup()); }
 
+  /**
+   * In this test case we check if one Device with a single level group is
+   * equal to a another Device with same single level group
+   *
+   * Expected result is that these elements are not equal, because the Device
+   * ref IDs are not the same
+   */
   DevicePtr makeAnother() {
     builder = TestElementBuilder(
         ElementMetaInfo("23456", "AnotherMocky", "It's just another mocked"));
@@ -296,15 +344,36 @@ struct SimpleDeviceTestParam : Comparator_TestType<Device> {
   }
 };
 
-struct ComplexDeviceTestParam : Comparator_TestType<Device> {
-  ComplexDeviceTestParam() : Comparator_TestType("ComplexDevice") {}
+/**
+ * Test paramater for different two level nested Devices test case
+ *
+ */
+struct DifferentTwoLevelDevicesTestParam : Comparator_TestType<Device> {
+  DifferentTwoLevelDevicesTestParam() : Comparator_TestType("ComplexDevice") {}
 
   DevicePtr make() { return builder.build<Device>(makeNestedGroup()); }
 
+  /**
+   * In this test case we check if one Device with a single nested level group
+   * is equal to a another Device with another single nested group
+   *
+   * Expected result is that these elements are not equal, because the contained
+   * elements are different
+   */
   DevicePtr makeAnother() {
-    builder = TestElementBuilder(
-        ElementMetaInfo("23456", "AnotherMocky", "It's just another mocked"));
-    return builder.build<Device>(makeNestedGroup());
+    builder.resetBuilder();
+    vector<TestElementType> subsubelement_types = {
+        TestElementType::WRITE_ONLY, TestElementType::EXECUTABLE};
+    vector<TestElementType> subelement_types = {TestElementType::READABLE,
+        TestElementType::WRITE_ONLY,
+        TestElementType::WRITABLE,
+        TestElementType::EXECUTABLE};
+    return builder.build<Device>(
+        makeNestedGroup(makeNestedGroupInfo("",
+                            "another-nested-group",
+                            "Just another nested group element mock"),
+            subsubelement_types,
+            subelement_types));
   }
 };
 
@@ -322,11 +391,11 @@ using ComparatorTestTypes = ::testing::Types< //
     DifferentWritableValuesTestParam,
     DifferentExecuteReturnsTestParam,
     DifferentExecuteParamsTestParam,
-    EmptyDeviceElementGroupTestParam,
-    SimpleDeviceElementGroupTestParam,
-    ComplexDeviceElementGroupTestParam,
-    SimpleDeviceTestParam,
-    ComplexDeviceTestParam>;
+    EmptyGroupNotEqualToNotEmptyTestParam,
+    DifferentSingleLevelGroupsTestParam,
+    DifferentTwoLevelNestedGroupsTestParam,
+    DifferentSingleLevelDevicesTestParam,
+    DifferentTwoLevelDevicesTestParam>;
 
 TYPED_TEST_SUITE(Comparator_TestSuite, ComparatorTestTypes);
 
