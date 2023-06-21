@@ -54,7 +54,7 @@ struct DeviceElementGroup {
       if (this_elements.size() == other_elements.size()) {
         // if groups have the same number of elements
         result = true;
-        if (this_elements.size() > 1) {
+        if (this_elements.size() > 0) {
           // if groups have elements
           for (size_t i = 0; i < this_elements.size(); ++i) {
             const auto& this_element = *(this_elements[i].get());
