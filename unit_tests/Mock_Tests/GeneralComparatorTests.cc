@@ -362,10 +362,16 @@ TYPED_TEST(Comparator_TestSuite, isNotEqual) {
       << this->param.name
       << " comparator tested ptr is the same as an empty ptr";
 
+  this->param.builder.resetBuilder();
+  auto tested_copy = this->param.make();
+  EXPECT_NE(tested, tested_copy)
+      << this->param.name
+      << " comparator tested ptr points to the same ptr as tested copy ptr";
+
   auto another = this->param.makeAnother();
   EXPECT_NE(tested, another)
       << this->param.name
-      << " comparator tested ptr is the same as another ptr";
+      << " comparator tested ptr points to the same ptr as another ptr";
   EXPECT_NE(*tested, *another)
       << this->param.name
       << " comparator tested value is the same as another value";
