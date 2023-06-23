@@ -33,7 +33,7 @@ struct Device : public NamedElement {
    *
    * @return NonemptyDeviceElementGroupPtr
    */
-  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
+  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
@@ -47,7 +47,8 @@ struct Device : public NamedElement {
    * @throws DeviceElementNotFound if no DeviceElement with given ref_id exists
    *
    */
-  virtual DeviceElementPtr getDeviceElement(const std::string& /* ref_id */) {
+  virtual DeviceElementPtr getDeviceElement(
+      const std::string& /* ref_id */) const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElement");
   }

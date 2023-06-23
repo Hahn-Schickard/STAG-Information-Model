@@ -59,7 +59,7 @@ struct DeviceElementGroup {
    * within this group
    *
    */
-  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
+  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
