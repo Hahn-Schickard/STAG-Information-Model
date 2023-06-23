@@ -14,6 +14,11 @@
 #include "Nonempty_Pointer/NonemptyPtr.hpp"
 
 namespace Information_Model {
+/**
+ * @addtogroup ExecutableModeling Function Modelling
+ * @{
+ */
+
 struct ResultReturningNotSupported : public std::runtime_error {
   ResultReturningNotSupported()
       : std::runtime_error(
@@ -43,10 +48,6 @@ struct FunctionCallTimedout : public std::runtime_error {
       : std::runtime_error("Function " + name + " call timedout") {}
 };
 
-/**
- * @addtogroup ExecutableModeling Function Modelling
- * @{
- */
 /**
  * @brief An interface to a Function.
  *
@@ -85,12 +86,29 @@ struct Function {
   using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
 
   /**
-   * @brief Async response buffer
+   * @brief Async response future wrapper
    *
-   * @param First - async call id
-   * @param Second - result buffer
    */
-  using ResultFuture = std::pair<uintmax_t, std::future<DataVariant>>;
+  struct ResultFuture : std::future<DataVariant> {
+    using CallClearer = std::function<void(uintmax_t)>;
+
+    ResultFuture(std::future<DataVariant>&& future_result,
+        uintmax_t caller,
+        CallClearer clearer)
+        : std::future<DataVariant>(std::move(future_result)), call_id(caller),
+          clear_caller(clearer) {}
+
+    DataVariant get() {
+      auto result = std::future<DataVariant>::get();
+      clear_caller(call_id);
+      return result;
+    }
+
+    const uintmax_t call_id; // NOLINT(readability-identifier-naming)
+
+  private:
+    const CallClearer clear_caller; // NOLINT(readability-identifier-naming)
+  };
 
   virtual ~Function() = default;
 
@@ -179,13 +197,13 @@ struct Function {
    *
    * @throws CallerNotFound - if the given call_id does not indicate a
    * previous asynchronous call
-   * @throws std::runtime_error - if base implementation was called
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
   virtual void cancelAsyncCall(uintmax_t /*call_id*/) {
-    throw std::runtime_error(
-        "Called based implementation of Function::cancelAsyncCall()");
+    throw ResultReturningNotSupported();
   }
 
   /**
@@ -195,12 +213,10 @@ struct Function {
    * linked result futures will throw an exception to indicate that it was
    * canceled
    *
-   * @throws std::runtime_error - if base implementation was called
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
    */
-  virtual void cancelAllAsyncCalls() {
-    throw std::runtime_error(
-        "Called based implementation of Function::cancelAllAsyncCalls()");
-  }
+  virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 
   bool operator==(const Function& other) const noexcept {
     return (result_type == other.result_type) &&

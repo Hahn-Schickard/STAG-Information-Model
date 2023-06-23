@@ -81,7 +81,8 @@ struct DeviceElement : public NamedElement {
    * This variant can be used as an argument for Variant_Visitor:match()
    * helper function
    */
-  const SpecificInterface functionality; // NOLINT
+  // NOLINTNEXTLINE(readability-identifier-naming)
+  const SpecificInterface functionality;
 
   ElementType getElementType() const {
     if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {

@@ -26,14 +26,15 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
  * SHOULD be acquired via TechnologyAdapter::getDeviceBuilder() method.
  *
  * To test interactions with this interface, please set
- * testing::DeviceBuilderInterfaceMock class as a DeviceBuilderPtr when creating
+ * testing::DeviceBuilderMock class as a DeviceBuilderPtr when creating
  * a new TechnologyAdapter instance by calling
  * TechnologyAdapter::setInterfaces() method.
  */
 struct DeviceBuilderInterface {
   using Reader = std::function<DataVariant()>;
   using Writer = std::function<void(DataVariant)>;
-  using Executor = std::function<Function::ResultFuture(Function::Parameters)>;
+  using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
+  using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
 
   virtual ~DeviceBuilderInterface() = default;
@@ -300,7 +301,9 @@ struct DeviceBuilderInterface {
    * @{
    */
   /**
-   * @brief Adds a function to the device root level DeviceElementGroup.
+   * @brief Adds an executable function with a given return type, execute and
+   * cancel execution callable objects to the device root level
+   * DeviceElementGroup.
    *
    * This method creates a new Function instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
@@ -332,6 +335,84 @@ struct DeviceBuilderInterface {
         result_type,
         execute_cb,
         cancel_cb,
+        supported_params);
+  }
+
+  /**
+   * @brief Adds an executable function with a given execute callable object to
+   * the device root level DeviceElementGroup. Sets the built functions return
+   * type to DataType::NONE
+   *
+   * This method creates a new Function instance, adds it to the root
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function. The returned
+   * string will be based on the unique id, provided by the user with the
+   * previously called buildDeviceBase() method. The format of this string will
+   * be as follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
+   *
+   * @param name
+   * @param desc
+   * @param execute_cb
+   * @param supported_params
+   * @return std::string
+   */
+  std::string addFunction(const std::string& name,
+      const std::string& desc,
+      Executor execute_cb,
+      Function::ParameterTypes supported_params = {}) {
+    return addFunction(std::string(),
+        name,
+        desc,
+        DataType::NONE,
+        execute_cb,
+        nullptr,
+        supported_params);
+  }
+
+  /**
+   * @brief Adds an executable function with a given execute callable object to
+   * to another DeviceElementGroup. The parent group element MUST exist. Sets
+   * the built functions return type to DataType::NONE
+   *
+   * This method creates a new Function instance, adds it to the specified
+   * DeviceElementGroup of the currently built device and returns the
+   * DeviceElement ID of the newly created Function.
+   *
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
+   *
+   * The returned string will be based on the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   *
+   * If specified parent DeviceElementGroup is a subgroup itself, the returned
+   * string will represent it as a new ID element as such:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
+   *
+   * @param group_ref_id
+   * @param name
+   * @param desc
+   * @param execute_cb
+   * @param supported_params
+   * @return std::string
+   */
+  std::string addFunction(const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      Executor execute_cb,
+      Function::ParameterTypes supported_params = {}) {
+    return addFunction(group_ref_id,
+        name,
+        desc,
+        DataType::NONE,
+        execute_cb,
+        nullptr,
         supported_params);
   }
 
@@ -397,6 +478,190 @@ struct DeviceBuilderInterface {
   }
   /** @}*/
 
+  /**
+   * @brief Groups information required by SpecificInterface construction
+   *
+   */
+  struct Functionality {
+    /**
+     * @brief Group information for Metric SpecificInterface instances
+     *
+     */
+    struct Read {
+      Read() = default;
+      Read(Reader read_cb) : callback(read_cb) {}
+
+      const Reader callback; // NOLINT(readability-identifier-naming)
+    };
+
+    /**
+     * @brief Group information for WritableMetric SpecificInterface instances
+     *
+     */
+    struct Write {
+      Write() = default;
+      Write(Writer write_cb) : callback(write_cb) {}
+      Write(Reader read_cb, Writer write_cb)
+          : read_part(read_cb), callback(write_cb) {}
+
+      const Read read_part; // NOLINT(readability-identifier-naming)
+      const Writer callback; // NOLINT(readability-identifier-naming)
+    };
+
+    /**
+     * @brief Group information for Function SpecificInterface instances
+     *
+     */
+    struct Execute {
+      Execute() = default;
+      Execute(Function::ParameterTypes supported_parameters)
+          : supported_params(supported_parameters) {}
+      Execute(Executor execute_cb, Canceler cancel_cb)
+          : call(execute_cb), cancel(cancel_cb) {}
+      Execute(Executor execute_cb,
+          Canceler cancel_cb,
+          Function::ParameterTypes supported_parameters)
+          : call(execute_cb), cancel(cancel_cb),
+            supported_params(supported_parameters) {}
+
+      const Executor call; // NOLINT(readability-identifier-naming)
+      const Canceler cancel; // NOLINT(readability-identifier-naming)
+      const Function::ParameterTypes
+          supported_params; // NOLINT(readability-identifier-naming)
+    };
+
+    using Group = std::monostate;
+    using Interface = std::variant<Group, Read, Write, Execute>;
+
+    /**
+     * @brief Creates basic information for a DeviceElementGroupMock
+     *
+     */
+    Functionality() : data_type(DataType::NONE), interface(Group()) {}
+
+    /**
+     * @brief Creates basic information for a simple MetricMock with default
+     * read capability based on a given DataType
+     *
+     * @param type
+     */
+    Functionality(DataType type) : data_type(type), interface(Read()) {}
+
+    /**
+     * @brief Creates basic information for a MetricMock with given DataType and
+     * read capability
+     *
+     * @param type
+     * @param read_cb
+     */
+    Functionality(DataType type, Reader read_cb)
+        : data_type(type), interface(Read(read_cb)) {}
+
+    /**
+     * @brief Creates basic information for a WritableMetricMock with given
+     * DataType and write capability
+     *
+     * @attention
+     * Set Writer to nullptr, if faking write functionality is not
+     * required
+     *
+     * @param type
+     * @param write_cb
+     */
+    Functionality(DataType type, Writer write_cb)
+        : data_type(type), interface(Write(write_cb)) {}
+
+    /**
+     * @brief Creates basic information for a WritableMetricMock with given
+     * DataType and read and write capabilities
+     *
+     * @attention
+     * Set Reader to nullptr, if default read capability is sufficient for
+     * your use case
+     *
+     * @attention
+     * Set Writer to nullptr, if faking write functionality is not
+     * required
+     *
+     * @param type
+     * @param read_cb
+     * @param write_cb
+     */
+    Functionality(DataType type, Reader read_cb, Writer write_cb)
+        : data_type(type), interface(Write(read_cb, write_cb)) {}
+
+    /**
+     * @brief Creates basic information for a simple FunctionMock with given
+     * result DataType and supported function parameters
+     *
+     * @attention
+     * Set Function::ParameterTypes to {} in case function parameters are not
+     * used
+     *
+     * @param result_type
+     * @param supported_params
+     */
+    Functionality(
+        DataType result_type, Function::ParameterTypes supported_params)
+        : data_type(result_type), interface(Execute(supported_params)) {}
+
+    /**
+     * @brief Creates basic information for a FunctionMock with given result
+     * DataType, executor and cancel functions
+     *
+     * @attention
+     * Nullptr values are not allowed.
+     *
+     * @param result_type
+     * @param execute_cb
+     * @param cancel_cb
+     */
+    Functionality(DataType result_type, Executor execute_cb, Canceler cancel_cb)
+        : data_type(result_type), interface(Execute(execute_cb, cancel_cb)) {}
+
+    /**
+     * @brief Creates basic information for a FunctionMock with given result
+     * DataType, executor cancel functions and supported function parameters
+     *
+     * @attention
+     * Nullptr values are not allowed.
+     *
+     * @attention
+     * Set Function::ParameterTypes to {} in case function parameters are not
+     * used
+     *
+     * @param result_type
+     * @param execute_cb
+     * @param cancel_cb
+     * @param supported_params
+     */
+    Functionality(DataType result_type,
+        Executor execute_cb,
+        Canceler cancel_cb,
+        Function::ParameterTypes supported_params)
+        : data_type(result_type),
+          interface(Execute(execute_cb, cancel_cb, supported_params)) {}
+
+    ElementType type() const {
+      if (std::holds_alternative<Read>(interface)) {
+        return ElementType::READABLE;
+      } else if (std::holds_alternative<Write>(interface)) {
+        return ElementType::WRITABLE;
+      } else if (std::holds_alternative<Execute>(interface)) {
+        return ElementType::FUNCTION;
+      } else {
+        return ElementType::GROUP;
+      }
+    }
+
+    Read getRead() const { return std::get<Read>(interface); }
+    Write getWrite() const { return std::get<Write>(interface); }
+    Execute getExecute() const { return std::get<Execute>(interface); }
+
+    const DataType data_type; // NOLINT(readability-identifier-naming)
+    const Interface interface; // NOLINT(readability-identifier-naming)
+  };
+
 protected:
   /**
    * @addtogroup ElementModeling Device Element Modelling
@@ -414,6 +679,8 @@ protected:
   }
   /** @}*/
 };
+
+using DeviceBuilderInterfacePtr = std::shared_ptr<DeviceBuilderInterface>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_INTERFACE_HPP

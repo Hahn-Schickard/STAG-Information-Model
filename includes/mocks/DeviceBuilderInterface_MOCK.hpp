@@ -14,7 +14,7 @@ namespace testing {
  * @attention
  * Use for testing only
  */
-struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
+struct DeviceBuilderMock : public DeviceBuilderInterface {
   /**
    * @addtogroup DeviceModeling Device Modelling
    * @{
@@ -91,6 +91,7 @@ struct DeviceBuilderInterfaceMock : public DeviceBuilderInterface {
   MOCK_METHOD(UniqueDevicePtr, getResult, (), (override));
   /** @}*/
 };
+using DeviceBuilderMockPtr = std::shared_ptr<DeviceBuilderMock>;
 } // namespace testing
 } // namespace Information_Model
 

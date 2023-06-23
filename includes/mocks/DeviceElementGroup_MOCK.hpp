@@ -168,7 +168,6 @@ private:
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
-
 /** @}*/
 } // namespace testing
 } // namespace Information_Model
