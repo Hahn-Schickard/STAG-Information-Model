@@ -436,7 +436,7 @@ TYPED_TEST_SUITE(ComparatorTestSuite, ComparatorTestTypes);
 TYPED_TEST(ComparatorTestSuite, isEqual) {
   auto empty = this->param.makeEmpty();
 
-  EXPECT_TRUE((empty ? true : false))
+  EXPECT_EQ(empty, nullptr)
       << this->param.name << " comparator empty ptr is not empty";
   EXPECT_EQ(empty, empty) << this->param.name
                           << " comparator empty ptr is not equal to itself";
