@@ -10,6 +10,11 @@
 
 namespace Information_Model {
 struct DeviceElement;
+inline bool operator==(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept;
+inline bool operator!=(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept;
+
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
 
@@ -35,7 +40,13 @@ struct DeviceElementNotFound : public std::runtime_error {
 struct DeviceElementGroup {
   using DeviceElements = std::vector<NonemptyDeviceElementPtr>;
 
-  virtual DeviceElements getSubelements() {
+  /**
+   * @brief Returns a vector of contained elements ordered by DeviceElement
+   * reference ids in an ascending order
+   *
+   * @return DeviceElements
+   */
+  virtual DeviceElements getSubelements() const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
@@ -48,12 +59,39 @@ struct DeviceElementGroup {
    * within this group
    *
    */
-  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) {
+  virtual DeviceElementPtr getSubelement(const std::string& /*ref_id*/) const {
     throw std::runtime_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
 
   virtual ~DeviceElementGroup() = default;
+
+  bool operator==(const DeviceElementGroup& other) const noexcept {
+    auto result = false;
+    try {
+      auto this_elements = getSubelements();
+      auto other_elements = other.getSubelements();
+      result = (this_elements.size() == other_elements.size());
+      if (result) {
+        // if groups have the same number of elements
+        if (this_elements.size() > 0) {
+          // if groups have elements
+          for (size_t i = 0; i < this_elements.size(); ++i) {
+            const auto& this_element = *(this_elements[i].get());
+            const auto& other_element = *(other_elements[i].get());
+            result = result && (this_element == other_element);
+          }
+        }
+      }
+    } catch (...) {
+      result = false;
+    }
+    return result;
+  }
+
+  bool operator!=(const DeviceElementGroup& other) const noexcept {
+    return !operator==(other);
+  }
 
 protected:
   DeviceElementGroup() = default;
@@ -62,7 +100,6 @@ protected:
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
 using NonemptyDeviceElementGroupPtr =
     NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
-
 /** @}*/
 } // namespace Information_Model
 

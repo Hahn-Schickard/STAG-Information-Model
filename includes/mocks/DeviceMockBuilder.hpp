@@ -253,7 +253,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
   }
   /** @}*/
 
-private:
+protected:
   Functionality buildDefaultFunctionality(
       ElementType type, DataType data_type) {
     switch (type) {

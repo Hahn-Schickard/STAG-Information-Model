@@ -26,16 +26,14 @@ struct MockMetric : public Metric {
   MockMetric(DataType type) : MockMetric(type, setVariant(type)) {}
 
   MockMetric(DataType type, const DataVariant& variant)
-      : Metric(), type_(type), value_(variant) {}
+      : Metric(type), value_(variant) {}
 
   ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
     ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   void delegateToFake(Reader reader) {
@@ -47,13 +45,11 @@ struct MockMetric : public Metric {
         return value_;
       }
     });
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
 protected:
-  DataType type_;
   DataVariant value_;
   Reader read_ = nullptr;
 };

@@ -172,8 +172,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
-  EXPECT_CALL(*mocked_metric, getDataType());
-  metric->getDataType();
+  EXPECT_EQ(DataType::DOUBLE, metric->getDataType());
 
   EXPECT_CALL(*mocked_metric, getMetricValue());
   try {
@@ -219,8 +218,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
-  EXPECT_CALL(*mocked_metric.get(), getDataType());
-  writable_metric->getDataType();
+  EXPECT_EQ(DataType::DOUBLE, writable_metric->getDataType());
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());
   try {
@@ -286,8 +284,7 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
-  EXPECT_CALL(*mocked_metric, getDataType());
-  metric->getDataType();
+  EXPECT_EQ(DataType::DOUBLE, metric->getDataType());
 
   EXPECT_CALL(*mocked_metric, getMetricValue());
   try {
@@ -344,8 +341,7 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
-  EXPECT_CALL(*mocked_metric.get(), getDataType());
-  writable_metric->getDataType();
+  EXPECT_EQ(DataType::DOUBLE, writable_metric->getDataType());
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());
   try {

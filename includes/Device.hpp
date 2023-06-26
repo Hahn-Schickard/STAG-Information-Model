@@ -33,7 +33,7 @@ struct Device : public NamedElement {
    *
    * @return NonemptyDeviceElementGroupPtr
    */
-  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() {
+  virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
@@ -47,12 +47,31 @@ struct Device : public NamedElement {
    * @throws DeviceElementNotFound if no DeviceElement with given ref_id exists
    *
    */
-  virtual DeviceElementPtr getDeviceElement(const std::string& /* ref_id */) {
+  virtual DeviceElementPtr getDeviceElement(
+      const std::string& /* ref_id */) const {
     throw std::runtime_error(
         "Called base implementation of Device::getDeviceElement");
   }
 
   virtual ~Device() = default;
+
+  bool operator==(const Device& other) const noexcept {
+    try {
+      auto result = NamedElement::operator==(other);
+      if (result) {
+        const auto& this_elements = *(getDeviceElementGroup().get());
+        const auto& other_elements = *(other.getDeviceElementGroup().get());
+        result = result && (this_elements == other_elements);
+      }
+      return result;
+    } catch (...) {
+      return false;
+    }
+  }
+
+  bool operator!=(const Device& other) const noexcept {
+    return !operator==(other);
+  }
 
 protected:
   Device(const std::string& ref_id,
@@ -63,7 +82,6 @@ protected:
 
 using DevicePtr = std::shared_ptr<Device>;
 using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
-
 /** @}*/
 } // namespace Information_Model
 

@@ -84,7 +84,7 @@ struct DeviceElement : public NamedElement {
   // NOLINTNEXTLINE(readability-identifier-naming)
   const SpecificInterface functionality;
 
-  ElementType getElementType() {
+  ElementType getElementType() const {
     if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {
       return ElementType::GROUP;
     } else if (std::holds_alternative<NonemptyMetricPtr>(functionality)) {
@@ -110,9 +110,56 @@ private:
   friend struct DeviceBuilderInterface;
 };
 
+inline bool operator==(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept {
+  try {
+    auto result = (const NamedElement&)lhs == ((const NamedElement&)rhs);
+    result = result && (lhs.getElementType() == rhs.getElementType());
+    if (result) {
+      switch (lhs.getElementType()) {
+      case ElementType::WRITABLE: {
+        result = result &&
+            *(std::get<NonemptyWritableMetricPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyWritableMetricPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::READABLE: {
+        result = result &&
+            *(std::get<NonemptyMetricPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyMetricPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::FUNCTION: {
+        result = result &&
+            *(std::get<NonemptyFunctionPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyFunctionPtr>(rhs.functionality));
+        break;
+      }
+      case ElementType::OBSERVABLE: {
+        throw false;
+      }
+      case ElementType::GROUP: {
+        result = result &&
+            *(std::get<NonemptyDeviceElementGroupPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyDeviceElementGroupPtr>(rhs.functionality));
+        break;
+      }
+      default: { throw false; }
+      }
+    }
+    return result;
+  } catch (...) {
+    return false;
+  }
+}
+
+inline bool operator!=(
+    const DeviceElement& lhs, const DeviceElement& rhs) noexcept {
+  return !(lhs == rhs);
+}
+
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
 using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
-
 /** @}*/
 } // namespace Information_Model
 

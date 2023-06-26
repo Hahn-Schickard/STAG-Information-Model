@@ -49,7 +49,7 @@ struct WritableMetric : public Metric {
   virtual ~WritableMetric() = default;
 
 protected:
-  WritableMetric() = default;
+  WritableMetric(DataType type) : Metric(type) {}
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;

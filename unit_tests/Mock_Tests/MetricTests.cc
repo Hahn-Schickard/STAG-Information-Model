@@ -36,14 +36,7 @@ protected:
 
 // NOLINTNEXTLINE
 TEST_P(MetricMultipleParametersTests, canGetType) {
-  auto mock = dynamic_pointer_cast<MockMetric>(metric);
-  mock->delegateToFake();
-
-  EXPECT_CALL(*mock.get(), getDataType()).Times(1);
-
-  DataType tested;
-  ASSERT_NO_THROW(tested = metric->getDataType());
-  EXPECT_EQ(expectations->type_, tested);
+  EXPECT_EQ(expectations->type_, metric->getDataType());
 }
 
 // NOLINTNEXTLINE
