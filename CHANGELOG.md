@@ -1,4 +1,67 @@
 # Changelog
+## [0.3.0] - 2023.06.26
+### Added 
+ - UML Class diagram documentation
+ - Device composition documentation
+ - Naming conventions
+ - `DataType::NONE`
+ - `DataType toDataType(DataVariant)` function
+ - `bool matchVariantType(const DataVariant&, DataType)` function
+ - `NamedElement::operator==(const NamedElement&)` method
+ - `NamedElement::operator!=(const NamedElement&)` method
+ - `Device` class documentation
+ - `Device::getDeviceElementGroup()` method documentation
+ - `Device::getDeviceElement()` method documentation
+ - `DeviceElementNotFound` exception
+ - `bool Device::operator==(const Device&)` method
+ - `bool Device::operator!=(const Device&)` method
+ - `NonemptyFunctionPtr` to `DeviceElement::SpecificInterface` field
+ - `ElementType DeviceElement ::getElementType()` method
+ - `bool operator==(const DeviceElement&, const DeviceElement&)` function
+ - `bool operator!=(const DeviceElement&, const DeviceElement&)` function
+ - `ResultReturningNotSupported` exception 
+ - `CallerNotFound` exception
+ - `CallerIDExists` exception
+ - `CallCanceled` exception
+ - `FunctionCallTimedout` exception
+ - `Function` class
+ - `Function::ResultFuture` class
+ - `void addParameter(Function::Parameters&, uintmax_t, const Function::Parameter&)` function
+ - `void addSupportedParameter(Function::Parameters&, const Function::ParameterTypes&, uintmax_t, const Function::Parameter&)` function 
+ - `std::string toString(Function::ParameterTypes)` function
+ - `DeviceBuilderInterface::Writer` callable alias
+ - `DeviceBuilderInterface::Reader` callable alias
+ - `DeviceBuilderInterface::Executor` callable alias
+ - `DeviceBuilderInterface::Canceler` callable alias
+ - `DeviceBuilderInterface::Functionality` class
+ - `Metric::value_type_` private field
+ - `WritableMetric::isWriteOnly()` method
+ - `Nonempty*` alias for modeled elements
+
+### Changed
+ - `DateTime::size()` method to const
+ - `Device::getDeviceElement()` return type to `NonemptyDeviceElementPtr`
+ - `Device::getDeviceElement()` to throw `DeviceElementNotFound`
+ - `DeviceElementGroup::getDeviceElement()` return type to `NonemptyDeviceElementPtr`
+ - `DeviceElementGroup::getDeviceElement()` to throw `DeviceElementNotFound`
+ - `DeviceElement::specific_interface` into `DeviceElement::functionality` 
+ - `DeviceElement` ctor to only be accessible by `DeviceBuilderInterface`
+ - `DeviceBuilderInterface::getResult()` method to return `UniqueDevicePtr`
+ - `DeviceBuilderInterface::add*(const std::string& name, ...)` methods be non virtual and to call appropriate virtual method
+ - `DeviceBuilderInterface::addFunction()` method
+ - `DeviceBuilderInterface::makeDeviceElement()` method to be protected
+ - `ElementType` enum to be declared in **DeviceElement.hpp** instead of **DeviceBuilderInterface.hpp**
+ - `Metric::getDataType()` method to no longer be virtual
+ - `WritableMetric` to inherit from `Metric` 
+ - `DeviceBuilderInterfaceMock` into `DeviceBuilderMock`
+ 
+### Removed
+ - `DeviceElement()` ctor
+ - `Metric()` ctor
+ - `ReadFunctor` callable alias
+ - `WriteFunctor` callable alias
+ - `ExecuteFunctor` callable alias 
+
 ## [0.2.2] - 2022.11.17
 ### Changed
  - conan packaging recipe
