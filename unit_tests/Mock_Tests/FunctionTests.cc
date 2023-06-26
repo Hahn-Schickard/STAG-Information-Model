@@ -434,7 +434,8 @@ string makeExpectationName(DataType type) {
 
 string sanitizeValueName(DataVariant value) {
   string result;
-  match(value,
+  match(
+      value,
       [&result](bool val) { result = val ? "True" : "False"; },
       [&result](auto val) {
         if (val < 0) {

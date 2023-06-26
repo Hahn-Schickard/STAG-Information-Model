@@ -144,7 +144,9 @@ inline bool operator==(
                 *(std::get<NonemptyDeviceElementGroupPtr>(rhs.functionality));
         break;
       }
-      default: { throw false; }
+      default: {
+        throw false;
+      }
       }
     }
     return result;

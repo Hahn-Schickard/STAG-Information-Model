@@ -92,7 +92,8 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(element->functionality,
+  match(
+      element->functionality,
       [offset](NonemptyDeviceElementGroupPtr interface) {
         print(interface, offset);
       },
