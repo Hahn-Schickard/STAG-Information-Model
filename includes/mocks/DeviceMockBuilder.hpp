@@ -60,11 +60,6 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
    * @addtogroup GroupModeling Device Element Group Modelling
    * @{
    */
-  std::string addDeviceElementGroup(
-      const std::string& name, const std::string& desc) override {
-    return addDeviceElement(std::string(), name, desc, Functionality());
-  }
-
   std::string addDeviceElementGroup(const std::string& group_ref_id,
       const std::string& name,
       const std::string& desc) override {

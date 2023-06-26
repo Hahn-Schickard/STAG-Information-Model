@@ -84,7 +84,7 @@ struct DeviceBuilderInterface {
    * @param desc
    * @return std::string
    */
-  virtual std::string addDeviceElementGroup(
+  std::string addDeviceElementGroup(
       const std::string& name, const std::string& desc) {
     return addDeviceElementGroup(std::string(), name, desc);
   }
