@@ -82,18 +82,17 @@ stages:
 
 .lint:
   extends: .setup
-  dependencies: null
   stage: check
   tags:
     - conan
   script:
-    - python3 utility/run-clang-format.py --dirs includes/ sources/ unit_tests/ --list-files --recursive
+    - python3 utility/run-clang-tidy.py -build build --all-threads --verbose --export-fixes
   image: ${DOCKER_REGISTRY}/hs-conan-debian-buster-slim:latest
   artifacts:
     when: on_failure
     name: "Commit:${CI_COMMIT_SHORT_SHA}_Linter_Fixes"
     paths:
-      - clang-format-fixes/
+      - clang-tidy-fixes/
     expire_in: 1 days
   allow_failure: true
 
