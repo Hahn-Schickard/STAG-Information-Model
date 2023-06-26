@@ -60,7 +60,7 @@ private:
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
-
+using NonemptyMockDevicePtr = NonemptyPointer::NonemptyPtr<MockDevicePtr>;
 /** @}*/
 } // namespace testing
 } // namespace Information_Model
