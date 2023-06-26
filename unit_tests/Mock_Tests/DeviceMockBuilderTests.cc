@@ -75,6 +75,7 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
       ref_id = builder->addDeviceElementGroup("group_name", "group_desc"));
   EXPECT_EQ(ref_id, "1234:0");
 
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
                       ref_id, group_name, group_desc));
   EXPECT_EQ(subgroup_ref_id, "1234:0.0");
@@ -113,6 +114,7 @@ TEST(DeviceMockBuilderTests, canAddSubSubGroup) {
       ref_id = builder->addDeviceElementGroup("group_name", "group_desc"));
   EXPECT_EQ(ref_id, "1234:0");
 
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
                       ref_id, "Sub Group 1", "Mocked Sub Group 1"));
   EXPECT_EQ(subgroup_ref_id, "1234:0.0");
@@ -253,15 +255,19 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   string subgroup_ref_id;
   string element_name = "Metric";
   string element_desc = "Mocked Metric";
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(group_ref_id = builder->addDeviceElementGroup(
                       "group_name", "group_desc"));
   EXPECT_EQ(group_ref_id, "1234:0");
 
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
                       group_ref_id, "subgroup_name", "subgroup_desc"));
   EXPECT_EQ(subgroup_ref_id, "1234:0.0");
 
   EXPECT_NO_THROW(
+      // NOLINTNEXTLINE(readability-suspicious-call-argument)
       element_ref_id = builder->addReadableMetric(
           subgroup_ref_id, element_name, element_desc, DataType::DOUBLE));
   EXPECT_EQ(element_ref_id, "1234:0.0.0");
@@ -310,15 +316,19 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   string subgroup_ref_id;
   string element_name = "Writable Metric";
   string element_desc = "Mocked Writable Metric";
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(group_ref_id = builder->addDeviceElementGroup(
                       "group_name", "group_desc"));
   EXPECT_EQ(group_ref_id, "1234:0");
 
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
   EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
                       group_ref_id, "subgroup_name", "subgroup_desc"));
   EXPECT_EQ(subgroup_ref_id, "1234:0.0");
 
   EXPECT_NO_THROW(
+      // NOLINTNEXTLINE(readability-suspicious-call-argument)
       element_ref_id = builder->addWritableMetric(
           subgroup_ref_id, element_name, element_desc, DataType::DOUBLE));
   EXPECT_EQ(element_ref_id, "1234:0.0.0");
