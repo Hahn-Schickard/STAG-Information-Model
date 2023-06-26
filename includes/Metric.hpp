@@ -61,7 +61,6 @@ protected:
 
 using MetricPtr = std::shared_ptr<Metric>;
 using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
-
 /** @}*/
 } // namespace Information_Model
 

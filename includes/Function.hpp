@@ -320,7 +320,6 @@ inline std::string toString(Function::ParameterTypes params) {
 
 using FunctionPtr = std::shared_ptr<Function>;
 using NonemptyFunctionPtr = NonemptyPointer::NonemptyPtr<FunctionPtr>;
-
 /** @}*/
 } // namespace Information_Model
 #endif //__INFORMATION_MODEL_FUNCTION_HPP
