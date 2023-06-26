@@ -225,7 +225,9 @@ inline std::string toString(TestElementType type) {
   case TestElementType::EXECUTABLE: {
     return "EXECUTABLE";
   }
-  default: { return "UNKOWN"; }
+  default: {
+    return "UNKOWN";
+  }
   }
 }
 

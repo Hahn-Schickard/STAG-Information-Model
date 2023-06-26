@@ -133,7 +133,8 @@ using DataVariant = std::variant<bool,
 
 inline std::size_t size_of(DataVariant variant) {
   std::size_t result;
-  match(variant,
+  match(
+      variant,
       [&](auto value) { result = sizeof(value); },
       [&](DateTime value) { result = value.size(); },
       [&](std::vector<uint8_t> value) { result = value.size(); },
@@ -191,7 +192,8 @@ inline bool matchVariantType(DataVariant variant, DataType type) {
 
 inline std::string toString(DataVariant variant) {
   std::string result;
-  match(variant,
+  match(
+      variant,
       [&](bool value) { result = (value ? "true" : "false"); },
       [&](auto value) { result = std::to_string(value); },
       [&](DateTime value) { result = value.toString(); },
