@@ -71,7 +71,8 @@ private:
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
-
+using NonemptyMockWritableMetricPtr =
+    NonemptyPointer::NonemptyPtr<MockWritableMetricPtr>;
 /** @}*/
 } // namespace testing
 } // namespace Information_Model
