@@ -34,13 +34,12 @@ struct MockDevice : public Device {
         base_group_(
             std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(
                 ref_id + ":")) {
-    ON_CALL(*this, getDeviceElementGroup)
-        .WillByDefault([this]() -> NonemptyDeviceElementGroupPtr {
-          return NonemptyDeviceElementGroupPtr(base_group_);
-        });
+    ON_CALL(*this, getDeviceElementGroup).WillByDefault([this]() {
+      return NonemptyDeviceElementGroupPtr(base_group_);
+    });
 
     ON_CALL(*this, getDeviceElement)
-        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
+        .WillByDefault([this](const std::string& ref_id) {
           return base_group_->getSubelement(ref_id);
         });
   }
@@ -50,7 +49,7 @@ struct MockDevice : public Device {
       (),
       (const override));
 
-  MOCK_METHOD(DeviceElementPtr,
+  MOCK_METHOD(NonemptyDeviceElementPtr,
       getDeviceElement,
       (const std::string& /*ref_id*/),
       (const override));

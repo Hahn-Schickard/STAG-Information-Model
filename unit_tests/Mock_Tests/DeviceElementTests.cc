@@ -81,7 +81,7 @@ protected:
     }
 
     device = builder->getResult();
-    element = device->getDeviceElement("1234:0");
+    element = device->getDeviceElement("1234:0").base();
   }
 
   // NOLINTNEXTLINE(readability-identifier-naming)

@@ -24,7 +24,7 @@ namespace testing {
 struct MockDeviceElementGroup : public DeviceElementGroup {
   MockDeviceElementGroup(const std::string& ref_id)
       : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
-    ON_CALL(*this, getSubelements).WillByDefault([this]() -> DeviceElements {
+    ON_CALL(*this, getSubelements).WillByDefault([this]() {
       std::vector<NonemptyDeviceElementPtr> subelements;
       // NOLINTNEXTLINE
       for (auto element_pair : elements_map_) {
@@ -34,31 +34,30 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     });
 
     ON_CALL(*this, getSubelement)
-        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
+        .WillByDefault([this](const std::string& ref_id) {
           size_t target_level = getTreeLevel(ref_id) - 1;
           size_t current_level = getTreeLevel(element_id_);
           // Check if a given element is in a sub group
           if (target_level != current_level) {
             auto next_id = getNextElementID(ref_id, target_level);
-            auto next_element = getSubelement(next_id);
-            // Check if next element exists and is a group
-            if (next_element) {
-              auto next_group = std::get_if<NonemptyDeviceElementGroupPtr>(
-                  &next_element->functionality);
-              if (next_group)
-                return (*next_group)->getSubelement(ref_id);
+            auto next_element = getSubelement(next_id).base();
+            try {
+              auto next_group = std::get<NonemptyDeviceElementGroupPtr>(
+                  next_element->functionality);
+              return next_group->getSubelement(ref_id);
+            } catch (...) {
+              throw DeviceElementNotFound(ref_id);
             }
-          } // If not, check if it is in this group
-          else if (elements_map_.find(ref_id) != elements_map_.end()) {
-            return elements_map_.at(ref_id).base();
+
+          } else if (elements_map_.find(ref_id) != elements_map_.end()) {
+            return elements_map_.at(ref_id);
           }
-          // If not, return an empty shared_ptr
-          return DeviceElementPtr();
+          throw DeviceElementNotFound(ref_id);
         });
   }
 
   MOCK_METHOD(DeviceElements, getSubelements, (), (const override));
-  MOCK_METHOD(DeviceElementPtr,
+  MOCK_METHOD(NonemptyDeviceElementPtr,
       getSubelement,
       (const std::string& /* ref_id */),
       (const override));
