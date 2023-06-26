@@ -18,7 +18,7 @@ struct DeviceElementExpectations {
 
   DeviceElementExpectations(const DeviceElementExpectations& other) = default;
 
-  DeviceElementExpectations(
+  DeviceElementExpectations( // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
       const string& element_name, // NOLINT(modernize-pass-by-value)
       const string& element_desc, // NOLINT(modernize-pass-by-value)
       ElementType element_type,
