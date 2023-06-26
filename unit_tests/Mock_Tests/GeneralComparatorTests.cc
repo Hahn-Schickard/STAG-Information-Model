@@ -6,10 +6,10 @@ using namespace Information_Model;
 using namespace Information_Model::testing;
 using namespace std;
 
-template <typename ElementType> struct Comparator_TestType {
+template <typename ElementType> struct ComparatorTestType {
   using ElementTypePtr = shared_ptr<ElementType>;
 
-  Comparator_TestType(const string& name_) : name(name_) {}
+  ComparatorTestType(const string& testcase_name) : name(testcase_name) {}
 
   ElementTypePtr makeEmpty() { return ElementTypePtr(); }
 
@@ -34,8 +34,8 @@ template <typename ElementType> struct Comparator_TestType {
  * Test paramater for same element type test case
  *
  */
-struct DifferentRefIdsTestParam : Comparator_TestType<DeviceElement> {
-  DifferentRefIdsTestParam() : Comparator_TestType("Different Ref IDs") {}
+struct DifferentRefIdsTestParam : ComparatorTestType<DeviceElement> {
+  DifferentRefIdsTestParam() : ComparatorTestType("Different Ref IDs") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeReadable());
@@ -59,9 +59,9 @@ struct DifferentRefIdsTestParam : Comparator_TestType<DeviceElement> {
  * Test paramater for DeviceElement with different element types test case
  *
  */
-struct DifferentElementTypesTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentElementTypesTestParam : ComparatorTestType<DeviceElement> {
   DifferentElementTypesTestParam()
-      : Comparator_TestType("Different Element Types") {}
+      : ComparatorTestType("Different Element Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeExecutable(meta_info));
@@ -89,9 +89,9 @@ private:
  * Test paramater for readable metric with differing value types test case
  *
  */
-struct DifferentReadableValuesTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentReadableValuesTestParam : ComparatorTestType<DeviceElement> {
   DifferentReadableValuesTestParam()
-      : Comparator_TestType("Different Metric Value Types") {}
+      : ComparatorTestType("Different Metric Value Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeReadable());
@@ -116,10 +116,9 @@ struct DifferentReadableValuesTestParam : Comparator_TestType<DeviceElement> {
  * with differing value types test case
  *
  */
-struct DifferentWriteOnlyValuesTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentWriteOnlyValuesTestParam : ComparatorTestType<DeviceElement> {
   DifferentWriteOnlyValuesTestParam()
-      : Comparator_TestType("Different Write-only WritableMetric Value Types") {
-  }
+      : ComparatorTestType("Different Write-only WritableMetric Value Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeWriteOnly());
@@ -143,9 +142,9 @@ struct DifferentWriteOnlyValuesTestParam : Comparator_TestType<DeviceElement> {
  * Test paramater for writable metric with differing value types test case
  *
  */
-struct DifferentWritableValuesTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentWritableValuesTestParam : ComparatorTestType<DeviceElement> {
   DifferentWritableValuesTestParam()
-      : Comparator_TestType("Different WritableMetric Value Types") {}
+      : ComparatorTestType("Different WritableMetric Value Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeWritable());
@@ -169,9 +168,9 @@ struct DifferentWritableValuesTestParam : Comparator_TestType<DeviceElement> {
  * Test paramater for function with different return values test case
  *
  */
-struct DifferentExecuteReturnsTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentExecuteReturnsTestParam : ComparatorTestType<DeviceElement> {
   DifferentExecuteReturnsTestParam()
-      : Comparator_TestType("Different Function Return Types") {}
+      : ComparatorTestType("Different Function Return Types") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeExecutable());
@@ -195,9 +194,9 @@ struct DifferentExecuteReturnsTestParam : Comparator_TestType<DeviceElement> {
  * Test paramater for function with different acceptable parameters test case
  *
  */
-struct DifferentExecuteParamsTestParam : Comparator_TestType<DeviceElement> {
+struct DifferentExecuteParamsTestParam : ComparatorTestType<DeviceElement> {
   DifferentExecuteParamsTestParam()
-      : Comparator_TestType("Different Function parameters") {}
+      : ComparatorTestType("Different Function parameters") {}
 
   DeviceElementPtr make() {
     return builder.build<DeviceElement>(makeExecutable());
@@ -223,9 +222,9 @@ struct DifferentExecuteParamsTestParam : Comparator_TestType<DeviceElement> {
  *
  */
 struct EmptyGroupNotEqualToNotEmptyTestParam
-    : Comparator_TestType<DeviceElementGroup> {
+    : ComparatorTestType<DeviceElementGroup> {
   EmptyGroupNotEqualToNotEmptyTestParam()
-      : Comparator_TestType("Empty Group not equal to not-empty Group") {}
+      : ComparatorTestType("Empty Group not equal to not-empty Group") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeEmptyGroup());
@@ -255,9 +254,9 @@ struct EmptyGroupNotEqualToNotEmptyTestParam
  *
  */
 struct DifferentSingleElementGroupsTestParam
-    : Comparator_TestType<DeviceElementGroup> {
+    : ComparatorTestType<DeviceElementGroup> {
   DifferentSingleElementGroupsTestParam()
-      : Comparator_TestType("Different single element groups") {}
+      : ComparatorTestType("Different single element groups") {}
 
   DeviceElementGroupPtr make() {
     vector<TestElementType> subelement_types = {TestElementType::READABLE};
@@ -289,9 +288,9 @@ private:
  *
  */
 struct DifferentSingleLevelGroupsTestParam
-    : Comparator_TestType<DeviceElementGroup> {
+    : ComparatorTestType<DeviceElementGroup> {
   DifferentSingleLevelGroupsTestParam()
-      : Comparator_TestType("Different single level groups") {}
+      : ComparatorTestType("Different single level groups") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeSingleLevelGroup());
@@ -322,9 +321,9 @@ struct DifferentSingleLevelGroupsTestParam
  *
  */
 struct DifferentTwoLevelNestedGroupsTestParam
-    : Comparator_TestType<DeviceElementGroup> {
+    : ComparatorTestType<DeviceElementGroup> {
   DifferentTwoLevelNestedGroupsTestParam()
-      : Comparator_TestType("Different two level nested groups") {}
+      : ComparatorTestType("Different two level nested groups") {}
 
   DeviceElementGroupPtr make() {
     return builder.build<DeviceElementGroup>(makeNestedGroup());
@@ -358,9 +357,8 @@ struct DifferentTwoLevelNestedGroupsTestParam
  * Test paramater for different single level Devices test case
  *
  */
-struct DifferentSingleLevelDevicesTestParam : Comparator_TestType<Device> {
-  DifferentSingleLevelDevicesTestParam()
-      : Comparator_TestType("SimpleDevice") {}
+struct DifferentSingleLevelDevicesTestParam : ComparatorTestType<Device> {
+  DifferentSingleLevelDevicesTestParam() : ComparatorTestType("SimpleDevice") {}
 
   DevicePtr make() { return builder.build<Device>(makeSingleLevelGroup()); }
 
@@ -382,8 +380,8 @@ struct DifferentSingleLevelDevicesTestParam : Comparator_TestType<Device> {
  * Test paramater for different two level nested Devices test case
  *
  */
-struct DifferentTwoLevelDevicesTestParam : Comparator_TestType<Device> {
-  DifferentTwoLevelDevicesTestParam() : Comparator_TestType("ComplexDevice") {}
+struct DifferentTwoLevelDevicesTestParam : ComparatorTestType<Device> {
+  DifferentTwoLevelDevicesTestParam() : ComparatorTestType("ComplexDevice") {}
 
   DevicePtr make() { return builder.build<Device>(makeNestedGroup()); }
 
@@ -411,8 +409,8 @@ struct DifferentTwoLevelDevicesTestParam : Comparator_TestType<Device> {
   }
 };
 
-template <typename T> struct Comparator_TestSuite : public ::testing::Test {
-  Comparator_TestSuite() : param(T()) {}
+template <typename T> struct ComparatorTestSuite : public ::testing::Test {
+  ComparatorTestSuite() : param(T()) {}
 
   T param; // NOLINT(readability-identifier-naming)
 };
@@ -432,12 +430,13 @@ using ComparatorTestTypes = ::testing::Types< //
     DifferentSingleLevelDevicesTestParam,
     DifferentTwoLevelDevicesTestParam>;
 
-TYPED_TEST_SUITE(Comparator_TestSuite, ComparatorTestTypes);
+TYPED_TEST_SUITE(ComparatorTestSuite, ComparatorTestTypes);
 
-TYPED_TEST(Comparator_TestSuite, isEqual) {
+// NOLINTNEXTLINE
+TYPED_TEST(ComparatorTestSuite, isEqual) {
   auto empty = this->param.makeEmpty();
 
-  EXPECT_TRUE(empty ? false : true)
+  EXPECT_EQ(empty, nullptr)
       << this->param.name << " comparator empty ptr is not empty";
   EXPECT_EQ(empty, empty) << this->param.name
                           << " comparator empty ptr is not equal to itself";
@@ -459,7 +458,8 @@ TYPED_TEST(Comparator_TestSuite, isEqual) {
                                       "contain the same value as copied value";
 }
 
-TYPED_TEST(Comparator_TestSuite, isNotEqual) {
+// NOLINTNEXTLINE
+TYPED_TEST(ComparatorTestSuite, isNotEqual) {
   auto tested = this->param.make();
   auto empty = this->param.makeEmpty();
   EXPECT_NE(tested, empty)

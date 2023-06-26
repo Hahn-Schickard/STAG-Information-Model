@@ -11,18 +11,20 @@ using namespace std;
 using ::testing::AtLeast;
 
 struct DeviceElementExpectations {
-  const string name_;
-  const string desc_;
-  const ElementType type_;
-  const DataType data_type_;
+  const string name;
+  const string desc;
+  const ElementType type;
+  const DataType data_type;
 
   DeviceElementExpectations(const DeviceElementExpectations& other) = default;
 
-  DeviceElementExpectations(const string& name,
-      const string& desc,
-      ElementType type,
-      DataType data_type = DataType::UNKNOWN)
-      : name_(name), desc_(desc), type_(type), data_type_(data_type) {}
+  DeviceElementExpectations( // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+      const string& element_name, // NOLINT(modernize-pass-by-value)
+      const string& element_desc, // NOLINT(modernize-pass-by-value)
+      ElementType element_type,
+      DataType element_data_type = DataType::UNKNOWN)
+      : name(element_name), desc(element_desc), type(element_type),
+        data_type(element_data_type) {}
 };
 
 using DeviceElementExpectationsPtr = shared_ptr<DeviceElementExpectations>;
@@ -32,7 +34,7 @@ DeviceBuilderInterface::Reader makeDefaultReader(DataType type) {
 }
 
 DeviceBuilderInterface::Writer makeDefaultWriter(DataType type) {
-  return [type](DataVariant value) {
+  return [type](const DataVariant& value) {
     if (!matchVariantType(value, type)) {
       string error_msg = "Incorrect data variant. Metric expects " +
           toString(type) + " data type, but " + toString(toDataType(value)) +
@@ -51,29 +53,29 @@ protected:
     auto builder = make_shared<DeviceMockBuilder>();
     builder->buildDeviceBase("1234", "Mocky", "Mocked device");
 
-    switch (expectations->type_) {
+    switch (expectations->type) {
     case ElementType::GROUP: {
-      builder->addDeviceElementGroup(expectations->name_, expectations->desc_);
+      builder->addDeviceElementGroup(expectations->name, expectations->desc);
       break;
     }
     case ElementType::READABLE: {
-      builder->addReadableMetric(expectations->name_,
-          expectations->desc_,
-          expectations->data_type_,
-          makeDefaultReader(expectations->data_type_));
+      builder->addReadableMetric(expectations->name,
+          expectations->desc,
+          expectations->data_type,
+          makeDefaultReader(expectations->data_type));
       break;
     }
     case ElementType::WRITABLE: {
-      builder->addWritableMetric(expectations->name_,
-          expectations->desc_,
-          expectations->data_type_,
-          makeDefaultWriter(expectations->data_type_),
-          makeDefaultReader(expectations->data_type_));
+      builder->addWritableMetric(expectations->name,
+          expectations->desc,
+          expectations->data_type,
+          makeDefaultWriter(expectations->data_type),
+          makeDefaultReader(expectations->data_type));
       break;
     }
     default: {
       string error_msg =
-          toString(expectations->type_) + " testing is not supported";
+          toString(expectations->type) + " testing is not supported";
       throw logic_error(error_msg);
     }
     }
@@ -82,22 +84,26 @@ protected:
     element = device->getDeviceElement("1234:0");
   }
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   DeviceElementExpectationsPtr expectations;
-  DeviceElementPtr element;
-  DevicePtr device;
+  DeviceElementPtr element; // NOLINT(readability-identifier-naming)
+  DevicePtr device; // NOLINT(readability-identifier-naming)
 };
 
 // NOLINTNEXTLINE
 TEST_P(DeviceElementParametersTests, canGetElementType) {
-  ElementType tested;
-  EXPECT_NO_THROW(tested = expectations->type_);
-  EXPECT_EQ(tested, element->getElementType());
+  try {
+    auto tested = expectations->type;
+    EXPECT_EQ(tested, element->getElementType());
+  } catch (...) {
+    FAIL() << " caught an exception";
+  }
 }
 
 struct SetDeviceElementTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
-    return info.param.name_;
+    return info.param.name;
   }
 };
 

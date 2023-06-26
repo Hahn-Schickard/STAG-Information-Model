@@ -120,7 +120,7 @@ struct Function {
    *
    * @param parameters
    */
-  virtual void execute(Parameters /*parameters*/ = Parameters()) {
+  virtual void execute(const Parameters& /*parameters*/ = Parameters()) {
     throw std::runtime_error(
         "Called based implementation of Function::execute()");
   }
@@ -167,7 +167,7 @@ struct Function {
    * @return DataVariant
    */
   virtual DataVariant call(
-      Parameters /*parameters*/, uintmax_t /*timeout*/ = 100) {
+      const Parameters& /*parameters*/, uintmax_t /*timeout*/ = 100) {
     throw ResultReturningNotSupported();
   }
 
@@ -185,7 +185,8 @@ struct Function {
    * @param parameters
    * @return ResultFuture
    */
-  virtual ResultFuture asyncCall(Parameters /*parameters*/ = Parameters()) {
+  virtual ResultFuture asyncCall(
+      const Parameters& /*parameters*/ = Parameters()) {
     throw ResultReturningNotSupported();
   }
 
@@ -231,7 +232,7 @@ struct Function {
   const ParameterTypes parameters; // NOLINT(readability-identifier-naming)
 
 protected:
-  Function(DataType type, ParameterTypes supported_parameters)
+  Function(DataType type, const ParameterTypes& supported_parameters)
       : result_type(type), parameters(supported_parameters) {}
 }; // namespace Information_Model
 
@@ -248,7 +249,7 @@ protected:
  */
 inline void addParameter(Function::Parameters& map,
     uintmax_t param_number,
-    Function::Parameter param) {
+    const Function::Parameter& param) {
   if (!map.try_emplace(param_number, param).second) {
     auto existing = map[param_number].value_or(DataVariant());
     auto param_value = param.value_or(DataVariant());
@@ -277,7 +278,7 @@ inline void addParameter(Function::Parameters& map,
 inline void addSupportedParameter(Function::Parameters& map,
     const Function::ParameterTypes& supported_types,
     uintmax_t param_number,
-    Function::Parameter param) {
+    const Function::Parameter& param) {
   auto supported_types_iter = supported_types.find(param_number);
   if (supported_types_iter != supported_types.end()) {
     auto supported_type = supported_types_iter->second;

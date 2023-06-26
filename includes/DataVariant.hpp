@@ -35,7 +35,7 @@ public:
    *
    * @param time_point
    */
-  DateTime(std::time_t time_point) : posix_time_(time_point) {}
+  DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
 
   /**
    * @brief Converts POSIX time to human readable format
@@ -53,7 +53,7 @@ public:
    */
   std::time_t getValue() const { return posix_time_; }
 
-  std::size_t size() { return sizeof(posix_time_); }
+  std::size_t size() const { return sizeof(posix_time_); }
 
   friend bool operator==(const DateTime& lhs, const DateTime& rhs);
   friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
@@ -131,14 +131,14 @@ using DataVariant = std::variant<bool,
     std::vector<uint8_t>,
     std::string>;
 
-inline std::size_t size_of(DataVariant variant) {
+inline std::size_t size_of(const DataVariant& variant) {
   std::size_t result;
   match(
       variant,
       [&](auto value) { result = sizeof(value); },
-      [&](DateTime value) { result = value.size(); },
-      [&](std::vector<uint8_t> value) { result = value.size(); },
-      [&](std::string value) { result = value.size(); });
+      [&](const DateTime& value) { result = value.size(); },
+      [&](const std::vector<uint8_t>& value) { result = value.size(); },
+      [&](const std::string& value) { result = value.size(); });
   return result;
 }
 
@@ -166,7 +166,7 @@ inline DataVariant setVariant(DataType type) {
   }
 }
 
-inline DataType toDataType(DataVariant variant) {
+inline DataType toDataType(const DataVariant& variant) {
   if (std::holds_alternative<bool>(variant)) {
     return DataType::BOOLEAN;
   } else if (std::holds_alternative<intmax_t>(variant)) {
@@ -186,11 +186,11 @@ inline DataType toDataType(DataVariant variant) {
   }
 }
 
-inline bool matchVariantType(DataVariant variant, DataType type) {
+inline bool matchVariantType(const DataVariant& variant, DataType type) {
   return toDataType(variant) == type;
 }
 
-inline std::string toString(DataVariant variant) {
+inline std::string toString(const DataVariant& variant) {
   std::string result;
   match(
       variant,
