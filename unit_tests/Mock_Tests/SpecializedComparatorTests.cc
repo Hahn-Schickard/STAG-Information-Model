@@ -15,9 +15,10 @@ protected:
         makeSingleLevelGroupInfo("", "second-group", "second group mock");
   }
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   TestElementBuilder builder = TestElementBuilder();
-  ElementMetaInfo first_group_info;
-  ElementMetaInfo second_group_info;
+  ElementMetaInfo first_group_info; // NOLINT(readability-identifier-naming)
+  ElementMetaInfo second_group_info; // NOLINT(readability-identifier-naming)
 };
 
 // NOLINTNEXTLINE

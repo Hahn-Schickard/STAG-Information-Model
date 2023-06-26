@@ -11,9 +11,9 @@ using ::testing::AtLeast;
 
 class WritableMetricTests : public ::testing::Test {
 protected:
-  void SetUp() override { integer = make_shared<MockWritableMetric>(); }
+  WritableMetricTests() : integer(make_shared<MockWritableMetric>()) {}
 
-  shared_ptr<MockWritableMetric> integer;
+  const MockWritableMetricPtr integer;
 };
 
 // NOLINTNEXTLINE

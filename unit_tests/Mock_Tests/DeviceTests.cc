@@ -13,72 +13,72 @@ using ::testing::AtLeast;
 TEST(DeviceTests, DeviceElementGroupIDIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementId();
+  std::string tested_element = mock_device.getElementId();
   // Assert
-  std::string expectedResult = "1234";
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "1234";
+  EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupIDIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementId();
+  std::string tested_element = mock_device.getElementId();
   // Assert
-  std::string expectedResult = "1235:";
-  EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "1235:";
+  EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupNameIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementName();
+  std::string tested_element = mock_device.getElementName();
   // Assert
-  std::string expectedResult = "TestDevice";
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "TestDevice";
+  EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupNameIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementName();
+  std::string tested_element = mock_device.getElementName();
   // Assert
-  std::string expectedResult = "TestDevice2";
-  EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "TestDevice2";
+  EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupDescriptionIsCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementDescription();
+  std::string tested_element = mock_device.getElementDescription();
   // Assert
-  std::string expectedResult = "A hardcoded deviceelement";
-  EXPECT_STREQ(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "A hardcoded deviceelement";
+  EXPECT_STREQ(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE
 TEST(DeviceTests, DeviceElementGroupDescriptionIsNotCorrect) {
   MockDevice mock_device("1234", "TestDevice", "A hardcoded deviceelement");
   // Act
-  std::string testedElement = mock_device.getElementDescription();
+  std::string tested_element = mock_device.getElementDescription();
   // Assert
-  std::string expectedResult = "A hardcoded deviceelement2.";
-  EXPECT_STRNE(expectedResult.c_str(), testedElement.c_str())
-      << "expected: " << expectedResult << std::endl
-      << "provided: " << testedElement << std::endl;
+  std::string expected_result = "A hardcoded deviceelement2.";
+  EXPECT_STRNE(expected_result.c_str(), tested_element.c_str())
+      << "expected: " << expected_result << std::endl
+      << "provided: " << tested_element << std::endl;
 }
 
 // NOLINTNEXTLINE

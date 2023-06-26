@@ -28,7 +28,7 @@ struct MockFunction : public Function {
 
   MockFunction() : MockFunction(DataType::NONE) {}
 
-  MockFunction(Function::ParameterTypes supported_params)
+  MockFunction(const Function::ParameterTypes& supported_params)
       : MockFunction(DataType::NONE, supported_params, std::nullopt) {}
 
   MockFunction(DataType result_type)
@@ -37,11 +37,12 @@ struct MockFunction : public Function {
   MockFunction(DataType result_type, std::optional<DataVariant> result_value)
       : MockFunction(result_type, Function::ParameterTypes(), result_value) {}
 
-  MockFunction(DataType result_type, Function::ParameterTypes supported_params)
+  MockFunction(
+      DataType result_type, const Function::ParameterTypes& supported_params)
       : MockFunction(result_type, supported_params, setVariant(result_type)) {}
 
   MockFunction(DataType result_type,
-      Function::ParameterTypes supported_params,
+      const Function::ParameterTypes& supported_params,
       std::optional<DataVariant> result_value)
       : Function(result_type, supported_params), result_type_(result_type),
         supported_params_(supported_params), result_value_(result_value) {
@@ -88,14 +89,15 @@ struct MockFunction : public Function {
 
   ~MockFunction() { ::testing::Mock::VerifyAndClear(this); }
 
-  MOCK_METHOD(void, execute, (Function::Parameters /*parameters*/), (override));
+  MOCK_METHOD(
+      void, execute, (const Function::Parameters& /*parameters*/), (override));
   MOCK_METHOD(DataVariant,
       call,
-      (Function::Parameters /*parameters*/, uintmax_t /*timeout*/),
+      (const Function::Parameters& /*parameters*/, uintmax_t /*timeout*/),
       (override));
   MOCK_METHOD(Function::ResultFuture,
       asyncCall,
-      (Function::Parameters /*parameters*/),
+      (const Function::Parameters& /*parameters*/),
       (override));
   MOCK_METHOD(void, cancelAsyncCall, (uintmax_t /*call_id*/), (override));
   MOCK_METHOD(void, cancelAllAsyncCalls, (), (override));
@@ -112,7 +114,7 @@ struct MockFunction : public Function {
     return result_future;
   }
 
-  void respond(uintmax_t call_id, DataVariant value) {
+  void respond(uintmax_t call_id, const DataVariant& value) {
     if (!executor_) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
@@ -127,7 +129,7 @@ struct MockFunction : public Function {
     }
   }
 
-  void respond(uintmax_t call_id, std::exception_ptr exception) {
+  void respond(uintmax_t call_id, const std::exception_ptr& exception) {
     if (!executor_) {
       auto iter = result_promises_.find(call_id);
       if (iter != result_promises_.end()) {
@@ -142,7 +144,7 @@ struct MockFunction : public Function {
     }
   }
 
-  void respondToAll(DataVariant value) {
+  void respondToAll(const DataVariant& value) {
     if (!executor_) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
@@ -155,7 +157,7 @@ struct MockFunction : public Function {
     }
   }
 
-  void respondToAll(std::exception_ptr exception) {
+  void respondToAll(const std::exception_ptr& exception) {
     if (!executor_) {
       for (auto iter = result_promises_.begin(); iter != result_promises_.end();
            iter++) {
@@ -190,7 +192,7 @@ struct MockFunction : public Function {
       canceler_ = canceler;
       if (canceler_) {
         ON_CALL(*this, call)
-            .WillByDefault([this](Function::Parameters params,
+            .WillByDefault([this](const Function::Parameters& params,
                                uintmax_t timeout) -> DataVariant {
               auto result_future =
                   std::async(std::launch::async, executor_, params);
@@ -203,7 +205,7 @@ struct MockFunction : public Function {
               }
             });
         ON_CALL(*this, asyncCall)
-            .WillByDefault([this](Function::Parameters params) {
+            .WillByDefault([this](const Function::Parameters& params) {
               auto result_future = executor_(params);
               return ResultFuture(std::move(result_future.second),
                   result_future.first,
