@@ -70,7 +70,8 @@ public:
           ElementType /* type */,
           DataType /* data_type */,
           std::optional<ReadFunctor> /* read_cb */,
-          std::optional<WriteFunctor> /* write_cb */),
+          std::optional<WriteFunctor> /* write_cb */,
+          std::optional<ExecuteFunctor> /*execute_cb*/),
       (override));
   MOCK_METHOD(std::shared_ptr<Device>, getResult, (), (override));
 };

@@ -1,4 +1,9 @@
 # Changelog
+## [0.2.3] - 2023.07.04
+### Changed 
+ - Nonempty_Pointer dependency to fuzzy v0.2
+ - `DeviceBuilderInterfaceMock::addDeviceElement()` method mock to use correct number of parameters
+
 ## [0.2.2] - 2022.11.17
 ### Changed
  - conan packaging recipe
