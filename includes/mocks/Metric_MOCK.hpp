@@ -8,48 +8,55 @@
 namespace Information_Model {
 namespace testing {
 /**
- * @brief Metric mock implementation. Use only for testing!
+ * @addtogroup ReadableModeling Metric Modelling
+ * @{
+ */
+/**
+ * @brief Metric mock implementation with ability to easily convert into a Fake
+ *
+ * @attention
+ * Use only for testing
  *
  */
-class MockMetric : public Metric {
-  DataType type_;
-  DataVariant value_;
+struct MockMetric : public Metric {
+  using Reader = std::function<DataVariant()>;
 
-public:
-  MockMetric()
-      : Metric(), type_(DataType::UNKNOWN), value_(DataVariant((bool)false)) {}
+  MockMetric() : MockMetric(DataType::BOOLEAN) {}
 
-  MockMetric(DataType type)
-      : Metric(), type_(type), value_(setVariant(type_)) {}
+  MockMetric(DataType type) : MockMetric(type, setVariant(type)) {}
 
   MockMetric(DataType type, const DataVariant& variant)
-      : Metric(), type_(type), value_(variant) {}
+      : Metric(type), value_(variant) {}
+
+  ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(DataType, getDataType, (), (override));
 
   void delegateToFake() {
-    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      return value_;
-    });
-    ON_CALL(*this, getDataType).WillByDefault([this]() -> DataType {
-      return type_;
-    });
+    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
   }
 
-  void delegateToFake(std::function<DataVariant()> callback) {
-    ON_CALL(*this, getMetricValue).WillByDefault([callback]() -> DataVariant {
-      return callback();
+  void delegateToFake(Reader reader) {
+    read_ = reader;
+    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
+      if (read_) {
+        return read_();
+      } else {
+        return value_;
+      }
     });
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
-  virtual ~MockMetric() {}
+protected:
+  DataVariant value_;
+  Reader read_ = nullptr;
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;
+using NonemptyMockMetricPtr = NonemptyPointer::NonemptyPtr<MockMetricPtr>;
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 

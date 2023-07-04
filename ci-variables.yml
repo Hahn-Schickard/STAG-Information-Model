@@ -1,4 +1,4 @@
 variables:
-  RUN_VALGRIND: "True"
+  RUN_VALGRIND: "true"
   VALGRIND_TARGET: "build/sources/runner/Runner"
   VALGRIND_TARGET_ARGS: ""

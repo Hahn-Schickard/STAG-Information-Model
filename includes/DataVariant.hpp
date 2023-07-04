@@ -12,7 +12,10 @@
 #include <vector>
 
 namespace Information_Model {
-
+/**
+ * @addtogroup DataTypeModelling Data Type Modelling
+ * @{
+ */
 /**
  * @brief POSIX time wrapper class with inbuilt comparators
  *
@@ -32,7 +35,7 @@ public:
    *
    * @param time_point
    */
-  DateTime(std::time_t time_point) : posix_time_(time_point) {}
+  DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
 
   /**
    * @brief Converts POSIX time to human readable format
@@ -50,7 +53,7 @@ public:
    */
   std::time_t getValue() const { return posix_time_; }
 
-  std::size_t size() { return sizeof(posix_time_); }
+  std::size_t size() const { return sizeof(posix_time_); }
 
   friend bool operator==(const DateTime& lhs, const DateTime& rhs);
   friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
@@ -92,6 +95,7 @@ enum class DataType {
   TIME, /*!< Information_Model::DateTime */
   OPAQUE, /*!< std::vector<uint8_t> */
   STRING, /*!< std::string */
+  NONE, /*!< void */
   UNKNOWN /*!< fallback type */
 };
 
@@ -111,6 +115,8 @@ inline std::string toString(DataType type) {
     return "Opaque byte array";
   case DataType::STRING:
     return "String";
+  case DataType::NONE:
+    return "None";
   case DataType::UNKNOWN:
   default:
     return "Unknown";
@@ -125,14 +131,14 @@ using DataVariant = std::variant<bool,
     std::vector<uint8_t>,
     std::string>;
 
-inline std::size_t size_of(DataVariant variant) {
+inline std::size_t size_of(const DataVariant& variant) {
   std::size_t result;
   match(
       variant,
       [&](auto value) { result = sizeof(value); },
-      [&](DateTime value) { result = value.size(); },
-      [&](std::vector<uint8_t> value) { result = value.size(); },
-      [&](std::string value) { result = value.size(); });
+      [&](const DateTime& value) { result = value.size(); },
+      [&](const std::vector<uint8_t>& value) { result = value.size(); },
+      [&](const std::string& value) { result = value.size(); });
   return result;
 }
 
@@ -152,13 +158,39 @@ inline DataVariant setVariant(DataType type) {
     return DataVariant(std::vector<uint8_t>());
   case DataType::STRING:
     return DataVariant(std::string());
+  case DataType::NONE:
+    throw std::domain_error("Data variant is not used to model None data type");
   case DataType::UNKNOWN:
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
   }
 }
 
-inline std::string toString(DataVariant variant) {
+inline DataType toDataType(const DataVariant& variant) {
+  if (std::holds_alternative<bool>(variant)) {
+    return DataType::BOOLEAN;
+  } else if (std::holds_alternative<intmax_t>(variant)) {
+    return DataType::INTEGER;
+  } else if (std::holds_alternative<uintmax_t>(variant)) {
+    return DataType::UNSIGNED_INTEGER;
+  } else if (std::holds_alternative<double>(variant)) {
+    return DataType::DOUBLE;
+  } else if (std::holds_alternative<DateTime>(variant)) {
+    return DataType::TIME;
+  } else if (std::holds_alternative<std::vector<uint8_t>>(variant)) {
+    return DataType::OPAQUE;
+  } else if (std::holds_alternative<std::string>(variant)) {
+    return DataType::STRING;
+  } else {
+    return DataType::UNKNOWN;
+  }
+}
+
+inline bool matchVariantType(const DataVariant& variant, DataType type) {
+  return toDataType(variant) == type;
+}
+
+inline std::string toString(const DataVariant& variant) {
   std::string result;
   match(
       variant,
@@ -177,6 +209,8 @@ inline std::string toString(DataVariant variant) {
 
   return result;
 }
+
+/** @}*/
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DATA_VARIANT_HPP_

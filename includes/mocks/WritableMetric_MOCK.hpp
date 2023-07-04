@@ -9,50 +9,71 @@
 namespace Information_Model {
 namespace testing {
 /**
- * @brief WritableMetric mock implementation. Use only for testing!
+ * @addtogroup WritableModeling Writable Metric Modelling
+ * @{
+ */
+/**
+ * @brief WritableMetric mock implementation with ability to easily convert into
+ * a Fake
+ *
+ * @attention
+ * Use only for testing
  *
  */
-class MockWritableMetric : public WritableMetric {
-  DataType type_;
-  DataVariant value_;
+struct MockWritableMetric : public WritableMetric, public MockMetric {
+  using Writer = std::function<void(DataVariant)>;
 
-public:
-  MockWritableMetric()
-      : WritableMetric(), type_(DataType::UNKNOWN),
-        value_(DataVariant((bool)false)) {}
+  MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
   MockWritableMetric(DataType type)
-      : WritableMetric(), type_(type), value_(setVariant(type_)) {}
+      : MockWritableMetric(type, setVariant(type)) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)
-      : WritableMetric(), type_(type), value_(variant) {}
+      : WritableMetric(type), MockMetric(type, variant) {}
 
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
-  MOCK_METHOD(DataType, getDataType, (), (override));
+  MOCK_METHOD(bool, isWriteOnly, (), (override));
+
+  // redeclare metric methods, so they are accessible
+  DataType getDataType() { return MockMetric::getDataType(); }
+  DataVariant getMetricValue() override { return MockMetric::getMetricValue(); }
 
   void delegateToFake() {
-    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+    MockMetric::delegateToFake();
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
-  void delegateToFake(std::function<DataVariant()> callback) {
-    ON_CALL(*this, getMetricValue).WillByDefault(callback);
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+  void delegateToFake(Reader reader) {
+    MockMetric::delegateToFake(reader);
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
-  void delegateToFake(std::function<DataVariant()> reader,
-      std::function<void(DataVariant)> writer) {
-    ON_CALL(*this, getMetricValue).WillByDefault(reader);
-    ON_CALL(*this, setMetricValue)
-        .WillByDefault([this, writer](DataVariant value) { writer(value); });
-    ON_CALL(*this, getDataType).WillByDefault(::testing::Return(type_));
+  void delegateToFake(Writer writer) {
+    write_ = writer;
+    ON_CALL(*this, getMetricValue)
+        .WillByDefault(::testing::Throw(std::logic_error(
+            "This metric does not support read functionality")));
+    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
-  ~MockWritableMetric() { ::testing::Mock::VerifyAndClear(this); }
+  void delegateToFake(Writer writer, Reader reader) {
+    write_ = writer;
+    ON_CALL(*this, setMetricValue).WillByDefault([this](DataVariant value) {
+      if (write_) {
+        write_(value);
+      }
+    });
+    delegateToFake(reader);
+  }
+
+private:
+  Writer write_ = nullptr;
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
+using NonemptyMockWritableMetricPtr =
+    NonemptyPointer::NonemptyPtr<MockWritableMetricPtr>;
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 

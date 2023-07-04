@@ -12,7 +12,7 @@ set(DOCS_DIR "${PROJECT_SOURCE_DIR}/docs/code_documentation")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(VERBOSE_FILE_INCLUSION "Prints all included header files" ON)
-option(STATIC_CODE_ANALYSIS "Enable Code Linter" ON)
+option(STATIC_CODE_ANALYSIS "Enable Code Linter" OFF)
 option(USE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
 option(RUN_TESTS "Enables Unit tests runner (Requires GTest framework)" ON)
 

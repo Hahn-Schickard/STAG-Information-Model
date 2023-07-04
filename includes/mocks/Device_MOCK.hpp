@@ -14,13 +14,19 @@ namespace Information_Model {
  */
 namespace testing {
 /**
- * @brief Device class mock, use for testing only!
+ * @addtogroup DeviceModeling Device Modelling
+ * @{
+ */
+/**
+ * @brief Device class mock, with default fake method implementations
+ *
+ * Used by DeviceMockBuilder
+ *
+ * @attention
+ * Use for testing only
  *
  */
-class MockDevice : public Device {
-  NonemptyDeviceElementGroupPtr base_group_;
-
-public:
+struct MockDevice : public Device {
   MockDevice(const std::string& ref_id,
       const std::string& name,
       const std::string& desc)
@@ -28,27 +34,33 @@ public:
         base_group_(
             std::make_shared<::testing::NiceMock<MockDeviceElementGroup>>(
                 ref_id + ":")) {
-    ON_CALL(*this, getDeviceElementGroup)
-        .WillByDefault([this]() -> NonemptyDeviceElementGroupPtr {
-          return NonemptyDeviceElementGroupPtr(base_group_);
-        });
+    ON_CALL(*this, getDeviceElementGroup).WillByDefault([this]() {
+      return NonemptyDeviceElementGroupPtr(base_group_);
+    });
 
     ON_CALL(*this, getDeviceElement)
-        .WillByDefault([this](const std::string& ref_id) -> DeviceElementPtr {
+        .WillByDefault([this](const std::string& ref_id) {
           return base_group_->getSubelement(ref_id);
         });
   }
 
-  MOCK_METHOD(
-      NonemptyDeviceElementGroupPtr, getDeviceElementGroup, (), (override));
+  MOCK_METHOD(NonemptyDeviceElementGroupPtr,
+      getDeviceElementGroup,
+      (),
+      (const override));
 
-  MOCK_METHOD(DeviceElementPtr,
+  MOCK_METHOD(NonemptyDeviceElementPtr,
       getDeviceElement,
       (const std::string& /*ref_id*/),
-      (override));
+      (const override));
+
+private:
+  NonemptyDeviceElementGroupPtr base_group_;
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
+using NonemptyMockDevicePtr = NonemptyPointer::NonemptyPtr<MockDevicePtr>;
+/** @}*/
 } // namespace testing
 } // namespace Information_Model
 #endif //__INFORMATION_MODEL_DEVICE_MOCK_HPP
