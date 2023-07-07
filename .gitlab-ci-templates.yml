@@ -7,22 +7,11 @@ stages:
   - package
   - deploy
 
-.setup:
-  tags:
-    - conan
-  before_script:
-    - conan config set storage.download_cache="${CI_PROJECT_DIR}/.conan"
-    - conan config set storage.path="${CI_PROJECT_DIR}/.conan/data"
-    - conan config get storage.download_cache
-
 .build:
-  extends: .setup
   stage: build
   tags:
     - conan
   script:
-    - pip3 install -U conan==1.59.0
-    - conan remote add upload_repo ${CONAN_REMOTE}
     - mkdir build
     - cd build
     - cmake ${CMAKE_VARIABLES} -DCMAKE_BUILD_TYPE=Release ..
@@ -30,11 +19,9 @@ stages:
   artifacts:
     paths:
       - build/
-      - ${CI_PROJECT_DIR}/.conan
     expire_in: 1 days
 
 .test:
-  extends: .setup
   stage: test
   tags:
     - conan
@@ -49,7 +36,6 @@ stages:
     expire_in: 1 days
 
 .analyze_memory_usage:
-  extends: .setup
   stage: analyze
   tags:
     - conan
@@ -66,7 +52,6 @@ stages:
   allow_failure: true
 
 .check_code_coverage:
-  extends: .setup
   stage: check
   tags:
     - conan
@@ -81,23 +66,7 @@ stages:
     expire_in: 1 days
 
 .lint:
-  extends: .setup
-  stage: check
-  tags:
-    - conan
-  script:
-    - python3 utility/run-clang-tidy.py -build build --all-threads --verbose --export-fixes
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-buster-slim:latest
-  artifacts:
-    when: on_failure
-    name: "Commit:${CI_COMMIT_SHORT_SHA}_Linter_Fixes"
-    paths:
-      - clang-tidy-fixes/
-    expire_in: 1 days
-  allow_failure: true
-
-.format:
-  extends: .setup
+  dependencies: null
   stage: check
   tags:
     - conan
@@ -106,7 +75,7 @@ stages:
   image: ${DOCKER_REGISTRY}/hs-conan-debian-buster-slim:latest
   artifacts:
     when: on_failure
-    name: "Commit:${CI_COMMIT_SHORT_SHA}_Formatter_Fixes"
+    name: "Commit:${CI_COMMIT_SHORT_SHA}_Linter_Fixes"
     paths:
       - clang-format-fixes/
     expire_in: 1 days
@@ -122,7 +91,7 @@ stages:
   artifacts:
     name: "Commit:${CI_COMMIT_SHORT_SHA}_Code_Documentation"
     paths:
-      - docs/code_documentation/html
+      - docs/code_documentation/
     expire_in: 1 days
 
 .package:
@@ -131,8 +100,7 @@ stages:
   tags:
     - conan
   before_script:
-    - pip3 install -U conan==1.59.0
-    - conan remote add upload_repo ${CONAN_REMOTE}
+    - conan remote add --insecure upload_repo ${CONAN_REMOTE}
     - PROJECT_NAME=$(python3 ./utility/.getProjectName.py)
   script:
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)

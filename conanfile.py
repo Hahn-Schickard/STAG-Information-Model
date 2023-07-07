@@ -1,5 +1,6 @@
-from conans import ConanFile, CMake, tools
-from conans.tools import load
+from conan import ConanFile
+from conan.tools.files import load, copy, collect_libs
+from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
 import re
 import os
 
@@ -9,8 +10,8 @@ class PackageConan(ConanFile):
     topics = ("conan", "stag", "modelling", "lwm2m", "technology-adapter")
     requires = [
         "gtest/[~1.11]",
-        "Variant_Visitor/[~0.1]@hahn-schickard/stable",
-        "Nonempty_Pointer/[~0.2]@hahn-schickard/stable",
+        "variant_visitor/0.1.2@hahn-schickard/stable",
+        "nonempty_pointer/0.2.1@hahn-schickard/stable",
     ]
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False],
@@ -22,55 +23,47 @@ class PackageConan(ConanFile):
         "cmake*",
         "includes*",
         "sources*",
-        "unit_tests*",
-        "CMakeLists.txt",
-        "conanfile.py",
-        "LICENSE",
-        "NOTICE",
-        "AUTHORS"
+        "CMakeLists.txt"
     ]
-    _cmake = None
-    generators = ['cmake', 'cmake_paths', 'cmake_find_package']
+    generators = "CMakeDeps"
+    short_paths = True
 
     @property
     def cwd(self):
         return os.path.dirname(os.path.realpath(__file__))
 
     def set_name(self):
-        content = load(os.path.join(self.cwd, 'CMakeLists.txt'))
+        content = load(self, path=os.path.join(self.cwd, 'CMakeLists.txt'))
         name = re.search('set\(THIS (.*)\)', content).group(1)
-        self.name = name.strip()
+        self.name = name.strip().lower()
+    
+    def layout(self):
+        cmake_layout(self)
 
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
 
-    def _configure_cmake(self):
-        if self._cmake:
-            return self._cmake
-        self._cmake = CMake(self)
-        self._cmake.verbose = True
-        self._cmake.definitions['STATIC_CODE_ANALYSIS'] = False
-        self._cmake.definitions['RUN_TESTS'] = False
-        self._cmake.definitions['USE_CONAN'] = True
-        self._cmake.configure()
-        return self._cmake
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables['STATIC_CODE_ANALYSIS'] = False
+        tc.variables['RUN_TESTS'] = False
+        tc.variables['USE_CONAN'] = True
+        tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0077"] = "NEW"
+        tc.generate()     
 
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
     def package(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
         cmake.install()
-        self.copy(pattern='LICENSE', dst='licenses', src=self.cwd)
-        self.copy(pattern='NOTICE', dst='licenses', src=self.cwd)
-        self.copy(pattern='AUTHORS', dst='licenses', src=self.cwd)
+        copy(self, pattern='LICENSE', dst='licenses', src=self.cwd)
+        copy(self, pattern='NOTICE', dst='licenses', src=self.cwd)
+        copy(self, pattern='AUTHORS', dst='licenses', src=self.cwd)
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
-        self.output.info('Collected libs: \n{}'.format(
-            '\n'.join(self.cpp_info.libs)))
-
-    def package_id(self):
-        self.info.header_only()
+        self.cpp_info.set_property("cmake_target_name", "Information_Model::Information_Model")
+        self.cpp_info.libdirs = collect_libs(self)
