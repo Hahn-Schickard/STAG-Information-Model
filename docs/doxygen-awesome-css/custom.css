@@ -20,4 +20,42 @@ html {
     #nav-tree .selected a {
         color: #ffb703 !important;
     }
+
+    /* td.markdownTableBodyLeft { */
+        /* background: white; */
+    /* } */
+
+    table {
+        background: white !important;
+    }
+}
+
+html.dark-mode {
+    --side-nav-background: #274c77;
+    --header-foreground: var(--side-nav-foreground);
+    --searchbar-background: var(--side-nav-foreground);
+    --searchbar-border-radius: var(--border-radius-medium);
+    --header-background: #4E4FEB;
+    --header-foreground: var(--side-nav-foreground);
+    --menu-focus-background: #ffb703;
+    --toc-foreground: var(--page-foreground-color);
+    --tablehead-background: #4E4FEB;
+    --tablehead-foreground: white;
+    --content-maxwidth: auto;
+
+    #nav-tree .selected::after {
+        background: #ffb703;
+    }
+
+    #nav-tree .selected a {
+        color: #ffb703 !important;
+    }
+
+    /* table.markdownTableBodyLeft td {
+        background: white !important;
+    } */
+
+    table {
+        background: white !important;
+    }
 }
