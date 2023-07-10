@@ -4,6 +4,9 @@ from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
 import re
 import os
 
+def to_camel_case(input: str):
+    words = input.replace("_", " ").split()
+    return '_'.join(word.capitalize() for word in words)
 
 class PackageConan(ConanFile):
     license = "Apache 2.0"
@@ -65,5 +68,6 @@ class PackageConan(ConanFile):
         copy(self, pattern='AUTHORS', dst='licenses', src=self.cwd)
 
     def package_info(self):
-        self.cpp_info.set_property("cmake_target_name", "Information_Model::Information_Model")
+        cmake_target_name = to_camel_case(self.name) + "::" + to_camel_case(self.name)
+        self.cpp_info.set_property("cmake_target_name", cmake_target_name)
         self.cpp_info.libdirs = collect_libs(self)
