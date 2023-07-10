@@ -13,7 +13,7 @@ html {
     --tablehead-foreground: white;
     --content-maxwidth: auto;
     --title-font-size: 28px;
-    --side-nav-fixed-width: 300px; 
+    --side-nav-fixed-width: 350px; 
 
     #nav-tree .selected::after {
         background: #ffb703;
@@ -37,7 +37,7 @@ html.dark-mode {
     --tablehead-foreground: white;
     --content-maxwidth: auto;
     --title-font-size: 28px;
-    --side-nav-fixed-width: 300px; 
+    --side-nav-fixed-width: 350px; 
 
     #nav-tree .selected::after {
         background: #ffb703;
