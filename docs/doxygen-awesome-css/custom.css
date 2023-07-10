@@ -12,6 +12,7 @@ html {
     --tablehead-background: #4E4FEB;
     --tablehead-foreground: white;
     --content-maxwidth: auto;
+    --title-font-size: 28px;
 
     #nav-tree .selected::after {
         background: #ffb703;
@@ -19,14 +20,6 @@ html {
 
     #nav-tree .selected a {
         color: #ffb703 !important;
-    }
-
-    /* td.markdownTableBodyLeft { */
-        /* background: white; */
-    /* } */
-
-    table {
-        background: white !important;
     }
 }
 
@@ -42,6 +35,7 @@ html.dark-mode {
     --tablehead-background: #4E4FEB;
     --tablehead-foreground: white;
     --content-maxwidth: auto;
+    --title-font-size: 28px;
 
     #nav-tree .selected::after {
         background: #ffb703;
@@ -49,13 +43,5 @@ html.dark-mode {
 
     #nav-tree .selected a {
         color: #ffb703 !important;
-    }
-
-    /* table.markdownTableBodyLeft td {
-        background: white !important;
-    } */
-
-    table {
-        background: white !important;
     }
 }
