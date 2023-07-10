@@ -1,0 +1,23 @@
+html {
+    --side-nav-background: #274c77;
+    --side-nav-foreground: #F1FDFF;
+    --header-foreground: var(--side-nav-foreground);
+    --searchbar-background: var(--side-nav-foreground);
+    --searchbar-border-radius: var(--border-radius-medium);
+    --header-background: #4E4FEB;
+    --header-foreground: var(--side-nav-foreground);
+    --menu-focus-background: #ffb703;
+    --toc-background: rgb(243, 240, 252);
+    --toc-foreground: var(--page-foreground-color);
+    --tablehead-background: #4E4FEB;
+    --tablehead-foreground: white;
+    --content-maxwidth: auto;
+
+    #nav-tree .selected::after {
+        background: #ffb703;
+    }
+
+    #nav-tree .selected a {
+        color: #ffb703 !important;
+    }
+}
