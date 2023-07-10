@@ -42,6 +42,7 @@ include(compiler_settings)
 list(APPEND DEPENDENCIES_LIST
             Variant_Visitor
             Nonempty_Pointer
+            GTest
 )
 #@- ========================= END OF USER CONFIGURATION ============================
 
