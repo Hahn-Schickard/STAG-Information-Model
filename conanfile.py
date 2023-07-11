@@ -1,4 +1,5 @@
 from conan import ConanFile
+from conan.tools.build import check_min_cppstd
 from conan.tools.files import load, copy, collect_libs
 from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
 import re
@@ -40,6 +41,10 @@ class PackageConan(ConanFile):
         name = re.search('set\(THIS (.*)\)', content).group(1)
         self.name = name.strip().lower()
     
+    def validate(self):
+        if self.settings.compiler.get_safe("cppstd"):
+            check_min_cppstd(self, "17")
+
     def layout(self):
         cmake_layout(self)
 
