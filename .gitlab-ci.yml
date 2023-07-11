@@ -116,16 +116,22 @@ analyze_memory_usage:fedora-34:
 
 check_code_coverage:
   extends: .check_code_coverage
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-buster-slim:6.0.0
-  needs: ["build:debian-buster", "test:debian-buster"]
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-bookworm-slim:6.0.0
+  needs: ["build:debian-bookworm", "test:debian-bookworm"]
+
+format:
+  extends: .format
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-bookworm-slim:6.0.0
+  needs: ["build:debian-bookworm"]
 
 lint:
   extends: .lint
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-bullseye-slim:6.0.0
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-bookworm-slim:6.0.0
+  needs: ["build:debian-bookworm"]
 
 document:
   extends: .document
-  image: ${DOCKER_REGISTRY}/hs-conan-debian-buster-slim:6.0.0
+  image: ${DOCKER_REGISTRY}/hs-conan-debian-bookworm-slim:6.0.0
 
 package:debian-buster:
   extends: .package
