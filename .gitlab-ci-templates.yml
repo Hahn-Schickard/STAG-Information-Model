@@ -17,9 +17,7 @@ variables:
   before_script:
     - conan remote add --insecure hahn-schickard ${CONAN_REMOTE}
   script:
-    - conan remote list
-    - mkdir build
-    - cd build
+    - mkdir build && cd build
     - cmake ${CMAKE_VARIABLES} -DCMAKE_BUILD_TYPE=Release ..
     - cmake --build . --target all --config Release --
   artifacts:
