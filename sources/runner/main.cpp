@@ -10,11 +10,11 @@ using namespace std;
 using namespace Information_Model;
 
 void print(const DevicePtr& device);
-void print(NonemptyDeviceElementPtr element, size_t offset);
-void print(NonemptyWritableMetricPtr element, size_t offset);
-void print(NonemptyMetricPtr element, size_t offset);
-void print(NonemptyFunctionPtr element, size_t offset);
-void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
+void print(const NonemptyDeviceElementPtr& element, size_t offset);
+void print(const NonemptyWritableMetricPtr& element, size_t offset);
+void print(const NonemptyMetricPtr& element, size_t offset);
+void print(const NonemptyFunctionPtr& element, size_t offset);
+void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
 
 int main() {
   try {
@@ -57,20 +57,20 @@ int main() {
   }
 }
 
-void print(NonemptyDeviceElementGroupPtr elements, size_t offset) {
+void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset) {
   cout << string(offset, ' ') << "Group contains elements:" << endl;
-  for (auto element : elements->getSubelements()) {
+  for (const auto& element : elements->getSubelements()) {
     print(element, offset + 3);
   }
 }
 
-void print(NonemptyMetricPtr element, size_t offset) {
+void print(const NonemptyMetricPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
   cout << endl;
 }
 
-void print(NonemptyWritableMetricPtr element, size_t offset) {
+void print(const NonemptyWritableMetricPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
   cout << string(offset, ' ') << "Writes " << toString(element->getDataType())
@@ -78,13 +78,13 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
-void print(NonemptyFunctionPtr element, size_t offset) {
+void print(const NonemptyFunctionPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Executes " << toString(element->result_type)
        << " call(" << toString(element->parameters) << ")" << endl;
   cout << endl;
 }
 
-void print(NonemptyDeviceElementPtr element, size_t offset) {
+void print(const NonemptyDeviceElementPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
   cout << string(offset, ' ') << "Element id: " << element->getElementId()
@@ -93,14 +93,19 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
        << "Described as: " << element->getElementDescription() << endl;
 
   match(
-      element->functionality,
-      [offset](NonemptyDeviceElementGroupPtr interface) {
+      element->functionality, // clang-format off
+      [offset](const NonemptyDeviceElementGroupPtr& interface) {
         print(interface, offset);
       },
-      [offset](NonemptyMetricPtr interface) { print(interface, offset); },
-      [offset](
-          NonemptyWritableMetricPtr interface) { print(interface, offset); },
-      [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
+      [offset](const NonemptyMetricPtr& interface) {
+         print(interface, offset); 
+      },
+      [offset](const NonemptyWritableMetricPtr& interface) { 
+        print(interface, offset); 
+      },
+      [offset](const NonemptyFunctionPtr& interface) { 
+        print(interface, offset); 
+      }); // clang-format on
 }
 
 void print(const DevicePtr& device) {
