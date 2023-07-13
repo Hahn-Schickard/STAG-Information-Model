@@ -6,7 +6,6 @@ html {
     --searchbar-border-radius: var(--border-radius-medium);
     --header-background: #4E4FEB;
     --header-foreground: var(--side-nav-foreground);
-    --menu-focus-background: #ffb703;
     --toc-background: rgb(243, 240, 252);
     --toc-foreground: var(--page-foreground-color);
     --tablehead-background: #4E4FEB;
@@ -15,7 +14,8 @@ html {
     --title-font-size: 28px;
 
     #nav-tree .selected::after {
-        background: #ffb703;
+        color: #ffb703 !important;
+        background: #ffb703 !important;
     }
 
     #nav-tree .selected a {
