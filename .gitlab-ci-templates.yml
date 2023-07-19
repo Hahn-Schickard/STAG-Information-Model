@@ -120,6 +120,7 @@ variables:
     - PROJECT_NAME=$(python3 ./utility/.getProjectName.py)
   script:
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)
+    - conan profile detect --force
     - conan create . --version=${VERSION} --user=hahn-schickard --channel=stable --build=missing -s:h compiler.cppstd=17 -s:b compiler.cppstd=17
     - conan upload -r upload_repo --confirm ${PROJECT_NAME}/${VERSION}@hahn-schickard/stable
   rules:

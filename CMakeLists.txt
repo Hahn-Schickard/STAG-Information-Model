@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 
-option(USE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
+option(CMAKE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
 
-if(USE_CONAN)
+if(CMAKE_CONAN)
         set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan.cmake)
 endif()
 
@@ -22,7 +22,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(VERBOSE_FILE_INCLUSION "Prints all included header files" ON)
 option(STATIC_CODE_ANALYSIS "Enable Code Linter" OFF)
-option(USE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
 option(RUN_TESTS "Enables Unit tests runner (Requires GTest framework)" ON)
 
 include(GNUInstallDirs)
@@ -53,7 +52,6 @@ if(RUN_TESTS)
         enable_testing()
         add_subdirectory(unit_tests)
 endif()
-
 
 #@+ ====================== User CMAKE configuration =========================
 # General user defined CMake configurtaions are set here
