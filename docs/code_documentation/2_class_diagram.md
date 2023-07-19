@@ -47,8 +47,11 @@ Function (marked as element 7. Function in the diagram above) is the fifth of fi
 ### DataVariant
 <table cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: none;">
 <tr>
-<td style="vertical-align:top;">
-DataVariant (marked as element 9. DataVariant in the diagram above) is a heterogeneous data type container. It provides users a convenient way of obtaining Metric type values or interacting with Function parameters or results. The complete list of modeled data values is shown in the diagram bellow.
+<td style="vertical-align:top;width:35%">
+
+DataVariant (marked as element 9. DataVariant in the diagram above) is a heterogeneous data type container. 
+
+It provides users a convenient way of obtaining Metric type values or interacting with Function parameters or results. The complete list of modeled data values is shown in the diagram bellow.
 
 Each data type is mapped to C++ types as follows:
 1.	DataVariant – [std::variant<class…Types>](https://en.cppreference.com/w/cpp/utility/variant) type
@@ -60,10 +63,10 @@ Each data type is mapped to C++ types as follows:
 7.	Opaque – [std::vector<uint8_t>](https://en.cppreference.com/w/cpp/container/vector) type
 8.	Time – Custom struct to [std::time_t](https://en.cppreference.com/w/cpp/chrono/c/time_t) posix time type
 </td>
-<td>
+<td style="vertical-align:top;width:60%">
 | DataVariant Class Diagram |
 | :---- |
-| @image html images/Data_Variant_Class_Diagram.png width=800px | 
+| @image html images/Data_Variant_Class_Diagram.png | 
 </td>
 </tr>
 </table>

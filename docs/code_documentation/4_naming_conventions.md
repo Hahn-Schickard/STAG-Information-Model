@@ -16,7 +16,7 @@ Let’s say that we have a Device, with reference ID `Example`, with one DeviceE
 
 | Example Device ID Structure |
 | :---- |
-| @image html images/example_device_ref_ids.png width=200px | 
+| @image html images/example_device_ref_ids.png width=300px | 
 
 The resulting reference IDs would be:
 ```

@@ -4,8 +4,6 @@ set(THIS Unit_Tests_Runner)
 
 file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
 
-find_package(GTest REQUIRED)
-
 add_executable(${THIS})
 target_sources(${THIS} PRIVATE
                        "testRunner.cpp"
@@ -13,7 +11,7 @@ target_sources(${THIS} PRIVATE
 )
 
 target_link_libraries(${THIS} PUBLIC
-                              GTest::GTest
+                              GTest::gtest
                               Model
 )
 
