@@ -13,12 +13,10 @@ list(APPEND THIS_MOCK_INCLUDES_DIRS
 INCLUDE_DIRS_AND_FILES("${THIS_INCLUDES_DIRS}" THIS_INCLUDES)
 INCLUDE_DIRS_AND_FILES("${THIS_MOCK_INCLUDES_DIRS}" THIS_MOCK_INCLUDES)
 
-find_package(GTest REQUIRED)
-
 add_library(${THIS} INTERFACE)
 
 target_link_libraries(${THIS} INTERFACE 
-                              GTest::GTest
+                              GTest::gmock
                               Variant_Visitor::Variant_Visitor
                               Nonempty_Pointer::Nonempty_Pointer
 )

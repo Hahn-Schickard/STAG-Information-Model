@@ -26,6 +26,10 @@ html {
         background: #DDE6ED;
         color: black;
     }
+
+    #projectname {
+        white-space: normal;
+    }
 }
 
 html.dark-mode {
