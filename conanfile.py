@@ -5,11 +5,9 @@ from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
 import re
 import os
 
-
 def to_camel_case(input: str):
     words = input.replace("_", " ").split()
     return '_'.join(word.capitalize() for word in words)
-
 
 class PackageConan(ConanFile):
     # @+ START USER META CONFIG
@@ -62,7 +60,6 @@ class PackageConan(ConanFile):
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
-
 
     def generate(self):
         tc = CMakeToolchain(self)
