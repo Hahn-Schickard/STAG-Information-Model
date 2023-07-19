@@ -9,11 +9,6 @@ def to_camel_case(input: str):
     words = input.replace("_", " ").split()
     return '_'.join(word.capitalize() for word in words)
 
-def to_camel_case(input: str):
-    words = input.replace("_", " ").split()
-    return '_'.join(word.capitalize() for word in words)
-
-
 class PackageConan(ConanFile):
     # @+ START USER META CONFIG
     license = "Apache 2.0"
