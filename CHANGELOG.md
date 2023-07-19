@@ -1,5 +1,5 @@
 # Changelog
-## [0.3.1] - 2023.07.10
+## [0.3.1] - 2023.07.19
 ### Changed
  - conan recipe to use conan v2 syntax
  - CMake requirement to 3.24
