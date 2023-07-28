@@ -50,10 +50,12 @@ class PackageConan(ConanFile):
 
     def requirements(self):
         # @+ START USER REQUIREMENTS
-        self.test_requires("gtest/[~1.11]")
-        self.requires("variant_visitor/[~0.1]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires("nonempty_pointer/[~0.3]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires("gtest/[~1.11]", headers=True, libs=True, transitive_headers=True, transitive_libs=True)
+        self.requires(
+            "variant_visitor/[~0.1]@hahn-schickard/stable", headers=True, transitive_headers=True)
+        self.requires(
+            "nonempty_pointer/[~0.3]@hahn-schickard/stable", headers=True, transitive_headers=True)
+        self.requires("gtest/[~1.11]", headers=True, libs=True,
+                      transitive_headers=True, transitive_libs=True)
         # @- END USER REQUIREMENTS
 
     def configure(self):
