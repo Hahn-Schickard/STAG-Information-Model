@@ -2,4 +2,4 @@ variables:
  RUN_EXE_COVERAGE: "False"
  EXE_TARGET: "build/sources/runner/Runner"
  EXE_TARGET_ARGS: ""
- TEST_RUNNER_TARGET: "build/unit_tests/Unit_Tests_Runner"
+ TEST_RUNNER_TARGET: ""
