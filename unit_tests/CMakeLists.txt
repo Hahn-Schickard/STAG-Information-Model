@@ -4,15 +4,29 @@ set(THIS Unit_Tests_Runner)
 
 file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
 
+#@+ ====================== User TEST_SUITES configuration ==========================
+list(APPEND TEST_SUITES
+                       ${Mock_Test_Suite}
+)
+#@- ========================= END OF USER CONFIGURATION ============================
+
+find_package(GTest REQUIRED)
+
 add_executable(${THIS})
 target_sources(${THIS} PRIVATE
                        "testRunner.cpp"
-                       ${Mock_Test_Suite}
+                       ${TEST_SUITES}
 )
 
-target_link_libraries(${THIS} PUBLIC
-                              GTest::gtest
+#@+ ==================== User TEST_DEPENDCIES configuration =======================
+list(APPEND TEST_DEPENDCIES
                               Model
+)
+#@- ========================= END OF USER CONFIGURATION ===========================
+
+target_link_libraries(${THIS} PUBLIC
+                              ${TEST_DEPENDCIES}
+                              GTest::gtest
 )
 
 add_test(
