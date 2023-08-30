@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -142,7 +143,7 @@ inline std::size_t size_of(const DataVariant& variant) {
   return result;
 }
 
-inline DataVariant setVariant(DataType type) {
+inline std::optional<DataVariant> setVariant(DataType type) {
   switch (type) {
   case DataType::BOOLEAN:
     return DataVariant((bool)false);
@@ -159,7 +160,7 @@ inline DataVariant setVariant(DataType type) {
   case DataType::STRING:
     return DataVariant(std::string());
   case DataType::NONE:
-    throw std::domain_error("Data variant is not used to model None data type");
+    return std::nullopt;
   case DataType::UNKNOWN:
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");

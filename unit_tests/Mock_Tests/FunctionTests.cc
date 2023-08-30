@@ -30,7 +30,7 @@ struct FunctionExpectations {
       : FunctionExpectations(name,
             result_type,
             Function::ParameterTypes(),
-            setVariant(result_type)) {}
+            setVariant(result_type).value()) {}
 
   FunctionExpectations(const std::string& name,
       DataType result_type,

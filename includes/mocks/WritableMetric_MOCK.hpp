@@ -26,7 +26,7 @@ struct MockWritableMetric : public WritableMetric, public MockMetric {
   MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
   MockWritableMetric(DataType type)
-      : MockWritableMetric(type, setVariant(type)) {}
+      : MockWritableMetric(type, setVariant(type).value()) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)
       : WritableMetric(type), MockMetric(type, variant) {}
