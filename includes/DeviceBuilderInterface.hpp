@@ -58,8 +58,8 @@ struct DeviceBuilderInterface {
   virtual void buildDeviceBase(const std::string& /*unique_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/) {
-    throw std::runtime_error("Called base implementation of "
-                             "DeviceBuilderInterface::buildDeviceBase");
+    throw std::logic_error("Called base implementation of "
+                           "DeviceBuilderInterface::buildDeviceBase");
   }
   /** @}*/
 
@@ -119,8 +119,8 @@ struct DeviceBuilderInterface {
   virtual std::string addDeviceElementGroup(const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/) {
-    throw std::runtime_error("Called base implementation of "
-                             "DeviceBuilderInterface::addDeviceElementGroup");
+    throw std::logic_error("Called base implementation of "
+                           "DeviceBuilderInterface::addDeviceElementGroup");
   }
   /** @}*/
 
@@ -189,7 +189,7 @@ struct DeviceBuilderInterface {
       const std::string& /*desc*/,
       DataType /*data_type*/,
       Reader /*read_cb*/) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
   }
@@ -266,7 +266,7 @@ struct DeviceBuilderInterface {
       DataType /*data_type*/,
       Writer /*write_cb*/,
       Reader /*read_cb*/ = nullptr) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
   }
@@ -291,7 +291,7 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/ /* @todo: Observer binding mechanism */) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
   }
@@ -455,9 +455,8 @@ struct DeviceBuilderInterface {
       Executor /*execute_cb*/,
       Canceler /*cancel_cb*/,
       Function::ParameterTypes /*supported_params*/ = {}) {
-    throw std::runtime_error(
-        "Called base implementation of "
-        "DeviceBuilderInterface::addFunction for subgroup");
+    throw std::logic_error("Called base implementation of "
+                           "DeviceBuilderInterface::addFunction for subgroup");
   }
   /** @}*/
 
@@ -473,8 +472,8 @@ struct DeviceBuilderInterface {
    * @return UniqueDevicePtr
    */
   virtual UniqueDevicePtr getResult() {
-    throw std::runtime_error("Called base implementation of "
-                             "DeviceBuilderInterface::getResult");
+    throw std::logic_error("Called base implementation of "
+                           "DeviceBuilderInterface::getResult");
   }
   /** @}*/
 

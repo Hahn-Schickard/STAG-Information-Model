@@ -34,7 +34,7 @@ struct Device : public NamedElement {
    * @return NonemptyDeviceElementGroupPtr
    */
   virtual NonemptyDeviceElementGroupPtr getDeviceElementGroup() const {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of Device::getDeviceElementGroup");
   }
 
@@ -49,7 +49,7 @@ struct Device : public NamedElement {
    */
   virtual NonemptyDeviceElementPtr getDeviceElement(
       const std::string& /* ref_id */) const {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of Device::getDeviceElement");
   }
 

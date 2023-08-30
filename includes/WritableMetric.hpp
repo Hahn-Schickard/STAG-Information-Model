@@ -32,7 +32,7 @@ struct WritableMetric : public Metric {
    *
    */
   virtual void setMetricValue(DataVariant /*value*/) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of WritableMetric::setMetricValue()");
   }
 
@@ -42,7 +42,7 @@ struct WritableMetric : public Metric {
    * @return bool
    */
   virtual bool isWriteOnly() {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of WritableMetric::isWriteOnly()");
   }
 

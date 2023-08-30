@@ -116,12 +116,12 @@ struct Function {
    * @brief Executes the modeled functionality without waiting for the execution
    * result
    *
-   * @throws std::runtime_error - if base implementation was called
+   * @throws std::logic_error - if base implementation was called
    *
    * @param parameters
    */
   virtual void execute(const Parameters& /*parameters*/ = Parameters()) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of Function::execute()");
   }
 
