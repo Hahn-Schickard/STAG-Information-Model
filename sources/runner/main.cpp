@@ -36,6 +36,8 @@ int main() {
           "WritesString", "Mocked writable metric", DataType::STRING);
       builder->addFunction(
           "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
+      builder->addFunction(
+          "ReturnsNone", "Mocked function with no return", DataType::NONE);
 
       device = move(builder->getResult());
       delete builder;
