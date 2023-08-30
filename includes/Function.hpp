@@ -117,6 +117,8 @@ struct Function {
    * result
    *
    * @throws std::logic_error - if base implementation was called
+   * @throws std::runtime_error if internal execute callback encountered an
+   * exception/error
    *
    * @param parameters
    */
@@ -139,6 +141,8 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
+   * @throws std::runtime_error if internal execute callback encountered an
+   * exception/error
    *
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
@@ -161,6 +165,8 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
+   * @throws std::runtime_error if internal execute callback encountered an
+   * exception/error
    *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs
@@ -181,6 +187,8 @@ struct Function {
    * support returning execution result
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
+   * @throws std::runtime_error if internal execute callback encountered an
+   * exception/error
    *
    * @param parameters
    * @return ResultFuture
@@ -200,6 +208,8 @@ struct Function {
    * previous asynchronous call
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
+   * @throws std::runtime_error if internal cancellation mechanism encountered
+   * an exception/error
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
@@ -216,6 +226,8 @@ struct Function {
    *
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
+   * @throws std::runtime_error if internal cancellation mechanism encountered
+   * an exception/error
    */
   virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 

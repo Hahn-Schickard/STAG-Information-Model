@@ -28,6 +28,8 @@ struct Metric {
    * @brief Read the latest available metric value
    *
    * @throws std::logic_error if internal getter callback does not exist
+   * @throws std::runtime_error if internal getter callback encountered an
+   * exception/error
    *
    * @return DataVariant
    */
