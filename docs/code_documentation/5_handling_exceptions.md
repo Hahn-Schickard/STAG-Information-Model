@@ -55,6 +55,6 @@ It is difficult to say, when **Technology Adapter Interface** implementation sho
 
 In cases when there are no failure handling mechanism specifications, developers are expected to: 
 
-* **Wait** until a standard expected operation execution time has elapsed (in most cases it is 1 second, however it may be longer) or a predefined number of retires has been executed (in most cases, 3 times, but may be larger number, if the operation requires it), and then throw a `std::runtime_error` stating that  this specific operation has timed out.
+* **Wait** until a standard expected operation execution time has elapsed (in most cases it is 1 second, however it may be longer) or a predefined number of retries has been executed (in most cases, 3 times, but may be larger number, if the operation requires it), and then throw a `std::runtime_error` stating that  this specific operation has timed out.
 * **Throw** a `std::runtime_error` or any of it's children (including custom exception types that inherit from it) with a clear and understandable exception description, when there is no way that the operation can be executed at the current time, but is expected to be operational at some future time. 
 * **Deregister** the `Device` instance if there is no way that the operation can be executed. In this case, `Device` *MAY* be reregistrated without the capability to execute the operation that is failing (the element with the offending operation, *MUST* not be modeled). 
