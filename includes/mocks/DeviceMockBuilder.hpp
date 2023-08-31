@@ -145,8 +145,10 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
 
   std::string addFunction(
       const std::string& name, const std::string& desc, DataType result_type) {
-    return addDeviceElement(
-        std::string(), name, desc, Functionality(result_type));
+    return addDeviceElement(std::string(),
+        name,
+        desc,
+        Functionality(result_type, Function::ParameterTypes{}));
   }
 
   std::string addFunction(const std::string& name,

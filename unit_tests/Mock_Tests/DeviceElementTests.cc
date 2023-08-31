@@ -30,7 +30,7 @@ struct DeviceElementExpectations {
 using DeviceElementExpectationsPtr = shared_ptr<DeviceElementExpectations>;
 
 DeviceBuilderInterface::Reader makeDefaultReader(DataType type) {
-  return [type]() -> DataVariant { return setVariant(type); };
+  return [type]() -> DataVariant { return setVariant(type).value(); };
 }
 
 DeviceBuilderInterface::Writer makeDefaultWriter(DataType type) {

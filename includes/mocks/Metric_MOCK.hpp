@@ -23,7 +23,7 @@ struct MockMetric : public Metric {
 
   MockMetric() : MockMetric(DataType::BOOLEAN) {}
 
-  MockMetric(DataType type) : MockMetric(type, setVariant(type)) {}
+  MockMetric(DataType type) : MockMetric(type, setVariant(type).value()) {}
 
   MockMetric(DataType type, const DataVariant& variant)
       : Metric(type), value_(variant) {}

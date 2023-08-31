@@ -26,15 +26,18 @@ int main() {
       auto subgroup_1_ref_id =
           builder->addDeviceElementGroup("Group 1", "First group");
       auto boolean_ref_id = builder->addReadableMetric(subgroup_1_ref_id,
-          "Boolean",
+          "ReadsBoolean",
           "Mocked readable metric",
           DataType::BOOLEAN);
       auto integer_ref_id = builder->addReadableMetric(
-          "Integer", "Mocked readable metric", DataType::INTEGER);
+          "ReadsInteger", "Mocked readable metric", DataType::INTEGER);
       read_target_id = integer_ref_id;
       builder->addWritableMetric(
-          "String", "Mocked writable metric", DataType::STRING);
-      builder->addFunction("Boolean", "Mocked function", DataType::BOOLEAN);
+          "WritesString", "Mocked writable metric", DataType::STRING);
+      builder->addFunction(
+          "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
+      builder->addFunction(
+          "ReturnsNone", "Mocked function with no return", DataType::NONE);
 
       device = move(builder->getResult());
       delete builder;
