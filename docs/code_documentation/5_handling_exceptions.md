@@ -17,7 +17,7 @@ try{
 }
 ```
 
-This is the standard C++ mechanism to handle any exception that is based on the [`std::exception`](https://en.cppreference.com/w/cpp/error/exception). All of the Information Model exception types are based on it. Capturing **const** reference preserves the underlying exception information while providing a convenient way of obtaining human-readable explanation for the thrown exception via the [`what()`](https://en.cppreference.com/w/cpp/error/exception/what) method. 
+This is the standard C++ mechanism to handle any exception that is based on [`std::exception`](https://en.cppreference.com/w/cpp/error/exception). All of the Information Model exception types are based on it. Capturing **const** reference preserves the underlying exception information while providing a convenient way of obtaining human-readable explanation for the thrown exception via the [`what()`](https://en.cppreference.com/w/cpp/error/exception/what) method. 
 
 ### Handling specific thrown exceptions types
 ```cpp
