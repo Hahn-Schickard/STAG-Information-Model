@@ -47,7 +47,7 @@ Users can also ignore any thrown exception by using the `...` [ellipsis](https:/
 
 ## Throwing Exceptions
 
-All **Technology Adapter Interface** implementations are expected to throw a [`std::runtime_error`](https://en.cppreference.com/w/cpp/error/runtime_error) or any of it's subclasses in case requested operation could not be carried out or to completely remove the `Device` instance by deregistering it. 
+All **Technology Adapter Interface** implementations are expected to throw a [`std::runtime_error`](https://en.cppreference.com/w/cpp/error/runtime_error) or any of it's subclasses in case the requested operation could not be carried out or to completely remove the `Device` instance by deregistering it. 
 
 ### To throw, to wait, or to deregister?
 
