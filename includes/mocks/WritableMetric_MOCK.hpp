@@ -26,6 +26,7 @@ struct MockWritableMetric : public WritableMetric {
   MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
   MockWritableMetric(DataType type)
+      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
       : MockWritableMetric(type, setVariant(type).value()) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)

@@ -30,6 +30,7 @@ struct DeviceElementExpectations {
 using DeviceElementExpectationsPtr = shared_ptr<DeviceElementExpectations>;
 
 DeviceBuilderInterface::Reader makeDefaultReader(DataType type) {
+  // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
   return [type]() -> DataVariant { return setVariant(type).value(); };
 }
 
