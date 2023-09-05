@@ -10,9 +10,9 @@ All **Data Consumer Adapter Interface** implementations *MUST*  wrap every metho
 
 ### Handling all thrown exceptions in a generic way
 ```cpp
-try{
+try {
     methodThatMayThrow();
-}catch(const std::exception& ex){
+} catch (const std::exception& ex) {
     // handle any exception type
 }
 ```
@@ -21,13 +21,13 @@ This is the standard C++ mechanism to handle any exception that is based on [`st
 
 ### Handling specific thrown exceptions types
 ```cpp
-try{
+try {
     methodThatMayThrow();
-}catch(const std::invalid_argument& ex){
+} catch (const std::invalid_argument& ex) {
     // handle invalid_argument exception 
-}catch(const std::runtime_error& ex){
+} catch (const std::runtime_error& ex) {
     // handle runtime_error exception 
-}catch(const std::exception& ex){
+} catch (const std::exception& ex) {
     // fallback for all other exceptions 
 }
 ```
@@ -36,9 +36,9 @@ Users can also differentiate between various different exceptions, in case diffe
 
 ### Suppress all thrown exceptions
 ```cpp
-try{
+try {
     methodThatMayThrow();
-}catch(...){
+} catch (...) {
     // suppress all thrown exceptions 
 }
 ```
