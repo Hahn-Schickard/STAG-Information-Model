@@ -29,7 +29,7 @@ struct Metric {
    *
    * @throws std::logic_error if internal getter callback does not exist
    * @throws std::runtime_error if internal getter callback encountered an
-   * exception/error
+   * error. May cause deregistration, please read more at @ref Deregistration
    *
    * @return DataVariant
    */
