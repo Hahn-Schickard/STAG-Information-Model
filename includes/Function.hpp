@@ -117,7 +117,7 @@ struct Function {
    * result
    *
    * @throws std::logic_error - if base implementation was called
-   * @throws std::runtime_error if internal getter callback encountered an
+   * @throws std::runtime_error if internal execute callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param parameters
@@ -141,7 +141,7 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal getter callback encountered an
+   * @throws std::runtime_error if internal execute callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param timeout - number of miliseconds until a timeout occurs
@@ -165,7 +165,7 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal getter callback encountered an
+   * @throws std::runtime_error if internal execute callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param parameters
@@ -187,7 +187,7 @@ struct Function {
    * support returning execution result
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal getter callback encountered an
+   * @throws std::runtime_error if internal execute callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param parameters
