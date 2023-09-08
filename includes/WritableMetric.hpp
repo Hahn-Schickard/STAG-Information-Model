@@ -28,8 +28,8 @@ struct WritableMetric : public Metric {
    *
    * @throws std::invalid_argument if provided argument does not match the
    * modeled value type
-   * @throws std::logic_error if internal setter callback does not exist
-   * @throws std::runtime_error if internal setter callback encountered an
+   * @throws std::logic_error if internal callback does not exist
+   * @throws std::runtime_error if internal callback encountered an
    * error. May cause @ref Deregistration
    *
    */
