@@ -187,8 +187,8 @@ struct Function {
    * support returning execution result
    * @throws CallerIDExists - if internal execute call back return a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal execute callback encountered an
-   * error. May cause @ref Deregistration
+   *
+   * @attention May cause @ref Deregistration
    *
    * @param parameters
    * @return ResultFuture
