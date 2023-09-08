@@ -98,6 +98,16 @@ struct Function {
         : std::future<DataVariant>(std::move(future_result)), call_id(caller),
           clear_caller(clearer) {}
 
+    /**
+     * @brief Obtains the promised future result and removes the call_id from
+     * active operations list
+     *
+     * @throws CallCanceled if the requested operation was canceled by the user
+     * @throws std::runtime_error if internal callback encountered an error. May
+     * cause @ref Deregistration
+     *
+     * @return DataVariant
+     */
     DataVariant get() {
       auto result = std::future<DataVariant>::get();
       clear_caller(call_id);
