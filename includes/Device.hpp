@@ -44,7 +44,8 @@ struct Device : public NamedElement {
    *
    * @see DeviceElementGroup::getSubelement() for reference
    *
-   * @throws DeviceElementNotFound if no DeviceElement with given ref_id exists
+   * @throws DeviceElementNotFound - if no DeviceElement with given ref_id
+   * exists
    *
    */
   virtual NonemptyDeviceElementPtr getDeviceElement(

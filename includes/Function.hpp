@@ -102,9 +102,10 @@ struct Function {
      * @brief Obtains the promised future result and removes the call_id from
      * active operations list
      *
-     * @throws CallCanceled if the requested operation was canceled by the user
-     * @throws std::runtime_error if internal callback encountered an error. May
-     * cause @ref Deregistration
+     * @throws CallCanceled - if the requested operation was canceled by the
+     * user
+     * @throws std::runtime_error - if internal callback encountered an error.
+     * May cause @ref Deregistration
      *
      * @return DataVariant
      */
@@ -127,7 +128,7 @@ struct Function {
    * result
    *
    * @throws std::logic_error - if base implementation was called
-   * @throws std::runtime_error if internal callback encountered an error. May
+   * @throws std::runtime_error - if internal callback encountered an error. May
    * cause @ref Deregistration
    *
    * @param parameters
@@ -151,7 +152,7 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal callback encountered an
+   * @throws std::runtime_error - if internal callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param timeout - number of miliseconds until a timeout occurs
@@ -175,7 +176,7 @@ struct Function {
    * @throws FunctionCallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
-   * @throws std::runtime_error if internal callback encountered an
+   * @throws std::runtime_error - if internal callback encountered an
    * error. May cause @ref Deregistration
    *
    * @param parameters
@@ -218,7 +219,7 @@ struct Function {
    * previous asynchronous call
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
-   * @throws std::runtime_error if internal cancellation mechanism encountered
+   * @throws std::runtime_error - if internal cancellation mechanism encountered
    * an error
    *
    * @param call_id - obtained from the first ResultFuture parameter
@@ -236,7 +237,7 @@ struct Function {
    *
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
-   * @throws std::runtime_error if internal cancellation mechanism encountered
+   * @throws std::runtime_error - if internal cancellation mechanism encountered
    * an error
    */
   virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
