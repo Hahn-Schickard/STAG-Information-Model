@@ -28,11 +28,11 @@ try {
 } catch (const std::runtime_error& ex) {
     // handle runtime_error exception 
 } catch (const std::exception& ex) {
-    // fallback for all other exceptions 
+    // fallback for all standard exceptions 
 }
 ```
 
-Users can also differentiate between various different exceptions, in case different exceptions need to be treated differentially. This is done by declaring multiple `catch` blocks after the initial `try` block. Each new `catch` block then declares what exception type it will catch and how said block is going to use the exception. It is recommended to always have a single `catch(const std::exception& ex)` block at the end. This way, any thrown exception, that was not caught by the specialized catch blocks, will still be properly handled and will not terminate system operation.
+Users can also differentiate between various different exceptions, in case different exceptions need to be treated differentially. This is done by declaring multiple `catch` blocks after the initial `try` block. Each new `catch` block then declares what exception type it will catch and how said block is going to use the exception. It is recommended to always have a single `catch(const std::exception& ex)` block at the end. This way, any thrown standard exception, that was not caught by the specialized catch blocks, will still be properly handled and will not terminate system operation.
 
 ### Suppress all thrown exceptions
 ```cpp
@@ -47,11 +47,11 @@ Users can also ignore any thrown exception by using the `...` [ellipsis](https:/
 
 ## Throwing Exceptions
 
-All **Technology Adapter Interface** implementations are expected to throw a [`std::runtime_error`](https://en.cppreference.com/w/cpp/error/runtime_error) or any of it's subclasses in case the requested operation could not be carried out or to completely remove the `Device` instance by deregistering it. 
+If a requested operation could not be carried out, **Technology Adapter Interface** implementations are expected to throw a [`std::runtime_error`](https://en.cppreference.com/w/cpp/error/runtime_error) or any of it's subclasses. Additionally, implementations **MAY** completely remove the `Device` instance by deregistering it. 
 
 ### To throw, to wait, or to deregister?
 
-It is difficult to say, when **Technology Adapter Interface** implementation should throw an exception, wait for an error correction or completely remove the `Device` instance, without knowing what the specific technology is being implementing. Some technologies have really detailed explanations of expected failure cases and how each case should be handled, others do not. 
+There is no general rule, that states when **Technology Adapter Interface** implementation should throw an exception, wait for an error correction or completely remove the `Device` instance. Some technologies have really detailed explanations of expected failure cases and how each case should be handled while others do not. 
 
 In cases when there are no failure handling mechanism specifications, developers are expected to: 
 

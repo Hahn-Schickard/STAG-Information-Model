@@ -105,7 +105,7 @@ struct Function {
      * @throws CallCanceled - if the requested operation was canceled by the
      * user
      * @throws std::runtime_error - if internal callback encountered an error.
-     * May cause @ref Deregistration
+     * It may have caused @ref Deregistration
      *
      * @return DataVariant
      */
@@ -128,8 +128,8 @@ struct Function {
    * result
    *
    * @throws std::logic_error - if base implementation was called
-   * @throws std::runtime_error - if internal callback encountered an error. May
-   * cause @ref Deregistration
+   * 
+   * @attention May cause @ref Deregistration
    *
    * @param parameters
    */
