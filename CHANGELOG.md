@@ -1,4 +1,17 @@
 # Changelog
+## [0.3.3] - 2023.09.13
+### Added
+ - Doxygen page for exception handling
+ - `@attention` notice for `DeviceBuilderInterface::getResult()` method
+ - doxystring for `Function::ResultFuture::get()` method
+ - `May cause @ref Deregistration` markers to doxystrings
+
+### Changed 
+ - `MockWritableMetric` implementation to use `MockMetric` composition instead of inheritance
+ - `setVariant()` helper function to return `std::optional<DataVariant>`
+ - Base method implementations to throw `std::logic_error` instead of `std::runtime_error`
+ - `DeviceBuilderInterface` documentation to explicitly state that it is based on the Builder pattern
+
 ## [0.3.2] - 2023.07.28
 ### Added
  - STAG logo to documentation 
