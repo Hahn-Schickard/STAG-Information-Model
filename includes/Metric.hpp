@@ -27,12 +27,14 @@ struct Metric {
   /**
    * @brief Read the latest available metric value
    *
-   * @throws std::logic_error if internal getter callback does not exist
+   * @throws std::logic_error - if internal callback does not exist
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
    *
    * @return DataVariant
    */
   virtual DataVariant getMetricValue() {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of Metric::getMetricValue()");
   }
 

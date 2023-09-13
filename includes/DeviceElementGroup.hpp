@@ -47,7 +47,7 @@ struct DeviceElementGroup {
    * @return DeviceElements
    */
   virtual DeviceElements getSubelements() const {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of DeviceElements::getSubelements");
   }
 
@@ -55,13 +55,13 @@ struct DeviceElementGroup {
    * @brief Searches and returns a DeviceElement that matches a given reference
    * id
    *
-   * @throws DeviceElementNotFound if no DeviceElement with given ref_id exists
-   * within this group
+   * @throws DeviceElementNotFound - if no DeviceElement with given ref_id
+   * exists within this group
    *
    */
   virtual NonemptyDeviceElementPtr getSubelement(
       const std::string& /*ref_id*/) const {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called base implementation of DeviceElements::getSubelement");
   }
 

@@ -26,13 +26,15 @@ struct WritableMetric : public Metric {
    * @brief Writes the given DataVariant as a metric value to the modeled
    * sensor/actor system
    *
-   * @throws std::invalid_argument if provided argument does not match the
+   * @throws std::invalid_argument - if provided argument does not match the
    * modeled value type
-   * @throws std::logic_error if internal setter callback does not exist
+   * @throws std::logic_error - if internal callback does not exist
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
    *
    */
   virtual void setMetricValue(DataVariant /*value*/) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of WritableMetric::setMetricValue()");
   }
 
@@ -42,7 +44,7 @@ struct WritableMetric : public Metric {
    * @return bool
    */
   virtual bool isWriteOnly() {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of WritableMetric::isWriteOnly()");
   }
 

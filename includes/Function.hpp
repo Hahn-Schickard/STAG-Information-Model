@@ -98,6 +98,17 @@ struct Function {
         : std::future<DataVariant>(std::move(future_result)), call_id(caller),
           clear_caller(clearer) {}
 
+    /**
+     * @brief Obtains the promised future result and removes the call_id from
+     * active operations list
+     *
+     * @throws CallCanceled - if the requested operation was canceled by the
+     * user
+     * @throws std::runtime_error - if internal callback encountered an error.
+     * It may have caused @ref Deregistration
+     *
+     * @return DataVariant
+     */
     DataVariant get() {
       auto result = std::future<DataVariant>::get();
       clear_caller(call_id);
@@ -116,12 +127,14 @@ struct Function {
    * @brief Executes the modeled functionality without waiting for the execution
    * result
    *
-   * @throws std::runtime_error - if base implementation was called
+   * @throws std::logic_error - if base implementation was called
+   * 
+   * @attention May cause @ref Deregistration
    *
    * @param parameters
    */
   virtual void execute(const Parameters& /*parameters*/ = Parameters()) {
-    throw std::runtime_error(
+    throw std::logic_error(
         "Called based implementation of Function::execute()");
   }
 
@@ -137,8 +150,10 @@ struct Function {
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
    * @throws FunctionCallTimedout - if execution call has timeout
-   * @throws CallerIDExists - if internal execute call back return a caller id
+   * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
    *
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
@@ -159,8 +174,10 @@ struct Function {
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
    * @throws FunctionCallTimedout - if execution call has timeout
-   * @throws CallerIDExists - if internal execute call back return a caller id
+   * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
    *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs
@@ -179,8 +196,10 @@ struct Function {
    *
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
-   * @throws CallerIDExists - if internal execute call back return a caller id
+   * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
+   *
+   * @attention May cause @ref Deregistration
    *
    * @param parameters
    * @return ResultFuture
@@ -200,6 +219,8 @@ struct Function {
    * previous asynchronous call
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
+   * @throws std::runtime_error - if internal cancellation mechanism encountered
+   * an error
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
@@ -216,6 +237,8 @@ struct Function {
    *
    * @throws ResultReturningNotSupported- if modeled functionality does not
    * support returning execution result
+   * @throws std::runtime_error - if internal cancellation mechanism encountered
+   * an error
    */
   virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 
