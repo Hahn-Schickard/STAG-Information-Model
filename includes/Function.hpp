@@ -128,7 +128,7 @@ struct Function {
    * result
    *
    * @throws std::logic_error - if base implementation was called
-   * 
+   *
    * @attention May cause @ref Deregistration
    *
    * @param parameters

@@ -16,11 +16,11 @@ using UniqueDevicePtr = std::unique_ptr<Device>;
 
 /**
  * @brief This Interface is used by Technology Adapter implementations to build
- * a device within the Information Model. 
+ * a device within the Information Model.
  *
  * It is based on the Builder Pattern and ensures that no part of the device
  * under construction is used before said device is fully built.
- * 
+ *
  * To obtain a fully built device instance use getResult() method.
  *
  * Used by Technology Adapter implementations to build a device within the
@@ -470,10 +470,10 @@ struct DeviceBuilderInterface {
    * @{
    */
   /**
-   * @brief Checks if the built result is valid and returns it. 
+   * @brief Checks if the built result is valid and returns it.
    *
    * @attention
-   * If this method is successful, it also resets the internal device 
+   * If this method is successful, it also resets the internal device
    * pointer to allow new instances creation. To create a new instance
    * use buildDeviceBase() method.
    *
