@@ -28,30 +28,36 @@ struct MockMetric : public Metric {
         MockMetric(type, setVariant(type).value()) {}
 
   MockMetric(DataType type, const DataVariant& variant)
-      : Metric(type), value_(variant) {}
+      : Metric(type), value_(variant) {
+    delegateToFake();
+  }
 
   ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
 
   void delegateToFake() {
-    ON_CALL(*this, getMetricValue).WillByDefault(::testing::Return(value_));
+    ON_CALL(*this, getMetricValue)
+        .WillByDefault(std::bind(&MockMetric::returnValue, this));
   }
 
   void delegateToFake(Reader reader) {
     read_ = reader;
-    ON_CALL(*this, getMetricValue).WillByDefault([this]() -> DataVariant {
-      if (read_) {
-        return read_();
-      } else {
-        return value_;
-      }
-    });
+    if (read_) {
+      ON_CALL(*this, getMetricValue)
+          .WillByDefault(std::bind(&MockMetric::readValue, this));
+    } else {
+      delegateToFake();
+    }
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
-protected:
+private:
+  DataVariant returnValue() { return value_; }
+
+  DataVariant readValue() { return read_(); }
+
   DataVariant value_;
   Reader read_ = nullptr;
 };
