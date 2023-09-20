@@ -31,8 +31,7 @@ struct MockWritableMetric : public WritableMetric {
 
   MockWritableMetric(DataType type, const DataVariant& variant)
       : WritableMetric(type),
-        readable_(
-            std::make_shared<::testing::NiceMock<MockMetric>>(type, variant)) {
+        readable_(::testing::NiceMock<MockMetric>(type, variant)) {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(std::bind(&MockWritableMetric::readValue, this));
     ON_CALL(*this, setMetricValue)
@@ -45,12 +44,12 @@ struct MockWritableMetric : public WritableMetric {
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(bool, isWriteOnly, (), (override));
 
-  DataType getDataType() { return readable_->getDataType(); }
+  DataType getDataType() { return readable_.getDataType(); }
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
   void delegateToFake(MockMetric::Reader reader) {
-    readable_->delegateToFake(reader);
+    readable_.delegateToFake(reader);
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
@@ -68,7 +67,7 @@ struct MockWritableMetric : public WritableMetric {
   }
 
   bool clearExpectations() {
-    if (readable_->clearExpectations()) {
+    if (readable_.clearExpectations()) {
       return ::testing::Mock::VerifyAndClear(this);
     } else {
       return false;
@@ -82,10 +81,10 @@ private:
     }
   }
 
-  DataVariant readValue() { return readable_->getMetricValue(); }
+  DataVariant readValue() { return readable_.getMetricValue(); }
 
   Writer write_ = nullptr;
-  std::shared_ptr<::testing::NiceMock<MockMetric>> readable_;
+  ::testing::NiceMock<MockMetric> readable_;
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
