@@ -33,12 +33,12 @@ protected:
 };
 
 TEST_P(ParameterizedWritableMetricTests, canRead) {
-  EXPECT_CALL(*writable.get(), getMetricValue()).Times(AtLeast(1));
+  EXPECT_CALL(*writable, getMetricValue()).Times(AtLeast(1));
   EXPECT_NO_THROW(writable->getMetricValue());
 }
 
 TEST_P(ParameterizedWritableMetricTests, canWrite) {
-  EXPECT_CALL(*writable.get(), setMetricValue(::testing::_)).Times(AtLeast(1));
+  EXPECT_CALL(*writable, setMetricValue(::testing::_)).Times(AtLeast(1));
   EXPECT_NO_THROW(writable->setMetricValue(setVariant(type).value()));
 }
 
@@ -69,12 +69,12 @@ inline DataVariant setNewVariant(DataType type) {
 }
 
 TEST_P(ParameterizedWritableMetricTests, canReadWrittenValue) {
-  EXPECT_CALL(*writable.get(), setMetricValue(::testing::_)).Times(AtLeast(1));
+  EXPECT_CALL(*writable, setMetricValue(::testing::_)).Times(AtLeast(1));
 
   auto new_value = setNewVariant(type);
   EXPECT_NO_THROW(writable->setMetricValue(new_value));
 
-  EXPECT_CALL(*writable.get(), getMetricValue()).Times(AtLeast(1));
+  EXPECT_CALL(*writable, getMetricValue()).Times(AtLeast(1));
 
   optional<DataVariant> read_value = nullopt;
   EXPECT_FALSE(read_value.has_value());
