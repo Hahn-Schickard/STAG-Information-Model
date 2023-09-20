@@ -87,30 +87,6 @@ TEST_P(ParameterizedWritableMetricTests, canGetType) {
   EXPECT_EQ(type, writable->getDataType());
 }
 
-inline std::string toSanitizedString(DataType type) {
-  switch (type) {
-  case DataType::BOOLEAN:
-    return "Boolean";
-  case DataType::INTEGER:
-    return "SignedInteger";
-  case DataType::UNSIGNED_INTEGER:
-    return "UnsignedInteger";
-  case DataType::DOUBLE:
-    return "Double";
-  case DataType::TIME:
-    return "Time";
-  case DataType::OPAQUE:
-    return "OpaqueByteArray";
-  case DataType::STRING:
-    return "String";
-  case DataType::NONE:
-    return "None";
-  case DataType::UNKNOWN:
-  default:
-    return "Unknown";
-  }
-}
-
 struct SetWritableMetricTestNameSuffix {
   template <class ParamType>
   string operator()(const ::testing::TestParamInfo<ParamType>& info) const {
