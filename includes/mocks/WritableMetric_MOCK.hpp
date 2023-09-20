@@ -31,7 +31,7 @@ struct MockWritableMetric : public WritableMetric {
 
   MockWritableMetric(DataType type, const DataVariant& variant)
       : WritableMetric(type),
-        readable_(::testing::NiceMock<MockMetric>(type, variant)) {
+        readable_(type, variant) {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(std::bind(&MockWritableMetric::readValue, this));
     ON_CALL(*this, setMetricValue)
