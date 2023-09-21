@@ -124,6 +124,30 @@ inline std::string toString(DataType type) {
   }
 }
 
+inline std::string toSanitizedString(DataType type) {
+  switch (type) {
+  case DataType::BOOLEAN:
+    return "Boolean";
+  case DataType::INTEGER:
+    return "SignedInteger";
+  case DataType::UNSIGNED_INTEGER:
+    return "UnsignedInteger";
+  case DataType::DOUBLE:
+    return "Double";
+  case DataType::TIME:
+    return "Time";
+  case DataType::OPAQUE:
+    return "OpaqueByteArray";
+  case DataType::STRING:
+    return "String";
+  case DataType::NONE:
+    return "None";
+  case DataType::UNKNOWN:
+  default:
+    return "Unknown";
+  }
+}
+
 using DataVariant = std::variant<bool,
     intmax_t,
     uintmax_t,
