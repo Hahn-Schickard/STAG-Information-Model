@@ -26,12 +26,10 @@ struct MockWritableMetric : public WritableMetric {
   MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
   MockWritableMetric(DataType type)
-      // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
       : MockWritableMetric(type, setVariant(type).value()) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)
-      : WritableMetric(type),
-        readable_(type, variant) {
+      : WritableMetric(type), readable_(type, variant) {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(std::bind(&MockWritableMetric::readValue, this));
     ON_CALL(*this, setMetricValue)

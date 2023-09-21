@@ -30,7 +30,6 @@ struct FunctionExpectations {
       : FunctionExpectations(name,
             result_type,
             Function::ParameterTypes(),
-            // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
             setVariant(result_type).value()) {}
 
   FunctionExpectations(const std::string& name,
