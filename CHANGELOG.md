@@ -1,4 +1,28 @@
 # Changelog
+## [0.3.4] - 2023.09.21
+### Added
+  - `std::string toSanitizedString(DataType type)` to return `DataType` as string with only alphabet characters
+  - `ParameterizedWritableMetricTests` class to WritableMetricTests.cc
+  - `ParameterizedWritableMetricTests.canReadCustom` test case
+  - `ParameterizedWritableMetricTests.canResetRead` test case
+  - `ParameterizedWritableMetricTests.canReadWrittenValue` test case
+  - `WritableMetricTests.throwsOnUnsupportedType` test case
+
+### Fixed
+ - `MockWritableMetric` not using correct callables after `delegateToFake()` was called
+
+### Changed
+ - `MockMetric` to set `ON_CALL` default actions with `std::bind()` instead of `::testing::Return()`
+ - `MockWritableMetric`to set `ON_CALL` default actions with `std::bind()` instead of `::testing::Return()`
+ - `readable_` field in `MockWritableMetric` to `::testing::NiceMock<MockMetric>`
+ - `MockMetric` fields to be private
+ - `WritableMetricTests.canGetIntegerValue` into `ParameterizedWritableMetricTests.canReadDefault`
+ - `WritableMetricTests.canSetIntegerValue` into `ParameterizedWritableMetricTests.canWriteCustom`
+ - `WritableMetricTests.canGetIntegerType` into `ParameterizedWritableMetricTests.canGetType`
+
+### Removed
+ - `WritableMetricTests` class
+
 ## [0.3.3] - 2023.09.13
 ### Added
  - Doxygen page for exception handling
