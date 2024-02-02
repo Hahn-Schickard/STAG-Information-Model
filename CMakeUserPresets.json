@@ -1,9 +1,0 @@
-{
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "/home/dg1024/Documents/projects/stag/information-model/build/conan/build/Debug/generators/CMakePresets.json"
-    ]
-}
