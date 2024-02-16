@@ -2,6 +2,7 @@
 #define __INFORMATION_MODEL_OBSERVABLE_METRIC_HPP
 
 #include "Event_Model/AsyncEventSource.hpp"
+#include "Event_Model/EventListenerInterface.hpp"
 #include "Metric.hpp"
 
 #include <functional>
