@@ -69,12 +69,13 @@ struct MockObservableMetric : public ObservableMetric {
   std::size_t attach(
       Event_Model::HandleEventCallback<DataVariant>&& listener_callback) final {
     bool has_listeners = hasListeners();
-    ObservableMetric::attach(std::move(listener_callback));
+    auto listener_id = ObservableMetric::attach(std::move(listener_callback));
     if (!has_listeners) {
       if (observe_) {
         observe_(true);
       }
     }
+    return listener_id;
   }
 
   void detach(std::size_t callback_id) final {
