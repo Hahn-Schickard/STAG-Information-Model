@@ -52,7 +52,7 @@ struct MockObservableMetric : public ObservableMetric {
             observe) {}
 
   MockObservableMetric(DataType type,
-      Event_Model::EventSourceInterface::ExceptionHandler handler,
+      ObservableMetric::ExceptionHandler handler,
       const DataVariant& variant,
       Observe observe)
       : ObservableMetric(type, handler), readable_(type, variant),

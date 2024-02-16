@@ -11,6 +11,7 @@ namespace Information_Model {
 
 struct ObservableMetric : public Metric,
                           public Event_Model::AsyncEventSource<DataVariant> {
+  using ExceptionHandler = std::function<void(const std::exception_ptr&)>;
 
 struct ObservableMetric
     : public Metric,
@@ -18,8 +19,7 @@ struct ObservableMetric
   virtual ~ObservableMetric() = default;
 
 protected:
-  ObservableMetric(DataType type,
-      Event_Model::EventSourceInterface::ExceptionHandler handler)
+  ObservableMetric(DataType type, ExceptionHandler handler)
       : Metric(type), AsyncEventSource(handler) {}
 };
 
