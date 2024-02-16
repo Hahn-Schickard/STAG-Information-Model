@@ -67,8 +67,7 @@ struct MockObservableMetric : public ObservableMetric {
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
 
   std::size_t attach(
-      Event_Model::HandleEventCallback<ObservedValueChange>&& listener_callback)
-      final {
+      Event_Model::HandleEventCallback<DataVariant>&& listener_callback) final {
     bool has_listeners = hasListeners();
     ObservableMetric::attach(std::move(listener_callback));
     if (!has_listeners) {
@@ -103,7 +102,7 @@ struct MockObservableMetric : public ObservableMetric {
     }
   }
 
-  void setEvent(ObservedValueChange event) { notify(event); }
+  void setEvent(std::shared_ptr<DataVariant> event) { notify(event); }
 
 private:
   void handleException(const std::exception_ptr&) {
@@ -128,7 +127,8 @@ struct MockMetricObserver : public MetricObserver {
 
   ~MockMetricObserver() { clearExpectations(); }
 
-  MOCK_METHOD(void, handleEvent, (ObservedValueChange /*event*/), (override));
+  MOCK_METHOD(
+      void, handleEvent, (std::shared_ptr<DataVariant> /*event*/), (override));
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 };

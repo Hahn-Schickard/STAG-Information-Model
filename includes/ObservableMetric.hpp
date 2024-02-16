@@ -9,7 +9,8 @@
 
 namespace Information_Model {
 
-using ObservedValueChange = std::shared_ptr<DataVariant>;
+struct ObservableMetric : public Metric,
+                          public Event_Model::AsyncEventSource<DataVariant> {
 
 struct ObservableMetric
     : public Metric,
@@ -27,7 +28,7 @@ using NonemptyObservableMetricPtr =
     NonemptyPointer::NonemptyPtr<ObservableMetricPtr>;
 
 struct MetricObserver
-    : public Event_Model::EventListenerInterface<ObservedValueChange> {
+    : public Event_Model::EventListenerInterface<DataVariant> {
   virtual ~MetricObserver() = default;
 
 protected:
