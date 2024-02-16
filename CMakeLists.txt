@@ -41,6 +41,7 @@ include(compiler_settings)
 #@+ ======================== User PACKAGES configuration ===========================
 find_package(Variant_Visitor)
 find_package(Nonempty_Pointer)
+find_package(Event_Model)
 find_package(GTest)
 #@- ========================= END OF USER CONFIGURATION ============================
 
