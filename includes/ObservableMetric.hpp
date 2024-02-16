@@ -13,9 +13,6 @@ struct ObservableMetric : public Metric,
                           public Event_Model::AsyncEventSource<DataVariant> {
   using ExceptionHandler = std::function<void(const std::exception_ptr&)>;
 
-struct ObservableMetric
-    : public Metric,
-      public Event_Model::AsyncEventSource<ObservedValueChange> {
   virtual ~ObservableMetric() = default;
 
 protected:
