@@ -40,3 +40,5 @@ protected:
 
 using MetricObserverPtr = std::shared_ptr<MetricObserver>;
 } // namespace Information_Model
+
+#endif //__INFORMATION_MODEL_OBSERVABLE_METRIC_HPP
