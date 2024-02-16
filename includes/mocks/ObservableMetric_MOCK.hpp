@@ -1,5 +1,5 @@
-#ifndef __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
-#define __INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
+#ifndef __INFORMATION_MODEL_OBSERVABLE_METRIC_FAKE_HPP_
+#define __INFORMATION_MODEL_OBSERVABLE_METRIC_FAKE_HPP_
 
 #include "../ObservableMetric.hpp"
 #include "Metric_MOCK.hpp"
@@ -140,4 +140,4 @@ using NonemptyMockMetricObserverPtr =
 } // namespace testing
 } // namespace Information_Model
 
-#endif //__INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_
+#endif //__INFORMATION_MODEL_OBSERVABLE_METRIC_FAKE_HPP_
