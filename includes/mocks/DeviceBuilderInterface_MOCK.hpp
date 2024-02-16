@@ -85,6 +85,20 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
   /** @}*/
 
   /**
+   * @addtogroup ExecutableModeling Function Modelling
+   * @{
+   */
+  MOCK_METHOD(std::pair<std::string, ObservedValue>,
+      addObservableMetric,
+      (const std::string& /*group_ref_id*/,
+          const std::string& /*name*/,
+          const std::string& /*desc*/,
+          DataType /*data_type*/,
+          Observe /*observe*/),
+      (override));
+  /** @}*/
+
+  /**
    * @addtogroup DeviceModeling Device Modelling
    * @{
    */
