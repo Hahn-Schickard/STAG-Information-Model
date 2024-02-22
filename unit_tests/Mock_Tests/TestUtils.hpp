@@ -9,7 +9,7 @@
 
 namespace Information_Model {
 namespace testing {
-DataVariant getDefaultVariant(DataType type) {
+inline DataVariant getDefaultVariant(DataType type) {
   switch (type) {
   // NOLINTBEGIN(readability-magic-numbers)
   case DataType::BOOLEAN:
