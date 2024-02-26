@@ -15,6 +15,8 @@ struct ObservableMetric : public Metric,
 
   virtual ~ObservableMetric() = default;
 
+  void observed(const std::shared_ptr<DataVariant>& value) { notify(value); }
+
 protected:
   ObservableMetric(DataType type, ExceptionHandler handler)
       : Metric(type), AsyncEventSource(handler) {}
