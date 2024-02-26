@@ -13,8 +13,22 @@ void print(const DevicePtr& device);
 void print(const NonemptyDeviceElementPtr& element, size_t offset);
 void print(const NonemptyWritableMetricPtr& element, size_t offset);
 void print(const NonemptyMetricPtr& element, size_t offset);
+void print(const NonemptyObservableMetricPtr& element, size_t offset);
 void print(const NonemptyFunctionPtr& element, size_t offset);
 void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
+
+DeviceBuilderInterface::ObservedValue observable_cb = nullptr;
+
+void isObserved(bool observed) {
+  if (observed) {
+    cout << "Starting observation" << endl;
+    if (observable_cb) {
+      observable_cb(make_shared<DataVariant>(false));
+    }
+  } else {
+    cout << "Stopping observation" << endl;
+  }
+}
 
 int main() {
   try {
@@ -34,6 +48,12 @@ int main() {
       read_target_id = integer_ref_id;
       builder->addWritableMetric(
           "WritesString", "Mocked writable metric", DataType::STRING);
+      auto observable_cb = builder
+                               ->addObservableMetric("ObservesFalse",
+                                   "Mocked observable metric",
+                                   DataType::BOOLEAN,
+                                   bind(&isObserved, placeholders::_1))
+                               .second;
       builder->addFunction(
           "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
       builder->addFunction(
@@ -81,6 +101,12 @@ void print(const NonemptyWritableMetricPtr& element, size_t offset) {
   cout << endl;
 }
 
+void print(const NonemptyObservableMetricPtr& element, size_t offset) {
+  cout << string(offset, ' ') << "Observes " << toString(element->getDataType())
+       << " value: " << toString(element->getMetricValue()) << endl;
+  cout << endl;
+}
+
 void print(const NonemptyFunctionPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Executes " << toString(element->result_type)
        << " call(" << toString(element->parameters) << ")" << endl;
@@ -104,6 +130,9 @@ void print(const NonemptyDeviceElementPtr& element, size_t offset) {
          print(interface, offset); 
       },
       [offset](const NonemptyWritableMetricPtr& interface) { 
+        print(interface, offset); 
+      },
+      [offset](const NonemptyObservableMetricPtr& interface) { 
         print(interface, offset); 
       },
       [offset](const NonemptyFunctionPtr& interface) { 
