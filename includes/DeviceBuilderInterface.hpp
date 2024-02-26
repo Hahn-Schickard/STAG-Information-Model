@@ -42,7 +42,7 @@ struct DeviceBuilderInterface {
   using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
   using ObservedValue = std::function<void(std::shared_ptr<DataVariant>)>;
-  using Observe = std::function<void(bool)>;
+  using Observator = std::function<void(bool)>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -315,8 +315,10 @@ struct DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Observe observe) {
-    return addObservableMetric(std::string(), name, desc, data_type, observe);
+      Reader read_cb,
+      Observator observe_cb) {
+    return addObservableMetric(
+        std::string(), name, desc, data_type, read_cb, observe_cb);
   }
 
   /**
@@ -360,7 +362,8 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      Observe /*observe*/) {
+      Reader /*read_cb*/,
+      Observator /*observe_cb*/) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
@@ -605,8 +608,17 @@ struct DeviceBuilderInterface {
           supported_params; // NOLINT(readability-identifier-naming)
     };
 
+    struct Observe {
+      Observe() = default;
+      Observe(Reader read_cb, Observator observe_cb)
+          : read_part(read_cb), callback(observe_cb) {}
+
+      const Read read_part; // NOLINT(readability-identifier-naming)
+      const Observator callback; // NOLINT(readability-identifier-naming)
+    };
+
     using Group = std::monostate;
-    using Interface = std::variant<Group, Read, Write, Execute>;
+    using Interface = std::variant<Group, Read, Write, Observe, Execute>;
 
     /**
      * @brief Creates basic information for a DeviceElementGroupMock
@@ -665,6 +677,9 @@ struct DeviceBuilderInterface {
     Functionality(DataType type, Reader read_cb, Writer write_cb)
         : data_type(type), interface(Write(read_cb, write_cb)) {}
 
+    Functionality(DataType type, Reader read_cb, Observator observe_cb)
+        : data_type(type), interface(Observe(read_cb, observe_cb)) {}
+
     /**
      * @brief Creates basic information for a simple FunctionMock with given
      * result DataType and supported function parameters
@@ -722,6 +737,8 @@ struct DeviceBuilderInterface {
         return ElementType::READABLE;
       } else if (std::holds_alternative<Write>(interface)) {
         return ElementType::WRITABLE;
+      } else if (std::holds_alternative<Observe>(interface)) {
+        return ElementType::OBSERVABLE;
       } else if (std::holds_alternative<Execute>(interface)) {
         return ElementType::FUNCTION;
       } else {
@@ -731,6 +748,7 @@ struct DeviceBuilderInterface {
 
     Read getRead() const { return std::get<Read>(interface); }
     Write getWrite() const { return std::get<Write>(interface); }
+    Observe getObserve() const { return std::get<Observe>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
     const DataType data_type; // NOLINT(readability-identifier-naming)
