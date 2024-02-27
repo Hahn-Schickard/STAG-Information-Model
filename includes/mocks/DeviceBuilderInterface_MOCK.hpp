@@ -94,7 +94,8 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
           const std::string& /*name*/,
           const std::string& /*desc*/,
           DataType /*data_type*/,
-          Observe /*observe*/),
+          Reader /*read_cb*/,
+          ObserveInitializer /*observe_cb*/),
       (override));
   /** @}*/
 

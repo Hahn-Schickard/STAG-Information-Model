@@ -41,8 +41,8 @@ struct DeviceBuilderInterface {
   using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
   using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
-  using ObservedValue = std::function<void(std::shared_ptr<DataVariant>)>;
-  using Observator = std::function<void(bool)>;
+  using ObservedValue = std::function<void(DataVariant&&)>;
+  using ObserveInitializer = std::function<void(bool)>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -306,8 +306,9 @@ struct DeviceBuilderInterface {
    * @param name
    * @param desc
    * @param data_type
-   * @param observe - observation (de)activation callback function, used to
-   * inform the observable data source implementation when to start/stop
+   * @param read_cb
+   * @param initialized_cb - observation (de)activation callback function, used
+   * to inform the observable data source implementation when to start/stop
    * observation
    * @return std::pair<std::string, ObservedValue>
    */
@@ -316,9 +317,9 @@ struct DeviceBuilderInterface {
       const std::string& desc,
       DataType data_type,
       Reader read_cb,
-      Observator observe_cb) {
+      ObserveInitializer initialized_cb) {
     return addObservableMetric(
-        std::string(), name, desc, data_type, read_cb, observe_cb);
+        std::string(), name, desc, data_type, read_cb, initialized_cb);
   }
 
   /**
@@ -352,8 +353,9 @@ struct DeviceBuilderInterface {
    * @param name
    * @param desc
    * @param data_type
-   * @param observe - observation (de)activation callback function, used to
-   * inform the observable data source implementation when to start/stop
+   * @param read_cb
+   * @param initialized_cb - observation (de)activation callback function, used
+   * to inform the observable data source implementation when to start/stop
    * observation.
    * @return std::pair<std::string, ObservedValue>
    */
@@ -363,7 +365,7 @@ struct DeviceBuilderInterface {
       const std::string& /*desc*/,
       DataType /*data_type*/,
       Reader /*read_cb*/,
-      Observator /*observe_cb*/) {
+      ObserveInitializer /*initialized_cb*/) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
@@ -610,11 +612,12 @@ struct DeviceBuilderInterface {
 
     struct Observe {
       Observe() = default;
-      Observe(Reader read_cb, Observator observe_cb)
+      Observe(Reader read_cb, ObserveInitializer observe_cb)
           : read_part(read_cb), callback(observe_cb) {}
 
       const Read read_part; // NOLINT(readability-identifier-naming)
-      const Observator callback; // NOLINT(readability-identifier-naming)
+      const ObserveInitializer
+          callback; // NOLINT(readability-identifier-naming)
     };
 
     using Group = std::monostate;
@@ -677,7 +680,7 @@ struct DeviceBuilderInterface {
     Functionality(DataType type, Reader read_cb, Writer write_cb)
         : data_type(type), interface(Write(read_cb, write_cb)) {}
 
-    Functionality(DataType type, Reader read_cb, Observator observe_cb)
+    Functionality(DataType type, Reader read_cb, ObserveInitializer observe_cb)
         : data_type(type), interface(Observe(read_cb, observe_cb)) {}
 
     /**

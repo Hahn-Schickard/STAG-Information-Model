@@ -21,18 +21,19 @@ namespace testing {
  *
  */
 struct MockObservableMetric : public ObservableMetric {
-  using Observe = std::function<void(bool)>;
+  using ObserveInitializer = std::function<void(bool)>;
 
   MockObservableMetric() : MockObservableMetric(DataType::BOOLEAN) {}
 
-  MockObservableMetric(Observe observe)
-      : MockObservableMetric(DataType::BOOLEAN, observe) {}
+  MockObservableMetric(ObserveInitializer ObserveInitializer)
+      : MockObservableMetric(DataType::BOOLEAN, ObserveInitializer) {}
 
   MockObservableMetric(DataType type)
       : MockObservableMetric(type, setVariant(type).value()) {}
 
-  MockObservableMetric(DataType type, Observe observe)
-      : MockObservableMetric(type, setVariant(type).value(), observe) {}
+  MockObservableMetric(DataType type, ObserveInitializer ObserveInitializer)
+      : MockObservableMetric(
+            type, setVariant(type).value(), ObserveInitializer) {}
 
   MockObservableMetric(DataType type, const DataVariant& variant)
       : MockObservableMetric(type,
@@ -42,21 +43,22 @@ struct MockObservableMetric : public ObservableMetric {
             variant,
             nullptr) {}
 
-  MockObservableMetric(
-      DataType type, const DataVariant& variant, Observe observe)
+  MockObservableMetric(DataType type,
+      const DataVariant& variant,
+      ObserveInitializer ObserveInitializer)
       : MockObservableMetric(type,
             std::bind(&MockObservableMetric::handleException,
                 this,
                 std::placeholders::_1),
             variant,
-            observe) {}
+            ObserveInitializer) {}
 
   MockObservableMetric(DataType type,
       ObservableMetric::ExceptionHandler handler,
       const DataVariant& variant,
-      Observe observe)
+      ObserveInitializer ObserveInitializer)
       : ObservableMetric(type, handler), readable_(type, variant),
-        observe_(observe) {
+        observe_(ObserveInitializer) {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(std::bind(&MockObservableMetric::readValue, this));
     delegateToFake();
@@ -111,7 +113,7 @@ private:
   DataVariant readValue() { return readable_.getMetricValue(); }
 
   ::testing::NiceMock<MockMetric> readable_;
-  Observe observe_;
+  ObserveInitializer observe_;
 };
 
 using MockObservableMetricPtr = std::shared_ptr<MockObservableMetric>;

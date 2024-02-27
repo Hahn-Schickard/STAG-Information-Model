@@ -149,7 +149,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Observator observe_cb) {
+      ObserveInitializer observe_cb) {
     auto element = addDeviceElement(std::string(),
         name,
         desc,
@@ -166,7 +166,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& desc,
       DataType data_type,
       Reader read_cb,
-      Observator observe_cb) {
+      ObserveInitializer observe_cb) {
     auto element = addDeviceElement(std::string(),
         name,
         desc,
@@ -184,7 +184,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& desc,
       DataType data_type,
       Reader read_cb,
-      Observator observe_cb) override {
+      ObserveInitializer observe_cb) override {
     auto element = addDeviceElement(group_ref_id,
         name,
         desc,
@@ -332,7 +332,7 @@ protected:
       return Functionality(data_type, Executor(), Canceler(), {});
     }
     case ElementType::OBSERVABLE: {
-      return Functionality(data_type, Reader(), Observator());
+      return Functionality(data_type, Reader(), ObserveInitializer());
     }
     case ElementType::GROUP: {
       return Functionality();
@@ -346,7 +346,7 @@ protected:
   }
 
   Functionality buildDefaultFunctionality(
-      DataType data_type, Observator observe_cb) {
+      DataType data_type, ObserveInitializer observe_cb) {
     return Functionality(data_type, Reader(), observe_cb);
   }
 

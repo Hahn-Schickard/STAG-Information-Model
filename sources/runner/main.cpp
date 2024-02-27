@@ -28,7 +28,7 @@ void isObserved(bool observed) {
       thread([] {
         cout << "Dispatching event" << endl;
         this_thread::sleep_for(100ms);
-        observed_value(make_shared<DataVariant>(false));
+        observed_value(false);
       }).detach();
     } else {
       cerr << "ObservedValue callback is not set" << endl;
