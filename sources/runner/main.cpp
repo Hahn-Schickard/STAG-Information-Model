@@ -111,7 +111,7 @@ struct ExampleObserver : public MetricObserver {
   ExampleObserver(const NonemptyObservableMetricPtr& source)
       : MetricObserver(source) {}
 
-  void handleEvent(shared_ptr<DataVariant> value) {
+  void handleEvent(DataVariantPtr value) {
     {
       lock_guard lck(mx_);
       cout << "New value observed:  " << toString(*value) << endl;
