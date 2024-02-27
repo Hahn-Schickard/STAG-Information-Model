@@ -25,6 +25,7 @@ void isObserved(bool observed) {
   if (observed) {
     cout << "Starting observation" << endl;
     if (observed_value) {
+      // delaying event dispatch so observer has time to initialize
       thread([] {
         cout << "Dispatching event" << endl;
         this_thread::sleep_for(100ms);
