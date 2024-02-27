@@ -101,7 +101,8 @@ TEST_P(ParameterizedObservableMetricTests, canObserve) {
   MockMetricObserverPtr observer;
   EXPECT_NO_THROW(observer = make_shared<MockMetricObserver>(mocked_));
   EXPECT_CALL(*observer, handleEvent(::testing::_)).Times(Exactly(1));
-  EXPECT_NO_THROW(mocked_->setEvent(getDefaultVariant(type_)));
+  EXPECT_NO_THROW(
+      tested_->observed(make_shared<DataVariant>(getDefaultVariant(type_))));
   this_thread::sleep_for(50ms);
 }
 

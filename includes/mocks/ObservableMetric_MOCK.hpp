@@ -103,10 +103,6 @@ struct MockObservableMetric : public ObservableMetric {
     }
   }
 
-  void setEvent(DataVariant event) {
-    notify(std::make_shared<DataVariant>(event));
-  }
-
 private:
   void handleException(const std::exception_ptr&) {
     /*surpress all exceptions*/
