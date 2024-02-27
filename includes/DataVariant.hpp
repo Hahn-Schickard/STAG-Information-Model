@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <memory>
 #include <optional>
 #include <sstream>
 #include <stdexcept>
@@ -155,6 +156,8 @@ using DataVariant = std::variant<bool,
     DateTime,
     std::vector<uint8_t>,
     std::string>;
+
+using DataVariantPtr = std::shared_ptr<DataVariant>;
 
 inline std::size_t size_of(const DataVariant& variant) {
   std::size_t result;
