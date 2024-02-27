@@ -4,6 +4,8 @@
 #include "Metric.hpp"
 #include "WritableMetric.hpp"
 
+#include <atomic>
+#include <condition_variable>
 #include <iostream>
 
 using namespace std;
@@ -17,13 +19,19 @@ void print(const NonemptyObservableMetricPtr& element, size_t offset);
 void print(const NonemptyFunctionPtr& element, size_t offset);
 void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
 
-DeviceBuilderInterface::ObservedValue observable_cb = nullptr;
+DeviceBuilderInterface::ObservedValue observed_value = nullptr;
 
 void isObserved(bool observed) {
   if (observed) {
     cout << "Starting observation" << endl;
-    if (observable_cb) {
-      observable_cb(make_shared<DataVariant>(false));
+    if (observed_value) {
+      thread([] {
+        cout << "Dispatching event" << endl;
+        this_thread::sleep_for(100ms);
+        observed_value(make_shared<DataVariant>(false));
+      }).detach();
+    } else {
+      cerr << "ObservedValue callback is not set" << endl;
     }
   } else {
     cout << "Stopping observation" << endl;
@@ -48,12 +56,12 @@ int main() {
       read_target_id = integer_ref_id;
       builder->addWritableMetric(
           "WritesString", "Mocked writable metric", DataType::STRING);
-      auto observable_cb = builder
-                               ->addObservableMetric("ObservesFalse",
-                                   "Mocked observable metric",
-                                   DataType::BOOLEAN,
-                                   bind(&isObserved, placeholders::_1))
-                               .second;
+      observed_value = builder
+                           ->addObservableMetric("ObservesFalse",
+                               "Mocked observable metric",
+                               DataType::BOOLEAN,
+                               bind(&isObserved, placeholders::_1))
+                           .second;
       builder->addFunction(
           "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
       builder->addFunction(
@@ -101,10 +109,35 @@ void print(const NonemptyWritableMetricPtr& element, size_t offset) {
   cout << endl;
 }
 
+struct ExampleObserver : public MetricObserver {
+  ExampleObserver(const NonemptyObservableMetricPtr& source)
+      : MetricObserver(source) {}
+
+  void handleEvent(shared_ptr<DataVariant> value) {
+    {
+      lock_guard lck(mx_);
+      cout << "New value observed:  " << toString(*value) << endl;
+      ready_ = true;
+    }
+    cv_.notify_one();
+  }
+
+  void waitForEvent() {
+    unique_lock lck(mx_);
+    cv_.wait(lck, [&] { return ready_.load(); });
+  }
+
+private:
+  mutex mx_;
+  condition_variable cv_;
+  atomic<bool> ready_ = false;
+};
+
 void print(const NonemptyObservableMetricPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Observes " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
-  cout << endl;
+  auto observer = ExampleObserver(element);
+  observer.waitForEvent();
 }
 
 void print(const NonemptyFunctionPtr& element, size_t offset) {
