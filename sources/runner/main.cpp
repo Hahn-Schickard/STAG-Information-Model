@@ -80,6 +80,7 @@ int main() {
     cout << "Reading " << read_target_id << " metric value as " << value
          << endl;
 
+    observed_value = nullptr; // cleanup mocked callback
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
     cerr << "An unhandled exception occurred during mock test. Exception: "
