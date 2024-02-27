@@ -1,9 +1,5 @@
 #include "DeviceMockBuilder.hpp"
 
-#include "Function.hpp"
-#include "Metric.hpp"
-#include "WritableMetric.hpp"
-
 #include <atomic>
 #include <condition_variable>
 #include <iostream>
