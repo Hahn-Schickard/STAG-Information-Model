@@ -238,30 +238,35 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
 }
 
 struct Observed {
+  ~Observed() {
+    if (event_dispatcher_) {
+      event_dispatcher_->join();
+      event_dispatcher_.reset();
+    }
+    callback_ = nullptr;
+  }
+
   void setCallback(DeviceBuilderInterface::ObservedValue&& callback) {
     callback_ = move(callback);
   }
 
   void isObserved(bool observed) {
     if (observed) {
-      cout << "Starting observation" << endl;
       if (callback_) {
         // delaying event dispatch so observer has time to initialize
-        thread([this] {
-          cout << "Dispatching event" << endl;
-          this_thread::sleep_for(10ms);
-          callback_("Hello World");
-        }).detach();
-      } else {
-        cerr << "ObservedValue callback is not set" << endl;
+        event_dispatcher_ = make_unique<thread>(
+            [](const DeviceBuilderInterface::ObservedValue& change_value) {
+              this_thread::sleep_for(10ms);
+              change_value("Hello World");
+            },
+            callback_);
       }
-    } else {
-      cout << "Stopping observation" << endl;
     }
   }
 
 private:
-  DeviceBuilderInterface::ObservedValue callback_ = nullptr;
+  unique_ptr<thread> event_dispatcher_;
+  DeviceBuilderInterface::ObservedValue callback_;
 };
 
 TEST(DeviceMockBuilderTests, canAddObservableMetric) {
