@@ -238,8 +238,8 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
 }
 
 struct Observed {
-  void setCallback(DeviceBuilderInterface::ObservedValue callback) {
-    callback_ = callback;
+  void setCallback(DeviceBuilderInterface::ObservedValue&& callback) {
+    callback_ = move(callback);
   }
 
   void isObserved(bool observed) {
@@ -270,7 +270,6 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
   EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
   string ref_id;
-  DeviceBuilderInterface::ObservedValue callback;
   string element_name = "Observable Metric";
   string element_desc = "Mocked Observable Metric";
 
@@ -283,8 +282,7 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
         bind(&Observed::isObserved, observable, placeholders::_1));
 
     ref_id = result_pair.first;
-    callback = result_pair.second;
-    observable->setCallback(callback);
+    observable->setCallback(move(result_pair.second));
   });
 
   EXPECT_EQ(ref_id, "1234:0");
@@ -456,7 +454,6 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
 
   EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
 
-  DeviceBuilderInterface::ObservedValue callback;
   string element_ref_id;
   string group_ref_id;
   string subgroup_ref_id;
@@ -484,8 +481,7 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
         bind(&Observed::isObserved, observable, placeholders::_1));
 
     element_ref_id = result_pair.first;
-    callback = result_pair.second;
-    observable->setCallback(callback);
+    observable->setCallback(move(result_pair.second));
   });
   EXPECT_EQ(element_ref_id, "1234:0.0.0");
 
