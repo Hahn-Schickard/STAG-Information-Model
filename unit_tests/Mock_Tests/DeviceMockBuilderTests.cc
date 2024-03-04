@@ -318,6 +318,7 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
   EXPECT_EQ(0, observable_metric->currentListenerCount());
 
   EXPECT_THROW(builder->getResult(), runtime_error);
+  observable.reset();
 }
 
 TEST(DeviceMockBuilderTests, canAddSubMetric) {
@@ -520,4 +521,5 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
   EXPECT_EQ(0, observable_metric->currentListenerCount());
 
   EXPECT_THROW(builder->getResult(), runtime_error);
+  observable.reset();
 }
