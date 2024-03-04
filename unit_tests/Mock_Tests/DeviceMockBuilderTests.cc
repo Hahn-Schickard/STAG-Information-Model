@@ -279,7 +279,8 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
     auto result_pair = builder->addObservableMetric(element_name,
         element_desc,
         DataType::STRING,
-        bind(&Observed::isObserved, observable, placeholders::_1));
+        // we must bind to Observed* so dtor is properly called
+        bind(&Observed::isObserved, observable.get(), placeholders::_1));
 
     ref_id = result_pair.first;
     observable->setCallback(move(result_pair.second));
@@ -478,7 +479,8 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
         element_name,
         element_desc,
         DataType::STRING,
-        bind(&Observed::isObserved, observable, placeholders::_1));
+        // we must bind to Observed* so dtor is properly called
+        bind(&Observed::isObserved, observable.get(), placeholders::_1));
 
     element_ref_id = result_pair.first;
     observable->setCallback(move(result_pair.second));
