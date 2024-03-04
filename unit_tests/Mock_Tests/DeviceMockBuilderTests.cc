@@ -445,20 +445,30 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
   EXPECT_EQ(element_name, element->getElementName());
   EXPECT_EQ(element_desc, element->getElementDescription());
 
-  auto observable_metric =
-      std::get<NonemptyObservableMetricPtr>(element->functionality);
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, observable_metric->getDataType());
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
 
-  auto observer = std::make_shared<MockMetricObserver>(observable_metric);
+  auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));
-  EXPECT_TRUE(observable_metric->hasListeners());
-  EXPECT_EQ(1, observable_metric->currentListenerCount());
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
   this_thread::sleep_for(50ms); // wait until observer->handleEvent() was called
 
   observer.reset();
-  EXPECT_FALSE(observable_metric->hasListeners());
-  EXPECT_EQ(0, observable_metric->currentListenerCount());
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mocked_metric = static_pointer_cast<MockObservableMetric>(metric.base());
+
+  EXPECT_CALL(*mocked_metric, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value : "
+        << ex.what() << endl;
+  }
 
   EXPECT_THROW(builder->getResult(), runtime_error);
   observable.reset();
@@ -648,20 +658,28 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
       element->functionality));
 
   auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
-  auto observable_metric =
-      std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, observable_metric->getDataType());
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
 
-  auto observer = std::make_shared<MockMetricObserver>(observable_metric);
+  auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));
-  EXPECT_TRUE(observable_metric->hasListeners());
-  EXPECT_EQ(1, observable_metric->currentListenerCount());
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
   this_thread::sleep_for(50ms); // wait until observer->handleEvent() was called
 
   observer.reset();
-  EXPECT_FALSE(observable_metric->hasListeners());
-  EXPECT_EQ(0, observable_metric->currentListenerCount());
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mock = static_pointer_cast<MockObservableMetric>(metric.base());
+  EXPECT_CALL(*mock, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value : "
+        << ex.what() << endl;
+  }
 
   EXPECT_THROW(builder->getResult(), runtime_error);
   observable.reset();
