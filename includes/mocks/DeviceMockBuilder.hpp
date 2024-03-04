@@ -146,6 +146,27 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
    * @{
    */
   std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& name, const std::string& desc, DataType data_type) {
+    return addObservableMetric(std::string(), name, desc, data_type);
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DataType data_type) {
+    auto element = addDeviceElement(group_ref_id,
+        name,
+        desc,
+        buildDefaultFunctionality(data_type, ObserveInitializer()));
+    auto observable =
+        std::get<NonemptyObservableMetricPtr>(element->functionality).base();
+    return std::make_pair(element->getElementId(),
+        std::bind(
+            &ObservableMetric::observed, observable, std::placeholders::_1));
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
       const std::string& name,
       const std::string& desc,
       DataType data_type,
