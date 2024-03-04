@@ -237,6 +237,69 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
+TEST(DeviceMockBuilderTests, canAddDefaultObservableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+
+  string ref_id;
+  DeviceBuilderInterface::ObservedValue value_changed;
+  string element_name = "Observable Metric";
+  string element_desc = "Mocked Observable Metric";
+
+  EXPECT_NO_THROW({
+    auto result_pair = builder->addObservableMetric(
+        element_name, element_desc, DataType::STRING);
+
+    ref_id = result_pair.first;
+    value_changed = result_pair.second;
+  });
+
+  EXPECT_EQ(ref_id, "1234:0");
+
+  DevicePtr device;
+  EXPECT_NO_THROW(device = move(builder->getResult()));
+
+  auto base_group = device->getDeviceElementGroup();
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
+  EXPECT_EQ(1, base_group->getSubelements().size());
+
+  auto element = base_group->getSubelement(ref_id);
+  EXPECT_EQ(ref_id, element->getElementId());
+  EXPECT_EQ(element_name, element->getElementName());
+  EXPECT_EQ(element_desc, element->getElementDescription());
+
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
+
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
+
+  auto observer = std::make_shared<MockMetricObserver>(metric);
+  EXPECT_CALL(*observer, handleEvent(::testing::_));
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
+  value_changed("New Value");
+  this_thread::sleep_for(20ms); // wait until observer->handleEvent() was called
+
+  observer.reset();
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mocked = static_pointer_cast<MockObservableMetric>(metric.base());
+
+  EXPECT_CALL(*mocked, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value: "
+        << ex.what() << endl;
+  }
+
+  EXPECT_THROW(builder->getResult(), runtime_error);
+}
+
 struct Observed {
   ~Observed() {
     if (event_dispatcher_) {
