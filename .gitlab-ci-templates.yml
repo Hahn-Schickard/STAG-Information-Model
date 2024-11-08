@@ -55,10 +55,10 @@ variables:
       - valgrind.log
     expire_in: 1 days
   rules:
-    - if: $EXE_TARGET != ""
-      allow_failure: true
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
+    - if: $EXE_TARGET != ""
+      allow_failure: true
 
 .analyze_test_runner_memory:
   stage: analyze
@@ -73,11 +73,10 @@ variables:
       - valgrind.log
     expire_in: 1 days
   rules:
-    - if: $TEST_RUNNER_TARGET != ""
-      allow_failure: true
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
-
+    - if: $TEST_RUNNER_TARGET != ""
+      allow_failure: true
 
 .test_coverage:
   stage: check
