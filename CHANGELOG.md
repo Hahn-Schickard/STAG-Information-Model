@@ -1,4 +1,34 @@
 # Changelog
+## [0.4.0-RC1] - 2024.11.08
+### Added 
+ - event_model v0.3 dependency
+ - `DataVariantPtr` alias
+ - `ObservedValue` alias to `DeviceBuilderInterface`
+ - `ObserveInitializer` alias to `DeviceBuilderInterface`
+ - `DeviceBuilderInterface::Observe` struct
+ - `DeviceBuilderInterface::Functionality(DataType, Reader, ObserveInitializer)` implementation
+ - `DeviceBuilderInterface::getObserve()` implementation
+ - `ObservableMetric` class
+ - `NonemptyObservableMetricPtr` alias
+ - `MockObservableMetric` class
+ - `DeviceBuilderMock::addObservableMetric()` method mocks
+ - `DeviceMockBuilder::addObservableMetric()` method implementations
+ - `DeviceMockBuilder::buildDefaultFunctionality(DataType, ObserveInitializer)` method
+ - `DeviceMockBuilderTests::canAddDefaultObservableMetric` unit test
+ - `DeviceMockBuilderTests::canAddDefaultSubObservableMetric` unit test
+ - `DeviceMockBuilderTests::canAddObservableMetric` unit test
+ - `DeviceMockBuilderTests::canAddSubObservableMetric` unit test
+ - `ObservableMetricTests` Suite
+ - `TestUtils` helper module
+
+### Changed
+ - `DeviceBuilderInterface::addObservableMetric()` method implementations
+ - `DeviceBuilderInterface::Interface` to include `Observe` interface
+ - `DeviceMockBuilder::add*()` methods to return built element id
+ - `DeviceMockBuilder::addDeviceElement()` to return `DeviceElementPtr` instead of std::string 
+ - example runner to build and showcase `ObservableMetric` class
+ - `NOLINTNEXTLINE` suppressions for various unit tests
+
 ## [0.3.4] - 2023.09.21
 ### Added
   - `std::string toSanitizedString(DataType type)` to return `DataType` as string with only alphabet characters
