@@ -2,8 +2,11 @@
 
 #include "Information_Model/Function.hpp"
 #include "Information_Model/Metric.hpp"
+#include "Information_Model/ObservableMetric.hpp"
 #include "Information_Model/WritableMetric.hpp"
 
+#include <atomic>
+#include <condition_variable>
 #include <exception>
 #include <iostream>
 
@@ -11,11 +14,32 @@ using namespace std;
 using namespace Information_Model;
 
 void print(const DevicePtr& device);
-void print(NonemptyDeviceElementPtr element, size_t offset);
-void print(NonemptyWritableMetricPtr element, size_t offset);
-void print(NonemptyMetricPtr element, size_t offset);
-void print(NonemptyFunctionPtr element, size_t offset);
-void print(NonemptyDeviceElementGroupPtr elements, size_t offset);
+void print(const NonemptyDeviceElementPtr& element, size_t offset);
+void print(const NonemptyWritableMetricPtr& element, size_t offset);
+void print(const NonemptyMetricPtr& element, size_t offset);
+void print(const NonemptyObservableMetricPtr& element, size_t offset);
+void print(const NonemptyFunctionPtr& element, size_t offset);
+void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
+
+DeviceBuilderInterface::ObservedValue observed_value = nullptr;
+
+void isObserved(bool observed) {
+  if (observed) {
+    cout << "Starting observation" << endl;
+    if (observed_value) {
+      // delaying event dispatch so observer has time to initialize
+      thread([] {
+        cout << "Dispatching event" << endl;
+        this_thread::sleep_for(100ms);
+        observed_value(false);
+      }).detach();
+    } else {
+      cerr << "ObservedValue callback is not set" << endl;
+    }
+  } else {
+    cout << "Stopping observation" << endl;
+  }
+}
 
 int main() {
   try {
@@ -27,15 +51,24 @@ int main() {
       auto subgroup_1_ref_id =
           builder->addDeviceElementGroup("Group 1", "First group");
       auto boolean_ref_id = builder->addReadableMetric(subgroup_1_ref_id,
-          "Boolean",
+          "ReadsBoolean",
           "Mocked readable metric",
           DataType::BOOLEAN);
       auto integer_ref_id = builder->addReadableMetric(
-          "Integer", "Mocked readable metric", DataType::INTEGER);
+          "ReadsInteger", "Mocked readable metric", DataType::INTEGER);
       read_target_id = integer_ref_id;
       builder->addWritableMetric(
-          "String", "Mocked writable metric", DataType::STRING);
-      builder->addFunction("Boolean", "Mocked function", DataType::BOOLEAN);
+          "WritesString", "Mocked writable metric", DataType::STRING);
+      observed_value = builder
+                           ->addObservableMetric("ObservesFalse",
+                               "Mocked observable metric",
+                               DataType::BOOLEAN,
+                               bind(&isObserved, placeholders::_1))
+                           .second;
+      builder->addFunction(
+          "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
+      builder->addFunction(
+          "ReturnsNone", "Mocked function with no return", DataType::NONE);
 
       device = move(builder->getResult());
       delete builder;
@@ -50,6 +83,7 @@ int main() {
     cout << "Reading " << read_target_id << " metric value as " << value
          << endl;
 
+    observed_value = nullptr; // cleanup mocked callback
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
     cerr << "An unhandled exception occurred during mock test. Exception: "
@@ -58,20 +92,20 @@ int main() {
   }
 }
 
-void print(NonemptyDeviceElementGroupPtr elements, size_t offset) {
+void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset) {
   cout << string(offset, ' ') << "Group contains elements:" << endl;
-  for (auto element : elements->getSubelements()) {
+  for (const auto& element : elements->getSubelements()) {
     print(element, offset + 3);
   }
 }
 
-void print(NonemptyMetricPtr element, size_t offset) {
+void print(const NonemptyMetricPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
   cout << endl;
 }
 
-void print(NonemptyWritableMetricPtr element, size_t offset) {
+void print(const NonemptyWritableMetricPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
        << " value: " << toString(element->getMetricValue()) << endl;
   cout << string(offset, ' ') << "Writes " << toString(element->getDataType())
@@ -79,13 +113,44 @@ void print(NonemptyWritableMetricPtr element, size_t offset) {
   cout << endl;
 }
 
-void print(NonemptyFunctionPtr element, size_t offset) {
+struct ExampleObserver : public MetricObserver {
+  ExampleObserver(const NonemptyObservableMetricPtr& source)
+      : MetricObserver(source) {}
+
+  void handleEvent(DataVariantPtr value) override {
+    {
+      lock_guard lck(mx_);
+      cout << "New value observed:  " << toString(*value) << endl;
+      ready_ = true;
+    }
+    cv_.notify_one();
+  }
+
+  void waitForEvent() {
+    unique_lock lck(mx_);
+    cv_.wait(lck, [&] { return ready_.load(); });
+  }
+
+private:
+  mutex mx_;
+  condition_variable cv_;
+  atomic<bool> ready_ = false;
+};
+
+void print(const NonemptyObservableMetricPtr& element, size_t offset) {
+  cout << string(offset, ' ') << "Observes " << toString(element->getDataType())
+       << " value: " << toString(element->getMetricValue()) << endl;
+  auto observer = ExampleObserver(element);
+  observer.waitForEvent();
+}
+
+void print(const NonemptyFunctionPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Executes " << toString(element->result_type)
        << " call(" << toString(element->parameters) << ")" << endl;
   cout << endl;
 }
 
-void print(NonemptyDeviceElementPtr element, size_t offset) {
+void print(const NonemptyDeviceElementPtr& element, size_t offset) {
   cout << string(offset, ' ') << "Element name: " << element->getElementName()
        << endl;
   cout << string(offset, ' ') << "Element id: " << element->getElementId()
@@ -93,14 +158,23 @@ void print(NonemptyDeviceElementPtr element, size_t offset) {
   cout << string(offset, ' ')
        << "Described as: " << element->getElementDescription() << endl;
 
-  match(element->functionality,
-      [offset](NonemptyDeviceElementGroupPtr interface) {
+  match(
+      element->functionality, // clang-format off
+      [offset](const NonemptyDeviceElementGroupPtr& interface) {
         print(interface, offset);
       },
-      [offset](NonemptyMetricPtr interface) { print(interface, offset); },
-      [offset](
-          NonemptyWritableMetricPtr interface) { print(interface, offset); },
-      [offset](NonemptyFunctionPtr interface) { print(interface, offset); });
+      [offset](const NonemptyMetricPtr& interface) {
+         print(interface, offset); 
+      },
+      [offset](const NonemptyWritableMetricPtr& interface) { 
+        print(interface, offset); 
+      },
+      [offset](const NonemptyObservableMetricPtr& interface) { 
+        print(interface, offset); 
+      },
+      [offset](const NonemptyFunctionPtr& interface) { 
+        print(interface, offset); 
+      }); // clang-format on
 }
 
 void print(const DevicePtr& device) {
