@@ -175,6 +175,12 @@ struct MockFunction : public Function {
     }
   }
 
+  /**
+   * @brief Set a custom Executor to invoke custom callback
+   *
+   * @param executor - custom execution callback
+   * @param canceler - custom cancel execution callback
+   */
   void delegateToFake(Executor executor, Canceler canceler = nullptr) {
     respondToAll(std::make_exception_ptr(
         std::logic_error("Assigned a new external execution handler")));
