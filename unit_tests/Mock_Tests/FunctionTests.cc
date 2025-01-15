@@ -87,8 +87,6 @@ TEST_P(FunctionParametrizedTests, canCall) {
         100ms); // if we do not give enough time for the thread to allocate the
                 // response future, we will respond before a call was created,
                 // thus hanging the test
-    function_mock->respondToAll(
-        expectations->result_value.value_or(DataVariant()));
     auto result = resul_future.get();
     EXPECT_EQ(expectations->result_value, result);
   } catch (const exception& ex) {
@@ -105,6 +103,7 @@ TEST_P(FunctionParametrizedTests, canCallTimesOut) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
   if (expectations->result_type != DataType::NONE) {
+    function_mock->delegateToFake();
     auto resul_future =
         std::async(std::launch::async, [this]() { return function->call(1); });
     std::this_thread::sleep_for(10ms);
