@@ -20,6 +20,8 @@ int main() {
   try {
     DevicePtr device;
     string read_target_id;
+    string call_target_id;
+    string execute_target_id;
     {
       auto* builder = new Information_Model::testing::DeviceMockBuilder();
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
@@ -34,9 +36,9 @@ int main() {
       read_target_id = integer_ref_id;
       builder->addWritableMetric(
           "WritesString", "Mocked writable metric", DataType::STRING);
-      builder->addFunction(
+      call_target_id = builder->addFunction(
           "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
-      builder->addFunction(
+      execute_target_id = builder->addFunction(
           "ReturnsNone", "Mocked function with no return", DataType::NONE);
 
       device = move(builder->getResult());
@@ -48,6 +50,25 @@ int main() {
     auto read_target_metric = get<NonemptyMetricPtr>(
         device->getDeviceElement(read_target_id)->functionality);
     auto value = get<intmax_t>(read_target_metric->getMetricValue());
+
+    auto call_target_metric = get<NonemptyFunctionPtr>(
+        device->getDeviceElement(call_target_id)->functionality);
+    auto call_result = call_target_metric->call();
+    match(
+        call_result,
+        [call_target_id](bool result) {
+          cout << "Function " + call_target_id + " result: "
+               << (result ? "true" : "false") << endl;
+        },
+        [call_target_id](auto) {
+          cerr << "Received wrong result type from " + call_target_id +
+                  " function"
+               << endl;
+        });
+
+    auto execute_target_metric = get<NonemptyFunctionPtr>(
+        device->getDeviceElement(execute_target_id)->functionality);
+    execute_target_metric->execute();
 
     cout << "Reading " << read_target_id << " metric value as " << value
          << endl;
