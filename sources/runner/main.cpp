@@ -19,9 +19,9 @@ void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
 int main() {
   try {
     DevicePtr device;
-    string read_target_id;
-    string call_target_id;
-    string execute_target_id;
+    string readable_id;
+    string callable_id;
+    string executable_id;
     {
       auto* builder = new Information_Model::testing::DeviceMockBuilder();
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
@@ -33,12 +33,12 @@ int main() {
           DataType::BOOLEAN);
       auto integer_ref_id = builder->addReadableMetric(
           "ReadsInteger", "Mocked readable metric", DataType::INTEGER);
-      read_target_id = integer_ref_id;
+      readable_id = integer_ref_id;
       builder->addWritableMetric(
           "WritesString", "Mocked writable metric", DataType::STRING);
-      call_target_id = builder->addFunction(
+      callable_id = builder->addFunction(
           "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
-      execute_target_id = builder->addFunction(
+      executable_id = builder->addFunction(
           "ReturnsNone", "Mocked function with no return", DataType::NONE);
 
       device = move(builder->getResult());
@@ -47,31 +47,32 @@ int main() {
 
     print(device);
 
-    auto read_target_metric = get<NonemptyMetricPtr>(
-        device->getDeviceElement(read_target_id)->functionality);
-    auto value = get<intmax_t>(read_target_metric->getMetricValue());
+    auto readable = get<NonemptyMetricPtr>(
+        device->getDeviceElement(readable_id)->functionality);
+    auto value = get<intmax_t>(readable->getMetricValue());
+    cout << "Reading " << readable_id << " metric value as " << value << endl;
 
-    auto call_target_metric = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(call_target_id)->functionality);
-    auto call_result = call_target_metric->call();
+    auto callable = get<NonemptyFunctionPtr>(
+        device->getDeviceElement(callable_id)->functionality);
+    auto call_result = callable->call();
     match(
         call_result,
-        [call_target_id](bool result) {
-          cout << "Function " + call_target_id + " result: "
+        [callable_id](bool result) {
+          cout << "Function " + callable_id + " result: "
                << (result ? "true" : "false") << endl;
         },
-        [call_target_id](auto) {
-          cerr << "Received wrong result type from " + call_target_id +
-                  " function"
+        [callable_id](auto) {
+          cerr << "Received wrong result type from " + callable_id + " function"
                << endl;
         });
 
-    auto execute_target_metric = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(execute_target_id)->functionality);
-    execute_target_metric->execute();
+    auto executable = get<NonemptyFunctionPtr>(
+        device->getDeviceElement(executable_id)->functionality);
+    executable->execute();
 
-    cout << "Reading " << read_target_id << " metric value as " << value
-         << endl;
+    auto custom_executable = get<NonemptyFunctionPtr>(
+        device->getDeviceElement(custom_executable_id)->functionality);
+    executable->execute();
 
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
