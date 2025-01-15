@@ -45,7 +45,7 @@ struct CallCanceled : public std::runtime_error {
 
 struct FunctionCallTimedout : public std::runtime_error {
   FunctionCallTimedout(const std::string& name)
-      : std::runtime_error("Function " + name + " call timedout") {}
+      : std::runtime_error("Function " + name + " call timed out") {}
 };
 
 /**
