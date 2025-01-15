@@ -181,6 +181,11 @@ struct MockFunction : public Function {
     if (executor) {
       executor_ = executor;
       canceler_ = canceler;
+      ON_CALL(*this, execute)
+          .WillByDefault([this](const Function::Parameters& params) {
+            auto result = executor_(params);
+          });
+
       if (canceler_) {
         ON_CALL(*this, call)
             .WillByDefault([this](const Function::Parameters& params,
@@ -213,6 +218,30 @@ struct MockFunction : public Function {
     } else {
       throw std::invalid_argument("Executor callable MUST NOT be empty");
     }
+  }
+
+  /**
+   * @brief Use internal responder mechanism instead of default value returner
+   * or custom Executor
+   *
+   * Use MockFunction::respond() or MockFunction::respondToAll() to set the
+   * response
+   *
+   * This will cause the Function::call() to throw FunctionCallTimedout, if no
+   * response has been set before the call timeout has occurred,
+   */
+  void delegateToFake() {
+    ON_CALL(*this, call)
+        .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
+          auto result = allocateAsyncCall();
+          auto status = result.wait_for(std::chrono::milliseconds(timeout));
+          if (status == std::future_status::ready) {
+            return result.get();
+          } else {
+            cancelAsyncCall(result.call_id);
+            throw FunctionCallTimedout("MockFunction");
+          }
+        });
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
