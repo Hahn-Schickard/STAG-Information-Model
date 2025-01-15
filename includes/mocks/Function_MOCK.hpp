@@ -57,16 +57,7 @@ struct MockFunction : public Function {
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
       ON_CALL(*this, call)
-          .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
-            auto result = allocateAsyncCall();
-            auto status = result.wait_for(std::chrono::milliseconds(timeout));
-            if (status == std::future_status::ready) {
-              return result.get();
-            } else {
-              cancelAsyncCall(result.call_id);
-              throw FunctionCallTimedout("MockFunction");
-            }
-          });
+          .WillByDefault(::testing::Return(result_value.value()));
       ON_CALL(*this, asyncCall)
           .WillByDefault([this](Function::Parameters /*params*/) {
             return allocateAsyncCall();
