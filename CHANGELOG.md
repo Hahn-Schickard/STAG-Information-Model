@@ -1,4 +1,16 @@
 # Changelog
+## [0.3.5] - 2025.01.15
+### Fixed 
+ - `FunctionCallTimedout` message type
+
+### Added
+ - `Function_Mock::delegateToFake()` method, to allow internal `Executor` implementation
+ - `Function` examples to main runner
+
+### Changed 
+  - `Function_Mock` constructor to return default `DataVariant` value for Function::call method mock
+  - Integration test to focus on integration testing only
+
 ## [0.3.4] - 2023.09.21
 ### Added
   - `std::string toSanitizedString(DataType type)` to return `DataType` as string with only alphabet characters
