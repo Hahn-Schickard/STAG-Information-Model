@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.24.0)
 option(CMAKE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
 
 if(CMAKE_CONAN)
-        set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan.cmake)
+    set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan.cmake)
 endif()
 
 #@+ ======================== User PROJECT_NAME configuration ============================
@@ -25,6 +25,10 @@ option(STATIC_CODE_ANALYSIS "Enable Code Linter" ON)
 option(RUN_TESTS "Enables Unit tests runner (Requires GTest framework)" ON)
 option(COVERAGE_TRACKING "Enable code test coverage tracking with gcov" ON)
 
+if(NOT WIN32)
+    option(STATIC_CODE_ANALYSIS "Enable Code Linter" ON)
+endif()
+
 include(GNUInstallDirs)
 include(macros)
 include(linter)
@@ -38,14 +42,20 @@ include(compiler_settings)
 # User defined cmake module includes go here
 #@- ======================== END OF USER CONFIGURATION ============================
 
+find_package(GTest REQUIRED)
+
 #@+ ======================== User PACKAGES configuration ===========================
 find_package(Variant_Visitor)
 find_package(Nonempty_Pointer)
 find_package(GTest)
 #@- ========================= END OF USER CONFIGURATION ============================
 
+if(CMAKE_CONAN)
+    include(${CMAKE_BINARY_DIR}/conan/build/${CMAKE_BUILD_TYPE}/generators/conan_toolchain.cmake)
+endif()
+
 add_subdirectory(sources)
 if(RUN_TESTS)
-        enable_testing()
-        add_subdirectory(unit_tests)
+    enable_testing()
+    add_subdirectory(unit_tests)
 endif()
