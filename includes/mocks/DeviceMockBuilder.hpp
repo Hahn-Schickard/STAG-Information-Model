@@ -331,8 +331,7 @@ protected:
 };
 
 using DeviceMockBuilderPtr = std::shared_ptr<DeviceMockBuilder>;
-using NonemptyDeviceMockBuilderPtr =
-    NonemptyPointer::NonemptyPtr<DeviceMockBuilderPtr>;
+using NonemptyDeviceMockBuilderPtr = Nonempty::Pointer<DeviceMockBuilderPtr>;
 } // namespace testing
 } // namespace Information_Model
 

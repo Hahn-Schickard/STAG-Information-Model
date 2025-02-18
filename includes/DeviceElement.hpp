@@ -161,7 +161,7 @@ inline bool operator!=(
 }
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
-using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
+using NonemptyDeviceElementPtr = Nonempty::Pointer<DeviceElementPtr>;
 /** @}*/
 } // namespace Information_Model
 

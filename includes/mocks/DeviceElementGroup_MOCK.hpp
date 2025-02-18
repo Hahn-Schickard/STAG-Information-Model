@@ -168,7 +168,7 @@ private:
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
 using NonemptyMockDeviceElementGroupPtr =
-    NonemptyPointer::NonemptyPtr<MockDeviceElementGroupPtr>;
+    Nonempty::Pointer<MockDeviceElementGroupPtr>;
 /** @}*/
 } // namespace testing
 } // namespace Information_Model

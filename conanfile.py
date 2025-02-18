@@ -53,7 +53,7 @@ class PackageConan(ConanFile):
         self.requires(
             "variant_visitor/[~0.1]@hahn-schickard/stable", headers=True, transitive_headers=True)
         self.requires(
-            "nonempty_pointer/[~0.3]@hahn-schickard/stable", headers=True, transitive_headers=True)
+            "nonempty/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
         self.requires("gtest/[~1.11]", headers=True, libs=True,
                       transitive_headers=True, transitive_libs=True)
         # @- END USER REQUIREMENTS

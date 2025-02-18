@@ -92,8 +92,7 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
   /** @}*/
 };
 using DeviceBuilderMockPtr = std::shared_ptr<DeviceBuilderMock>;
-using NonemptyDeviceBuilderMockPtr =
-    NonemptyPointer::NonemptyPtr<DeviceBuilderMockPtr>;
+using NonemptyDeviceBuilderMockPtr = Nonempty::Pointer<DeviceBuilderMockPtr>;
 } // namespace testing
 } // namespace Information_Model
 

@@ -262,7 +262,7 @@ private:
 };
 
 using MockFunctionPtr = std::shared_ptr<MockFunction>;
-using NonemptyMockFunctionPtr = NonemptyPointer::NonemptyPtr<MockFunctionPtr>;
+using NonemptyMockFunctionPtr = Nonempty::Pointer<MockFunctionPtr>;
 /** @}*/
 } // namespace testing
 } // namespace Information_Model

@@ -691,7 +691,7 @@ protected:
 
 using DeviceBuilderInterfacePtr = std::shared_ptr<DeviceBuilderInterface>;
 using NonemptyDeviceBuilderInterfacePtr =
-    NonemptyPointer::NonemptyPtr<DeviceBuilderInterfacePtr>;
+    Nonempty::Pointer<DeviceBuilderInterfacePtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_INTERFACE_HPP

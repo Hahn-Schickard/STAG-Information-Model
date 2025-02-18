@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 
@@ -51,7 +51,7 @@ public:
 };
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
-using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
+using NonemptyNamedElementPtr = Nonempty::Pointer<NamedElementPtr>;
 /** @}*/
 } // namespace Information_Model
 

@@ -55,8 +55,7 @@ protected:
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
-using NonemptyWritableMetricPtr =
-    NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
+using NonemptyWritableMetricPtr = Nonempty::Pointer<WritableMetricPtr>;
 /** @}*/
 } // namespace Information_Model
 

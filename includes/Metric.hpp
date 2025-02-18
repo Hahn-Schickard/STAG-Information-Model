@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 /**
@@ -62,7 +62,7 @@ protected:
 };
 
 using MetricPtr = std::shared_ptr<Metric>;
-using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
+using NonemptyMetricPtr = Nonempty::Pointer<MetricPtr>;
 /** @}*/
 } // namespace Information_Model
 

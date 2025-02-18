@@ -61,7 +61,7 @@ private:
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;
-using NonemptyMockMetricPtr = NonemptyPointer::NonemptyPtr<MockMetricPtr>;
+using NonemptyMockMetricPtr = Nonempty::Pointer<MockMetricPtr>;
 /** @}*/
 } // namespace testing
 } // namespace Information_Model

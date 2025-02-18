@@ -46,7 +46,7 @@ find_package(GTest REQUIRED)
 
 #@+ ======================== User PACKAGES configuration ===========================
 find_package(Variant_Visitor)
-find_package(Nonempty_Pointer)
+find_package(Nonempty)
 find_package(GTest)
 #@- ========================= END OF USER CONFIGURATION ============================
 
