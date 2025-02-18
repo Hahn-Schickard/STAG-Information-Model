@@ -9,7 +9,6 @@ using namespace std;
 using namespace Information_Model;
 using namespace Information_Model::testing;
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -18,7 +17,6 @@ TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnNoBase) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnOverridingBuild) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -28,7 +26,6 @@ TEST(DeviceMockBuilderTests, throwsRuntimeErrorOnOverridingBuild) {
   EXPECT_NO_THROW(builder->getResult());
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddGroup) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -61,7 +58,6 @@ TEST(DeviceMockBuilderTests, canAddGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddSubGroup) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -99,7 +95,6 @@ TEST(DeviceMockBuilderTests, canAddSubGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddSubSubGroup) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -142,7 +137,6 @@ TEST(DeviceMockBuilderTests, canAddSubSubGroup) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -188,7 +182,6 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -244,7 +237,243 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
+TEST(DeviceMockBuilderTests, canAddDefaultObservableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+
+  string ref_id;
+  DeviceBuilderInterface::ObservedValue value_changed;
+  string element_name = "Observable Metric";
+  string element_desc = "Mocked Observable Metric";
+
+  EXPECT_NO_THROW({
+    auto result_pair = builder->addObservableMetric(
+        element_name, element_desc, DataType::STRING);
+
+    ref_id = result_pair.first;
+    value_changed = result_pair.second;
+  });
+
+  EXPECT_EQ(ref_id, "1234:0");
+
+  DevicePtr device;
+  EXPECT_NO_THROW(device = move(builder->getResult()));
+
+  auto base_group = device->getDeviceElementGroup();
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
+  EXPECT_EQ(1, base_group->getSubelements().size());
+
+  auto element = base_group->getSubelement(ref_id);
+  EXPECT_EQ(ref_id, element->getElementId());
+  EXPECT_EQ(element_name, element->getElementName());
+  EXPECT_EQ(element_desc, element->getElementDescription());
+
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
+
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
+
+  auto observer = std::make_shared<MockMetricObserver>(metric);
+  EXPECT_CALL(*observer, handleEvent(::testing::_));
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
+  value_changed("New Value");
+  this_thread::sleep_for(20ms); // wait until observer->handleEvent() was called
+
+  observer.reset();
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mocked = static_pointer_cast<MockObservableMetric>(metric.base());
+
+  EXPECT_CALL(*mocked, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value: "
+        << ex.what() << endl;
+  }
+
+  EXPECT_THROW(builder->getResult(), runtime_error);
+}
+
+TEST(DeviceMockBuilderTests, canAddDefaultSubObservableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+
+  string element_ref_id;
+  string group_ref_id;
+  string subgroup_ref_id;
+  DeviceBuilderInterface::ObservedValue value_changed;
+  string element_name = "Observable Metric";
+  string element_desc = "Mocked Observable Metric";
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
+  EXPECT_NO_THROW(group_ref_id = builder->addDeviceElementGroup(
+                      "group_name", "group_desc"));
+  EXPECT_EQ(group_ref_id, "1234:0");
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
+  EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
+                      group_ref_id, "subgroup_name", "subgroup_desc"));
+  EXPECT_EQ(subgroup_ref_id, "1234:0.0");
+
+  EXPECT_NO_THROW({
+    auto result_pair = builder->addObservableMetric(
+        subgroup_ref_id, element_name, element_desc, DataType::STRING);
+
+    element_ref_id = result_pair.first;
+    value_changed = result_pair.second;
+  });
+
+  EXPECT_EQ(element_ref_id, "1234:0.0.0");
+
+  DevicePtr device;
+  EXPECT_NO_THROW(device = move(builder->getResult()));
+
+  auto base_group = device->getDeviceElementGroup();
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
+  EXPECT_EQ(1, base_group->getSubelements().size());
+
+  auto element = base_group->getSubelement(element_ref_id);
+  EXPECT_EQ(element_ref_id, element->getElementId());
+  EXPECT_EQ(element_name, element->getElementName());
+  EXPECT_EQ(element_desc, element->getElementDescription());
+
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
+
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
+
+  auto observer = std::make_shared<MockMetricObserver>(metric);
+  EXPECT_CALL(*observer, handleEvent(::testing::_));
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
+  value_changed("New Value");
+  this_thread::sleep_for(20ms); // wait until observer->handleEvent() was called
+
+  observer.reset();
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mocked = static_pointer_cast<MockObservableMetric>(metric.base());
+
+  EXPECT_CALL(*mocked, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value: "
+        << ex.what() << endl;
+  }
+
+  EXPECT_THROW(builder->getResult(), runtime_error);
+}
+
+struct Observed {
+  ~Observed() {
+    if (event_dispatcher_) {
+      event_dispatcher_->join();
+      event_dispatcher_.reset();
+    }
+    callback_ = nullptr;
+  }
+
+  void setCallback(DeviceBuilderInterface::ObservedValue&& callback) {
+    callback_ = move(callback);
+  }
+
+  void isObserved(bool observed) {
+    if (observed) {
+      if (callback_) {
+        // delaying event dispatch so observer has time to initialize
+        event_dispatcher_ = make_unique<thread>(
+            [](const DeviceBuilderInterface::ObservedValue& change_value) {
+              this_thread::sleep_for(10ms);
+              change_value("Hello World");
+            },
+            callback_);
+      }
+    }
+  }
+
+private:
+  unique_ptr<thread> event_dispatcher_;
+  DeviceBuilderInterface::ObservedValue callback_;
+};
+
+TEST(DeviceMockBuilderTests, canAddObservableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+
+  string ref_id;
+  string element_name = "Observable Metric";
+  string element_desc = "Mocked Observable Metric";
+
+  auto observable = make_shared<Observed>();
+
+  EXPECT_NO_THROW({
+    auto result_pair = builder->addObservableMetric(element_name,
+        element_desc,
+        DataType::STRING,
+        // we must bind to Observed* so dtor is properly called
+        bind(&Observed::isObserved, observable.get(), placeholders::_1));
+
+    ref_id = result_pair.first;
+    observable->setCallback(move(result_pair.second));
+  });
+
+  EXPECT_EQ(ref_id, "1234:0");
+
+  DevicePtr device;
+  EXPECT_NO_THROW(device = move(builder->getResult()));
+
+  auto base_group = device->getDeviceElementGroup();
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
+  EXPECT_EQ(1, base_group->getSubelements().size());
+
+  auto element = base_group->getSubelement(ref_id);
+  EXPECT_EQ(ref_id, element->getElementId());
+  EXPECT_EQ(element_name, element->getElementName());
+  EXPECT_EQ(element_desc, element->getElementDescription());
+
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
+
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
+
+  auto observer = std::make_shared<MockMetricObserver>(metric);
+  EXPECT_CALL(*observer, handleEvent(::testing::_));
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
+  this_thread::sleep_for(50ms); // wait until observer->handleEvent() was called
+
+  observer.reset();
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mocked_metric = static_pointer_cast<MockObservableMetric>(metric.base());
+
+  EXPECT_CALL(*mocked_metric, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value : "
+        << ex.what() << endl;
+  }
+
+  EXPECT_THROW(builder->getResult(), runtime_error);
+  observable.reset();
+}
+
 TEST(DeviceMockBuilderTests, canAddSubMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -305,7 +534,6 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   EXPECT_THROW(builder->getResult(), runtime_error);
 }
 
-// NOLINTNEXTLINE
 TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   auto builder = make_shared<DeviceMockBuilder>();
 
@@ -374,4 +602,85 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   }
 
   EXPECT_THROW(builder->getResult(), runtime_error);
+}
+
+TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
+  auto builder = make_shared<DeviceMockBuilder>();
+
+  EXPECT_NO_THROW(builder->buildDeviceBase("1234", "Mocky", "Mocked device"));
+
+  string element_ref_id;
+  string group_ref_id;
+  string subgroup_ref_id;
+  string element_name = "Observable Metric";
+  string element_desc = "Mocked Observable Metric";
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
+  EXPECT_NO_THROW(group_ref_id = builder->addDeviceElementGroup(
+                      "group_name", "group_desc"));
+  EXPECT_EQ(group_ref_id, "1234:0");
+
+  // NOLINTNEXTLINE(readability-suspicious-call-argument)
+  EXPECT_NO_THROW(subgroup_ref_id = builder->addDeviceElementGroup(
+                      group_ref_id, "subgroup_name", "subgroup_desc"));
+  EXPECT_EQ(subgroup_ref_id, "1234:0.0");
+
+  auto observable = make_shared<Observed>();
+
+  EXPECT_NO_THROW({
+    // NOLINTNEXTLINE(readability-suspicious-call-argument)
+    auto result_pair = builder->addObservableMetric(subgroup_ref_id,
+        element_name,
+        element_desc,
+        DataType::STRING,
+        // we must bind to Observed* so dtor is properly called
+        bind(&Observed::isObserved, observable.get(), placeholders::_1));
+
+    element_ref_id = result_pair.first;
+    observable->setCallback(move(result_pair.second));
+  });
+  EXPECT_EQ(element_ref_id, "1234:0.0.0");
+
+  DevicePtr device;
+  EXPECT_NO_THROW(device = move(builder->getResult()));
+
+  auto base_group = device->getDeviceElementGroup();
+  EXPECT_EQ("1234", device->getElementId());
+  EXPECT_EQ("Mocky", device->getElementName());
+  EXPECT_EQ("Mocked device", device->getElementDescription());
+  EXPECT_EQ(1, base_group->getSubelements().size());
+
+  auto element = base_group->getSubelement(element_ref_id);
+  EXPECT_EQ(element_ref_id, element->getElementId());
+  EXPECT_EQ(element_name, element->getElementName());
+  EXPECT_EQ(element_desc, element->getElementDescription());
+  EXPECT_TRUE(std::holds_alternative<NonemptyObservableMetricPtr>(
+      element->functionality));
+
+  auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
+
+  EXPECT_EQ(DataType::STRING, metric->getDataType());
+
+  auto observer = std::make_shared<MockMetricObserver>(metric);
+  EXPECT_CALL(*observer, handleEvent(::testing::_));
+  EXPECT_TRUE(metric->hasListeners());
+  EXPECT_EQ(1, metric->currentListenerCount());
+  this_thread::sleep_for(50ms); // wait until observer->handleEvent() was called
+
+  observer.reset();
+  EXPECT_FALSE(metric->hasListeners());
+  EXPECT_EQ(0, metric->currentListenerCount());
+
+  auto mock = static_pointer_cast<MockObservableMetric>(metric.base());
+  EXPECT_CALL(*mock, getMetricValue());
+  try {
+    metric->getMetricValue();
+  } catch (exception& ex) {
+    FAIL()
+        << "Caught an unhandled exception while trying to read metric value : "
+        << ex.what() << endl;
+  }
+
+  EXPECT_THROW(builder->getResult(), runtime_error);
+  observable.reset();
 }

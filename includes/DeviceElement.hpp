@@ -5,6 +5,7 @@
 #include "Function.hpp"
 #include "Metric.hpp"
 #include "NamedElement.hpp"
+#include "ObservableMetric.hpp"
 #include "WritableMetric.hpp"
 
 #include <memory>
@@ -72,6 +73,7 @@ struct DeviceElement : public NamedElement {
       NonemptyDeviceElementGroupPtr,
       NonemptyMetricPtr,
       NonemptyWritableMetricPtr,
+      NonemptyObservableMetricPtr,
       NonemptyFunctionPtr>; // clang-format on
 
   /**
@@ -92,6 +94,9 @@ struct DeviceElement : public NamedElement {
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
                    functionality)) {
       return ElementType::WRITABLE;
+    } else if (std::holds_alternative<NonemptyObservableMetricPtr>(
+                   functionality)) {
+      return ElementType::OBSERVABLE;
     } else if (std::holds_alternative<NonemptyFunctionPtr>(functionality)) {
       return ElementType::FUNCTION;
     } else {
@@ -136,7 +141,10 @@ inline bool operator==(
         break;
       }
       case ElementType::OBSERVABLE: {
-        throw false;
+        result = result &&
+            *(std::get<NonemptyObservableMetricPtr>(lhs.functionality)) ==
+                *(std::get<NonemptyObservableMetricPtr>(rhs.functionality));
+        break;
       }
       case ElementType::GROUP: {
         result = result &&

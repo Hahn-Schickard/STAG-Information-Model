@@ -41,6 +41,8 @@ struct DeviceBuilderInterface {
   using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
   using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
+  using ObservedValue = std::function<void(DataVariant&&)>;
+  using ObserveInitializer = std::function<void(bool)>;
 
   virtual ~DeviceBuilderInterface() = default;
 
@@ -278,28 +280,97 @@ struct DeviceBuilderInterface {
   /** @}*/
 
   /**
-   * @todo Decide on how to best create a binding to an Observable
-   *
+   * @addtogroup ObservableModeling Observable Metric Modelling
+   * @{
    */
-
-  std::string addObservableMetric(const std::string& name,
+  /**
+   * @brief Adds an observable metric with a given return type to the device
+   * root level DeviceElementGroup.
+   *
+   * This method creates a new Observable Metric instance, adds it to the root
+   * DeviceElementGroup of the the currently built device and returns a
+   * std::pair.
+   *
+   * The first element of the std::pair will be
+   * a string based on the unique id, provided by the user with the previously
+   * called buildDeviceBase() method. The format of this string will be as
+   * follows:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:ELEMENT_ID
+   * @endcode
+   *
+   * The second element of the std::tuple will be the
+   * Event_Model::EventSourceInterface::notify() callback function which is used
+   * to notify any observers when new data is available.
+   *
+   * @param name
+   * @param desc
+   * @param data_type
+   * @param read_cb
+   * @param initialized_cb - observation (de)activation callback function, used
+   * to inform the observable data source implementation when to start/stop
+   * observation
+   * @return std::pair<std::string, ObservedValue>
+   */
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& name,
       const std::string& desc,
-      DataType data_type /* @todo: Observer binding mechanism */) {
-    return addObservableMetric(std::string(), name, desc, data_type);
+      DataType data_type,
+      Reader read_cb,
+      ObserveInitializer initialized_cb) {
+    return addObservableMetric(
+        std::string(), name, desc, data_type, read_cb, initialized_cb);
   }
 
   /**
-   * @todo Decide on how to best create a binding to an Observable
+   * @brief Adds an observable metric with a given return type to another
+   * DeviceElementGroup. The parent group element MUST exist.
    *
+   * This method creates a new Observable Metric instance, adds it to the
+   * specified DeviceElementGroup of the the currently built device and returns
+   * a std::pair.
+   *
+   * The requested group_ref_id argument is obtained from the previous
+   * addDeviceElementGroup() call.
+   *
+   * The first element of the std::pair will be a string based on
+   * the unique id, provided by the user
+   * with the previously called buildDeviceBase() method. The format of this
+   * string the be as follows: DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID:ELEMENT_ID
+   *
+   * If specified parent DeviceElementGroup is a subgroup itself, the returned
+   * string will represent it as a new ID element as such:
+   * @code {cpp}
+   * DEVICE_UNIQUE_ID:PARENT_ELEMENT_ID.SUBPARENT_ELEMENT_ID.ELEMENT_ID
+   * @endcode
+   * A similar format will be used nth level of subgroup as well.
+   *
+   * The second element of the std::tuple will be the
+   * Event_Model::EventSourceInterface::notify() callback function which is used
+   * to notify any observers when new data is available.
+   *
+   * @param group_ref_id
+   * @param name
+   * @param desc
+   * @param data_type
+   * @param read_cb
+   * @param initialized_cb - observation (de)activation callback function, used
+   * to inform the observable data source implementation when to start/stop
+   * observation.
+   * @return std::pair<std::string, ObservedValue>
    */
-  virtual std::string addObservableMetric(const std::string& /*group_ref_id*/,
+  virtual std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& /*group_ref_id*/,
       const std::string& /*name*/,
       const std::string& /*desc*/,
-      DataType /*data_type*/ /* @todo: Observer binding mechanism */) {
+      DataType /*data_type*/,
+      Reader /*read_cb*/,
+      ObserveInitializer /*initialized_cb*/) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
   }
+  /** @}*/
 
   /**
    * @addtogroup ExecutableModeling Function Modelling
@@ -539,8 +610,18 @@ struct DeviceBuilderInterface {
           supported_params; // NOLINT(readability-identifier-naming)
     };
 
+    struct Observe {
+      Observe() = default;
+      Observe(Reader read_cb, ObserveInitializer observe_cb)
+          : read_part(read_cb), callback(observe_cb) {}
+
+      const Read read_part; // NOLINT(readability-identifier-naming)
+      const ObserveInitializer
+          callback; // NOLINT(readability-identifier-naming)
+    };
+
     using Group = std::monostate;
-    using Interface = std::variant<Group, Read, Write, Execute>;
+    using Interface = std::variant<Group, Read, Write, Observe, Execute>;
 
     /**
      * @brief Creates basic information for a DeviceElementGroupMock
@@ -599,6 +680,9 @@ struct DeviceBuilderInterface {
     Functionality(DataType type, Reader read_cb, Writer write_cb)
         : data_type(type), interface(Write(read_cb, write_cb)) {}
 
+    Functionality(DataType type, Reader read_cb, ObserveInitializer observe_cb)
+        : data_type(type), interface(Observe(read_cb, observe_cb)) {}
+
     /**
      * @brief Creates basic information for a simple FunctionMock with given
      * result DataType and supported function parameters
@@ -656,6 +740,8 @@ struct DeviceBuilderInterface {
         return ElementType::READABLE;
       } else if (std::holds_alternative<Write>(interface)) {
         return ElementType::WRITABLE;
+      } else if (std::holds_alternative<Observe>(interface)) {
+        return ElementType::OBSERVABLE;
       } else if (std::holds_alternative<Execute>(interface)) {
         return ElementType::FUNCTION;
       } else {
@@ -665,6 +751,7 @@ struct DeviceBuilderInterface {
 
     Read getRead() const { return std::get<Read>(interface); }
     Write getWrite() const { return std::get<Write>(interface); }
+    Observe getObserve() const { return std::get<Observe>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
     const DataType data_type; // NOLINT(readability-identifier-naming)

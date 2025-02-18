@@ -6,6 +6,7 @@
 #include "Device_MOCK.hpp"
 #include "Function_MOCK.hpp"
 #include "Metric_MOCK.hpp"
+#include "ObservableMetric_MOCK.hpp"
 #include "WritableMetric_MOCK.hpp"
 
 #include <gmock/gmock.h>
@@ -33,6 +34,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
   // import interface overloads
   using DeviceBuilderInterface::addDeviceElementGroup;
   using DeviceBuilderInterface::addFunction;
+  using DeviceBuilderInterface::addObservableMetric;
   using DeviceBuilderInterface::addReadableMetric;
   using DeviceBuilderInterface::addWritableMetric;
 
@@ -63,7 +65,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
   std::string addDeviceElementGroup(const std::string& group_ref_id,
       const std::string& name,
       const std::string& desc) override {
-    return addDeviceElement(group_ref_id, name, desc, Functionality());
+    return addDeviceElement(group_ref_id, name, desc, Functionality())
+        ->getElementId();
   }
   /** @}*/
 
@@ -76,7 +79,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::READABLE, data_type));
+        buildDefaultFunctionality(ElementType::READABLE, data_type))
+        ->getElementId();
   }
 
   std::string addReadableMetric(const std::string& group_ref_id,
@@ -86,7 +90,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(group_ref_id,
         name,
         desc,
-        buildDefaultFunctionality(ElementType::READABLE, data_type));
+        buildDefaultFunctionality(ElementType::READABLE, data_type))
+        ->getElementId();
   }
 
   std::string addReadableMetric(const std::string& group_ref_id,
@@ -95,7 +100,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType data_type,
       Reader read_cb) override {
     return addDeviceElement(
-        group_ref_id, name, desc, Functionality(data_type, read_cb));
+        group_ref_id, name, desc, Functionality(data_type, read_cb))
+        ->getElementId();
   }
   /** @}*/
 
@@ -108,7 +114,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::WRITABLE, data_type));
+        buildDefaultFunctionality(ElementType::WRITABLE, data_type))
+        ->getElementId();
   }
 
   std::string addWritableMetric(const std::string& group_ref_id,
@@ -118,7 +125,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(group_ref_id,
         name,
         desc,
-        buildDefaultFunctionality(ElementType::WRITABLE, data_type));
+        buildDefaultFunctionality(ElementType::WRITABLE, data_type))
+        ->getElementId();
   }
 
   std::string addWritableMetric(const std::string& group_ref_id,
@@ -128,7 +136,78 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       Writer write_cb,
       Reader read_cb) override {
     return addDeviceElement(
-        group_ref_id, name, desc, Functionality(data_type, read_cb, write_cb));
+        group_ref_id, name, desc, Functionality(data_type, read_cb, write_cb))
+        ->getElementId();
+  }
+  /** @}*/
+
+  /**
+   * @addtogroup ObservableModeling Observable Metric Modelling
+   * @{
+   */
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& name, const std::string& desc, DataType data_type) {
+    return addObservableMetric(std::string(), name, desc, data_type);
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DataType data_type) {
+    auto element = addDeviceElement(group_ref_id,
+        name,
+        desc,
+        buildDefaultFunctionality(data_type, ObserveInitializer()));
+    auto observable =
+        std::get<NonemptyObservableMetricPtr>(element->functionality).base();
+    return std::make_pair(element->getElementId(),
+        std::bind(
+            &ObservableMetric::observed, observable, std::placeholders::_1));
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& name,
+      const std::string& desc,
+      DataType data_type,
+      ObserveInitializer observe_cb) {
+    return addObservableMetric(
+        std::string(), name, desc, data_type, observe_cb);
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DataType data_type,
+      ObserveInitializer observe_cb) {
+    auto element = addDeviceElement(group_ref_id,
+        name,
+        desc,
+        buildDefaultFunctionality(data_type, observe_cb));
+    auto observable =
+        std::get<NonemptyObservableMetricPtr>(element->functionality).base();
+    return std::make_pair(element->getElementId(),
+        std::bind(
+            &ObservableMetric::observed, observable, std::placeholders::_1));
+  }
+
+  std::pair<std::string, ObservedValue> addObservableMetric(
+      const std::string& group_ref_id,
+      const std::string& name,
+      const std::string& desc,
+      DataType data_type,
+      Reader read_cb,
+      ObserveInitializer observe_cb) override {
+    auto element = addDeviceElement(group_ref_id,
+        name,
+        desc,
+        Functionality(data_type, read_cb, observe_cb));
+    auto observable =
+        std::get<NonemptyObservableMetricPtr>(element->functionality).base();
+    return std::make_pair(element->getElementId(),
+        std::bind(
+            &ObservableMetric::observed, observable, std::placeholders::_1));
   }
   /** @}*/
 
@@ -140,7 +219,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::FUNCTION));
+        buildDefaultFunctionality(ElementType::FUNCTION))
+        ->getElementId();
   }
 
   std::string addFunction(
@@ -148,17 +228,17 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        Functionality(result_type, Function::ParameterTypes{}));
+        Functionality(result_type, Function::ParameterTypes{}))
+        ->getElementId();
   }
 
   std::string addFunction(const std::string& name,
       const std::string& desc,
       DataType result_type,
       Function::ParameterTypes supported_params) {
-    return addDeviceElement(std::string(),
-        name,
-        desc,
-        Functionality(result_type, supported_params));
+    return addDeviceElement(
+        std::string(), name, desc, Functionality(result_type, supported_params))
+        ->getElementId();
   }
 
   std::string addFunction(const std::string& group_ref_id,
@@ -167,7 +247,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       DataType result_type,
       Function::ParameterTypes supported_params) {
     return addDeviceElement(
-        group_ref_id, name, desc, Functionality(result_type, supported_params));
+        group_ref_id, name, desc, Functionality(result_type, supported_params))
+        ->getElementId();
   }
 
   std::string addFunction(const std::string& group_ref_id,
@@ -180,7 +261,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(group_ref_id,
         name,
         desc,
-        Functionality(result_type, execute_cb, cancel_cb, supported_params));
+        Functionality(result_type, execute_cb, cancel_cb, supported_params))
+        ->getElementId();
   }
   /** @}*/
 
@@ -216,7 +298,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
    * @param functionality
    * @return std::string
    */
-  std::string addDeviceElement(const std::string& group_ref_id,
+  DeviceElementPtr addDeviceElement(const std::string& group_ref_id,
       const std::string& name,
       const std::string& desc,
       const Functionality& functionality) {
@@ -234,7 +316,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     }
     group->addDeviceElement(NonemptyDeviceElementPtr(element));
 
-    return ref_id;
+    return element;
   }
 
   /**
@@ -263,6 +345,9 @@ protected:
     case ElementType::FUNCTION: {
       return Functionality(data_type, Executor(), Canceler(), {});
     }
+    case ElementType::OBSERVABLE: {
+      return Functionality(data_type, Reader(), ObserveInitializer());
+    }
     case ElementType::GROUP: {
       return Functionality();
     }
@@ -272,6 +357,11 @@ protected:
       throw std::invalid_argument(error_msg);
     }
     }
+  }
+
+  Functionality buildDefaultFunctionality(
+      DataType data_type, ObserveInitializer observe_cb) {
+    return Functionality(data_type, Reader(), observe_cb);
   }
 
   Functionality buildDefaultFunctionality(ElementType type) {
@@ -308,6 +398,19 @@ protected:
       }
 
       return NonemptyWritableMetricPtr(writable);
+    }
+    case ElementType::OBSERVABLE: {
+      auto observe = functionality.getObserve();
+      auto observable =
+          std::make_shared<::testing::NiceMock<MockObservableMetric>>(
+              functionality.data_type, observe.callback);
+      if (observe.read_part.callback) {
+        observable->delegateToFake(observe.read_part.callback);
+      } else {
+        observable->delegateToFake();
+      }
+
+      return NonemptyObservableMetricPtr(observable);
     }
     case ElementType::FUNCTION: {
       auto execute = functionality.getExecute();

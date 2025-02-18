@@ -2,8 +2,11 @@
 
 #include "Information_Model/Function.hpp"
 #include "Information_Model/Metric.hpp"
+#include "Information_Model/ObservableMetric.hpp"
 #include "Information_Model/WritableMetric.hpp"
 
+#include <atomic>
+#include <condition_variable>
 #include <exception>
 #include <iostream>
 #include <vector>
@@ -28,6 +31,16 @@ int main() {
           "Label", "Mocked writable metric", DataType::STRING));
       ids.push_back(builder->addFunction(
           "Multiplicator", "Mocked function", DataType::DOUBLE));
+      ids.push_back(builder->addFunction(
+          "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN));
+      ids.push_back(builder->addFunction(
+          "ReturnsNone", "Mocked function with no return", DataType::NONE));
+      ids.push_back(builder
+                        ->addObservableMetric("ObservesFalse",
+                            "Mocked observable metric",
+                            DataType::BOOLEAN,
+                            DeviceBuilderInterface::ObservedValue())
+                        .first);
 
       device = move(builder->getResult());
     }
@@ -44,6 +57,9 @@ int main() {
           },
           [id](const NonemptyWritableMetricPtr&) {
             cout << "Element " + id + " is a writable metric" << endl;
+          },
+          [id](const NonemptyObservableMetric&) {
+            cout << "Element " + id + " is an observable metric" << endl;
           },
           [id](const NonemptyFunctionPtr&) {
             cout << "Element " + id + " is a function" << endl;
