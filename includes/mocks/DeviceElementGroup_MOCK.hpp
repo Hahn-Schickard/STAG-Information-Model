@@ -26,8 +26,8 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     ON_CALL(*this, getSubelements).WillByDefault([this]() {
       std::vector<NonemptyDeviceElementPtr> subelements;
       // NOLINTNEXTLINE
-      for (auto element_pair : elements_map_) {
-        subelements.push_back(element_pair.second);
+      for (const auto& [_, element] : elements_map_) {
+        subelements.push_back(element);
       }
       return subelements;
     });
@@ -35,9 +35,8 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     ON_CALL(*this, getSubelement)
         .WillByDefault([this](const std::string& ref_id) {
           size_t target_level = getTreeLevel(ref_id) - 1;
-          size_t current_level = getTreeLevel(element_id_);
           // Check if a given element is in a sub group
-          if (target_level != current_level) {
+          if (target_level != getTreeLevel(element_id_)) {
             auto next_id = getNextElementID(ref_id, target_level);
             auto next_element = getSubelement(next_id).base();
             try {
