@@ -22,7 +22,7 @@ namespace Information_Model::testing {
  */
 struct MockDeviceElementGroup : public DeviceElementGroup {
   explicit MockDeviceElementGroup(const std::string& ref_id)
-      : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
+      : DeviceElementGroup(), element_id_(ref_id) {
     ON_CALL(*this, getSubelements).WillByDefault([this]() {
       std::vector<NonemptyDeviceElementPtr> subelements;
       // NOLINTNEXTLINE
@@ -162,7 +162,7 @@ private:
   }
 
   std::unordered_map<std::string, NonemptyDeviceElementPtr> elements_map_;
-  size_t element_count_;
+  size_t element_count_ = 0;
   std::string element_id_;
 };
 
