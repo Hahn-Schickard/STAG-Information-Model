@@ -33,7 +33,7 @@ struct Executor {
     if (iter != calls_.end()) {
       iter->second.set_exception(
           make_exception_ptr(CallCanceled(id, "ExternalExecutor")));
-      auto clear_lock = lock_guard(erase_mx_);
+      auto clear_lock = scoped_lock(erase_mx_);
       iter = calls_.erase(iter);
     } else {
       throw CallerNotFound(id, "ExternalExecutor");
