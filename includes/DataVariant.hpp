@@ -45,12 +45,13 @@ public:
    * @return std::string
    */
   std::string toString() const {
-    char buffer[std::size("yyyy-mm-ddThh:mm:ssZ")];
-    std::strftime(std::data(buffer),
-        std::size(buffer),
+    std::string result;
+    result.reserve(std::size("yyyy-mm-ddThh:mm:ssZ"));
+    std::strftime(std::data(result),
+        std::size(result),
         "%FT%TZ",
         std::localtime(&posix_time_));
-    return std::string(buffer);
+    return result;
   }
 
   /**
