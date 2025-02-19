@@ -149,7 +149,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
 TEST_P(FunctionParametrizedTests, cancelAsyncCallThrowsException) {
   EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
       .Times(AtLeast(1));
-  if (function->result_type != DataType::NONE) {
+  if (function->resultType() != DataType::NONE) {
     EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
   } else {
     EXPECT_THROW(
@@ -392,12 +392,12 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, hasResultDataType) {
-  EXPECT_EQ(expectations->result_type, function->result_type);
+  EXPECT_EQ(expectations->result_type, function->resultType());
 }
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, hasSupportedParameterTypes) {
-  EXPECT_EQ(expectations->supported_params, function->parameters);
+  EXPECT_EQ(expectations->supported_params, function->parameterTypes());
 }
 
 struct SetFunctionTestNameSuffix {

@@ -242,21 +242,26 @@ struct Function {
    */
   virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 
+  DataType resultType() const { return result_type_; }
+
+  ParameterTypes parameterTypes() const { return parameters_; }
+
   bool operator==(const Function& other) const noexcept {
-    return (result_type == other.result_type) &&
-        (parameters == other.parameters);
+    return (result_type_ == other.result_type_) &&
+        (parameters_ == other.parameters_);
   }
 
   bool operator!=(const Function& other) const noexcept {
     return !operator==(other);
   }
 
-  const DataType result_type; // NOLINT(readability-identifier-naming)
-  const ParameterTypes parameters; // NOLINT(readability-identifier-naming)
-
 protected:
-  Function(DataType type, const ParameterTypes& supported_parameters)
-      : result_type(type), parameters(supported_parameters) {}
+  Function(DataType type, const ParameterTypes& supported_parameters_)
+      : result_type_(type), parameters_(supported_parameters_) {}
+
+private:
+  DataType result_type_;
+  ParameterTypes parameters_;
 }; // namespace Information_Model
 
 /**

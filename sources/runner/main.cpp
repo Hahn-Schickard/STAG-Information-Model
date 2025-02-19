@@ -228,8 +228,8 @@ void print(const NonemptyObservableMetricPtr& element, size_t offset) {
 }
 
 void print(const NonemptyFunctionPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Executes " << toString(element->result_type)
-       << " call(" << toString(element->parameters) << ")" << endl;
+  cout << string(offset, ' ') << "Executes " << toString(element->resultType())
+       << " call(" << toString(element->parameterTypes()) << ")" << endl;
   cout << endl;
 }
 
