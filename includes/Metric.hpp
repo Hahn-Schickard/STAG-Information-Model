@@ -56,7 +56,7 @@ struct Metric {
   }
 
 protected:
-  Metric(DataType type) : value_type_(type) {}
+  explicit Metric(DataType type) : value_type_(type) {}
 
   DataType value_type_ = DataType::UNKNOWN;
 };
