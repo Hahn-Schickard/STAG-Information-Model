@@ -16,7 +16,7 @@ protected:
   }
 
   // NOLINTNEXTLINE(readability-identifier-naming)
-  TestElementBuilder builder = TestElementBuilder();
+  TestElementBuilder builder{};
   ElementMetaInfo first_group_info; // NOLINT(readability-identifier-naming)
   ElementMetaInfo second_group_info; // NOLINT(readability-identifier-naming)
 };

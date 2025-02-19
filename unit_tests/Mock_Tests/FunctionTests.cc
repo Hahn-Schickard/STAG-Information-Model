@@ -30,7 +30,7 @@ struct FunctionExpectations {
       : FunctionExpectations(name,
             result_type,
             Function::ParameterTypes(),
-            setVariant(result_type).value()) {}
+            setVariant(result_type)) {}
 
   FunctionExpectations(const std::string& name,
       DataType result_type,
@@ -478,7 +478,7 @@ void expandFunctionTestParameters(vector<FunctionExpectations>& expectations,
     name += makeExpectationName(type);
   }
   if (return_value.has_value()) {
-    auto value = return_value.value();
+    const auto& value = return_value.value();
     auto return_type = toDataType(value);
     name +=
         "Return" + makeExpectationName(return_type) + sanitizeValueName(value);

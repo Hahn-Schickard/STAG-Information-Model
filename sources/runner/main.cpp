@@ -152,7 +152,7 @@ int main() {
           cout << "Function " + callable_id + " result: "
                << (result ? "true" : "false") << endl;
         },
-        [callable_id](auto) {
+        [callable_id](const auto&) {
           cerr << "Received wrong result type from " + callable_id + " function"
                << endl;
         });

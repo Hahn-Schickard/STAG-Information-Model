@@ -227,7 +227,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   EXPECT_CALL(*mocked_metric.get(), setMetricValue(::testing::_));
   try {
     // NOLINTNEXTLINE(readability-magic-numbers)
-    mocked_metric->setMetricValue((double)20.2);
+    mocked_metric->setMetricValue(20.2);
   } catch (exception& ex) {
     FAIL()
         << "Caught an unhandled exception while trying to write metric value: "
@@ -594,7 +594,7 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   EXPECT_CALL(*mocked_metric.get(), setMetricValue(::testing::_));
   try {
     // NOLINTNEXTLINE(readability-magic-numbers)
-    mocked_metric->setMetricValue((double)20.2);
+    mocked_metric->setMetricValue(20.2);
   } catch (exception& ex) {
     FAIL()
         << "Caught an unhandled exception while trying to write metric value: "

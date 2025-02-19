@@ -68,7 +68,7 @@ vector<MetricExpectations> makeMetricTestParameters() {
   params.emplace_back(
     "Bool", 
     DataType::BOOLEAN, 
-    DataVariant((bool)true) // NOLINT(readability-magic-numbers)
+    DataVariant(true)
   );
   params.emplace_back(
     "Int",
@@ -83,7 +83,7 @@ vector<MetricExpectations> makeMetricTestParameters() {
   params.emplace_back(
     "Double", 
     DataType::DOUBLE, 
-    DataVariant((double)20.2) // NOLINT(readability-magic-numbers)
+    DataVariant(20.2) // NOLINT(readability-magic-numbers)
   );
   params.emplace_back(
     "Opaque", 

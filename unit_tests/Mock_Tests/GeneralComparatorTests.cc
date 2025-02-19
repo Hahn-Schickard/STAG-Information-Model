@@ -9,6 +9,7 @@ using namespace std;
 template <typename ElementType> struct ComparatorTestType {
   using ElementTypePtr = shared_ptr<ElementType>;
 
+  // NOLINTNEXTLINE(modernize-pass-by-value)
   ComparatorTestType(const string& testcase_name) : name(testcase_name) {}
 
   ElementTypePtr makeEmpty() { return ElementTypePtr(); }
@@ -26,8 +27,8 @@ template <typename ElementType> struct ComparatorTestType {
     throw logic_error("Requested Element type is not supported");
   }
 
-  const string& name;
-  TestElementBuilder builder = TestElementBuilder();
+  string name;
+  TestElementBuilder builder{};
 };
 
 /**
