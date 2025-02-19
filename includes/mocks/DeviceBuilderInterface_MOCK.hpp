@@ -5,8 +5,7 @@
 
 #include <gmock/gmock.h>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @brief DeviceBuilderInterface mock class for Technology
  * Adapter Implementations to test in unit and/or integration test stages
@@ -108,7 +107,6 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
 };
 using DeviceBuilderMockPtr = std::shared_ptr<DeviceBuilderMock>;
 using NonemptyDeviceBuilderMockPtr = Nonempty::Pointer<DeviceBuilderMockPtr>;
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_MOCK_HPP

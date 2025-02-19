@@ -6,8 +6,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ObservableModeling Observable Metric Modelling
  * @{
@@ -140,7 +139,6 @@ using MockMetricObserverPtr = std::shared_ptr<MockMetricObserver>;
 using NonemptyMockMetricObserverPtr =
     NonemptyPointer::NonemptyPtr<MockMetricObserverPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_OBSERVABLE_METRIC_FAKE_HPP_

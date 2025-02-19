@@ -7,8 +7,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup GroupModeling Device Element Group Modelling
  * @{
@@ -170,6 +169,5 @@ using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
 using NonemptyMockDeviceElementGroupPtr =
     Nonempty::Pointer<MockDeviceElementGroupPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP

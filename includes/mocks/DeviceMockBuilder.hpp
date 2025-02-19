@@ -13,8 +13,7 @@
 #include <optional>
 #include <stdexcept>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
  *
@@ -435,7 +434,6 @@ protected:
 
 using DeviceMockBuilderPtr = std::shared_ptr<DeviceMockBuilder>;
 using NonemptyDeviceMockBuilderPtr = Nonempty::Pointer<DeviceMockBuilderPtr>;
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_DEVICE_MOCK_BUILDER_HPP

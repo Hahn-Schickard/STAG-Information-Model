@@ -5,8 +5,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ReadableModeling Metric Modelling
  * @{
@@ -64,7 +63,6 @@ private:
 using MockMetricPtr = std::shared_ptr<MockMetric>;
 using NonemptyMockMetricPtr = Nonempty::Pointer<MockMetricPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_METRIC_MOCK_HPP_

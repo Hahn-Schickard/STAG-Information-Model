@@ -6,8 +6,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup WritableModeling Writable Metric Modelling
  * @{
@@ -89,7 +88,6 @@ private:
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
 using NonemptyMockWritableMetricPtr = Nonempty::Pointer<MockWritableMetricPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_

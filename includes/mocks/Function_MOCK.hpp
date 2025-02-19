@@ -7,8 +7,7 @@
 #include <chrono>
 #include <future>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ExecutableModeling Function Modelling
  * @{
@@ -266,7 +265,6 @@ private:
 using MockFunctionPtr = std::shared_ptr<MockFunction>;
 using NonemptyMockFunctionPtr = Nonempty::Pointer<MockFunctionPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_FUNCTION_MOCK_HPP_
