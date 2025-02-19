@@ -302,26 +302,25 @@ inline void addSupportedParameter(Function::Parameters& map,
     const Function::ParameterTypes& supported_types,
     uintmax_t param_number,
     const Function::Parameter& param) {
-  auto supported_types_iter = supported_types.find(param_number);
-  if (supported_types_iter != supported_types.end()) {
-    auto supported_type = supported_types_iter->second;
-    if (param.has_value()) {
-      auto param_value = param.value();
-      if (matchVariantType(param_value, supported_type.first)) {
+  if (auto it = supported_types.find(param_number);
+      it != supported_types.end()) {
+    auto [type, optional] = it->second;
+    if (param) {
+      const auto& param_value = param.value();
+      if (matchVariantType(param_value, type)) {
         addParameter(map, param_number, param);
       } else {
         std::string error_msg = "Parameter number " +
-            std::to_string(param_number) + " " +
-            toString(supported_type.first) + " does not support " +
-            toString(toDataType(param_value)) + "(" + toString(param_value) +
-            ") value";
+            std::to_string(param_number) + " " + toString(type) +
+            " does not support " + toString(toDataType(param_value)) + "(" +
+            toString(param_value) + ") value";
         throw std::invalid_argument(error_msg);
       }
-    } else if (supported_type.second) {
+    } else if (optional) {
       addParameter(map, param_number, std::nullopt);
     } else {
       std::string error_msg = "Parameter number " +
-          std::to_string(param_number) + " " + toString(supported_type.first) +
+          std::to_string(param_number) + " " + toString(type) +
           " does not support empty values";
       throw std::invalid_argument(error_msg);
     }
