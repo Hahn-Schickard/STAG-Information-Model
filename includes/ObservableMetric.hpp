@@ -65,9 +65,10 @@ struct MetricObserver
   virtual ~MetricObserver() = default;
 
 protected:
-  MetricObserver(ObservableMetricPtr source) : EventListenerInterface(source) {}
+  explicit MetricObserver(ObservableMetricPtr source)
+      : EventListenerInterface(source) {}
 
-  MetricObserver(NonemptyObservableMetricPtr source)
+  explicit MetricObserver(NonemptyObservableMetricPtr source)
       : EventListenerInterface(source.base()) {}
 };
 

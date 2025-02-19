@@ -25,10 +25,10 @@ struct MockObservableMetric : public ObservableMetric {
 
   MockObservableMetric() : MockObservableMetric(DataType::BOOLEAN) {}
 
-  MockObservableMetric(ObserveInitializer ObserveInitializer)
+  explicit MockObservableMetric(ObserveInitializer ObserveInitializer)
       : MockObservableMetric(DataType::BOOLEAN, ObserveInitializer) {}
 
-  MockObservableMetric(DataType type)
+  explicit MockObservableMetric(DataType type)
       : MockObservableMetric(type, setVariant(type).value()) {}
 
   MockObservableMetric(DataType type, ObserveInitializer ObserveInitializer)
@@ -121,9 +121,10 @@ using NonemptyMockObservableMetricPtr =
     NonemptyPointer::NonemptyPtr<MockObservableMetricPtr>;
 
 struct MockMetricObserver : public MetricObserver {
-  MockMetricObserver(MockObservableMetricPtr source) : MetricObserver(source) {}
+  explicit MockMetricObserver(MockObservableMetricPtr source)
+      : MetricObserver(source) {}
 
-  MockMetricObserver(NonemptyObservableMetricPtr source)
+  explicit MockMetricObserver(NonemptyObservableMetricPtr source)
       : MetricObserver(std::move(source)) {}
 
   ~MockMetricObserver() { clearExpectations(); }

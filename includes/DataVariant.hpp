@@ -37,7 +37,7 @@ public:
    *
    * @param time_point
    */
-  DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
+  explicit DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
 
   /**
    * @brief Converts POSIX time to human readable format

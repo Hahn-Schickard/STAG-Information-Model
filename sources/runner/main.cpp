@@ -197,7 +197,7 @@ void print(const NonemptyWritableMetricPtr& element, size_t offset) {
 }
 
 struct ExampleObserver : public MetricObserver {
-  ExampleObserver(const NonemptyObservableMetricPtr& source)
+  explicit ExampleObserver(const NonemptyObservableMetricPtr& source)
       : MetricObserver(source) {}
 
   void handleEvent(DataVariantPtr value) override {

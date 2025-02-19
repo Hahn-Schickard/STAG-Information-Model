@@ -22,7 +22,7 @@ namespace testing {
  *
  */
 struct MockDeviceElementGroup : public DeviceElementGroup {
-  MockDeviceElementGroup(const std::string& ref_id)
+  explicit MockDeviceElementGroup(const std::string& ref_id)
       : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
     ON_CALL(*this, getSubelements).WillByDefault([this]() {
       std::vector<NonemptyDeviceElementPtr> subelements;

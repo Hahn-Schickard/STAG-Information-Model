@@ -594,7 +594,7 @@ struct DeviceBuilderInterface {
      */
     struct Execute {
       Execute() = default;
-      Execute(Function::ParameterTypes supported_parameters)
+      explicit Execute(Function::ParameterTypes supported_parameters)
           : supported_params(supported_parameters) {}
       Execute(Executor execute_cb, Canceler cancel_cb)
           : call(execute_cb), cancel(cancel_cb) {}
@@ -635,7 +635,8 @@ struct DeviceBuilderInterface {
      *
      * @param type
      */
-    Functionality(DataType type) : data_type(type), interface(Read()) {}
+    explicit Functionality(DataType type)
+        : data_type(type), interface(Read()) {}
 
     /**
      * @brief Creates basic information for a MetricMock with given DataType and

@@ -24,7 +24,7 @@ using NonemptyDeviceElementPtr = Nonempty::Pointer<DeviceElementPtr>;
  */
 
 struct DeviceElementNotFound : public std::runtime_error {
-  DeviceElementNotFound(const std::string& ref_id)
+  explicit DeviceElementNotFound(const std::string& ref_id)
       : std::runtime_error(
             "DeviceElement with reference id " + ref_id + " was not found") {}
 };

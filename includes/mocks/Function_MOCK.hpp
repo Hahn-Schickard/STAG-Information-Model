@@ -28,10 +28,10 @@ struct MockFunction : public Function {
 
   MockFunction() : MockFunction(DataType::NONE) {}
 
-  MockFunction(const Function::ParameterTypes& supported_params)
+  explicit MockFunction(const Function::ParameterTypes& supported_params)
       : MockFunction(DataType::NONE, supported_params, std::nullopt) {}
 
-  MockFunction(DataType result_type)
+  explicit MockFunction(DataType result_type)
       : MockFunction(result_type, Function::ParameterTypes(), std::nullopt) {}
 
   MockFunction(DataType result_type, std::optional<DataVariant> result_value)
