@@ -62,12 +62,6 @@ inline std::string toString(ElementType type) {
  * generic way of accessing the entity's functionality
  */
 struct DeviceElement : public NamedElement {
-  DeviceElement(const DeviceElement& other) noexcept = default;
-  DeviceElement(DeviceElement&& other) noexcept = default;
-
-  DeviceElement& operator=(const DeviceElement& other) noexcept = default;
-  DeviceElement& operator=(DeviceElement&& other) noexcept = default;
-
   /**
    * @brief Contains modeled entity's functionality
    *
