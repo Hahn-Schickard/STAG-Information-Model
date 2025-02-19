@@ -627,7 +627,7 @@ struct DeviceBuilderInterface {
      * @brief Creates basic information for a DeviceElementGroupMock
      *
      */
-    Functionality() : data_type(DataType::NONE), interface(Group()) {}
+    Functionality() = default;
 
     /**
      * @brief Creates basic information for a simple MetricMock with default
@@ -759,8 +759,10 @@ struct DeviceBuilderInterface {
     Observe getObserve() const { return std::get<Observe>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
-    const DataType data_type; // NOLINT(readability-identifier-naming)
-    const Interface interface; // NOLINT(readability-identifier-naming)
+    const DataType data_type =
+        DataType::NONE; // NOLINT(readability-identifier-naming)
+    const Interface interface =
+        Group(); // NOLINT(readability-identifier-naming)
   };
 
 protected:
