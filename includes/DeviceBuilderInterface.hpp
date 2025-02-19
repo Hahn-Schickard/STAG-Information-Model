@@ -569,7 +569,7 @@ struct DeviceBuilderInterface {
      */
     struct Read {
       Read() = default;
-      Read(const Reader& read_cb) : callback(read_cb) {}
+      explicit Read(const Reader& read_cb) : callback(read_cb) {}
 
       const Reader callback; // NOLINT(readability-identifier-naming)
     };
@@ -580,7 +580,7 @@ struct DeviceBuilderInterface {
      */
     struct Write {
       Write() = default;
-      Write(const Writer& write_cb) : callback(write_cb) {}
+      explicit Write(const Writer& write_cb) : callback(write_cb) {}
       Write(const Reader& read_cb, const Writer& write_cb)
           : read_part(read_cb), callback(write_cb) {}
 
