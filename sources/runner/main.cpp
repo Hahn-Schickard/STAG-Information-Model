@@ -106,13 +106,12 @@ int main() {
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
       auto subgroup_1_ref_id =
           builder->addDeviceElementGroup("Group 1", "First group");
-      auto boolean_ref_id = builder->addReadableMetric(subgroup_1_ref_id,
+      builder->addReadableMetric(subgroup_1_ref_id,
           "ReadsBoolean",
           "Mocked readable metric",
           DataType::BOOLEAN);
-      auto integer_ref_id = builder->addReadableMetric(
+      readable_id = builder->addReadableMetric(
           "ReadsInteger", "Mocked readable metric", DataType::INTEGER);
-      readable_id = integer_ref_id;
       builder->addWritableMetric(
           "WritesString", "Mocked writable metric", DataType::STRING);
       observed_value = builder

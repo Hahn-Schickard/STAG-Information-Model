@@ -28,7 +28,7 @@ template <typename ElementType> struct ComparatorTestType {
   }
 
   string name;
-  TestElementBuilder builder{};
+  TestElementBuilder builder;
 };
 
 /**
