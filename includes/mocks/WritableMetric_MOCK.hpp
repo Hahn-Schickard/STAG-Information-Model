@@ -38,11 +38,11 @@ struct MockWritableMetric : public WritableMetric {
   }
 
   MOCK_METHOD(
-      void, setMetricValue, (const DataVariant& /* value */), (override));
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(bool, isWriteOnly, (), (override));
+      void, setMetricValue, (const DataVariant& /* value */), (const override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
+  MOCK_METHOD(bool, isWriteOnly, (), (const override));
 
-  DataType getDataType() { return readable_.getDataType(); }
+  DataType getDataType() const { return readable_.getDataType(); }
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
@@ -73,13 +73,13 @@ struct MockWritableMetric : public WritableMetric {
   }
 
 private:
-  void writeValue(const DataVariant& value) {
+  void writeValue(const DataVariant& value) const {
     if (write_) {
       write_(value);
     }
   }
 
-  DataVariant readValue() { return readable_.getMetricValue(); }
+  DataVariant readValue() const { return readable_.getMetricValue(); }
 
   Writer write_ = nullptr;
   ::testing::NiceMock<MockMetric> readable_;

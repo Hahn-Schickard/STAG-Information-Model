@@ -269,7 +269,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
    * @addtogroup GroupModeling Device Element Group Modelling
    * @{
    */
-  MockDeviceElementGroupPtr getGroupImplementation(const std::string& ref_id) {
+  MockDeviceElementGroupPtr getGroupImplementation(
+      const std::string& ref_id) const {
     if (device_) {
       if (ref_id.empty()) {
         return std::static_pointer_cast<MockDeviceElementGroup>(
@@ -333,7 +334,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
 
 protected:
   Functionality buildDefaultFunctionality(
-      ElementType type, DataType data_type) {
+      ElementType type, DataType data_type) const {
     switch (type) {
     case ElementType::READABLE: {
       return Functionality(data_type, Reader());
@@ -368,7 +369,7 @@ protected:
   }
 
   DeviceElement::SpecificInterface buildSpecificInterface(
-      const Functionality& functionality) {
+      const Functionality& functionality) const {
     switch (functionality.type()) {
     case ElementType::READABLE: {
       auto read = functionality.getRead();

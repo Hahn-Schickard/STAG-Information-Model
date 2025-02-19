@@ -771,7 +771,7 @@ protected:
   DeviceElementPtr makeDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
-      DeviceElement::SpecificInterface&& interface) {
+      DeviceElement::SpecificInterface&& interface) const {
     auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
     // We can only call DeviceElement() from within DeviceBuilderInterface
     // class due to access the specifier. Thus we must first create the

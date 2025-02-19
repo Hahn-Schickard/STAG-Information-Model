@@ -32,7 +32,7 @@ struct MockMetric : public Metric {
 
   ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
 
   void delegateToFake() {
     ON_CALL(*this, getMetricValue)
@@ -52,9 +52,9 @@ struct MockMetric : public Metric {
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
 private:
-  DataVariant returnValue() { return value_; }
+  DataVariant returnValue() const { return value_; }
 
-  DataVariant readValue() { return read_(); }
+  DataVariant readValue() const { return read_(); }
 
   DataVariant value_;
   Reader read_ = nullptr;

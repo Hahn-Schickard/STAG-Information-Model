@@ -33,7 +33,7 @@ struct WritableMetric : public Metric {
    * error. May cause @ref Deregistration
    *
    */
-  virtual void setMetricValue(const DataVariant& /*value*/) {
+  virtual void setMetricValue(const DataVariant& /*value*/) const {
     throw std::logic_error(
         "Called based implementation of WritableMetric::setMetricValue()");
   }
@@ -43,7 +43,7 @@ struct WritableMetric : public Metric {
    *
    * @return bool
    */
-  virtual bool isWriteOnly() {
+  virtual bool isWriteOnly() const {
     throw std::logic_error(
         "Called based implementation of WritableMetric::isWriteOnly()");
   }

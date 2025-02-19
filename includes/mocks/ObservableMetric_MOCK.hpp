@@ -66,7 +66,7 @@ struct MockObservableMetric : public ObservableMetric {
 
   ~MockObservableMetric() { clearExpectations(); }
 
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
 
   std::size_t attach(
       Event_Model::HandleEventCallback<DataVariant>&& listener_callback) final {
@@ -89,7 +89,7 @@ struct MockObservableMetric : public ObservableMetric {
     }
   }
 
-  DataType getDataType() { return readable_.getDataType(); }
+  DataType getDataType() const { return readable_.getDataType(); }
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
@@ -106,11 +106,11 @@ struct MockObservableMetric : public ObservableMetric {
   }
 
 private:
-  void handleException(const std::exception_ptr&) {
+  void handleException(const std::exception_ptr&) const {
     /*surpress all exceptions*/
   }
 
-  DataVariant readValue() { return readable_.getMetricValue(); }
+  DataVariant readValue() const { return readable_.getMetricValue(); }
 
   ::testing::NiceMock<MockMetric> readable_;
   ObserveInitializer observe_;

@@ -33,7 +33,7 @@ struct Metric {
    *
    * @return DataVariant
    */
-  virtual DataVariant getMetricValue() {
+  virtual DataVariant getMetricValue() const {
     throw std::logic_error(
         "Called based implementation of Metric::getMetricValue()");
   }
