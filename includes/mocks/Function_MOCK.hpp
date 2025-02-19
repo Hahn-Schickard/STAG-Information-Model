@@ -34,7 +34,8 @@ struct MockFunction : public Function {
   explicit MockFunction(DataType result_type)
       : MockFunction(result_type, Function::ParameterTypes(), std::nullopt) {}
 
-  MockFunction(DataType result_type, std::optional<DataVariant> result_value)
+  MockFunction(
+      DataType result_type, const std::optional<DataVariant>& result_value)
       : MockFunction(result_type, Function::ParameterTypes(), result_value) {}
 
   MockFunction(
@@ -43,7 +44,7 @@ struct MockFunction : public Function {
 
   MockFunction(DataType result_type,
       const Function::ParameterTypes& supported_params,
-      std::optional<DataVariant> result_value)
+      const std::optional<DataVariant>& result_value)
       : Function(result_type, supported_params), result_type_(result_type),
         supported_params_(supported_params), result_value_(result_value) {
     if (!result_value_.has_value()) {
@@ -181,7 +182,8 @@ struct MockFunction : public Function {
    * @param executor - custom execution callback
    * @param canceler - custom cancel execution callback
    */
-  void delegateToFake(Executor executor, Canceler canceler = nullptr) {
+  void delegateToFake(
+      const Executor& executor, const Canceler& canceler = nullptr) {
     respondToAll(std::make_exception_ptr(
         std::logic_error("Assigned a new external execution handler")));
     if (executor) {

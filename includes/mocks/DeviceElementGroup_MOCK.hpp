@@ -77,7 +77,7 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     return base_id + sub_element_id;
   }
 
-  void addDeviceElement(NonemptyDeviceElementPtr element) {
+  void addDeviceElement(const NonemptyDeviceElementPtr& element) {
     elements_map_.emplace(element->getElementId(), element);
   }
 

@@ -94,7 +94,7 @@ struct Function {
 
     ResultFuture(std::future<DataVariant>&& future_result,
         uintmax_t caller,
-        CallClearer clearer)
+        const CallClearer& clearer)
         : std::future<DataVariant>(std::move(future_result)), call_id(caller),
           clear_caller(clearer) {}
 

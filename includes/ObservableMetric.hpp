@@ -40,12 +40,12 @@ struct ObservableMetric : public Metric,
    *
    * @param value - new observation
    */
-  void observed(DataVariant&& value) {
+  void observed(const DataVariant& value) {
     notify(std::make_shared<DataVariant>(value));
   }
 
 protected:
-  ObservableMetric(DataType type, ExceptionHandler handler)
+  ObservableMetric(DataType type, const ExceptionHandler& handler)
       : Metric(type), AsyncEventSource(handler) {}
 };
 
@@ -65,10 +65,10 @@ struct MetricObserver
   virtual ~MetricObserver() = default;
 
 protected:
-  explicit MetricObserver(ObservableMetricPtr source)
+  explicit MetricObserver(const ObservableMetricPtr& source)
       : EventListenerInterface(source) {}
 
-  explicit MetricObserver(NonemptyObservableMetricPtr source)
+  explicit MetricObserver(const NonemptyObservableMetricPtr& source)
       : EventListenerInterface(source.base()) {}
 };
 

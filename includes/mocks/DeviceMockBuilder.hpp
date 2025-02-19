@@ -98,7 +98,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb) override {
+      const Reader& read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb))
         ->getElementId();
@@ -133,8 +133,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Writer write_cb,
-      Reader read_cb) override {
+      const Writer& write_cb,
+      const Reader& read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb, write_cb))
         ->getElementId();
@@ -170,7 +170,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ObserveInitializer observe_cb) {
+      const ObserveInitializer& observe_cb) {
     return addObservableMetric(
         std::string(), name, desc, data_type, observe_cb);
   }
@@ -180,7 +180,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ObserveInitializer observe_cb) {
+      const ObserveInitializer& observe_cb) {
     auto element = addDeviceElement(group_ref_id,
         name,
         desc,
@@ -197,8 +197,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb,
-      ObserveInitializer observe_cb) override {
+      const Reader& read_cb,
+      const ObserveInitializer& observe_cb) override {
     auto element = addDeviceElement(group_ref_id,
         name,
         desc,
@@ -235,7 +235,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
   std::string addFunction(const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Function::ParameterTypes supported_params) {
+      const Function::ParameterTypes& supported_params) {
     return addDeviceElement(
         std::string(), name, desc, Functionality(result_type, supported_params))
         ->getElementId();
@@ -245,7 +245,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Function::ParameterTypes supported_params) {
+      const Function::ParameterTypes& supported_params) {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(result_type, supported_params))
         ->getElementId();
@@ -255,9 +255,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Executor execute_cb,
-      Canceler cancel_cb,
-      Function::ParameterTypes supported_params) override {
+      const Executor& execute_cb,
+      const Canceler& cancel_cb,
+      const Function::ParameterTypes& supported_params) override {
     return addDeviceElement(group_ref_id,
         name,
         desc,
@@ -360,7 +360,7 @@ protected:
   }
 
   Functionality buildDefaultFunctionality(
-      DataType data_type, ObserveInitializer observe_cb) {
+      DataType data_type, const ObserveInitializer& observe_cb) {
     return Functionality(data_type, Reader(), observe_cb);
   }
 

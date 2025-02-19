@@ -40,7 +40,7 @@ struct MockMetric : public Metric {
         .WillByDefault(std::bind(&MockMetric::returnValue, this));
   }
 
-  void delegateToFake(Reader reader) {
+  void delegateToFake(const Reader& reader) {
     read_ = reader;
     if (read_) {
       ON_CALL(*this, getMetricValue)

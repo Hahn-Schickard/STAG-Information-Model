@@ -25,13 +25,14 @@ struct MockObservableMetric : public ObservableMetric {
 
   MockObservableMetric() : MockObservableMetric(DataType::BOOLEAN) {}
 
-  explicit MockObservableMetric(ObserveInitializer ObserveInitializer)
+  explicit MockObservableMetric(const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(DataType::BOOLEAN, ObserveInitializer) {}
 
   explicit MockObservableMetric(DataType type)
       : MockObservableMetric(type, setVariant(type).value()) {}
 
-  MockObservableMetric(DataType type, ObserveInitializer ObserveInitializer)
+  MockObservableMetric(
+      DataType type, const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(
             type, setVariant(type).value(), ObserveInitializer) {}
 
@@ -45,7 +46,7 @@ struct MockObservableMetric : public ObservableMetric {
 
   MockObservableMetric(DataType type,
       const DataVariant& variant,
-      ObserveInitializer ObserveInitializer)
+      const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(type,
             std::bind(&MockObservableMetric::handleException,
                 this,
@@ -54,9 +55,9 @@ struct MockObservableMetric : public ObservableMetric {
             ObserveInitializer) {}
 
   MockObservableMetric(DataType type,
-      ObservableMetric::ExceptionHandler handler,
+      const ObservableMetric::ExceptionHandler& handler,
       const DataVariant& variant,
-      ObserveInitializer ObserveInitializer)
+      const ObserveInitializer& ObserveInitializer)
       : ObservableMetric(type, handler), readable_(type, variant),
         observe_(ObserveInitializer) {
     ON_CALL(*this, getMetricValue)
@@ -93,7 +94,7 @@ struct MockObservableMetric : public ObservableMetric {
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
-  void delegateToFake(MockMetric::Reader reader) {
+  void delegateToFake(const MockMetric::Reader& reader) {
     readable_.delegateToFake(reader);
   }
 
@@ -121,10 +122,10 @@ using NonemptyMockObservableMetricPtr =
     NonemptyPointer::NonemptyPtr<MockObservableMetricPtr>;
 
 struct MockMetricObserver : public MetricObserver {
-  explicit MockMetricObserver(MockObservableMetricPtr source)
+  explicit MockMetricObserver(const MockObservableMetricPtr& source)
       : MetricObserver(source) {}
 
-  explicit MockMetricObserver(NonemptyObservableMetricPtr source)
+  explicit MockMetricObserver(const NonemptyObservableMetricPtr& source)
       : MetricObserver(std::move(source)) {}
 
   ~MockMetricObserver() { clearExpectations(); }

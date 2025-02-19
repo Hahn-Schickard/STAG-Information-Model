@@ -38,7 +38,8 @@ struct MockWritableMetric : public WritableMetric {
     delegateToFake();
   }
 
-  MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
+  MOCK_METHOD(
+      void, setMetricValue, (const DataVariant& /* value */), (override));
   MOCK_METHOD(DataVariant, getMetricValue, (), (override));
   MOCK_METHOD(bool, isWriteOnly, (), (override));
 
@@ -46,12 +47,12 @@ struct MockWritableMetric : public WritableMetric {
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
-  void delegateToFake(MockMetric::Reader reader) {
+  void delegateToFake(const MockMetric::Reader& reader) {
     readable_.delegateToFake(reader);
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
-  void delegateToFake(Writer writer) {
+  void delegateToFake(const Writer& writer) {
     write_ = writer;
     ON_CALL(*this, getMetricValue)
         .WillByDefault(::testing::Throw(std::logic_error(
@@ -59,7 +60,7 @@ struct MockWritableMetric : public WritableMetric {
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
-  void delegateToFake(Writer writer, MockMetric::Reader reader) {
+  void delegateToFake(const Writer& writer, const MockMetric::Reader& reader) {
     write_ = writer;
     delegateToFake(reader);
   }
@@ -73,7 +74,7 @@ struct MockWritableMetric : public WritableMetric {
   }
 
 private:
-  void writeValue(DataVariant value) {
+  void writeValue(const DataVariant& value) {
     if (write_) {
       write_(value);
     }
