@@ -125,7 +125,7 @@ struct MockMetricObserver : public MetricObserver {
       : MetricObserver(source) {}
 
   explicit MockMetricObserver(const NonemptyObservableMetricPtr& source)
-      : MetricObserver(std::move(source)) {}
+      : MetricObserver(source) {}
 
   ~MockMetricObserver() { clearExpectations(); }
 
