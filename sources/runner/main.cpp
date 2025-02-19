@@ -18,10 +18,9 @@ void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
 
 struct Executor {
   using Callback = function<void(void)>;
-  Executor() : callback_([]() { cout << "Callback called" << endl; }) {}
 
   pair<uintmax_t, future<DataVariant>> execute(const Function::Parameters&) {
-    auto execute_lock = lock_guard(execute_mx_);
+    auto allocate_lock = scoped_lock(execute_mx_);
     auto id = calls_.size();
     auto promise = std::promise<DataVariant>();
     auto future = make_pair(id, promise.get_future());
@@ -42,8 +41,7 @@ struct Executor {
   }
 
   void respondAll() {
-    auto execute_lock = lock_guard(execute_mx_);
-    auto erase_lock = lock_guard(erase_mx_);
+    auto execute_lock = scoped_lock(execute_mx_, erase_mx_);
     // NOLINTNEXTLINE(modernize-loop-convert)
     for (auto it = calls_.begin(); it != calls_.end(); it++) {
       callback_();
@@ -54,7 +52,7 @@ struct Executor {
 
 private:
   void respond(uintmax_t id) {
-    auto erase_lock = lock_guard(erase_mx_);
+    auto erase_lock = scoped_lock(erase_mx_);
     auto it = calls_.find(id);
     if (it != calls_.end()) {
       if (callback_) {
@@ -68,11 +66,12 @@ private:
     }
   }
 
-  Callback callback_;
+  Callback callback_ = []() { cout << "Callback called" << endl; };
   mutex execute_mx_;
   mutex erase_mx_;
   unordered_map<uintmax_t, promise<DataVariant>> calls_;
 };
+
 DeviceBuilderInterface::ObservedValue observed_value = nullptr;
 
 void isObserved(bool observed) {
@@ -102,7 +101,8 @@ int main() {
     string executable_id;
     string custom_executable_id;
     {
-      auto* builder = new Information_Model::testing::DeviceMockBuilder();
+      auto builder =
+          make_unique<Information_Model::testing::DeviceMockBuilder>();
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
       auto subgroup_1_ref_id =
           builder->addDeviceElementGroup("Group 1", "First group");
@@ -133,7 +133,7 @@ int main() {
           bind(&Executor::cancel, executor, placeholders::_1));
 
       device = move(builder->getResult());
-      delete builder;
+      builder.reset();
     }
 
     print(device);
@@ -211,7 +211,7 @@ struct ExampleObserver : public MetricObserver {
 
   void waitForEvent() {
     unique_lock lck(mx_);
-    cv_.wait(lck, [&] { return ready_.load(); });
+    cv_.wait(lck, [this] { return ready_.load(); });
   }
 
 private:
