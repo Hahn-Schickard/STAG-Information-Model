@@ -189,6 +189,7 @@ inline std::optional<DataVariant> setVariant(DataType type) {
   case DataType::NONE:
     return std::nullopt;
   case DataType::UNKNOWN:
+    [[fallthrough]];
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
   }
