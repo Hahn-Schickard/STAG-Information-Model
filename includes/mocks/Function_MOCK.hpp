@@ -59,7 +59,7 @@ struct MockFunction : public Function {
       ON_CALL(*this, call)
           .WillByDefault(::testing::Return(result_value.value()));
       ON_CALL(*this, asyncCall)
-          .WillByDefault([this](Function::Parameters /*params*/) {
+          .WillByDefault([this](const Function::Parameters& /*params*/) {
             return allocateAsyncCall();
           });
       ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
@@ -239,16 +239,17 @@ struct MockFunction : public Function {
    */
   void delegateToFake() {
     ON_CALL(*this, call)
-        .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
-          auto result = allocateAsyncCall();
-          auto status = result.wait_for(std::chrono::milliseconds(timeout));
-          if (status == std::future_status::ready) {
-            return result.get();
-          } else {
-            cancelAsyncCall(result.call_id);
-            throw FunctionCallTimedout("MockFunction");
-          }
-        });
+        .WillByDefault(
+            [this](const Parameters& /*parameters*/, uintmax_t timeout) {
+              auto result = allocateAsyncCall();
+              auto status = result.wait_for(std::chrono::milliseconds(timeout));
+              if (status == std::future_status::ready) {
+                return result.get();
+              } else {
+                cancelAsyncCall(result.call_id);
+                throw FunctionCallTimedout("MockFunction");
+              }
+            });
   }
 
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
