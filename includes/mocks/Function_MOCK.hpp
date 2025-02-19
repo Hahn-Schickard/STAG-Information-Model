@@ -209,9 +209,9 @@ struct MockFunction : public Function {
             });
         ON_CALL(*this, asyncCall)
             .WillByDefault([this](const Function::Parameters& params) {
-              auto result_future = executor_(params);
-              return ResultFuture(std::move(result_future.second),
-                  result_future.first,
+              auto [caller_id, result_future] = executor_(params);
+              return ResultFuture(std::move(result_future),
+                  caller_id,
                   std::bind(
                       &MockFunction::clearCall, this, std::placeholders::_1));
             });
