@@ -571,7 +571,7 @@ struct DeviceBuilderInterface {
       Read() = default;
       explicit Read(const Reader& read_cb) : callback(read_cb) {}
 
-      const Reader callback; // NOLINT(readability-identifier-naming)
+      Reader callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -584,8 +584,8 @@ struct DeviceBuilderInterface {
       Write(const Reader& read_cb, const Writer& write_cb)
           : read_part(read_cb), callback(write_cb) {}
 
-      const Read read_part; // NOLINT(readability-identifier-naming)
-      const Writer callback; // NOLINT(readability-identifier-naming)
+      Read read_part; // NOLINT(readability-identifier-naming)
+      Writer callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -604,9 +604,9 @@ struct DeviceBuilderInterface {
           : call(execute_cb), cancel(cancel_cb),
             supported_params(supported_parameters) {}
 
-      const Executor call; // NOLINT(readability-identifier-naming)
-      const Canceler cancel; // NOLINT(readability-identifier-naming)
-      const Function::ParameterTypes
+      Executor call; // NOLINT(readability-identifier-naming)
+      Canceler cancel; // NOLINT(readability-identifier-naming)
+      Function::ParameterTypes
           supported_params; // NOLINT(readability-identifier-naming)
     };
 
@@ -615,9 +615,8 @@ struct DeviceBuilderInterface {
       Observe(const Reader& read_cb, const ObserveInitializer& observe_cb)
           : read_part(read_cb), callback(observe_cb) {}
 
-      const Read read_part; // NOLINT(readability-identifier-naming)
-      const ObserveInitializer
-          callback; // NOLINT(readability-identifier-naming)
+      Read read_part; // NOLINT(readability-identifier-naming)
+      ObserveInitializer callback; // NOLINT(readability-identifier-naming)
     };
 
     using Group = std::monostate;
@@ -759,10 +758,9 @@ struct DeviceBuilderInterface {
     Observe getObserve() const { return std::get<Observe>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
-    const DataType data_type =
+    DataType data_type =
         DataType::NONE; // NOLINT(readability-identifier-naming)
-    const Interface interface =
-        Group(); // NOLINT(readability-identifier-naming)
+    Interface interface = Group(); // NOLINT(readability-identifier-naming)
   };
 
 protected:

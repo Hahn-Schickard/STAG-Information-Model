@@ -96,7 +96,7 @@ struct Function {
         uintmax_t caller,
         const CallClearer& clearer)
         : std::future<DataVariant>(std::move(future_result)), call_id(caller),
-          clear_caller(clearer) {}
+          clear_caller_(clearer) {}
 
     /**
      * @brief Obtains the promised future result and removes the call_id from
@@ -111,14 +111,14 @@ struct Function {
      */
     DataVariant get() {
       auto result = std::future<DataVariant>::get();
-      clear_caller(call_id);
+      clear_caller_(call_id);
       return result;
     }
 
     const uintmax_t call_id; // NOLINT(readability-identifier-naming)
 
   private:
-    const CallClearer clear_caller; // NOLINT(readability-identifier-naming)
+    CallClearer clear_caller_;
   };
 
   virtual ~Function() = default;

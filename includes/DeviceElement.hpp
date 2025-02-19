@@ -84,7 +84,7 @@ struct DeviceElement : public NamedElement {
    * helper function
    */
   // NOLINTNEXTLINE(readability-identifier-naming)
-  const SpecificInterface functionality;
+  SpecificInterface functionality;
 
   ElementType getElementType() const {
     if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {
