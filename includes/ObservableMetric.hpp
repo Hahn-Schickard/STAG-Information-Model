@@ -50,8 +50,7 @@ protected:
 };
 
 using ObservableMetricPtr = std::shared_ptr<ObservableMetric>;
-using NonemptyObservableMetricPtr =
-    NonemptyPointer::NonemptyPtr<ObservableMetricPtr>;
+using NonemptyObservableMetricPtr = Nonempty::Pointer<ObservableMetricPtr>;
 
 /**
  * @brief An interface for ObservableMetric value change observation

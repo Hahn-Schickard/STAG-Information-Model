@@ -118,7 +118,7 @@ private:
 
 using MockObservableMetricPtr = std::shared_ptr<MockObservableMetric>;
 using NonemptyMockObservableMetricPtr =
-    NonemptyPointer::NonemptyPtr<MockObservableMetricPtr>;
+    Nonempty::Pointer<MockObservableMetricPtr>;
 
 struct MockMetricObserver : public MetricObserver {
   explicit MockMetricObserver(const MockObservableMetricPtr& source)
@@ -136,8 +136,7 @@ struct MockMetricObserver : public MetricObserver {
 };
 
 using MockMetricObserverPtr = std::shared_ptr<MockMetricObserver>;
-using NonemptyMockMetricObserverPtr =
-    NonemptyPointer::NonemptyPtr<MockMetricObserverPtr>;
+using NonemptyMockMetricObserverPtr = Nonempty::Pointer<MockMetricObserverPtr>;
 /** @}*/
 } // namespace Information_Model::testing
 
