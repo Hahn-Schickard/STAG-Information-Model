@@ -55,7 +55,7 @@ class PackageConan(ConanFile):
         self.requires(
             "nonempty/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
         self.requires(
-            "event_model/[~0.3]@hahn-schickard/stable", headers=True, transitive_headers=True)
+            "event_model/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
         self.requires("gtest/[~1.11]", headers=True, libs=True,
                       transitive_headers=True, transitive_libs=True)
         # @- END USER REQUIREMENTS
