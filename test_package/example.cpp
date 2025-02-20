@@ -58,7 +58,7 @@ int main() {
           [id](const NonemptyWritableMetricPtr&) {
             cout << "Element " + id + " is a writable metric" << endl;
           },
-          [id](const NonemptyObservableMetric&) {
+          [id](const NonemptyObservableMetricPtr&) {
             cout << "Element " + id + " is an observable metric" << endl;
           },
           [id](const NonemptyFunctionPtr&) {
