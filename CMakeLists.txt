@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.24.0)
 
+if (WIN32)
+  set(CMAKE_OBJECT_PATH_MAX 32767)
+endif ()
+
 option(CMAKE_CONAN "Enables integeated conan package manager module. (Requires conan and python3 to be installed)" ON)
 
 if(CMAKE_CONAN)

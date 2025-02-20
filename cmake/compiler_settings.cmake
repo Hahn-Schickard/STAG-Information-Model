@@ -1,7 +1,3 @@
-if (WIN32)
-  set(CMAKE_OBJECT_PATH_MAX 32767)
-endif ()
-
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Using Clang compiler")
     # setup your Clang toolchain here
