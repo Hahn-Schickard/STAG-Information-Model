@@ -7,6 +7,11 @@ stages:
   - package
   - deploy
 
+default:
+  hooks:
+    pre_get_sources_script:
+      - git config --global core.longpaths true # ensure windows longpaths is true
+
 variables:
   CONAN_HOME: "${CI_PROJECT_DIR}/.conan2"
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
@@ -16,9 +21,6 @@ variables:
   stage: build
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   before_script:
     - conan remote add hahn-schickard ${CONAN_REMOTE}
     - mkdir -p ${CONAN_HOME}/profiles
@@ -41,9 +43,6 @@ variables:
   stage: test
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - cd build
     - ctest --verbose
@@ -59,9 +58,6 @@ variables:
   stage: analyze
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/run-valgrind.py ${EXE_TARGET} ${EXE_TARGET_ARGS}
   artifacts:
@@ -82,9 +78,6 @@ variables:
   stage: analyze
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/run-valgrind.py ${TEST_RUNNER_TARGET}
   artifacts:
@@ -103,9 +96,6 @@ variables:
   stage: check
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/run-lcov.py build ${RUN_EXE_COVERAGE} --target "${EXE_TARGET}" --args "${EXE_TARGET_ARGS}"
   coverage: '/lines[.]*:\s?(\d+[.]?\d*\%)/'
@@ -119,9 +109,6 @@ variables:
   stage: check
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   cache:
     key: "${CI_JOB_NAME}"
     paths:
@@ -141,9 +128,6 @@ variables:
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - trivy --version
     # cache cleanup is needed when scanning images with the same tags, it does not remove the database
@@ -162,9 +146,6 @@ variables:
   stage: check
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/run-clang-tidy.py -build build --all-threads --verbose --export-fixes
   artifacts:
@@ -179,9 +160,6 @@ variables:
   stage: check
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/run-clang-format.py --dirs includes/ sources/ unit_tests/ --list-files
   artifacts:
@@ -197,9 +175,6 @@ variables:
   dependencies: []
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - doxygen Doxyfile
   artifacts:
@@ -213,9 +188,6 @@ variables:
   dependencies: []
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   before_script:
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)
     - PROJECT_NAME=$(python3 ./utility/.getProjectName.py)
@@ -232,9 +204,6 @@ variables:
   stage: deploy
   tags:
     - conan
-  hooks:
-    pre_get_sources_script:
-      - git config --global core.longpaths true # ensure windows longpaths is true
   script:
     - python3 utility/.create-static-website.py ${CI_PROJECT_URL}
   artifacts:
