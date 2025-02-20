@@ -19,6 +19,7 @@ variables:
   hooks:
     pre_get_sources_script:
       - git config --system core.longpaths true # ensure windows longpaths is true
+      - git config --list
   before_script:
     - conan remote add hahn-schickard ${CONAN_REMOTE}
     - mkdir -p ${CONAN_HOME}/profiles
