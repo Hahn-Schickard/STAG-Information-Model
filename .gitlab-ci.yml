@@ -178,8 +178,9 @@ package:windows-ltsc2019:
     - windows-docker
   image:
     name: ${DOCKER_REGISTRY}/hs-conan-windows-ltsc2019:${IMAGE_VER}
+  variables:
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_CONCURRENT_PROJECT_ID
   before_script:
-    - New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
     - $PROJECT_NAME=python3 ./utility/.getProjectName.py
     - $VERSION=python3 ./utility/.getVersionFromTag.py
 
