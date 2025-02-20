@@ -158,7 +158,7 @@ struct DeviceBuilderInterface {
   std::string addReadableMetric(const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb) {
+      const Reader& read_cb) {
     return addReadableMetric(std::string(), name, desc, data_type, read_cb);
   }
 
@@ -195,7 +195,7 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      Reader /*read_cb*/) {
+      const Reader& /*read_cb*/) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addReadableMetric for subgroup");
@@ -230,8 +230,8 @@ struct DeviceBuilderInterface {
   std::string addWritableMetric(const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Writer write_cb,
-      Reader read_cb = nullptr) {
+      const Writer& write_cb,
+      const Reader& read_cb = nullptr) {
     return addWritableMetric(
         std::string(), name, desc, data_type, write_cb, read_cb);
   }
@@ -271,8 +271,8 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      Writer /*write_cb*/,
-      Reader /*read_cb*/ = nullptr) {
+      const Writer& /*write_cb*/,
+      const Reader& /*read_cb*/ = nullptr) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addWritableMetric for subgroup");
@@ -316,8 +316,8 @@ struct DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb,
-      ObserveInitializer initialized_cb) {
+      const Reader& read_cb,
+      const ObserveInitializer& initialized_cb) {
     return addObservableMetric(
         std::string(), name, desc, data_type, read_cb, initialized_cb);
   }
@@ -364,8 +364,8 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*data_type*/,
-      Reader /*read_cb*/,
-      ObserveInitializer /*initialized_cb*/) {
+      const Reader& /*read_cb*/,
+      const ObserveInitializer& /*initialized_cb*/) {
     throw std::logic_error(
         "Called base implementation of "
         "DeviceBuilderInterface::addObservableMetric for subgroup");
@@ -402,9 +402,9 @@ struct DeviceBuilderInterface {
   std::string addFunction(const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Executor execute_cb,
-      Canceler cancel_cb,
-      Function::ParameterTypes supported_params = {}) {
+      const Executor& execute_cb,
+      const Canceler& cancel_cb,
+      const Function::ParameterTypes& supported_params = {}) {
     return addFunction(std::string(),
         name,
         desc,
@@ -437,8 +437,8 @@ struct DeviceBuilderInterface {
    */
   std::string addFunction(const std::string& name,
       const std::string& desc,
-      Executor execute_cb,
-      Function::ParameterTypes supported_params = {}) {
+      const Executor& execute_cb,
+      const Function::ParameterTypes& supported_params = {}) {
     return addFunction(std::string(),
         name,
         desc,
@@ -481,8 +481,8 @@ struct DeviceBuilderInterface {
   std::string addFunction(const std::string& group_ref_id,
       const std::string& name,
       const std::string& desc,
-      Executor execute_cb,
-      Function::ParameterTypes supported_params = {}) {
+      const Executor& execute_cb,
+      const Function::ParameterTypes& supported_params = {}) {
     return addFunction(group_ref_id,
         name,
         desc,
@@ -528,9 +528,9 @@ struct DeviceBuilderInterface {
       const std::string& /*name*/,
       const std::string& /*desc*/,
       DataType /*result_type*/,
-      Executor /*execute_cb*/,
-      Canceler /*cancel_cb*/,
-      Function::ParameterTypes /*supported_params*/ = {}) {
+      const Executor& /*execute_cb*/,
+      const Canceler& /*cancel_cb*/,
+      const Function::ParameterTypes& /*supported_params*/ = {}) {
     throw std::logic_error("Called base implementation of "
                            "DeviceBuilderInterface::addFunction for subgroup");
   }
@@ -569,9 +569,9 @@ struct DeviceBuilderInterface {
      */
     struct Read {
       Read() = default;
-      Read(Reader read_cb) : callback(read_cb) {}
+      explicit Read(const Reader& read_cb) : callback(read_cb) {}
 
-      const Reader callback; // NOLINT(readability-identifier-naming)
+      Reader callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -580,12 +580,12 @@ struct DeviceBuilderInterface {
      */
     struct Write {
       Write() = default;
-      Write(Writer write_cb) : callback(write_cb) {}
-      Write(Reader read_cb, Writer write_cb)
+      explicit Write(const Writer& write_cb) : callback(write_cb) {}
+      Write(const Reader& read_cb, const Writer& write_cb)
           : read_part(read_cb), callback(write_cb) {}
 
-      const Read read_part; // NOLINT(readability-identifier-naming)
-      const Writer callback; // NOLINT(readability-identifier-naming)
+      Read read_part; // NOLINT(readability-identifier-naming)
+      Writer callback; // NOLINT(readability-identifier-naming)
     };
 
     /**
@@ -594,30 +594,29 @@ struct DeviceBuilderInterface {
      */
     struct Execute {
       Execute() = default;
-      Execute(Function::ParameterTypes supported_parameters)
+      explicit Execute(const Function::ParameterTypes& supported_parameters)
           : supported_params(supported_parameters) {}
-      Execute(Executor execute_cb, Canceler cancel_cb)
+      Execute(const Executor& execute_cb, const Canceler& cancel_cb)
           : call(execute_cb), cancel(cancel_cb) {}
-      Execute(Executor execute_cb,
-          Canceler cancel_cb,
-          Function::ParameterTypes supported_parameters)
+      Execute(const Executor& execute_cb,
+          const Canceler& cancel_cb,
+          const Function::ParameterTypes& supported_parameters)
           : call(execute_cb), cancel(cancel_cb),
             supported_params(supported_parameters) {}
 
-      const Executor call; // NOLINT(readability-identifier-naming)
-      const Canceler cancel; // NOLINT(readability-identifier-naming)
-      const Function::ParameterTypes
+      Executor call; // NOLINT(readability-identifier-naming)
+      Canceler cancel; // NOLINT(readability-identifier-naming)
+      Function::ParameterTypes
           supported_params; // NOLINT(readability-identifier-naming)
     };
 
     struct Observe {
       Observe() = default;
-      Observe(Reader read_cb, ObserveInitializer observe_cb)
+      Observe(const Reader& read_cb, const ObserveInitializer& observe_cb)
           : read_part(read_cb), callback(observe_cb) {}
 
-      const Read read_part; // NOLINT(readability-identifier-naming)
-      const ObserveInitializer
-          callback; // NOLINT(readability-identifier-naming)
+      Read read_part; // NOLINT(readability-identifier-naming)
+      ObserveInitializer callback; // NOLINT(readability-identifier-naming)
     };
 
     using Group = std::monostate;
@@ -627,7 +626,7 @@ struct DeviceBuilderInterface {
      * @brief Creates basic information for a DeviceElementGroupMock
      *
      */
-    Functionality() : data_type(DataType::NONE), interface(Group()) {}
+    Functionality() = default;
 
     /**
      * @brief Creates basic information for a simple MetricMock with default
@@ -635,7 +634,8 @@ struct DeviceBuilderInterface {
      *
      * @param type
      */
-    Functionality(DataType type) : data_type(type), interface(Read()) {}
+    explicit Functionality(DataType type)
+        : data_type(type), interface(Read()) {}
 
     /**
      * @brief Creates basic information for a MetricMock with given DataType and
@@ -644,7 +644,7 @@ struct DeviceBuilderInterface {
      * @param type
      * @param read_cb
      */
-    Functionality(DataType type, Reader read_cb)
+    Functionality(DataType type, const Reader& read_cb)
         : data_type(type), interface(Read(read_cb)) {}
 
     /**
@@ -658,7 +658,7 @@ struct DeviceBuilderInterface {
      * @param type
      * @param write_cb
      */
-    Functionality(DataType type, Writer write_cb)
+    Functionality(DataType type, const Writer& write_cb)
         : data_type(type), interface(Write(write_cb)) {}
 
     /**
@@ -677,10 +677,12 @@ struct DeviceBuilderInterface {
      * @param read_cb
      * @param write_cb
      */
-    Functionality(DataType type, Reader read_cb, Writer write_cb)
+    Functionality(DataType type, const Reader& read_cb, const Writer& write_cb)
         : data_type(type), interface(Write(read_cb, write_cb)) {}
 
-    Functionality(DataType type, Reader read_cb, ObserveInitializer observe_cb)
+    Functionality(DataType type,
+        const Reader& read_cb,
+        const ObserveInitializer& observe_cb)
         : data_type(type), interface(Observe(read_cb, observe_cb)) {}
 
     /**
@@ -695,7 +697,7 @@ struct DeviceBuilderInterface {
      * @param supported_params
      */
     Functionality(
-        DataType result_type, Function::ParameterTypes supported_params)
+        DataType result_type, const Function::ParameterTypes& supported_params)
         : data_type(result_type), interface(Execute(supported_params)) {}
 
     /**
@@ -709,7 +711,9 @@ struct DeviceBuilderInterface {
      * @param execute_cb
      * @param cancel_cb
      */
-    Functionality(DataType result_type, Executor execute_cb, Canceler cancel_cb)
+    Functionality(DataType result_type,
+        const Executor& execute_cb,
+        const Canceler& cancel_cb)
         : data_type(result_type), interface(Execute(execute_cb, cancel_cb)) {}
 
     /**
@@ -729,9 +733,9 @@ struct DeviceBuilderInterface {
      * @param supported_params
      */
     Functionality(DataType result_type,
-        Executor execute_cb,
-        Canceler cancel_cb,
-        Function::ParameterTypes supported_params)
+        const Executor& execute_cb,
+        const Canceler& cancel_cb,
+        const Function::ParameterTypes& supported_params)
         : data_type(result_type),
           interface(Execute(execute_cb, cancel_cb, supported_params)) {}
 
@@ -754,8 +758,9 @@ struct DeviceBuilderInterface {
     Observe getObserve() const { return std::get<Observe>(interface); }
     Execute getExecute() const { return std::get<Execute>(interface); }
 
-    const DataType data_type; // NOLINT(readability-identifier-naming)
-    const Interface interface; // NOLINT(readability-identifier-naming)
+    DataType data_type =
+        DataType::NONE; // NOLINT(readability-identifier-naming)
+    Interface interface = Group(); // NOLINT(readability-identifier-naming)
   };
 
 protected:
@@ -766,7 +771,7 @@ protected:
   DeviceElementPtr makeDeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
-      DeviceElement::SpecificInterface&& interface) {
+      DeviceElement::SpecificInterface&& interface) const {
     auto obj = DeviceElement(ref_id, name, desc, std::move(interface));
     // We can only call DeviceElement() from within DeviceBuilderInterface
     // class due to access the specifier. Thus we must first create the
@@ -778,7 +783,7 @@ protected:
 
 using DeviceBuilderInterfacePtr = std::shared_ptr<DeviceBuilderInterface>;
 using NonemptyDeviceBuilderInterfacePtr =
-    NonemptyPointer::NonemptyPtr<DeviceBuilderInterfacePtr>;
+    Nonempty::Pointer<DeviceBuilderInterfacePtr>;
 } // namespace Information_Model
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_INTERFACE_HPP

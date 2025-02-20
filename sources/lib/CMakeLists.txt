@@ -18,7 +18,7 @@ add_library(${THIS} INTERFACE)
 target_link_libraries(${THIS} INTERFACE 
                               GTest::gmock
                               Variant_Visitor::Variant_Visitor
-                              Nonempty_Pointer::Nonempty_Pointer
+                              Nonempty::Nonempty
                               Event_Model::Event_Model
 )
 

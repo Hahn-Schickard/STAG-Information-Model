@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 struct DeviceElement;
@@ -16,7 +16,7 @@ inline bool operator!=(
     const DeviceElement& lhs, const DeviceElement& rhs) noexcept;
 
 using DeviceElementPtr = std::shared_ptr<DeviceElement>;
-using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
+using NonemptyDeviceElementPtr = Nonempty::Pointer<DeviceElementPtr>;
 
 /**
  * @addtogroup GroupModeling Device Element Group Modelling
@@ -24,7 +24,7 @@ using NonemptyDeviceElementPtr = NonemptyPointer::NonemptyPtr<DeviceElementPtr>;
  */
 
 struct DeviceElementNotFound : public std::runtime_error {
-  DeviceElementNotFound(const std::string& ref_id)
+  explicit DeviceElementNotFound(const std::string& ref_id)
       : std::runtime_error(
             "DeviceElement with reference id " + ref_id + " was not found") {}
 };
@@ -99,8 +99,7 @@ protected:
 };
 
 using DeviceElementGroupPtr = std::shared_ptr<DeviceElementGroup>;
-using NonemptyDeviceElementGroupPtr =
-    NonemptyPointer::NonemptyPtr<DeviceElementGroupPtr>;
+using NonemptyDeviceElementGroupPtr = Nonempty::Pointer<DeviceElementGroupPtr>;
 /** @}*/
 } // namespace Information_Model
 

@@ -33,7 +33,7 @@ struct WritableMetric : public Metric {
    * error. May cause @ref Deregistration
    *
    */
-  virtual void setMetricValue(DataVariant /*value*/) {
+  virtual void setMetricValue(const DataVariant& /*value*/) const {
     throw std::logic_error(
         "Called based implementation of WritableMetric::setMetricValue()");
   }
@@ -43,7 +43,7 @@ struct WritableMetric : public Metric {
    *
    * @return bool
    */
-  virtual bool isWriteOnly() {
+  virtual bool isWriteOnly() const {
     throw std::logic_error(
         "Called based implementation of WritableMetric::isWriteOnly()");
   }
@@ -51,12 +51,11 @@ struct WritableMetric : public Metric {
   virtual ~WritableMetric() = default;
 
 protected:
-  WritableMetric(DataType type) : Metric(type) {}
+  explicit WritableMetric(DataType type) : Metric(type) {}
 };
 
 using WritableMetricPtr = std::shared_ptr<WritableMetric>;
-using NonemptyWritableMetricPtr =
-    NonemptyPointer::NonemptyPtr<WritableMetricPtr>;
+using NonemptyWritableMetricPtr = Nonempty::Pointer<WritableMetricPtr>;
 /** @}*/
 } // namespace Information_Model
 

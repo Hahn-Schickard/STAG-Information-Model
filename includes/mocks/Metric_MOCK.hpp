@@ -5,8 +5,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ReadableModeling Metric Modelling
  * @{
@@ -23,7 +22,8 @@ struct MockMetric : public Metric {
 
   MockMetric() : MockMetric(DataType::BOOLEAN) {}
 
-  MockMetric(DataType type) : MockMetric(type, setVariant(type).value()) {}
+  explicit MockMetric(DataType type)
+      : MockMetric(type, setVariant(type).value()) {}
 
   MockMetric(DataType type, const DataVariant& variant)
       : Metric(type), value_(variant) {
@@ -32,14 +32,14 @@ struct MockMetric : public Metric {
 
   ~MockMetric() { ::testing::Mock::VerifyAndClear(this); }
 
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
 
   void delegateToFake() {
     ON_CALL(*this, getMetricValue)
         .WillByDefault(std::bind(&MockMetric::returnValue, this));
   }
 
-  void delegateToFake(Reader reader) {
+  void delegateToFake(const Reader& reader) {
     read_ = reader;
     if (read_) {
       ON_CALL(*this, getMetricValue)
@@ -52,18 +52,17 @@ struct MockMetric : public Metric {
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
 private:
-  DataVariant returnValue() { return value_; }
+  DataVariant returnValue() const { return value_; }
 
-  DataVariant readValue() { return read_(); }
+  DataVariant readValue() const { return read_(); }
 
   DataVariant value_;
   Reader read_ = nullptr;
 };
 
 using MockMetricPtr = std::shared_ptr<MockMetric>;
-using NonemptyMockMetricPtr = NonemptyPointer::NonemptyPtr<MockMetricPtr>;
+using NonemptyMockMetricPtr = Nonempty::Pointer<MockMetricPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_METRIC_MOCK_HPP_

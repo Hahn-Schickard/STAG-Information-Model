@@ -30,7 +30,7 @@ struct FunctionExpectations {
       : FunctionExpectations(name,
             result_type,
             Function::ParameterTypes(),
-            setVariant(result_type).value()) {}
+            setVariant(result_type)) {}
 
   FunctionExpectations(const std::string& name,
       DataType result_type,
@@ -87,8 +87,6 @@ TEST_P(FunctionParametrizedTests, canCall) {
         100ms); // if we do not give enough time for the thread to allocate the
                 // response future, we will respond before a call was created,
                 // thus hanging the test
-    function_mock->respondToAll(
-        expectations->result_value.value_or(DataVariant()));
     auto result = resul_future.get();
     EXPECT_EQ(expectations->result_value, result);
   } catch (const exception& ex) {
@@ -105,6 +103,7 @@ TEST_P(FunctionParametrizedTests, canCallTimesOut) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
   if (expectations->result_type != DataType::NONE) {
+    function_mock->delegateToFake();
     auto resul_future =
         std::async(std::launch::async, [this]() { return function->call(1); });
     std::this_thread::sleep_for(10ms);
@@ -150,7 +149,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
 TEST_P(FunctionParametrizedTests, cancelAsyncCallThrowsException) {
   EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
       .Times(AtLeast(1));
-  if (function->result_type != DataType::NONE) {
+  if (function->resultType() != DataType::NONE) {
     EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
   } else {
     EXPECT_THROW(
@@ -265,7 +264,7 @@ protected:
     MockFunction::Canceler cancel_cb = [this](uintmax_t call_id) {
       executor->cancel(call_id);
     };
-    function_mock->delegateToFake(move(execute_cb), move(cancel_cb));
+    function_mock->delegateToFake(execute_cb, cancel_cb);
   }
 
   FunctionExpectationsPtr expectations; // NOLINT(readability-identifier-naming)
@@ -393,12 +392,12 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, hasResultDataType) {
-  EXPECT_EQ(expectations->result_type, function->result_type);
+  EXPECT_EQ(expectations->result_type, function->resultType());
 }
 
 // NOLINTNEXTLINE
 TEST_P(FunctionParametrizedTests, hasSupportedParameterTypes) {
-  EXPECT_EQ(expectations->supported_params, function->parameters);
+  EXPECT_EQ(expectations->supported_params, function->parameterTypes());
 }
 
 struct SetFunctionTestNameSuffix {
@@ -479,7 +478,7 @@ void expandFunctionTestParameters(vector<FunctionExpectations>& expectations,
     name += makeExpectationName(type);
   }
   if (return_value.has_value()) {
-    auto value = return_value.value();
+    const auto& value = return_value.value();
     auto return_type = toDataType(value);
     name +=
         "Return" + makeExpectationName(return_type) + sanitizeValueName(value);

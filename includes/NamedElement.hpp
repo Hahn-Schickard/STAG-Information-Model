@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 
@@ -35,9 +35,9 @@ protected:
 public:
   virtual ~NamedElement() = default;
 
-  const std::string getElementId() const { return refID_; }
-  const std::string getElementName() const { return name_; }
-  const std::string getElementDescription() const { return desc_; }
+  std::string getElementId() const { return refID_; }
+  std::string getElementName() const { return name_; }
+  std::string getElementDescription() const { return desc_; }
 
   bool operator==(const NamedElement& other) const noexcept {
     return (refID_ == other.refID_) && //
@@ -51,7 +51,7 @@ public:
 };
 
 using NamedElementPtr = std::shared_ptr<NamedElement>;
-using NonemptyNamedElementPtr = NonemptyPointer::NonemptyPtr<NamedElementPtr>;
+using NonemptyNamedElementPtr = Nonempty::Pointer<NamedElementPtr>;
 /** @}*/
 } // namespace Information_Model
 

@@ -7,8 +7,7 @@
 #include <optional>
 #include <unordered_map>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup GroupModeling Device Element Group Modelling
  * @{
@@ -22,13 +21,13 @@ namespace testing {
  *
  */
 struct MockDeviceElementGroup : public DeviceElementGroup {
-  MockDeviceElementGroup(const std::string& ref_id)
-      : DeviceElementGroup(), element_count_(0), element_id_(ref_id) {
+  explicit MockDeviceElementGroup(const std::string& ref_id)
+      : DeviceElementGroup(), element_id_(ref_id) {
     ON_CALL(*this, getSubelements).WillByDefault([this]() {
       std::vector<NonemptyDeviceElementPtr> subelements;
       // NOLINTNEXTLINE
-      for (auto element_pair : elements_map_) {
-        subelements.push_back(element_pair.second);
+      for (const auto& [_, element] : elements_map_) {
+        subelements.push_back(element);
       }
       return subelements;
     });
@@ -36,9 +35,8 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     ON_CALL(*this, getSubelement)
         .WillByDefault([this](const std::string& ref_id) {
           size_t target_level = getTreeLevel(ref_id) - 1;
-          size_t current_level = getTreeLevel(element_id_);
           // Check if a given element is in a sub group
-          if (target_level != current_level) {
+          if (target_level != getTreeLevel(element_id_)) {
             auto next_id = getNextElementID(ref_id, target_level);
             auto next_element = getSubelement(next_id).base();
             try {
@@ -77,7 +75,7 @@ struct MockDeviceElementGroup : public DeviceElementGroup {
     return base_id + sub_element_id;
   }
 
-  void addDeviceElement(NonemptyDeviceElementPtr element) {
+  void addDeviceElement(const NonemptyDeviceElementPtr& element) {
     elements_map_.emplace(element->getElementId(), element);
   }
 
@@ -93,7 +91,7 @@ private:
    */
   size_t countOccurrences(const std::string& input,
       const std::string& pattern,
-      const std::string& cut_off) {
+      const std::string& cut_off) const {
     size_t count = 0;
     std::string buffer = input.substr(input.find(cut_off) + 1, input.size());
     if (!buffer.empty()) {
@@ -114,7 +112,7 @@ private:
    * @param ref_id
    * @return size_t
    */
-  size_t getTreeLevel(const std::string& ref_id) {
+  size_t getTreeLevel(const std::string& ref_id) const {
     return countOccurrences(ref_id, ".", ":");
   }
 
@@ -127,8 +125,9 @@ private:
    * @param pattern
    * @return size_t
    */
-  size_t findNthSubstring(
-      const std::string& input, size_t occurrence, const std::string& pattern) {
+  size_t findNthSubstring(const std::string& input,
+      size_t occurrence,
+      const std::string& pattern) const {
     if (0 == occurrence) {
       return std::string::npos;
     } else {
@@ -155,21 +154,20 @@ private:
    * @return std::string
    */
   std::string getNextElementID(
-      const std::string& child_ref_id, size_t parent_level) {
+      const std::string& child_ref_id, size_t parent_level) const {
     std::string tmp = child_ref_id.substr(
         0, findNthSubstring(child_ref_id, parent_level, "."));
     return tmp;
   }
 
   std::unordered_map<std::string, NonemptyDeviceElementPtr> elements_map_;
-  size_t element_count_;
+  size_t element_count_ = 0;
   std::string element_id_;
 };
 
 using MockDeviceElementGroupPtr = std::shared_ptr<MockDeviceElementGroup>;
 using NonemptyMockDeviceElementGroupPtr =
-    NonemptyPointer::NonemptyPtr<MockDeviceElementGroupPtr>;
+    Nonempty::Pointer<MockDeviceElementGroupPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 #endif //__INFORMATION_MODEL_DEVICE_ELEMENT_GROUP_MOCK_HPP

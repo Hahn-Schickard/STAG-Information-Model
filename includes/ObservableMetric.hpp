@@ -40,18 +40,17 @@ struct ObservableMetric : public Metric,
    *
    * @param value - new observation
    */
-  void observed(DataVariant&& value) {
+  void observed(const DataVariant& value) {
     notify(std::make_shared<DataVariant>(value));
   }
 
 protected:
-  ObservableMetric(DataType type, ExceptionHandler handler)
+  ObservableMetric(DataType type, const ExceptionHandler& handler)
       : Metric(type), AsyncEventSource(handler) {}
 };
 
 using ObservableMetricPtr = std::shared_ptr<ObservableMetric>;
-using NonemptyObservableMetricPtr =
-    NonemptyPointer::NonemptyPtr<ObservableMetricPtr>;
+using NonemptyObservableMetricPtr = Nonempty::Pointer<ObservableMetricPtr>;
 
 /**
  * @brief An interface for ObservableMetric value change observation
@@ -65,9 +64,10 @@ struct MetricObserver
   virtual ~MetricObserver() = default;
 
 protected:
-  MetricObserver(ObservableMetricPtr source) : EventListenerInterface(source) {}
+  explicit MetricObserver(const ObservableMetricPtr& source)
+      : EventListenerInterface(source) {}
 
-  MetricObserver(NonemptyObservableMetricPtr source)
+  explicit MetricObserver(const NonemptyObservableMetricPtr& source)
       : EventListenerInterface(source.base()) {}
 };
 

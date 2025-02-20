@@ -1,5 +1,5 @@
 # Changelog
-## [0.4.0-RC1] - 2024.11.08
+## [0.4.0] - 2025.02.20
 ### Added 
  - event_model v0.3 dependency
  - `DataVariantPtr` alias
@@ -20,6 +20,9 @@
  - `DeviceMockBuilderTests::canAddSubObservableMetric` unit test
  - `ObservableMetricTests` Suite
  - `TestUtils` helper module
+ - explicit specifier to `DateTime(const std::time_t&)`, `Read(const Reader&)`, `Write(const Writer&)`, `Execute(const Function::ParameterTypes&)`, `Functionality(DataType)`, `DeviceElementNotFound(const std::string&)`, `FunctionCallTimedout(const std::string&)`, `Metric(DataType)`, `WritableMetric(DataType)`, `MockDeviceElementGroup(const std::string&)`, `MockFunction(const Function::ParameterTypes&)`, `MockMetric(DataType)`, `MockWritableMetric(DataType)`
+ - `DataType Function::resultType()`
+ - `Function::ParameterTypes Function::parameterTypes()`
 
 ### Changed
  - `DeviceBuilderInterface::addObservableMetric()` method implementations
@@ -28,6 +31,31 @@
  - `DeviceMockBuilder::addDeviceElement()` to return `DeviceElementPtr` instead of std::string 
  - example runner to build and showcase `ObservableMetric` class
  - `NOLINTNEXTLINE` suppressions for various unit tests
+ - nonempty_pointer package into nonempty
+ - `DateTime::toString()` implementation to use `strftime`
+ - `toString(const DataVariant&)` to capture const& instead of values
+ - `DeviceBuilderInterface::addReadableMetric()`, `DeviceBuilderInterface::addWritableMetric()`, `DeviceBuilderInterface::addFunction()` methods to use const&
+ - `Function::result_type` to be private
+ - `Function::parameters` to be private
+ - `DataVariant Metric::getMetricValue()` to be const
+ - `void WritableMetric::setMetricValue(const DataVariant&)` to be const
+ - `bool WritableMetric::isWriteOnly()` to be const
+
+### Removed 
+ - const specifier from `DeviceElement::functionality`
+ - const specifier from `Function::clear_caller`
+
+## [0.3.5] - 2025.01.15
+### Fixed 
+ - `FunctionCallTimedout` message type
+
+### Added
+ - `Function_Mock::delegateToFake()` method, to allow internal `Executor` implementation
+ - `Function` examples to main runner
+
+### Changed 
+  - `Function_Mock` constructor to return default `DataVariant` value for Function::call method mock
+  - Integration test to focus on integration testing only
 
 ## [0.3.4] - 2023.09.21
 ### Added

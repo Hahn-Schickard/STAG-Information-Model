@@ -6,8 +6,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup WritableModeling Writable Metric Modelling
  * @{
@@ -25,7 +24,7 @@ struct MockWritableMetric : public WritableMetric {
 
   MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
 
-  MockWritableMetric(DataType type)
+  explicit MockWritableMetric(DataType type)
       : MockWritableMetric(type, setVariant(type).value()) {}
 
   MockWritableMetric(DataType type, const DataVariant& variant)
@@ -38,20 +37,21 @@ struct MockWritableMetric : public WritableMetric {
     delegateToFake();
   }
 
-  MOCK_METHOD(void, setMetricValue, (DataVariant /* value */), (override));
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
-  MOCK_METHOD(bool, isWriteOnly, (), (override));
+  MOCK_METHOD(
+      void, setMetricValue, (const DataVariant& /* value */), (const override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
+  MOCK_METHOD(bool, isWriteOnly, (), (const override));
 
-  DataType getDataType() { return readable_.getDataType(); }
+  DataType getDataType() const { return readable_.getDataType(); }
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
-  void delegateToFake(MockMetric::Reader reader) {
+  void delegateToFake(const MockMetric::Reader& reader) {
     readable_.delegateToFake(reader);
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(false));
   }
 
-  void delegateToFake(Writer writer) {
+  void delegateToFake(const Writer& writer) {
     write_ = writer;
     ON_CALL(*this, getMetricValue)
         .WillByDefault(::testing::Throw(std::logic_error(
@@ -59,7 +59,7 @@ struct MockWritableMetric : public WritableMetric {
     ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(true));
   }
 
-  void delegateToFake(Writer writer, MockMetric::Reader reader) {
+  void delegateToFake(const Writer& writer, const MockMetric::Reader& reader) {
     write_ = writer;
     delegateToFake(reader);
   }
@@ -73,23 +73,21 @@ struct MockWritableMetric : public WritableMetric {
   }
 
 private:
-  void writeValue(DataVariant value) {
+  void writeValue(const DataVariant& value) const {
     if (write_) {
       write_(value);
     }
   }
 
-  DataVariant readValue() { return readable_.getMetricValue(); }
+  DataVariant readValue() const { return readable_.getMetricValue(); }
 
   Writer write_ = nullptr;
   ::testing::NiceMock<MockMetric> readable_;
 };
 
 using MockWritableMetricPtr = std::shared_ptr<MockWritableMetric>;
-using NonemptyMockWritableMetricPtr =
-    NonemptyPointer::NonemptyPtr<MockWritableMetricPtr>;
+using NonemptyMockWritableMetricPtr = Nonempty::Pointer<MockWritableMetricPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_WRITABLE_METRIC_FAKE_HPP_

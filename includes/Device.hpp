@@ -82,7 +82,7 @@ protected:
 };
 
 using DevicePtr = std::shared_ptr<Device>;
-using NonemptyDevicePtr = NonemptyPointer::NonemptyPtr<DevicePtr>;
+using NonemptyDevicePtr = Nonempty::Pointer<DevicePtr>;
 /** @}*/
 } // namespace Information_Model
 

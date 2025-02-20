@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 /**
@@ -33,7 +33,7 @@ struct Metric {
    *
    * @return DataVariant
    */
-  virtual DataVariant getMetricValue() {
+  virtual DataVariant getMetricValue() const {
     throw std::logic_error(
         "Called based implementation of Metric::getMetricValue()");
   }
@@ -56,13 +56,13 @@ struct Metric {
   }
 
 protected:
-  Metric(DataType type) : value_type_(type) {}
+  explicit Metric(DataType type) : value_type_(type) {}
 
   DataType value_type_ = DataType::UNKNOWN;
 };
 
 using MetricPtr = std::shared_ptr<Metric>;
-using NonemptyMetricPtr = NonemptyPointer::NonemptyPtr<MetricPtr>;
+using NonemptyMetricPtr = Nonempty::Pointer<MetricPtr>;
 /** @}*/
 } // namespace Information_Model
 

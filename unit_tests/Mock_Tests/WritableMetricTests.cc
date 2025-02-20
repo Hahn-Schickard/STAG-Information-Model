@@ -37,13 +37,13 @@ protected:
     switch (type) {
     // NOLINTBEGIN(readability-magic-numbers)
     case DataType::BOOLEAN:
-      return DataVariant((bool)true);
+      return DataVariant(true);
     case DataType::INTEGER:
       return DataVariant((intmax_t)-10);
     case DataType::UNSIGNED_INTEGER:
       return DataVariant((uintmax_t)10);
     case DataType::DOUBLE:
-      return DataVariant((double)20.0);
+      return DataVariant(20.0);
     case DataType::TIME:
       return DataVariant(DateTime(25));
     case DataType::OPAQUE:

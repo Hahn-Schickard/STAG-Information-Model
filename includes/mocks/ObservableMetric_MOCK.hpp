@@ -6,8 +6,7 @@
 
 #include "gmock/gmock.h"
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ObservableModeling Observable Metric Modelling
  * @{
@@ -25,13 +24,14 @@ struct MockObservableMetric : public ObservableMetric {
 
   MockObservableMetric() : MockObservableMetric(DataType::BOOLEAN) {}
 
-  MockObservableMetric(ObserveInitializer ObserveInitializer)
+  explicit MockObservableMetric(const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(DataType::BOOLEAN, ObserveInitializer) {}
 
-  MockObservableMetric(DataType type)
+  explicit MockObservableMetric(DataType type)
       : MockObservableMetric(type, setVariant(type).value()) {}
 
-  MockObservableMetric(DataType type, ObserveInitializer ObserveInitializer)
+  MockObservableMetric(
+      DataType type, const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(
             type, setVariant(type).value(), ObserveInitializer) {}
 
@@ -45,7 +45,7 @@ struct MockObservableMetric : public ObservableMetric {
 
   MockObservableMetric(DataType type,
       const DataVariant& variant,
-      ObserveInitializer ObserveInitializer)
+      const ObserveInitializer& ObserveInitializer)
       : MockObservableMetric(type,
             std::bind(&MockObservableMetric::handleException,
                 this,
@@ -54,9 +54,9 @@ struct MockObservableMetric : public ObservableMetric {
             ObserveInitializer) {}
 
   MockObservableMetric(DataType type,
-      ObservableMetric::ExceptionHandler handler,
+      const ObservableMetric::ExceptionHandler& handler,
       const DataVariant& variant,
-      ObserveInitializer ObserveInitializer)
+      const ObserveInitializer& ObserveInitializer)
       : ObservableMetric(type, handler), readable_(type, variant),
         observe_(ObserveInitializer) {
     ON_CALL(*this, getMetricValue)
@@ -66,7 +66,7 @@ struct MockObservableMetric : public ObservableMetric {
 
   ~MockObservableMetric() { clearExpectations(); }
 
-  MOCK_METHOD(DataVariant, getMetricValue, (), (override));
+  MOCK_METHOD(DataVariant, getMetricValue, (), (const override));
 
   std::size_t attach(
       Event_Model::HandleEventCallback<DataVariant>&& listener_callback) final {
@@ -89,11 +89,11 @@ struct MockObservableMetric : public ObservableMetric {
     }
   }
 
-  DataType getDataType() { return readable_.getDataType(); }
+  DataType getDataType() const { return readable_.getDataType(); }
 
   void delegateToFake() { delegateToFake(MockMetric::Reader()); }
 
-  void delegateToFake(MockMetric::Reader reader) {
+  void delegateToFake(const MockMetric::Reader& reader) {
     readable_.delegateToFake(reader);
   }
 
@@ -106,11 +106,11 @@ struct MockObservableMetric : public ObservableMetric {
   }
 
 private:
-  void handleException(const std::exception_ptr&) {
+  void handleException(const std::exception_ptr&) const {
     /*surpress all exceptions*/
   }
 
-  DataVariant readValue() { return readable_.getMetricValue(); }
+  DataVariant readValue() const { return readable_.getMetricValue(); }
 
   ::testing::NiceMock<MockMetric> readable_;
   ObserveInitializer observe_;
@@ -118,13 +118,14 @@ private:
 
 using MockObservableMetricPtr = std::shared_ptr<MockObservableMetric>;
 using NonemptyMockObservableMetricPtr =
-    NonemptyPointer::NonemptyPtr<MockObservableMetricPtr>;
+    Nonempty::Pointer<MockObservableMetricPtr>;
 
 struct MockMetricObserver : public MetricObserver {
-  MockMetricObserver(MockObservableMetricPtr source) : MetricObserver(source) {}
+  explicit MockMetricObserver(const MockObservableMetricPtr& source)
+      : MetricObserver(source) {}
 
-  MockMetricObserver(NonemptyObservableMetricPtr source)
-      : MetricObserver(std::move(source)) {}
+  explicit MockMetricObserver(const NonemptyObservableMetricPtr& source)
+      : MetricObserver(source) {}
 
   ~MockMetricObserver() { clearExpectations(); }
 
@@ -135,10 +136,8 @@ struct MockMetricObserver : public MetricObserver {
 };
 
 using MockMetricObserverPtr = std::shared_ptr<MockMetricObserver>;
-using NonemptyMockMetricObserverPtr =
-    NonemptyPointer::NonemptyPtr<MockMetricObserverPtr>;
+using NonemptyMockMetricObserverPtr = Nonempty::Pointer<MockMetricObserverPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_OBSERVABLE_METRIC_FAKE_HPP_

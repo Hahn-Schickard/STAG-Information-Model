@@ -11,7 +11,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "Nonempty_Pointer/NonemptyPtr.hpp"
+#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 /**
@@ -44,8 +44,8 @@ struct CallCanceled : public std::runtime_error {
 };
 
 struct FunctionCallTimedout : public std::runtime_error {
-  FunctionCallTimedout(const std::string& name)
-      : std::runtime_error("Function " + name + " call timedout") {}
+  explicit FunctionCallTimedout(const std::string& name)
+      : std::runtime_error("Function " + name + " call timed out") {}
 };
 
 /**
@@ -94,9 +94,9 @@ struct Function {
 
     ResultFuture(std::future<DataVariant>&& future_result,
         uintmax_t caller,
-        CallClearer clearer)
+        const CallClearer& clearer)
         : std::future<DataVariant>(std::move(future_result)), call_id(caller),
-          clear_caller(clearer) {}
+          clear_caller_(clearer) {}
 
     /**
      * @brief Obtains the promised future result and removes the call_id from
@@ -111,14 +111,14 @@ struct Function {
      */
     DataVariant get() {
       auto result = std::future<DataVariant>::get();
-      clear_caller(call_id);
+      clear_caller_(call_id);
       return result;
     }
 
     const uintmax_t call_id; // NOLINT(readability-identifier-naming)
 
   private:
-    const CallClearer clear_caller; // NOLINT(readability-identifier-naming)
+    CallClearer clear_caller_;
   };
 
   virtual ~Function() = default;
@@ -242,21 +242,26 @@ struct Function {
    */
   virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
 
+  DataType resultType() const { return result_type_; }
+
+  ParameterTypes parameterTypes() const { return parameters_; }
+
   bool operator==(const Function& other) const noexcept {
-    return (result_type == other.result_type) &&
-        (parameters == other.parameters);
+    return (result_type_ == other.result_type_) &&
+        (parameters_ == other.parameters_);
   }
 
   bool operator!=(const Function& other) const noexcept {
     return !operator==(other);
   }
 
-  const DataType result_type; // NOLINT(readability-identifier-naming)
-  const ParameterTypes parameters; // NOLINT(readability-identifier-naming)
-
 protected:
-  Function(DataType type, const ParameterTypes& supported_parameters)
-      : result_type(type), parameters(supported_parameters) {}
+  Function(DataType type, const ParameterTypes& supported_parameters_)
+      : result_type_(type), parameters_(supported_parameters_) {}
+
+private:
+  DataType result_type_;
+  ParameterTypes parameters_;
 }; // namespace Information_Model
 
 /**
@@ -302,26 +307,25 @@ inline void addSupportedParameter(Function::Parameters& map,
     const Function::ParameterTypes& supported_types,
     uintmax_t param_number,
     const Function::Parameter& param) {
-  auto supported_types_iter = supported_types.find(param_number);
-  if (supported_types_iter != supported_types.end()) {
-    auto supported_type = supported_types_iter->second;
-    if (param.has_value()) {
-      auto param_value = param.value();
-      if (matchVariantType(param_value, supported_type.first)) {
+  if (auto it = supported_types.find(param_number);
+      it != supported_types.end()) {
+    auto [type, optional] = it->second;
+    if (param) {
+      const auto& param_value = param.value();
+      if (matchVariantType(param_value, type)) {
         addParameter(map, param_number, param);
       } else {
         std::string error_msg = "Parameter number " +
-            std::to_string(param_number) + " " +
-            toString(supported_type.first) + " does not support " +
-            toString(toDataType(param_value)) + "(" + toString(param_value) +
-            ") value";
+            std::to_string(param_number) + " " + toString(type) +
+            " does not support " + toString(toDataType(param_value)) + "(" +
+            toString(param_value) + ") value";
         throw std::invalid_argument(error_msg);
       }
-    } else if (supported_type.second) {
+    } else if (optional) {
       addParameter(map, param_number, std::nullopt);
     } else {
       std::string error_msg = "Parameter number " +
-          std::to_string(param_number) + " " + toString(supported_type.first) +
+          std::to_string(param_number) + " " + toString(type) +
           " does not support empty values";
       throw std::invalid_argument(error_msg);
     }
@@ -343,7 +347,7 @@ inline std::string toString(Function::ParameterTypes params) {
 }
 
 using FunctionPtr = std::shared_ptr<Function>;
-using NonemptyFunctionPtr = NonemptyPointer::NonemptyPtr<FunctionPtr>;
+using NonemptyFunctionPtr = Nonempty::Pointer<FunctionPtr>;
 /** @}*/
 } // namespace Information_Model
 #endif //__INFORMATION_MODEL_FUNCTION_HPP

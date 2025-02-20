@@ -7,8 +7,7 @@
 #include <chrono>
 #include <future>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup ExecutableModeling Function Modelling
  * @{
@@ -28,13 +27,14 @@ struct MockFunction : public Function {
 
   MockFunction() : MockFunction(DataType::NONE) {}
 
-  MockFunction(const Function::ParameterTypes& supported_params)
+  explicit MockFunction(const Function::ParameterTypes& supported_params)
       : MockFunction(DataType::NONE, supported_params, std::nullopt) {}
 
-  MockFunction(DataType result_type)
+  explicit MockFunction(DataType result_type)
       : MockFunction(result_type, Function::ParameterTypes(), std::nullopt) {}
 
-  MockFunction(DataType result_type, std::optional<DataVariant> result_value)
+  MockFunction(
+      DataType result_type, const std::optional<DataVariant>& result_value)
       : MockFunction(result_type, Function::ParameterTypes(), result_value) {}
 
   MockFunction(
@@ -43,7 +43,7 @@ struct MockFunction : public Function {
 
   MockFunction(DataType result_type,
       const Function::ParameterTypes& supported_params,
-      std::optional<DataVariant> result_value)
+      const std::optional<DataVariant>& result_value)
       : Function(result_type, supported_params), result_type_(result_type),
         supported_params_(supported_params), result_value_(result_value) {
     if (!result_value_.has_value()) {
@@ -57,18 +57,9 @@ struct MockFunction : public Function {
           .WillByDefault(::testing::Throw(ResultReturningNotSupported()));
     } else {
       ON_CALL(*this, call)
-          .WillByDefault([this](Parameters /*parameters*/, uintmax_t timeout) {
-            auto result = allocateAsyncCall();
-            auto status = result.wait_for(std::chrono::milliseconds(timeout));
-            if (status == std::future_status::ready) {
-              return result.get();
-            } else {
-              cancelAsyncCall(result.call_id);
-              throw FunctionCallTimedout("MockFunction");
-            }
-          });
+          .WillByDefault(::testing::Return(result_value.value()));
       ON_CALL(*this, asyncCall)
-          .WillByDefault([this](Function::Parameters /*params*/) {
+          .WillByDefault([this](const Function::Parameters& /*params*/) {
             return allocateAsyncCall();
           });
       ON_CALL(*this, cancelAsyncCall).WillByDefault([this](uintmax_t call_id) {
@@ -184,12 +175,24 @@ struct MockFunction : public Function {
     }
   }
 
-  void delegateToFake(Executor executor, Canceler canceler = nullptr) {
+  /**
+   * @brief Set a custom Executor to invoke custom callback
+   *
+   * @param executor - custom execution callback
+   * @param canceler - custom cancel execution callback
+   */
+  void delegateToFake(
+      const Executor& executor, const Canceler& canceler = nullptr) {
     respondToAll(std::make_exception_ptr(
         std::logic_error("Assigned a new external execution handler")));
     if (executor) {
       executor_ = executor;
       canceler_ = canceler;
+      ON_CALL(*this, execute)
+          .WillByDefault([this](const Function::Parameters& params) {
+            auto result = executor_(params);
+          });
+
       if (canceler_) {
         ON_CALL(*this, call)
             .WillByDefault([this](const Function::Parameters& params,
@@ -206,9 +209,9 @@ struct MockFunction : public Function {
             });
         ON_CALL(*this, asyncCall)
             .WillByDefault([this](const Function::Parameters& params) {
-              auto result_future = executor_(params);
-              return ResultFuture(std::move(result_future.second),
-                  result_future.first,
+              auto [caller_id, result_future] = executor_(params);
+              return ResultFuture(std::move(result_future),
+                  caller_id,
                   std::bind(
                       &MockFunction::clearCall, this, std::placeholders::_1));
             });
@@ -224,6 +227,31 @@ struct MockFunction : public Function {
     }
   }
 
+  /**
+   * @brief Use internal responder mechanism instead of default value returner
+   * or custom Executor
+   *
+   * Use MockFunction::respond() or MockFunction::respondToAll() to set the
+   * response
+   *
+   * This will cause the Function::call() to throw FunctionCallTimedout, if no
+   * response has been set before the call timeout has occurred,
+   */
+  void delegateToFake() {
+    ON_CALL(*this, call)
+        .WillByDefault(
+            [this](const Parameters& /*parameters*/, uintmax_t timeout) {
+              auto result = allocateAsyncCall();
+              auto status = result.wait_for(std::chrono::milliseconds(timeout));
+              if (status == std::future_status::ready) {
+                return result.get();
+              } else {
+                cancelAsyncCall(result.call_id);
+                throw FunctionCallTimedout("MockFunction");
+              }
+            });
+  }
+
   bool clearExpectations() { return ::testing::Mock::VerifyAndClear(this); }
 
 private:
@@ -236,9 +264,8 @@ private:
 };
 
 using MockFunctionPtr = std::shared_ptr<MockFunction>;
-using NonemptyMockFunctionPtr = NonemptyPointer::NonemptyPtr<MockFunctionPtr>;
+using NonemptyMockFunctionPtr = Nonempty::Pointer<MockFunctionPtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_FUNCTION_MOCK_HPP_

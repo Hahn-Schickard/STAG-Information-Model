@@ -5,8 +5,7 @@
 
 #include <gmock/gmock.h>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @brief DeviceBuilderInterface mock class for Technology
  * Adapter Implementations to test in unit and/or integration test stages
@@ -49,7 +48,7 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          DeviceBuilderInterface::Reader /* read_cb */),
+          const DeviceBuilderInterface::Reader& /* read_cb */),
       (override));
   /** @}*/
 
@@ -63,8 +62,8 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          DeviceBuilderInterface::Writer /* write_cb */,
-          DeviceBuilderInterface::Reader /* read_cb */),
+          const DeviceBuilderInterface::Writer& /* write_cb */,
+          const DeviceBuilderInterface::Reader& /* read_cb */),
       (override));
   /** @}*/
 
@@ -78,9 +77,24 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
           const std::string& /* name */,
           const std::string& /* desc */,
           DataType /* data_type */,
-          DeviceBuilderInterface::Executor /*execute_cb*/,
-          DeviceBuilderInterface::Canceler /*cancel_cb*/,
-          Function::ParameterTypes /*supported_params*/),
+          const DeviceBuilderInterface::Executor& /*execute_cb*/,
+          const DeviceBuilderInterface::Canceler& /*cancel_cb*/,
+          const Function::ParameterTypes& /*supported_params*/),
+      (override));
+  /** @}*/
+
+  /**
+   * @addtogroup ExecutableModeling Function Modelling
+   * @{
+   */
+  MOCK_METHOD((std::pair<std::string, ObservedValue>),
+      addObservableMetric,
+      (const std::string& /*group_ref_id*/,
+          const std::string& /*name*/,
+          const std::string& /*desc*/,
+          DataType /*data_type*/,
+          const Reader& /*read_cb*/,
+          const ObserveInitializer& /*observe_cb*/),
       (override));
   /** @}*/
 
@@ -107,9 +121,7 @@ struct DeviceBuilderMock : public DeviceBuilderInterface {
   /** @}*/
 };
 using DeviceBuilderMockPtr = std::shared_ptr<DeviceBuilderMock>;
-using NonemptyDeviceBuilderMockPtr =
-    NonemptyPointer::NonemptyPtr<DeviceBuilderMockPtr>;
-} // namespace testing
-} // namespace Information_Model
+using NonemptyDeviceBuilderMockPtr = Nonempty::Pointer<DeviceBuilderMockPtr>;
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_DEVICE_BUILDER_MOCK_HPP

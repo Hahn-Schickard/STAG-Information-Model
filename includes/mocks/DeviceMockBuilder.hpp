@@ -13,8 +13,7 @@
 #include <optional>
 #include <stdexcept>
 
-namespace Information_Model {
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @brief DeviceMockBuilder builds Device Mock instances.
  *
@@ -98,7 +97,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb) override {
+      const Reader& read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb))
         ->getElementId();
@@ -133,8 +132,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Writer write_cb,
-      Reader read_cb) override {
+      const Writer& write_cb,
+      const Reader& read_cb) override {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(data_type, read_cb, write_cb))
         ->getElementId();
@@ -170,7 +169,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ObserveInitializer observe_cb) {
+      const ObserveInitializer& observe_cb) {
     return addObservableMetric(
         std::string(), name, desc, data_type, observe_cb);
   }
@@ -180,7 +179,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      ObserveInitializer observe_cb) {
+      const ObserveInitializer& observe_cb) {
     auto element = addDeviceElement(group_ref_id,
         name,
         desc,
@@ -197,8 +196,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType data_type,
-      Reader read_cb,
-      ObserveInitializer observe_cb) override {
+      const Reader& read_cb,
+      const ObserveInitializer& observe_cb) override {
     auto element = addDeviceElement(group_ref_id,
         name,
         desc,
@@ -235,7 +234,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
   std::string addFunction(const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Function::ParameterTypes supported_params) {
+      const Function::ParameterTypes& supported_params) {
     return addDeviceElement(
         std::string(), name, desc, Functionality(result_type, supported_params))
         ->getElementId();
@@ -245,7 +244,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Function::ParameterTypes supported_params) {
+      const Function::ParameterTypes& supported_params) {
     return addDeviceElement(
         group_ref_id, name, desc, Functionality(result_type, supported_params))
         ->getElementId();
@@ -255,9 +254,9 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
       const std::string& name,
       const std::string& desc,
       DataType result_type,
-      Executor execute_cb,
-      Canceler cancel_cb,
-      Function::ParameterTypes supported_params) override {
+      const Executor& execute_cb,
+      const Canceler& cancel_cb,
+      const Function::ParameterTypes& supported_params) override {
     return addDeviceElement(group_ref_id,
         name,
         desc,
@@ -270,7 +269,8 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
    * @addtogroup GroupModeling Device Element Group Modelling
    * @{
    */
-  MockDeviceElementGroupPtr getGroupImplementation(const std::string& ref_id) {
+  MockDeviceElementGroupPtr getGroupImplementation(
+      const std::string& ref_id) const {
     if (device_) {
       if (ref_id.empty()) {
         return std::static_pointer_cast<MockDeviceElementGroup>(
@@ -334,7 +334,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
 
 protected:
   Functionality buildDefaultFunctionality(
-      ElementType type, DataType data_type) {
+      ElementType type, DataType data_type) const {
     switch (type) {
     case ElementType::READABLE: {
       return Functionality(data_type, Reader());
@@ -360,7 +360,7 @@ protected:
   }
 
   Functionality buildDefaultFunctionality(
-      DataType data_type, ObserveInitializer observe_cb) {
+      DataType data_type, const ObserveInitializer& observe_cb) {
     return Functionality(data_type, Reader(), observe_cb);
   }
 
@@ -369,7 +369,7 @@ protected:
   }
 
   DeviceElement::SpecificInterface buildSpecificInterface(
-      const Functionality& functionality) {
+      const Functionality& functionality) const {
     switch (functionality.type()) {
     case ElementType::READABLE: {
       auto read = functionality.getRead();
@@ -434,9 +434,7 @@ protected:
 };
 
 using DeviceMockBuilderPtr = std::shared_ptr<DeviceMockBuilder>;
-using NonemptyDeviceMockBuilderPtr =
-    NonemptyPointer::NonemptyPtr<DeviceMockBuilderPtr>;
-} // namespace testing
-} // namespace Information_Model
+using NonemptyDeviceMockBuilderPtr = Nonempty::Pointer<DeviceMockBuilderPtr>;
+} // namespace Information_Model::testing
 
 #endif //__INFORMATION_MODEL_DEVICE_MOCK_BUILDER_HPP

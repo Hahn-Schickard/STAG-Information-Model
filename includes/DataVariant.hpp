@@ -37,7 +37,7 @@ public:
    *
    * @param time_point
    */
-  DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
+  explicit DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
 
   /**
    * @brief Converts POSIX time to human readable format
@@ -45,7 +45,13 @@ public:
    * @return std::string
    */
   std::string toString() const {
-    return std::string(std::asctime(std::localtime(&posix_time_)));
+    std::string result;
+    result.reserve(std::size("yyyy-mm-ddThh:mm:ssZ"));
+    std::strftime(std::data(result),
+        std::size(result),
+        "%FT%TZ",
+        std::localtime(&posix_time_));
+    return result;
   }
 
   /**
@@ -160,14 +166,14 @@ using DataVariant = std::variant<bool,
 using DataVariantPtr = std::shared_ptr<DataVariant>;
 
 inline std::size_t size_of(const DataVariant& variant) {
-  std::size_t result;
-  match(
+  return match(
       variant,
-      [&](auto value) { result = sizeof(value); },
-      [&](const DateTime& value) { result = value.size(); },
-      [&](const std::vector<uint8_t>& value) { result = value.size(); },
-      [&](const std::string& value) { result = value.size(); });
-  return result;
+      [](auto value) -> std::size_t { return sizeof(value); },
+      [](const DateTime& value) -> std::size_t { return value.size(); },
+      [](const std::vector<uint8_t>& value) -> std::size_t {
+        return value.size();
+      },
+      [](const std::string& value) -> std::size_t { return value.size(); });
 }
 
 inline std::optional<DataVariant> setVariant(DataType type) {
@@ -189,6 +195,7 @@ inline std::optional<DataVariant> setVariant(DataType type) {
   case DataType::NONE:
     return std::nullopt;
   case DataType::UNKNOWN:
+    [[fallthrough]];
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
   }
@@ -219,23 +226,20 @@ inline bool matchVariantType(const DataVariant& variant, DataType type) {
 }
 
 inline std::string toString(const DataVariant& variant) {
-  std::string result;
-  match(
+  return match(
       variant,
-      [&](bool value) { result = (value ? "true" : "false"); },
-      [&](auto value) { result = std::to_string(value); },
-      [&](DateTime value) { result = value.toString(); },
-      [&](std::vector<uint8_t> value) {
+      [](bool value) -> std::string { return (value ? "true" : "false"); },
+      [](auto value) -> std::string { return std::to_string(value); },
+      [](const DateTime& value) -> std::string { return value.toString(); },
+      [](const std::vector<uint8_t>& value) -> std::string {
         std::stringstream ss;
         ss << std::hex << std::setfill('0');
         for (auto byte : value) {
           ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
         }
-        result = ss.str();
+        return ss.str();
       },
-      [&](std::string value) { result = value; });
-
-  return result;
+      [](const std::string& value) -> std::string { return value; });
 }
 
 /** @}*/

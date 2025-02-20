@@ -6,13 +6,12 @@
 
 #include <gmock/gmock.h>
 
-namespace Information_Model {
 /**
  * @brief elements within this namespace are suppose to be only used by test
  * cases.
  *
  */
-namespace testing {
+namespace Information_Model::testing {
 /**
  * @addtogroup DeviceModeling Device Modelling
  * @{
@@ -59,8 +58,7 @@ private:
 };
 
 using MockDevicePtr = std::shared_ptr<MockDevice>;
-using NonemptyMockDevicePtr = NonemptyPointer::NonemptyPtr<MockDevicePtr>;
+using NonemptyMockDevicePtr = Nonempty::Pointer<MockDevicePtr>;
 /** @}*/
-} // namespace testing
-} // namespace Information_Model
+} // namespace Information_Model::testing
 #endif //__INFORMATION_MODEL_DEVICE_MOCK_HPP
