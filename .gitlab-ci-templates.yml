@@ -19,7 +19,6 @@ variables:
   hooks:
     pre_get_sources_script:
       - git config --global core.longpaths true # ensure windows longpaths is true
-      - git config --list --global
   before_script:
     - conan remote add hahn-schickard ${CONAN_REMOTE}
     - mkdir -p ${CONAN_HOME}/profiles
@@ -189,7 +188,7 @@ variables:
     - conan
   hooks:
     pre_get_sources_script:
-      - git config --system core.longpaths true # ensure windows longpaths is true
+      - git config --global core.longpaths true # ensure windows longpaths is true
   before_script:
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)
     - PROJECT_NAME=$(python3 ./utility/.getProjectName.py)
