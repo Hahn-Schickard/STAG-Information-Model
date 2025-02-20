@@ -17,6 +17,7 @@ variables:
   tags:
     - conan
   before_script:
+    - git config --system core.longpaths true
     - conan remote add hahn-schickard ${CONAN_REMOTE}
     - mkdir -p ${CONAN_HOME}/profiles
     - cp ~/.conan2/profiles/default ${CONAN_HOME}/profiles/default # move original default profile into project scope
@@ -184,6 +185,7 @@ variables:
   tags:
     - conan
   before_script:
+    - git config --system core.longpaths true
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)
     - PROJECT_NAME=$(python3 ./utility/.getProjectName.py)
   script:
