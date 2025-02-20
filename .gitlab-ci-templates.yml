@@ -17,7 +17,7 @@ variables:
   tags:
     - conan
   hooks:
-    pre_get_sources_script
+    pre_get_sources_script:
       - git config --system core.longpaths true # ensure windows longpaths is true
   before_script:
     - conan remote add hahn-schickard ${CONAN_REMOTE}
@@ -187,7 +187,7 @@ variables:
   tags:
     - conan
   hooks:
-    pre_get_sources_script
+    pre_get_sources_script:
       - git config --system core.longpaths true # ensure windows longpaths is true
   before_script:
     - VERSION=$(python3 ./utility/.getVersionFromTag.py)
