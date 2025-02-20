@@ -4,6 +4,7 @@ include:
 
 variables:
   IMAGE_VER: "6.5.0"
+  GIT_CLONE_PATH: ${CI_BUILDS_DIR}/${CI_PROJECT_ID}/${CI_CONCURRENT_ID}/${CI_CONCURRENT_PROJECT_ID}
 
 build:debian-bullseye:
   extends: .build
@@ -178,8 +179,6 @@ package:windows-ltsc2019:
     - windows-docker
   image:
     name: ${DOCKER_REGISTRY}/hs-conan-windows-ltsc2019:${IMAGE_VER}
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_CONCURRENT_PROJECT_ID
   before_script:
     - $PROJECT_NAME=python3 ./utility/.getProjectName.py
     - $VERSION=python3 ./utility/.getVersionFromTag.py
