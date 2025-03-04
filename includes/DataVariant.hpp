@@ -96,36 +96,36 @@ inline bool operator>=(const DateTime& lhs, const DateTime& rhs) {
  *
  */
 enum class DataType {
-  BOOLEAN, /*!< bool */
-  INTEGER, /*!< intmax_t */
-  UNSIGNED_INTEGER, /*!< uintmax_t */
-  DOUBLE, /*!< double */
-  TIME, /*!< Information_Model::DateTime */
-  OPAQUE, /*!< std::vector<uint8_t> */
-  STRING, /*!< std::string */
-  NONE, /*!< void */
-  UNKNOWN /*!< fallback type */
+  Boolean, /*!< bool */
+  Integer, /*!< intmax_t */
+  Unsigned_Integer, /*!< uintmax_t */
+  Double, /*!< double */
+  Time, /*!< Information_Model::DateTime */
+  Opaque, /*!< std::vector<uint8_t> */
+  String, /*!< std::string */
+  None, /*!< void */
+  Unknown /*!< fallback type */
 };
 
 inline std::string toString(DataType type) {
   switch (type) {
-  case DataType::BOOLEAN:
+  case DataType::Boolean:
     return "Boolean";
-  case DataType::INTEGER:
+  case DataType::Integer:
     return "Signed Integer";
-  case DataType::UNSIGNED_INTEGER:
+  case DataType::Unsigned_Integer:
     return "Unsigned Integer";
-  case DataType::DOUBLE:
+  case DataType::Double:
     return "Double floating point";
-  case DataType::TIME:
+  case DataType::Time:
     return "Time";
-  case DataType::OPAQUE:
+  case DataType::Opaque:
     return "Opaque byte array";
-  case DataType::STRING:
+  case DataType::String:
     return "String";
-  case DataType::NONE:
+  case DataType::None:
     return "None";
-  case DataType::UNKNOWN:
+  case DataType::Unknown:
   default:
     return "Unknown";
   }
@@ -133,23 +133,23 @@ inline std::string toString(DataType type) {
 
 inline std::string toSanitizedString(DataType type) {
   switch (type) {
-  case DataType::BOOLEAN:
+  case DataType::Boolean:
     return "Boolean";
-  case DataType::INTEGER:
+  case DataType::Integer:
     return "SignedInteger";
-  case DataType::UNSIGNED_INTEGER:
+  case DataType::Unsigned_Integer:
     return "UnsignedInteger";
-  case DataType::DOUBLE:
+  case DataType::Double:
     return "Double";
-  case DataType::TIME:
+  case DataType::Time:
     return "Time";
-  case DataType::OPAQUE:
+  case DataType::Opaque:
     return "OpaqueByteArray";
-  case DataType::STRING:
+  case DataType::String:
     return "String";
-  case DataType::NONE:
+  case DataType::None:
     return "None";
-  case DataType::UNKNOWN:
+  case DataType::Unknown:
   default:
     return "Unknown";
   }
@@ -178,23 +178,23 @@ inline std::size_t size_of(const DataVariant& variant) {
 
 inline std::optional<DataVariant> setVariant(DataType type) {
   switch (type) {
-  case DataType::BOOLEAN:
+  case DataType::Boolean:
     return DataVariant((bool)false);
-  case DataType::INTEGER:
+  case DataType::Integer:
     return DataVariant((intmax_t)0);
-  case DataType::UNSIGNED_INTEGER:
+  case DataType::Unsigned_Integer:
     return DataVariant((uintmax_t)0);
-  case DataType::DOUBLE:
+  case DataType::Double:
     return DataVariant((double)0.0);
-  case DataType::TIME:
+  case DataType::Time:
     return DataVariant(DateTime());
-  case DataType::OPAQUE:
+  case DataType::Opaque:
     return DataVariant(std::vector<uint8_t>());
-  case DataType::STRING:
+  case DataType::String:
     return DataVariant(std::string());
-  case DataType::NONE:
+  case DataType::None:
     return std::nullopt;
-  case DataType::UNKNOWN:
+  case DataType::Unknown:
     [[fallthrough]];
   default:
     throw std::logic_error("Can not initialise variant with unknown data type");
@@ -203,21 +203,21 @@ inline std::optional<DataVariant> setVariant(DataType type) {
 
 inline DataType toDataType(const DataVariant& variant) {
   if (std::holds_alternative<bool>(variant)) {
-    return DataType::BOOLEAN;
+    return DataType::Boolean;
   } else if (std::holds_alternative<intmax_t>(variant)) {
-    return DataType::INTEGER;
+    return DataType::Integer;
   } else if (std::holds_alternative<uintmax_t>(variant)) {
-    return DataType::UNSIGNED_INTEGER;
+    return DataType::Unsigned_Integer;
   } else if (std::holds_alternative<double>(variant)) {
-    return DataType::DOUBLE;
+    return DataType::Double;
   } else if (std::holds_alternative<DateTime>(variant)) {
-    return DataType::TIME;
+    return DataType::Time;
   } else if (std::holds_alternative<std::vector<uint8_t>>(variant)) {
-    return DataType::OPAQUE;
+    return DataType::Opaque;
   } else if (std::holds_alternative<std::string>(variant)) {
-    return DataType::STRING;
+    return DataType::String;
   } else {
-    return DataType::UNKNOWN;
+    return DataType::Unknown;
   }
 }
 

@@ -107,13 +107,13 @@ TEST_P(ParameterizedObservableMetricTests, canObserve) {
 
 INSTANTIATE_TEST_SUITE_P(ObservableMetricTests,
     ParameterizedObservableMetricTests,
-    ::testing::Values(DataType::BOOLEAN,
-        DataType::INTEGER,
-        DataType::UNSIGNED_INTEGER,
-        DataType::DOUBLE,
-        DataType::TIME,
-        DataType::OPAQUE,
-        DataType::STRING),
+    ::testing::Values(DataType::Boolean,
+        DataType::Integer,
+        DataType::Unsigned_Integer,
+        DataType::Double,
+        DataType::Time,
+        DataType::Opaque,
+        DataType::String),
     TestNameSuffixSetter());
 
 TEST(ObservableMetricTests, canBuild) {
@@ -121,9 +121,9 @@ TEST(ObservableMetricTests, canBuild) {
 }
 
 TEST(ObservableMetricTests, throwsOnUnsupportedType) {
-  EXPECT_THROW({ make_shared<MockObservableMetric>(DataType::NONE); },
+  EXPECT_THROW({ make_shared<MockObservableMetric>(DataType::None); },
       std::bad_optional_access);
 
-  EXPECT_THROW({ make_shared<MockObservableMetric>(DataType::UNKNOWN); },
+  EXPECT_THROW({ make_shared<MockObservableMetric>(DataType::Unknown); },
       std::logic_error);
 }

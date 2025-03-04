@@ -24,21 +24,21 @@ int main() {
       builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
       ids.push_back(builder->addDeviceElementGroup("Group 1", "First group"));
       ids.push_back(builder->addReadableMetric(
-          ids[0], "Status", "Mocked readable metric", DataType::BOOLEAN));
+          ids[0], "Status", "Mocked readable metric", DataType::Boolean));
       ids.push_back(builder->addReadableMetric(
-          "Temperature", "Mocked readable metric", DataType::INTEGER));
+          "Temperature", "Mocked readable metric", DataType::Integer));
       ids.push_back(builder->addWritableMetric(
-          "Label", "Mocked writable metric", DataType::STRING));
+          "Label", "Mocked writable metric", DataType::String));
       ids.push_back(builder->addFunction(
-          "Multiplicator", "Mocked function", DataType::DOUBLE));
+          "Multiplicator", "Mocked function", DataType::Double));
       ids.push_back(builder->addFunction(
-          "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN));
+          "ReturnsBoolean", "Mocked function with return", DataType::Boolean));
       ids.push_back(builder->addFunction(
-          "ReturnsNone", "Mocked function with no return", DataType::NONE));
+          "ReturnsNone", "Mocked function with no return", DataType::None));
       ids.push_back(builder
                         ->addObservableMetric("ObservesFalse",
                             "Mocked observable metric",
-                            DataType::BOOLEAN,
+                            DataType::Boolean,
                             DeviceBuilderInterface::ObservedValue())
                         .first);
 
@@ -66,7 +66,7 @@ int main() {
           });
     }
 
-    cout << "Print some data type: " << toString(DataType::OPAQUE) << endl;
+    cout << "Print some data type: " << toString(DataType::Opaque) << endl;
     cout << "Print some data value: " << toString(DataVariant(true)) << endl;
 
     cout << "Integration test successful" << endl;

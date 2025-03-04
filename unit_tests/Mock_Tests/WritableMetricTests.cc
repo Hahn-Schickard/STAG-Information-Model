@@ -36,22 +36,22 @@ protected:
   DataVariant getNewVariant() const {
     switch (type) {
     // NOLINTBEGIN(readability-magic-numbers)
-    case DataType::BOOLEAN:
+    case DataType::Boolean:
       return DataVariant(true);
-    case DataType::INTEGER:
+    case DataType::Integer:
       return DataVariant((intmax_t)-10);
-    case DataType::UNSIGNED_INTEGER:
+    case DataType::Unsigned_Integer:
       return DataVariant((uintmax_t)10);
-    case DataType::DOUBLE:
+    case DataType::Double:
       return DataVariant(20.0);
-    case DataType::TIME:
+    case DataType::Time:
       return DataVariant(DateTime(25));
-    case DataType::OPAQUE:
+    case DataType::Opaque:
       return DataVariant(vector<uint8_t>{1, 2, 3, 4, 5});
-    case DataType::STRING:
+    case DataType::String:
       return DataVariant(string("Hello World!"));
-    case DataType::NONE:
-    case DataType::UNKNOWN:
+    case DataType::None:
+    case DataType::Unknown:
     // NOLINTEND(readability-magic-numbers)
     default:
       throw logic_error(
@@ -151,19 +151,19 @@ struct SetWritableMetricTestNameSuffix {
 
 INSTANTIATE_TEST_SUITE_P(WritableMetricTests,
     ParameterizedWritableMetricTests,
-    ::testing::Values(DataType::BOOLEAN,
-        DataType::INTEGER,
-        DataType::UNSIGNED_INTEGER,
-        DataType::DOUBLE,
-        DataType::TIME,
-        DataType::OPAQUE,
-        DataType::STRING),
+    ::testing::Values(DataType::Boolean,
+        DataType::Integer,
+        DataType::Unsigned_Integer,
+        DataType::Double,
+        DataType::Time,
+        DataType::Opaque,
+        DataType::String),
     SetWritableMetricTestNameSuffix());
 
 TEST(WritableMetricTests, throwsOnUnsupportedType) {
-  EXPECT_THROW({ make_shared<MockWritableMetric>(DataType::NONE); },
+  EXPECT_THROW({ make_shared<MockWritableMetric>(DataType::None); },
       std::bad_optional_access);
 
-  EXPECT_THROW({ make_shared<MockWritableMetric>(DataType::UNKNOWN); },
+  EXPECT_THROW({ make_shared<MockWritableMetric>(DataType::Unknown); },
       std::logic_error);
 }

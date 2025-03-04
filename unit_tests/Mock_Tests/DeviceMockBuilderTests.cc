@@ -146,7 +146,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   string element_name = "Metric";
   string element_desc = "Mocked Metric";
   EXPECT_NO_THROW(ref_id = builder->addReadableMetric(
-                      element_name, element_desc, DataType::DOUBLE));
+                      element_name, element_desc, DataType::Double));
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
@@ -168,7 +168,7 @@ TEST(DeviceMockBuilderTests, canAddMetric) {
   auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
-  EXPECT_EQ(DataType::DOUBLE, metric->getDataType());
+  EXPECT_EQ(DataType::Double, metric->getDataType());
 
   EXPECT_CALL(*mocked_metric, getMetricValue());
   try {
@@ -191,7 +191,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   string element_name = "Writable Metric";
   string element_desc = "Mocked Writable Metric";
   EXPECT_NO_THROW(ref_id = builder->addWritableMetric(
-                      element_name, element_desc, DataType::DOUBLE));
+                      element_name, element_desc, DataType::Double));
   EXPECT_EQ(ref_id, "1234:0");
 
   DevicePtr device;
@@ -213,7 +213,7 @@ TEST(DeviceMockBuilderTests, canAddWritableMetric) {
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
-  EXPECT_EQ(DataType::DOUBLE, writable_metric->getDataType());
+  EXPECT_EQ(DataType::Double, writable_metric->getDataType());
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());
   try {
@@ -249,7 +249,7 @@ TEST(DeviceMockBuilderTests, canAddDefaultObservableMetric) {
 
   EXPECT_NO_THROW({
     auto result_pair = builder->addObservableMetric(
-        element_name, element_desc, DataType::STRING);
+        element_name, element_desc, DataType::String);
 
     ref_id = result_pair.first;
     value_changed = result_pair.second;
@@ -273,7 +273,7 @@ TEST(DeviceMockBuilderTests, canAddDefaultObservableMetric) {
 
   auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, metric->getDataType());
+  EXPECT_EQ(DataType::String, metric->getDataType());
 
   auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));
@@ -324,7 +324,7 @@ TEST(DeviceMockBuilderTests, canAddDefaultSubObservableMetric) {
 
   EXPECT_NO_THROW({
     auto result_pair = builder->addObservableMetric(
-        subgroup_ref_id, element_name, element_desc, DataType::STRING);
+        subgroup_ref_id, element_name, element_desc, DataType::String);
 
     element_ref_id = result_pair.first;
     value_changed = result_pair.second;
@@ -348,7 +348,7 @@ TEST(DeviceMockBuilderTests, canAddDefaultSubObservableMetric) {
 
   auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, metric->getDataType());
+  EXPECT_EQ(DataType::String, metric->getDataType());
 
   auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));
@@ -421,7 +421,7 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
   EXPECT_NO_THROW({
     auto result_pair = builder->addObservableMetric(element_name,
         element_desc,
-        DataType::STRING,
+        DataType::String,
         // we must bind to Observed* so dtor is properly called
         bind(&Observed::isObserved, observable.get(), placeholders::_1));
 
@@ -447,7 +447,7 @@ TEST(DeviceMockBuilderTests, canAddObservableMetric) {
 
   auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, metric->getDataType());
+  EXPECT_EQ(DataType::String, metric->getDataType());
 
   auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));
@@ -498,7 +498,7 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   EXPECT_NO_THROW(
       // NOLINTNEXTLINE(readability-suspicious-call-argument)
       element_ref_id = builder->addReadableMetric(
-          subgroup_ref_id, element_name, element_desc, DataType::DOUBLE));
+          subgroup_ref_id, element_name, element_desc, DataType::Double));
   EXPECT_EQ(element_ref_id, "1234:0.0.0");
 
   DevicePtr device;
@@ -520,7 +520,7 @@ TEST(DeviceMockBuilderTests, canAddSubMetric) {
   auto metric = std::get<NonemptyMetricPtr>(element->functionality);
   auto mocked_metric = static_pointer_cast<MockMetric>(metric.base());
 
-  EXPECT_EQ(DataType::DOUBLE, metric->getDataType());
+  EXPECT_EQ(DataType::Double, metric->getDataType());
 
   EXPECT_CALL(*mocked_metric, getMetricValue());
   try {
@@ -558,7 +558,7 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   EXPECT_NO_THROW(
       // NOLINTNEXTLINE(readability-suspicious-call-argument)
       element_ref_id = builder->addWritableMetric(
-          subgroup_ref_id, element_name, element_desc, DataType::DOUBLE));
+          subgroup_ref_id, element_name, element_desc, DataType::Double));
   EXPECT_EQ(element_ref_id, "1234:0.0.0");
 
   DevicePtr device;
@@ -580,7 +580,7 @@ TEST(DeviceMockBuilderTests, canAddSubWritableMetric) {
   auto mocked_metric =
       static_pointer_cast<MockWritableMetric>(writable_metric.base());
 
-  EXPECT_EQ(DataType::DOUBLE, writable_metric->getDataType());
+  EXPECT_EQ(DataType::Double, writable_metric->getDataType());
 
   EXPECT_CALL(*mocked_metric.get(), getMetricValue());
   try {
@@ -632,7 +632,7 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
     auto result_pair = builder->addObservableMetric(subgroup_ref_id,
         element_name,
         element_desc,
-        DataType::STRING,
+        DataType::String,
         // we must bind to Observed* so dtor is properly called
         bind(&Observed::isObserved, observable.get(), placeholders::_1));
 
@@ -659,7 +659,7 @@ TEST(DeviceMockBuilderTests, canAddSubObservableMetric) {
 
   auto metric = std::get<NonemptyObservableMetricPtr>(element->functionality);
 
-  EXPECT_EQ(DataType::STRING, metric->getDataType());
+  EXPECT_EQ(DataType::String, metric->getDataType());
 
   auto observer = std::make_shared<MockMetricObserver>(metric);
   EXPECT_CALL(*observer, handleEvent(::testing::_));

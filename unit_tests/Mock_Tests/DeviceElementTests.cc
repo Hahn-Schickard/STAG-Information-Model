@@ -22,7 +22,7 @@ struct DeviceElementExpectations {
       const string& element_name, // NOLINT(modernize-pass-by-value)
       const string& element_desc, // NOLINT(modernize-pass-by-value)
       ElementType element_type,
-      DataType element_data_type = DataType::UNKNOWN)
+      DataType element_data_type = DataType::Unknown)
       : name(element_name), desc(element_desc), type(element_type),
         data_type(element_data_type) {}
 };
@@ -112,59 +112,59 @@ vector<DeviceElementExpectations> makeDeviceElementTestParameters() {
   params.emplace_back("ReadableBoolean",
       "Read Only Boolean Metric",
       ElementType::READABLE,
-      DataType::BOOLEAN);
+      DataType::Boolean);
   params.emplace_back("ReadableInteger",
       "Read Only Integer Metric",
       ElementType::READABLE,
-      DataType::INTEGER);
+      DataType::Integer);
   params.emplace_back("ReadableUnsignedInteger",
       "Read Only Unsigned Integer Metric",
       ElementType::READABLE,
-      DataType::UNSIGNED_INTEGER);
+      DataType::Unsigned_Integer);
   params.emplace_back("ReadableDouble",
       "Read Only Double Metric",
       ElementType::READABLE,
-      DataType::DOUBLE);
+      DataType::Double);
   params.emplace_back("ReadableTime",
       "Read Only Time Metric",
       ElementType::READABLE,
-      DataType::TIME);
+      DataType::Time);
   params.emplace_back("ReadableOpaque",
       "Read Only Opaque Metric",
       ElementType::READABLE,
-      DataType::OPAQUE);
+      DataType::Opaque);
   params.emplace_back("ReadableString",
       "Read Only String Metric",
       ElementType::READABLE,
-      DataType::STRING);
+      DataType::String);
   params.emplace_back("WritableBoolean",
       "Read and Writable Boolean Metric",
       ElementType::WRITABLE,
-      DataType::BOOLEAN);
+      DataType::Boolean);
   params.emplace_back("WritableInteger",
       "Read and Writable Integer Metric",
       ElementType::WRITABLE,
-      DataType::INTEGER);
+      DataType::Integer);
   params.emplace_back("WritableUnsignedInteger",
       "Read and Writable Unsigned Integer Metric",
       ElementType::WRITABLE,
-      DataType::UNSIGNED_INTEGER);
+      DataType::Unsigned_Integer);
   params.emplace_back("WritableDouble",
       "Read and Writable Double Metric",
       ElementType::WRITABLE,
-      DataType::DOUBLE);
+      DataType::Double);
   params.emplace_back("WritableTime",
       "Read and Writable Time Metric",
       ElementType::WRITABLE,
-      DataType::TIME);
+      DataType::Time);
   params.emplace_back("WritableOpaque",
       "Read and Writable Opaque Metric",
       ElementType::WRITABLE,
-      DataType::OPAQUE);
+      DataType::Opaque);
   params.emplace_back("WritableString",
       "Read and Writable String Metric",
       ElementType::WRITABLE,
-      DataType::STRING);
+      DataType::String);
   params.emplace_back("Group", "Group", ElementType::GROUP);
   return params;
 }

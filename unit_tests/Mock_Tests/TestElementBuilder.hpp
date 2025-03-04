@@ -124,7 +124,7 @@ inline ElementMetaInfo makeReadableInfo(const std::string& parent_id = "",
   return ElementMetaInfo(parent_id, name, desc);
 }
 
-inline TestElementInfoPtr makeReadable(DataType return_type = DataType::BOOLEAN,
+inline TestElementInfoPtr makeReadable(DataType return_type = DataType::Boolean,
     const ElementMetaInfo& meta_info = makeReadableInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(
       return_type, DeviceBuilderInterface::Reader());
@@ -132,7 +132,7 @@ inline TestElementInfoPtr makeReadable(DataType return_type = DataType::BOOLEAN,
 }
 
 inline TestElementInfoPtr makeReadable(const ElementMetaInfo& meta_info) {
-  return makeReadable(DataType::BOOLEAN, meta_info);
+  return makeReadable(DataType::Boolean, meta_info);
 }
 
 inline ElementMetaInfo makeWriteOnlyInfo(const std::string& parent_id = "",
@@ -142,7 +142,7 @@ inline ElementMetaInfo makeWriteOnlyInfo(const std::string& parent_id = "",
 }
 
 inline TestElementInfoPtr makeWriteOnly(
-    DataType return_type = DataType::BOOLEAN,
+    DataType return_type = DataType::Boolean,
     const ElementMetaInfo& meta_info = makeWriteOnlyInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(
       return_type, DeviceBuilderInterface::Writer());
@@ -150,7 +150,7 @@ inline TestElementInfoPtr makeWriteOnly(
 }
 
 inline TestElementInfoPtr makeWriteOnly(const ElementMetaInfo& meta_info) {
-  return makeWriteOnly(DataType::BOOLEAN, meta_info);
+  return makeWriteOnly(DataType::Boolean, meta_info);
 }
 
 inline ElementMetaInfo makeWritableInfo(const std::string& parent_id = "",
@@ -159,7 +159,7 @@ inline ElementMetaInfo makeWritableInfo(const std::string& parent_id = "",
   return ElementMetaInfo(parent_id, name, desc);
 }
 
-inline TestElementInfoPtr makeWritable(DataType return_type = DataType::BOOLEAN,
+inline TestElementInfoPtr makeWritable(DataType return_type = DataType::Boolean,
     const ElementMetaInfo& meta_info = makeWritableInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(return_type,
       DeviceBuilderInterface::Reader(),
@@ -168,7 +168,7 @@ inline TestElementInfoPtr makeWritable(DataType return_type = DataType::BOOLEAN,
 }
 
 inline TestElementInfoPtr makeWritable(const ElementMetaInfo& meta_info) {
-  return makeWritable(DataType::BOOLEAN, meta_info);
+  return makeWritable(DataType::Boolean, meta_info);
 }
 
 inline ElementMetaInfo makeExecutableInfo(const std::string& parent_id = "",
@@ -178,7 +178,7 @@ inline ElementMetaInfo makeExecutableInfo(const std::string& parent_id = "",
 }
 
 inline TestElementInfoPtr makeExecutable(
-    DataType return_type = DataType::BOOLEAN,
+    DataType return_type = DataType::Boolean,
     Function::ParameterTypes supported_params = {},
     const ElementMetaInfo& meta_info = makeExecutableInfo()) {
   auto functionality = DeviceMockBuilder::Functionality(return_type,
@@ -189,7 +189,7 @@ inline TestElementInfoPtr makeExecutable(
 }
 
 inline TestElementInfoPtr makeExecutable(const ElementMetaInfo& meta_info) {
-  return makeExecutable(DataType::BOOLEAN, {}, meta_info);
+  return makeExecutable(DataType::Boolean, {}, meta_info);
 }
 
 inline ElementMetaInfo makeEmptyGroupInfo(const std::string& parent_ref_id = "",

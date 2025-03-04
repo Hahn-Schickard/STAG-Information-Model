@@ -19,12 +19,12 @@ struct FunctionExpectations {
 
   FunctionExpectations(const std::string& name)
       : FunctionExpectations(
-            name, DataType::NONE, Function::ParameterTypes(), std::nullopt) {}
+            name, DataType::None, Function::ParameterTypes(), std::nullopt) {}
 
   FunctionExpectations(
       const std::string& name, const Function::ParameterTypes& supported_params)
       : FunctionExpectations(
-            name, DataType::NONE, supported_params, std::nullopt) {}
+            name, DataType::None, supported_params, std::nullopt) {}
 
   FunctionExpectations(const std::string& name, DataType result_type)
       : FunctionExpectations(name,
@@ -90,7 +90,7 @@ TEST_P(FunctionParametrizedTests, canCall) {
     auto result = resul_future.get();
     EXPECT_EQ(expectations->result_value, result);
   } catch (const exception& ex) {
-    if (expectations->result_type != DataType::NONE) {
+    if (expectations->result_type != DataType::None) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -102,7 +102,7 @@ TEST_P(FunctionParametrizedTests, canCall) {
 TEST_P(FunctionParametrizedTests, canCallTimesOut) {
   EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
       .Times(AtLeast(1));
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     function_mock->delegateToFake();
     auto resul_future =
         std::async(std::launch::async, [this]() { return function->call(1); });
@@ -119,7 +119,7 @@ TEST_P(FunctionParametrizedTests, canAsyncCall) {
   try {
     function->asyncCall();
   } catch (const exception& ex) {
-    if (expectations->result_type != DataType::NONE) {
+    if (expectations->result_type != DataType::None) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -137,7 +137,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
     function->cancelAsyncCall(future_result.call_id);
     EXPECT_THROW(future_result.get(), CallCanceled);
   } catch (const exception& ex) {
-    if (expectations->result_type != DataType::NONE) {
+    if (expectations->result_type != DataType::None) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -149,7 +149,7 @@ TEST_P(FunctionParametrizedTests, canCancelAsyncCall) {
 TEST_P(FunctionParametrizedTests, cancelAsyncCallThrowsException) {
   EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
       .Times(AtLeast(1));
-  if (function->resultType() != DataType::NONE) {
+  if (function->resultType() != DataType::None) {
     EXPECT_THROW(function->cancelAsyncCall(202020202), CallerNotFound);
   } else {
     EXPECT_THROW(
@@ -275,7 +275,7 @@ protected:
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(1));
 
@@ -301,7 +301,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canCall) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     EXPECT_CALL(*function_mock.get(), call(::testing::_, ::testing::_))
         .Times(AtLeast(1));
 
@@ -320,7 +320,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, callThrowsDomainError) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
         .Times(AtLeast(1));
 
@@ -339,7 +339,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, canAsyncCall) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     EXPECT_CALL(*function_mock.get(), asyncCall(::testing::_))
         .Times(AtLeast(1));
 
@@ -353,7 +353,7 @@ TEST_P(ExternalFunctionExecutorParametrizedTests, asyncCallThrowsDomainError) {
 
 // NOLINTNEXTLINE
 TEST_P(ExternalFunctionExecutorParametrizedTests, canCancelAsyncCall) {
-  if (expectations->result_type != DataType::NONE) {
+  if (expectations->result_type != DataType::None) {
     EXPECT_CALL(*function_mock.get(), cancelAsyncCall(::testing::_))
         .Times(AtLeast(2));
 
@@ -382,7 +382,7 @@ TEST_P(FunctionParametrizedTests, throwsLogicErrorOnExternalExecutorSet) {
     function_mock->delegateToFake(execute_cb, cancel_cb);
     EXPECT_THROW(future_result.get(), std::logic_error);
   } catch (const exception& ex) {
-    if (expectations->result_type != DataType::NONE) {
+    if (expectations->result_type != DataType::None) {
       FAIL() << "Caught an unexpected exception: " << ex.what();
     } else {
       SUCCEED();
@@ -419,21 +419,21 @@ Function::ParameterTypes makeSupportedTypes(const vector<DataType>& types) {
 // spaces, which will not work for test name generation
 string makeExpectationName(DataType type) {
   switch (type) {
-  case DataType::BOOLEAN:
+  case DataType::Boolean:
     return "Bool";
-  case DataType::INTEGER:
+  case DataType::Integer:
     return "Int";
-  case DataType::UNSIGNED_INTEGER:
+  case DataType::Unsigned_Integer:
     return "UInt";
-  case DataType::DOUBLE:
+  case DataType::Double:
     return "Double";
-  case DataType::TIME:
+  case DataType::Time:
     return "Time";
-  case DataType::OPAQUE:
+  case DataType::Opaque:
     return "Opaque";
-  case DataType::STRING:
+  case DataType::String:
     return "String";
-  case DataType::NONE:
+  case DataType::None:
   default:
     return "Unknown";
   }
@@ -489,91 +489,91 @@ void expandFunctionTestParameters(vector<FunctionExpectations>& expectations,
 vector<FunctionExpectations> makeFunctionTestParameters() {
   vector<FunctionExpectations> expectations;
   expectations.emplace_back("acceptAndReturnNothing");
-  expectations.emplace_back("returnDefaultBoolForNoParams", DataType::BOOLEAN);
-  expectations.emplace_back("returnDefaultIntForNoParams", DataType::INTEGER);
+  expectations.emplace_back("returnDefaultBoolForNoParams", DataType::Boolean);
+  expectations.emplace_back("returnDefaultIntForNoParams", DataType::Integer);
   expectations.emplace_back(
-      "returnDefaultUintForNoParams", DataType::UNSIGNED_INTEGER);
-  expectations.emplace_back("returnDefaultDoubleForNoParams", DataType::DOUBLE);
-  expectations.emplace_back("returnDefaultStringForNoParams", DataType::STRING);
-  expectations.emplace_back("returnDefaultOpaqueForNoParams", DataType::OPAQUE);
-  expectations.emplace_back("returnDefaultTimeForNoParams", DataType::TIME);
-  expandFunctionTestParameters(expectations, {DataType::BOOLEAN});
-  expandFunctionTestParameters(expectations, {DataType::INTEGER});
-  expandFunctionTestParameters(expectations, {DataType::UNSIGNED_INTEGER});
-  expandFunctionTestParameters(expectations, {DataType::DOUBLE});
-  expandFunctionTestParameters(expectations, {DataType::STRING});
-  expandFunctionTestParameters(expectations, {DataType::OPAQUE});
-  expandFunctionTestParameters(expectations, {DataType::TIME});
+      "returnDefaultUintForNoParams", DataType::Unsigned_Integer);
+  expectations.emplace_back("returnDefaultDoubleForNoParams", DataType::Double);
+  expectations.emplace_back("returnDefaultStringForNoParams", DataType::String);
+  expectations.emplace_back("returnDefaultOpaqueForNoParams", DataType::Opaque);
+  expectations.emplace_back("returnDefaultTimeForNoParams", DataType::Time);
+  expandFunctionTestParameters(expectations, {DataType::Boolean});
+  expandFunctionTestParameters(expectations, {DataType::Integer});
+  expandFunctionTestParameters(expectations, {DataType::Unsigned_Integer});
+  expandFunctionTestParameters(expectations, {DataType::Double});
+  expandFunctionTestParameters(expectations, {DataType::String});
+  expandFunctionTestParameters(expectations, {DataType::Opaque});
+  expandFunctionTestParameters(expectations, {DataType::Time});
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME});
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time});
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       false);
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       (intmax_t)-11); // NOLINT(readability-magic-numbers)
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       (uintmax_t)21); // NOLINT(readability-magic-numbers)
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       3.14); // NOLINT(readability-magic-numbers)
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       "Hello World"); // NOLINT(readability-magic-numbers)
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       vector<uint8_t>{0x0, 0x1, 0x2, 0x3}); // NOLINT(readability-magic-numbers)
   expandFunctionTestParameters(expectations,
-      {DataType::BOOLEAN,
-          DataType::INTEGER,
-          DataType::UNSIGNED_INTEGER,
-          DataType::DOUBLE,
-          DataType::STRING,
-          DataType::OPAQUE,
-          DataType::TIME},
+      {DataType::Boolean,
+          DataType::Integer,
+          DataType::Unsigned_Integer,
+          DataType::Double,
+          DataType::String,
+          DataType::Opaque,
+          DataType::Time},
       DateTime());
   return expectations;
 }

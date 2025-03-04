@@ -365,7 +365,7 @@ protected:
   }
 
   Functionality buildDefaultFunctionality(ElementType type) {
-    return buildDefaultFunctionality(type, DataType::BOOLEAN);
+    return buildDefaultFunctionality(type, DataType::Boolean);
   }
 
   DeviceElement::SpecificInterface buildSpecificInterface(

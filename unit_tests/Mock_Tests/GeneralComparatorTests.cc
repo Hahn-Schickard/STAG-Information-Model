@@ -108,7 +108,7 @@ struct DifferentReadableValuesTestParam : ComparatorTestType<DeviceElement> {
    */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeReadable(DataType::DOUBLE));
+    return builder.build<DeviceElement>(makeReadable(DataType::Double));
   }
 };
 
@@ -135,7 +135,7 @@ struct DifferentWriteOnlyValuesTestParam : ComparatorTestType<DeviceElement> {
    */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWriteOnly(DataType::INTEGER));
+    return builder.build<DeviceElement>(makeWriteOnly(DataType::Integer));
   }
 };
 
@@ -161,7 +161,7 @@ struct DifferentWritableValuesTestParam : ComparatorTestType<DeviceElement> {
    */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeWritable(DataType::STRING));
+    return builder.build<DeviceElement>(makeWritable(DataType::String));
   }
 };
 
@@ -187,7 +187,7 @@ struct DifferentExecuteReturnsTestParam : ComparatorTestType<DeviceElement> {
    */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
+    return builder.build<DeviceElement>(makeExecutable(DataType::Opaque));
   }
 };
 
@@ -213,7 +213,7 @@ struct DifferentExecuteParamsTestParam : ComparatorTestType<DeviceElement> {
    */
   DeviceElementPtr makeAnother() {
     builder.resetBuilder();
-    return builder.build<DeviceElement>(makeExecutable(DataType::OPAQUE));
+    return builder.build<DeviceElement>(makeExecutable(DataType::Opaque));
   }
 };
 
