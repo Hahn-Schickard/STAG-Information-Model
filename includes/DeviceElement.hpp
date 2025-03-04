@@ -109,8 +109,9 @@ private:
   DeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
-      SpecificInterface&& interface)
-      : NamedElement(ref_id, name, desc), functionality(std::move(interface)) {}
+      SpecificInterface&& specific_interface)
+      : NamedElement(ref_id, name, desc),
+        functionality(std::move(specific_interface)) {}
 
   friend struct DeviceBuilderInterface;
 };
