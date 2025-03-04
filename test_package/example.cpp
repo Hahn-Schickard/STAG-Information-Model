@@ -66,6 +66,9 @@ int main() {
           });
     }
 
+    cout << "Print some data type: " << toString(DataType::OPAQUE) << endl;
+    cout << "Print some data value: " << toString(DataVariant(true)) << endl;
+
     cout << "Integration test successful" << endl;
     return EXIT_SUCCESS;
   } catch (const exception& ex) {
