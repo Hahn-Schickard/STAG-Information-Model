@@ -10,8 +10,6 @@ list(APPEND TEST_SUITES
 )
 #@- ========================= END OF USER CONFIGURATION ============================
 
-find_package(GTest REQUIRED)
-
 add_executable(${THIS})
 target_sources(${THIS} PRIVATE
                        "testRunner.cpp"
