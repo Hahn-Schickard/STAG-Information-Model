@@ -100,7 +100,7 @@ struct DifferentReadableValuesTestParam : ComparatorTestType<DeviceElement> {
 
   /**
    * In this test case we check if two metrics contain are of
-   * ElementType::READABLE type, have the same refID_, name and description, but
+   * ElementType::Readable type, have the same refID_, name and description, but
    * different return types
    *
    * Expected result is that these elements are not equal, due to return type
@@ -127,7 +127,7 @@ struct DifferentWriteOnlyValuesTestParam : ComparatorTestType<DeviceElement> {
 
   /**
    * In this test case we check if two metrics contain are of
-   * ElementType::WRITABLE type, have the same refID_, name and description, but
+   * ElementType::Writable type, have the same refID_, name and description, but
    * different return types
    *
    * Expected result is that these elements are not equal, due to return type
@@ -153,7 +153,7 @@ struct DifferentWritableValuesTestParam : ComparatorTestType<DeviceElement> {
 
   /**
    * In this test case we check if two metrics contain are of
-   * ElementType::WRITABLE type, have the same refID_, name and description, but
+   * ElementType::Writable type, have the same refID_, name and description, but
    * different return types
    *
    * Expected result is that these elements are not equal, due to return type
@@ -179,7 +179,7 @@ struct DifferentExecuteReturnsTestParam : ComparatorTestType<DeviceElement> {
 
   /**
    * In this test case we check if two metrics contain are of
-   * ElementType::FUNCTION type, have the same refID_, name, description and
+   * ElementType::Executable type, have the same refID_, name, description and
    * acceptable parameters, but different return types
    *
    * Expected result is that these elements are not equal, due to return type
@@ -205,7 +205,7 @@ struct DifferentExecuteParamsTestParam : ComparatorTestType<DeviceElement> {
 
   /**
    * In this test case we check if two metrics contain are of
-   * ElementType::FUNCTION type, have the same refID_, name, description and
+   * ElementType::Executable type, have the same refID_, name, description and
    * return types, but different acceptable parameters
    *
    * Expected result is that these elements are not equal, due to acceptable
@@ -240,8 +240,8 @@ struct EmptyGroupNotEqualToNotEmptyTestParam
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subelement_types = {
-        TestElementType::READABLE,
-        TestElementType::WRITABLE,
+        TestElementType::Readable,
+        TestElementType::Writable,
     };
     return builder.build<DeviceElementGroup>(makeSingleLevelGroup(
         makeSingleLevelGroupInfo(
@@ -260,7 +260,7 @@ struct DifferentSingleElementGroupsTestParam
       : ComparatorTestType("Different single element groups") {}
 
   DeviceElementGroupPtr make() {
-    vector<TestElementType> subelement_types = {TestElementType::READABLE};
+    vector<TestElementType> subelement_types = {TestElementType::Readable};
     return builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(meta_info, subelement_types));
   }
@@ -274,7 +274,7 @@ struct DifferentSingleElementGroupsTestParam
    */
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
-    vector<TestElementType> subelement_types = {TestElementType::WRITABLE};
+    vector<TestElementType> subelement_types = {TestElementType::Writable};
     return builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(meta_info, subelement_types));
   }
@@ -307,8 +307,8 @@ struct DifferentSingleLevelGroupsTestParam
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subelement_types = {
-        TestElementType::READABLE,
-        TestElementType::WRITABLE,
+        TestElementType::Readable,
+        TestElementType::Writable,
     };
     return builder.build<DeviceElementGroup>(makeSingleLevelGroup(
         makeSingleLevelGroupInfo(
@@ -340,10 +340,10 @@ struct DifferentTwoLevelNestedGroupsTestParam
   DeviceElementGroupPtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subsubelement_types = {
-        TestElementType::WRITE_ONLY, TestElementType::EXECUTABLE};
+        TestElementType::Write_Only, TestElementType::Executable};
     vector<TestElementType> subelement_types = {
-        TestElementType::READABLE,
-        TestElementType::WRITABLE,
+        TestElementType::Readable,
+        TestElementType::Writable,
     };
     return builder.build<DeviceElementGroup>(
         makeNestedGroup(makeNestedGroupInfo("",
@@ -396,11 +396,11 @@ struct DifferentTwoLevelDevicesTestParam : ComparatorTestType<Device> {
   DevicePtr makeAnother() {
     builder.resetBuilder();
     vector<TestElementType> subsubelement_types = {
-        TestElementType::WRITE_ONLY, TestElementType::EXECUTABLE};
-    vector<TestElementType> subelement_types = {TestElementType::READABLE,
-        TestElementType::WRITE_ONLY,
-        TestElementType::WRITABLE,
-        TestElementType::EXECUTABLE};
+        TestElementType::Write_Only, TestElementType::Executable};
+    vector<TestElementType> subelement_types = {TestElementType::Readable,
+        TestElementType::Write_Only,
+        TestElementType::Writable,
+        TestElementType::Executable};
     return builder.build<Device>(
         makeNestedGroup(makeNestedGroupInfo("",
                             "another-nested-group",

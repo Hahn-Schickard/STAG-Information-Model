@@ -741,15 +741,15 @@ struct DeviceBuilderInterface {
 
     ElementType type() const {
       if (std::holds_alternative<Read>(interface)) {
-        return ElementType::READABLE;
+        return ElementType::Readable;
       } else if (std::holds_alternative<Write>(interface)) {
-        return ElementType::WRITABLE;
+        return ElementType::Writable;
       } else if (std::holds_alternative<Observe>(interface)) {
-        return ElementType::OBSERVABLE;
+        return ElementType::Observable;
       } else if (std::holds_alternative<Execute>(interface)) {
-        return ElementType::FUNCTION;
+        return ElementType::Executable;
       } else {
-        return ElementType::GROUP;
+        return ElementType::Group;
       }
     }
 

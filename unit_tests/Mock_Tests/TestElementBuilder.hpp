@@ -66,7 +66,7 @@ inline DeviceElementPtr TestElementBuilder::build<DeviceElement>(
   auto ref_id = group->generateReferenceID();
   // allocate ptr, so we can declare variant with Nonempty values
   std::unique_ptr<DeviceElement::SpecificInterface> interface;
-  if (param->functionality.type() != ElementType::GROUP) {
+  if (param->functionality.type() != ElementType::Group) {
     interface = std::make_unique<DeviceElement::SpecificInterface>(
         buildSpecificInterface(param->functionality));
   } else {
@@ -92,7 +92,7 @@ inline DeviceElementGroupPtr TestElementBuilder::build<DeviceElementGroup>(
   for (auto subelement_info : param->subelements) {
     // assign new group id as parent
     subelement_info->meta_info.ref_ID_ = element->getElementId();
-    if (subelement_info->functionality.type() != ElementType::GROUP) {
+    if (subelement_info->functionality.type() != ElementType::Group) {
       auto subelement = build<DeviceElement>(subelement_info);
     } else {
       auto subgroup = build<DeviceElementGroup>(subelement_info);
@@ -109,7 +109,7 @@ template <>
 inline DevicePtr TestElementBuilder::build<Device>(TestElementInfoPtr param) {
   auto root_group = build<DeviceElementGroup>(param);
   for (auto element : param->subelements) {
-    if (element->functionality.type() != ElementType::GROUP) {
+    if (element->functionality.type() != ElementType::Group) {
       auto subelement = build<DeviceElement>(element);
     } else {
       auto subgroup = build<DeviceElementGroup>(element);
@@ -204,26 +204,26 @@ inline TestElementInfoPtr makeEmptyGroup(
 }
 
 enum class TestElementType {
-  READABLE,
-  WRITE_ONLY,
-  WRITABLE,
-  OBSERVABLE,
-  EXECUTABLE
+  Readable,
+  Write_Only,
+  Writable,
+  Observable,
+  Executable
 };
 
 inline std::string toString(TestElementType type) {
   switch (type) {
-  case TestElementType::READABLE: {
-    return "READABLE";
+  case TestElementType::Readable: {
+    return "Readable";
   }
-  case TestElementType::WRITE_ONLY: {
-    return "WRITE_ONLY";
+  case TestElementType::Write_Only: {
+    return "Write_Only";
   }
-  case TestElementType::WRITABLE: {
-    return "WRITABLE";
+  case TestElementType::Writable: {
+    return "Writable";
   }
-  case TestElementType::EXECUTABLE: {
-    return "EXECUTABLE";
+  case TestElementType::Executable: {
+    return "Executable";
   }
   default: {
     return "UNKOWN";
@@ -234,16 +234,16 @@ inline std::string toString(TestElementType type) {
 inline TestElementInfoPtr makeSubElement(
     TestElementType type, const std::string& parent_ref_id) {
   switch (type) {
-  case TestElementType::READABLE: {
+  case TestElementType::Readable: {
     return makeReadable(makeReadableInfo(parent_ref_id));
   }
-  case TestElementType::WRITE_ONLY: {
+  case TestElementType::Write_Only: {
     return makeWriteOnly(makeWriteOnlyInfo(parent_ref_id));
   }
-  case TestElementType::WRITABLE: {
+  case TestElementType::Writable: {
     return makeWritable(makeWritableInfo(parent_ref_id));
   }
-  case TestElementType::EXECUTABLE: {
+  case TestElementType::Executable: {
     return makeExecutable(makeExecutableInfo(parent_ref_id));
   }
   default: {
@@ -275,10 +275,10 @@ inline TestElementInfoPtr makeSingleLevelGroup(
     const ElementMetaInfo& meta_info = makeSingleLevelGroupInfo(),
     std::vector<TestElementType> subelement_types =
         {// clang-format off
-          TestElementType::READABLE,
-          TestElementType::WRITE_ONLY,
-          TestElementType::WRITABLE,
-          TestElementType::EXECUTABLE
+          TestElementType::Readable,
+          TestElementType::Write_Only,
+          TestElementType::Writable,
+          TestElementType::Executable
         } // clang-format on
 ) {
   return std::make_shared<TestElementInfo>(meta_info,
@@ -296,14 +296,14 @@ inline ElementMetaInfo makeNestedGroupInfo(
 inline TestElementInfoPtr makeNestedGroup(
     const ElementMetaInfo& meta_info = makeNestedGroupInfo(),
     std::vector<TestElementType> subsubelement_types =
-        {TestElementType::READABLE,
-            TestElementType::WRITE_ONLY,
-            TestElementType::WRITABLE,
-            TestElementType::EXECUTABLE},
-    std::vector<TestElementType> subelement_types = {TestElementType::READABLE,
-        TestElementType::WRITE_ONLY,
-        TestElementType::WRITABLE,
-        TestElementType::EXECUTABLE}) {
+        {TestElementType::Readable,
+            TestElementType::Write_Only,
+            TestElementType::Writable,
+            TestElementType::Executable},
+    std::vector<TestElementType> subelement_types = {TestElementType::Readable,
+        TestElementType::Write_Only,
+        TestElementType::Writable,
+        TestElementType::Executable}) {
   std::vector<TestElementInfoPtr> elements = {
       makeSingleLevelGroup(makeSingleLevelGroupInfo("0"), subsubelement_types)};
   auto subelements = makeSubElements(subelement_types, meta_info.ref_ID_);

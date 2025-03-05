@@ -54,18 +54,18 @@ protected:
     builder->buildDeviceBase("1234", "Mocky", "Mocked device");
 
     switch (expectations->type) {
-    case ElementType::GROUP: {
+    case ElementType::Group: {
       builder->addDeviceElementGroup(expectations->name, expectations->desc);
       break;
     }
-    case ElementType::READABLE: {
+    case ElementType::Readable: {
       builder->addReadableMetric(expectations->name,
           expectations->desc,
           expectations->data_type,
           makeDefaultReader(expectations->data_type));
       break;
     }
-    case ElementType::WRITABLE: {
+    case ElementType::Writable: {
       builder->addWritableMetric(expectations->name,
           expectations->desc,
           expectations->data_type,
@@ -111,61 +111,61 @@ vector<DeviceElementExpectations> makeDeviceElementTestParameters() {
   vector<DeviceElementExpectations> params;
   params.emplace_back("ReadableBoolean",
       "Read Only Boolean Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Boolean);
   params.emplace_back("ReadableInteger",
       "Read Only Integer Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Integer);
   params.emplace_back("ReadableUnsignedInteger",
       "Read Only Unsigned Integer Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Unsigned_Integer);
   params.emplace_back("ReadableDouble",
       "Read Only Double Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Double);
   params.emplace_back("ReadableTime",
       "Read Only Time Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Time);
   params.emplace_back("ReadableOpaque",
       "Read Only Opaque Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::Opaque);
   params.emplace_back("ReadableString",
       "Read Only String Metric",
-      ElementType::READABLE,
+      ElementType::Readable,
       DataType::String);
   params.emplace_back("WritableBoolean",
       "Read and Writable Boolean Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Boolean);
   params.emplace_back("WritableInteger",
       "Read and Writable Integer Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Integer);
   params.emplace_back("WritableUnsignedInteger",
       "Read and Writable Unsigned Integer Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Unsigned_Integer);
   params.emplace_back("WritableDouble",
       "Read and Writable Double Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Double);
   params.emplace_back("WritableTime",
       "Read and Writable Time Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Time);
   params.emplace_back("WritableOpaque",
       "Read and Writable Opaque Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::Opaque);
   params.emplace_back("WritableString",
       "Read and Writable String Metric",
-      ElementType::WRITABLE,
+      ElementType::Writable,
       DataType::String);
-  params.emplace_back("Group", "Group", ElementType::GROUP);
+  params.emplace_back("Group", "Group", ElementType::Group);
   return params;
 }
 
