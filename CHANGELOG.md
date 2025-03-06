@@ -1,5 +1,5 @@
 # Changelog
-## [0.4.0] - 2025.02.20
+## [0.4.0] - 2025.03.06
 ### Added 
  - event_model v0.3 dependency
  - `DataVariantPtr` alias
@@ -33,17 +33,23 @@
  - `NOLINTNEXTLINE` suppressions for various unit tests
  - nonempty_pointer package into nonempty
  - `DateTime::toString()` implementation to use `strftime`
- - `toString(const DataVariant&)` to capture const& instead of values
- - `DeviceBuilderInterface::addReadableMetric()`, `DeviceBuilderInterface::addWritableMetric()`, `DeviceBuilderInterface::addFunction()` methods to use const&
+ - `toString(const DataVariant&)` to capture **const**& instead of values
+ - `DeviceBuilderInterface::addReadableMetric()`, `DeviceBuilderInterface::addWritableMetric()`, `DeviceBuilderInterface::addFunction()` methods to use **const**&
  - `Function::result_type` to be private
  - `Function::parameters` to be private
- - `DataVariant Metric::getMetricValue()` to be const
- - `void WritableMetric::setMetricValue(const DataVariant&)` to be const
- - `bool WritableMetric::isWriteOnly()` to be const
+ - `DataVariant Metric::getMetricValue()` to be **const**
+ - `void WritableMetric::setMetricValue(const DataVariant&)` to be **const**
+ - `bool WritableMetric::isWriteOnly()` to be **const**
+ - gtest dependency to v1.16.0
+ - gtest dependency to explicitly be built dynamically
+ - `DataType` enum values to Camel_Case
+ - `ElementType` enum values to CamelCase
+ - `TestElementTyp` enum values to Camel_Case
+ - `ElementType::FUNCTION` to `ElementType::Executable`
 
 ### Removed 
- - const specifier from `DeviceElement::functionality`
- - const specifier from `Function::clear_caller`
+ - **const** specifier from `DeviceElement::functionality`
+ - **const** specifier from `Function::clear_caller`
 
 ## [0.3.5] - 2025.01.15
 ### Fixed 
