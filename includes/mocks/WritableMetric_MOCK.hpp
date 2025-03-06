@@ -22,7 +22,7 @@ namespace Information_Model::testing {
 struct MockWritableMetric : public WritableMetric {
   using Writer = std::function<void(DataVariant)>;
 
-  MockWritableMetric() : MockWritableMetric(DataType::BOOLEAN) {}
+  MockWritableMetric() : MockWritableMetric(DataType::Boolean) {}
 
   explicit MockWritableMetric(DataType type)
       : MockWritableMetric(type, setVariant(type).value()) {}

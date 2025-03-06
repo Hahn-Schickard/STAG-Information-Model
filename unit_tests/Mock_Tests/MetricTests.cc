@@ -67,37 +67,37 @@ vector<MetricExpectations> makeMetricTestParameters() {
   // clang-format off
   params.emplace_back(
     "Bool", 
-    DataType::BOOLEAN, 
+    DataType::Boolean, 
     DataVariant(true)
   );
   params.emplace_back(
     "Int",
-    DataType::INTEGER,
+    DataType::Integer,
     DataVariant((intmax_t)26) // NOLINT(readability-magic-numbers)
   );
   params.emplace_back(
     "UInt", 
-    DataType::UNSIGNED_INTEGER, 
+    DataType::Unsigned_Integer, 
     DataVariant((uintmax_t)74) // NOLINT(readability-magic-numbers)
   );
   params.emplace_back(
     "Double", 
-    DataType::DOUBLE, 
+    DataType::Double, 
     DataVariant(20.2) // NOLINT(readability-magic-numbers)
   );
   params.emplace_back(
     "Opaque", 
-    DataType::OPAQUE, // NOLINTNEXTLINE(readability-magic-numbers)  
+    DataType::Opaque, // NOLINTNEXTLINE(readability-magic-numbers)  
     DataVariant(vector<uint8_t>{0, 1, 2, 3}) 
   );
   params.emplace_back(
     "String", 
-    DataType::STRING, 
+    DataType::String, 
     DataVariant(string("Hello world!"))
   );
   params.emplace_back(
     "Time", 
-    DataType::TIME, 
+    DataType::Time, 
     DataVariant(DateTime())
   );
   // clang-format on

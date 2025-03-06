@@ -24,30 +24,30 @@ namespace Information_Model {
  *
  */
 enum class ElementType {
-  GROUP, /*!< Grouping element, aka list */
-  READABLE, /*!< Metric with read access */
-  WRITABLE, /*!< Metric with write access */
-  OBSERVABLE, /*!< Metric with read access and ability to self report
+  Group, /*!< Grouping element, aka list */
+  Readable, /*!< Metric with read access */
+  Writable, /*!< Metric with write access */
+  Observable, /*!< Metric with read access and ability to self report
                  changes */
-  FUNCTION /*!< Metric with execute access */
+  Executable /*!< Metric with execute access */
 };
 
 inline std::string toString(ElementType type) {
   switch (type) {
-  case ElementType::GROUP: {
+  case ElementType::Group: {
     return "Group";
   }
-  case ElementType::READABLE: {
+  case ElementType::Readable: {
     return "Readable";
   }
-  case ElementType::WRITABLE: {
+  case ElementType::Writable: {
     return "Writable";
   }
-  case ElementType::OBSERVABLE: {
+  case ElementType::Observable: {
     return "Observable";
   }
-  case ElementType::FUNCTION: {
-    return "Function";
+  case ElementType::Executable: {
+    return "Executable";
   }
   default: {
     throw std::logic_error("Could not decode ElementType enum value");
@@ -88,17 +88,17 @@ struct DeviceElement : public NamedElement {
 
   ElementType getElementType() const {
     if (std::holds_alternative<NonemptyDeviceElementGroupPtr>(functionality)) {
-      return ElementType::GROUP;
+      return ElementType::Group;
     } else if (std::holds_alternative<NonemptyMetricPtr>(functionality)) {
-      return ElementType::READABLE;
+      return ElementType::Readable;
     } else if (std::holds_alternative<NonemptyWritableMetricPtr>(
                    functionality)) {
-      return ElementType::WRITABLE;
+      return ElementType::Writable;
     } else if (std::holds_alternative<NonemptyObservableMetricPtr>(
                    functionality)) {
-      return ElementType::OBSERVABLE;
+      return ElementType::Observable;
     } else if (std::holds_alternative<NonemptyFunctionPtr>(functionality)) {
-      return ElementType::FUNCTION;
+      return ElementType::Executable;
     } else {
       throw std::runtime_error("Could not resolve ElementType");
     }
@@ -109,8 +109,9 @@ private:
   DeviceElement(const std::string& ref_id,
       const std::string& name,
       const std::string& desc,
-      SpecificInterface&& interface)
-      : NamedElement(ref_id, name, desc), functionality(std::move(interface)) {}
+      SpecificInterface&& specific_interface)
+      : NamedElement(ref_id, name, desc),
+        functionality(std::move(specific_interface)) {}
 
   friend struct DeviceBuilderInterface;
 };
@@ -122,31 +123,31 @@ inline bool operator==(
     result = result && (lhs.getElementType() == rhs.getElementType());
     if (result) {
       switch (lhs.getElementType()) {
-      case ElementType::WRITABLE: {
+      case ElementType::Writable: {
         result = result &&
             *(std::get<NonemptyWritableMetricPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyWritableMetricPtr>(rhs.functionality));
         break;
       }
-      case ElementType::READABLE: {
+      case ElementType::Readable: {
         result = result &&
             *(std::get<NonemptyMetricPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyMetricPtr>(rhs.functionality));
         break;
       }
-      case ElementType::FUNCTION: {
+      case ElementType::Executable: {
         result = result &&
             *(std::get<NonemptyFunctionPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyFunctionPtr>(rhs.functionality));
         break;
       }
-      case ElementType::OBSERVABLE: {
+      case ElementType::Observable: {
         result = result &&
             *(std::get<NonemptyObservableMetricPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyObservableMetricPtr>(rhs.functionality));
         break;
       }
-      case ElementType::GROUP: {
+      case ElementType::Group: {
         result = result &&
             *(std::get<NonemptyDeviceElementGroupPtr>(lhs.functionality)) ==
                 *(std::get<NonemptyDeviceElementGroupPtr>(rhs.functionality));

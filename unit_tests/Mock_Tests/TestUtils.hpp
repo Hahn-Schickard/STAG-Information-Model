@@ -12,22 +12,22 @@ namespace testing {
 inline DataVariant getDefaultVariant(DataType type) {
   switch (type) {
   // NOLINTBEGIN(readability-magic-numbers)
-  case DataType::BOOLEAN:
+  case DataType::Boolean:
     return DataVariant((bool)true);
-  case DataType::INTEGER:
+  case DataType::Integer:
     return DataVariant((intmax_t)-10);
-  case DataType::UNSIGNED_INTEGER:
+  case DataType::Unsigned_Integer:
     return DataVariant((uintmax_t)10);
-  case DataType::DOUBLE:
+  case DataType::Double:
     return DataVariant((double)20.0);
-  case DataType::TIME:
+  case DataType::Time:
     return DataVariant(DateTime(25));
-  case DataType::OPAQUE:
+  case DataType::Opaque:
     return DataVariant(std::vector<uint8_t>{1, 2, 3, 4, 5});
-  case DataType::STRING:
+  case DataType::String:
     return DataVariant(std::string("Hello World!"));
-  case DataType::NONE:
-  case DataType::UNKNOWN:
+  case DataType::None:
+  case DataType::Unknown:
   // NOLINTEND(readability-magic-numbers)
   default:
     throw std::logic_error(

@@ -109,25 +109,25 @@ int main() {
       builder->addReadableMetric(subgroup_1_ref_id,
           "ReadsBoolean",
           "Mocked readable metric",
-          DataType::BOOLEAN);
+          DataType::Boolean);
       readable_id = builder->addReadableMetric(
-          "ReadsInteger", "Mocked readable metric", DataType::INTEGER);
+          "ReadsInteger", "Mocked readable metric", DataType::Integer);
       builder->addWritableMetric(
-          "WritesString", "Mocked writable metric", DataType::STRING);
+          "WritesString", "Mocked writable metric", DataType::String);
       observed_value = builder
                            ->addObservableMetric("ObservesFalse",
                                "Mocked observable metric",
-                               DataType::BOOLEAN,
+                               DataType::Boolean,
                                bind(&isObserved, placeholders::_1))
                            .second;
       callable_id = builder->addFunction(
-          "ReturnsBoolean", "Mocked function with return", DataType::BOOLEAN);
+          "ReturnsBoolean", "Mocked function with return", DataType::Boolean);
       executable_id = builder->addFunction(
-          "ReturnsNone", "Mocked function with no return", DataType::NONE);
+          "ReturnsNone", "Mocked function with no return", DataType::None);
       custom_executable_id = builder->addFunction("CustomExecutable",
           "Mocked function with custom executor that does not return any "
           "values",
-          DataType::NONE,
+          DataType::None,
           bind(&Executor::execute, executor, placeholders::_1),
           bind(&Executor::cancel, executor, placeholders::_1));
 

@@ -20,7 +20,7 @@ namespace Information_Model::testing {
 struct MockMetric : public Metric {
   using Reader = std::function<DataVariant()>;
 
-  MockMetric() : MockMetric(DataType::BOOLEAN) {}
+  MockMetric() : MockMetric(DataType::Boolean) {}
 
   explicit MockMetric(DataType type)
       : MockMetric(type, setVariant(type).value()) {}

@@ -56,13 +56,13 @@ class PackageConan(ConanFile):
             "nonempty/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
         self.requires(
             "event_model/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires("gtest/[~1.11]", headers=True, libs=True,
+        self.requires("gtest/1.16.0", headers=True, libs=True,
                       transitive_headers=True, transitive_libs=True)
         # @- END USER REQUIREMENTS
 
     def configure(self):
         # @+ START USER REQUIREMENTS OPTION CONFIGURATION
-        pass
+        self.options["gtest"].shared = True
         # @- END USER REQUIREMENTS OPTION CONFIGURATION
 
     def layout(self):

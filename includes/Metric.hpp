@@ -58,7 +58,7 @@ struct Metric {
 protected:
   explicit Metric(DataType type) : value_type_(type) {}
 
-  DataType value_type_ = DataType::UNKNOWN;
+  DataType value_type_ = DataType::Unknown;
 };
 
 using MetricPtr = std::shared_ptr<Metric>;

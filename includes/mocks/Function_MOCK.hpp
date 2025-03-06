@@ -25,10 +25,10 @@ struct MockFunction : public Function {
   using Executor = std::function<ExecutorResult(Function::Parameters)>;
   using Canceler = std::function<void(uintmax_t)>;
 
-  MockFunction() : MockFunction(DataType::NONE) {}
+  MockFunction() : MockFunction(DataType::None) {}
 
   explicit MockFunction(const Function::ParameterTypes& supported_params)
-      : MockFunction(DataType::NONE, supported_params, std::nullopt) {}
+      : MockFunction(DataType::None, supported_params, std::nullopt) {}
 
   explicit MockFunction(DataType result_type)
       : MockFunction(result_type, Function::ParameterTypes(), std::nullopt) {}

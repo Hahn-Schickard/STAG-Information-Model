@@ -54,12 +54,12 @@ TEST_F(DeviceElementGroupComparisonTests,
     sameSizedDifferentElementGroupsAreNotEqual) {
   { // 2 element group, each element type is different
     auto first_group_elements = vector<TestElementType>{
-        TestElementType::READABLE, TestElementType::WRITABLE};
+        TestElementType::Readable, TestElementType::Writable};
     auto first_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(first_group_info, first_group_elements));
     builder.resetBuilder();
     auto second_group_elements = vector<TestElementType>{
-        TestElementType::EXECUTABLE, TestElementType::WRITE_ONLY};
+        TestElementType::Executable, TestElementType::Write_Only};
     auto second_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(second_group_info, second_group_elements));
     builder.resetBuilder();
@@ -74,12 +74,12 @@ TEST_F(DeviceElementGroupComparisonTests,
   }
   { // 2 element group, first element is different
     auto first_group_elements = vector<TestElementType>{
-        TestElementType::READABLE, TestElementType::WRITABLE};
+        TestElementType::Readable, TestElementType::Writable};
     auto first_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(first_group_info, first_group_elements));
     builder.resetBuilder();
     auto second_group_elements = vector<TestElementType>{
-        TestElementType::EXECUTABLE, TestElementType::WRITABLE};
+        TestElementType::Executable, TestElementType::Writable};
     auto second_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(second_group_info, second_group_elements));
     builder.resetBuilder();
@@ -94,12 +94,12 @@ TEST_F(DeviceElementGroupComparisonTests,
   }
   { // 2 element group, last element is different
     auto first_group_elements = vector<TestElementType>{
-        TestElementType::READABLE, TestElementType::WRITABLE};
+        TestElementType::Readable, TestElementType::Writable};
     auto first_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(first_group_info, first_group_elements));
     builder.resetBuilder();
     auto second_group_elements = vector<TestElementType>{
-        TestElementType::READABLE, TestElementType::EXECUTABLE};
+        TestElementType::Readable, TestElementType::Executable};
     auto second_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(second_group_info, second_group_elements));
     builder.resetBuilder();
@@ -114,16 +114,16 @@ TEST_F(DeviceElementGroupComparisonTests,
   }
   { // 3 element group, middle element is different
     auto first_group_elements =
-        vector<TestElementType>{TestElementType::READABLE,
-            TestElementType::EXECUTABLE,
-            TestElementType::WRITABLE};
+        vector<TestElementType>{TestElementType::Readable,
+            TestElementType::Executable,
+            TestElementType::Writable};
     auto first_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(first_group_info, first_group_elements));
     builder.resetBuilder();
     auto second_group_elements =
-        vector<TestElementType>{TestElementType::READABLE,
-            TestElementType::WRITE_ONLY,
-            TestElementType::WRITABLE};
+        vector<TestElementType>{TestElementType::Readable,
+            TestElementType::Write_Only,
+            TestElementType::Writable};
     auto second_group = builder.build<DeviceElementGroup>(
         makeSingleLevelGroup(second_group_info, second_group_elements));
     builder.resetBuilder();
@@ -142,12 +142,12 @@ TEST_F(DeviceElementGroupComparisonTests,
 TEST_F(DeviceElementGroupComparisonTests,
     sameSizedDifferentElementOrderGroupsAreNotEqual) {
   auto first_group_elements = vector<TestElementType>{
-      TestElementType::READABLE, TestElementType::WRITABLE};
+      TestElementType::Readable, TestElementType::Writable};
   auto first_group = builder.build<DeviceElementGroup>(
       makeSingleLevelGroup(first_group_info, first_group_elements));
   builder.resetBuilder();
   auto second_group_elements = vector<TestElementType>{
-      TestElementType::WRITABLE, TestElementType::READABLE};
+      TestElementType::Writable, TestElementType::Readable};
   auto second_group = builder.build<DeviceElementGroup>(
       makeSingleLevelGroup(second_group_info, second_group_elements));
 
@@ -163,14 +163,14 @@ TEST_F(DeviceElementGroupComparisonTests,
 // NOLINTNEXTLINE
 TEST_F(DeviceElementGroupComparisonTests, differentSizeGroupsAreNotEqual) {
   auto first_group_elements = vector<TestElementType>{
-      TestElementType::READABLE, TestElementType::WRITABLE};
+      TestElementType::Readable, TestElementType::Writable};
   auto first_group = builder.build<DeviceElementGroup>(
       makeSingleLevelGroup(first_group_info, first_group_elements));
   builder.resetBuilder();
   auto second_group_elements =
-      vector<TestElementType>{TestElementType::WRITABLE,
-          TestElementType::READABLE,
-          TestElementType::WRITE_ONLY};
+      vector<TestElementType>{TestElementType::Writable,
+          TestElementType::Readable,
+          TestElementType::Write_Only};
   auto second_group = builder.build<DeviceElementGroup>(
       makeSingleLevelGroup(second_group_info, second_group_elements));
 

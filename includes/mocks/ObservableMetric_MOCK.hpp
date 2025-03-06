@@ -22,10 +22,10 @@ namespace Information_Model::testing {
 struct MockObservableMetric : public ObservableMetric {
   using ObserveInitializer = std::function<void(bool)>;
 
-  MockObservableMetric() : MockObservableMetric(DataType::BOOLEAN) {}
+  MockObservableMetric() : MockObservableMetric(DataType::Boolean) {}
 
   explicit MockObservableMetric(const ObserveInitializer& ObserveInitializer)
-      : MockObservableMetric(DataType::BOOLEAN, ObserveInitializer) {}
+      : MockObservableMetric(DataType::Boolean, ObserveInitializer) {}
 
   explicit MockObservableMetric(DataType type)
       : MockObservableMetric(type, setVariant(type).value()) {}

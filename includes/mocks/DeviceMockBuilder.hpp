@@ -78,7 +78,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::READABLE, data_type))
+        buildDefaultFunctionality(ElementType::Readable, data_type))
         ->getElementId();
   }
 
@@ -89,7 +89,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(group_ref_id,
         name,
         desc,
-        buildDefaultFunctionality(ElementType::READABLE, data_type))
+        buildDefaultFunctionality(ElementType::Readable, data_type))
         ->getElementId();
   }
 
@@ -113,7 +113,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::WRITABLE, data_type))
+        buildDefaultFunctionality(ElementType::Writable, data_type))
         ->getElementId();
   }
 
@@ -124,7 +124,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(group_ref_id,
         name,
         desc,
-        buildDefaultFunctionality(ElementType::WRITABLE, data_type))
+        buildDefaultFunctionality(ElementType::Writable, data_type))
         ->getElementId();
   }
 
@@ -218,7 +218,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     return addDeviceElement(std::string(),
         name,
         desc,
-        buildDefaultFunctionality(ElementType::FUNCTION))
+        buildDefaultFunctionality(ElementType::Executable))
         ->getElementId();
   }
 
@@ -305,7 +305,7 @@ struct DeviceMockBuilder : public DeviceBuilderInterface {
     auto group = getGroupImplementation(group_ref_id);
     auto ref_id = group->generateReferenceID();
     DeviceElementPtr element;
-    if (functionality.type() != ElementType::GROUP) {
+    if (functionality.type() != ElementType::Group) {
       element = makeDeviceElement(
           ref_id, name, desc, buildSpecificInterface(functionality));
     } else {
@@ -336,19 +336,19 @@ protected:
   Functionality buildDefaultFunctionality(
       ElementType type, DataType data_type) const {
     switch (type) {
-    case ElementType::READABLE: {
+    case ElementType::Readable: {
       return Functionality(data_type, Reader());
     }
-    case ElementType::WRITABLE: {
+    case ElementType::Writable: {
       return Functionality(data_type, Reader(), Writer());
     }
-    case ElementType::FUNCTION: {
+    case ElementType::Executable: {
       return Functionality(data_type, Executor(), Canceler(), {});
     }
-    case ElementType::OBSERVABLE: {
+    case ElementType::Observable: {
       return Functionality(data_type, Reader(), ObserveInitializer());
     }
-    case ElementType::GROUP: {
+    case ElementType::Group: {
       return Functionality();
     }
     default: {
@@ -365,13 +365,13 @@ protected:
   }
 
   Functionality buildDefaultFunctionality(ElementType type) {
-    return buildDefaultFunctionality(type, DataType::BOOLEAN);
+    return buildDefaultFunctionality(type, DataType::Boolean);
   }
 
   DeviceElement::SpecificInterface buildSpecificInterface(
       const Functionality& functionality) const {
     switch (functionality.type()) {
-    case ElementType::READABLE: {
+    case ElementType::Readable: {
       auto read = functionality.getRead();
       auto readable = std::make_shared<::testing::NiceMock<MockMetric>>(
           functionality.data_type);
@@ -383,7 +383,7 @@ protected:
 
       return NonemptyMetricPtr(readable);
     }
-    case ElementType::WRITABLE: {
+    case ElementType::Writable: {
       auto write = functionality.getWrite();
       auto writable = std::make_shared<::testing::NiceMock<MockWritableMetric>>(
           functionality.data_type);
@@ -399,7 +399,7 @@ protected:
 
       return NonemptyWritableMetricPtr(writable);
     }
-    case ElementType::OBSERVABLE: {
+    case ElementType::Observable: {
       auto observe = functionality.getObserve();
       auto observable =
           std::make_shared<::testing::NiceMock<MockObservableMetric>>(
@@ -412,7 +412,7 @@ protected:
 
       return NonemptyObservableMetricPtr(observable);
     }
-    case ElementType::FUNCTION: {
+    case ElementType::Executable: {
       auto execute = functionality.getExecute();
       auto executable = std::make_shared<::testing::NiceMock<MockFunction>>(
           functionality.data_type, execute.supported_params);

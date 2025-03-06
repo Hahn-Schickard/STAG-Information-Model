@@ -417,7 +417,7 @@ struct DeviceBuilderInterface {
   /**
    * @brief Adds an executable function with a given execute callable object to
    * the device root level DeviceElementGroup. Sets the built functions return
-   * type to DataType::NONE
+   * type to DataType::None
    *
    * This method creates a new Function instance, adds it to the root
    * DeviceElementGroup of the currently built device and returns the
@@ -442,7 +442,7 @@ struct DeviceBuilderInterface {
     return addFunction(std::string(),
         name,
         desc,
-        DataType::NONE,
+        DataType::None,
         execute_cb,
         nullptr,
         supported_params);
@@ -451,7 +451,7 @@ struct DeviceBuilderInterface {
   /**
    * @brief Adds an executable function with a given execute callable object to
    * to another DeviceElementGroup. The parent group element MUST exist. Sets
-   * the built functions return type to DataType::NONE
+   * the built functions return type to DataType::None
    *
    * This method creates a new Function instance, adds it to the specified
    * DeviceElementGroup of the currently built device and returns the
@@ -486,7 +486,7 @@ struct DeviceBuilderInterface {
     return addFunction(group_ref_id,
         name,
         desc,
-        DataType::NONE,
+        DataType::None,
         execute_cb,
         nullptr,
         supported_params);
@@ -741,15 +741,15 @@ struct DeviceBuilderInterface {
 
     ElementType type() const {
       if (std::holds_alternative<Read>(interface)) {
-        return ElementType::READABLE;
+        return ElementType::Readable;
       } else if (std::holds_alternative<Write>(interface)) {
-        return ElementType::WRITABLE;
+        return ElementType::Writable;
       } else if (std::holds_alternative<Observe>(interface)) {
-        return ElementType::OBSERVABLE;
+        return ElementType::Observable;
       } else if (std::holds_alternative<Execute>(interface)) {
-        return ElementType::FUNCTION;
+        return ElementType::Executable;
       } else {
-        return ElementType::GROUP;
+        return ElementType::Group;
       }
     }
 
@@ -759,7 +759,7 @@ struct DeviceBuilderInterface {
     Execute getExecute() const { return std::get<Execute>(interface); }
 
     DataType data_type =
-        DataType::NONE; // NOLINT(readability-identifier-naming)
+        DataType::None; // NOLINT(readability-identifier-naming)
     Interface interface = Group(); // NOLINT(readability-identifier-naming)
   };
 
