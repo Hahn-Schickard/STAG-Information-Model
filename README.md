@@ -1,5 +1,3 @@
-<img src="docs/images/vendor-logo.png" alt="" width="200"/>
-
 # Information Model
 
 ## Description
