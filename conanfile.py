@@ -17,10 +17,8 @@ class PackageConan(ConanFile):
     description = "STAG Information Model declarations"
     topics = ("conan", "stag", "modelling", "lwm2m", "technology-adapter")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False],
-               "fPIC": [True, False]}
-    default_options = {"shared": True,
-                       "fPIC": True}
+    options = {}
+    default_options = {}
     default_user = "Hahn-Schickard"
     # @- END USER META CONFIG
     exports_sources = [
@@ -34,6 +32,7 @@ class PackageConan(ConanFile):
     ]
     generators = "CMakeDeps"
     short_paths = True
+    package_type = "header-library"
 
     @property
     def cwd(self):
@@ -50,14 +49,23 @@ class PackageConan(ConanFile):
 
     def requirements(self):
         # @+ START USER REQUIREMENTS
-        self.requires(
-            "variant_visitor/[~0.1]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires(
-            "nonempty/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires(
-            "event_model/[~0.4]@hahn-schickard/stable", headers=True, transitive_headers=True)
-        self.requires("gtest/1.16.0", headers=True, libs=True,
-                      transitive_headers=True, transitive_libs=True)
+        self.requires("variant_visitor/[~0.1]@hahn-schickard/stable",
+                      headers=True,
+                      transitive_headers=True
+        )
+        self.requires("nonempty/[~0.4]@hahn-schickard/stable",
+                      headers=True,
+                      transitive_headers=True
+        )
+        self.requires("event_model/[~0.4]@hahn-schickard/stable", 
+                      headers=True, transitive_headers=True
+        )
+        self.requires("gtest/1.16.0",
+                      headers=True,
+                      libs=True,
+                      transitive_headers=True,
+                      transitive_libs=True
+        )
         # @- END USER REQUIREMENTS
 
     def configure(self):
@@ -67,10 +75,6 @@ class PackageConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
-
-    def config_options(self):
-        if self.settings.os == 'Windows':
-            del self.options.fPIC
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -94,7 +98,7 @@ class PackageConan(ConanFile):
         copy(self, pattern='AUTHORS', dst='licenses', src=self.cwd)
 
     def package_info(self):
-        self.cpp_info.libs = collect_libs(self)
+        self.cpp_info.libs = []
         self.cpp_info.set_property("cmake_find_mode", "both")
         # @+ START USER DEFINES
         project_name = to_camel_case(self.name)
@@ -102,3 +106,6 @@ class PackageConan(ConanFile):
         self.cpp_info.set_property("cmake_file_name", project_name)
         cmake_target_name = project_name + "::" + project_name
         self.cpp_info.set_property("cmake_target_name", cmake_target_name)
+
+    def package_id(self):
+        self.info.clear()
