@@ -6,7 +6,7 @@ file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
 
 #@+ ====================== User TEST_SUITES configuration ==========================
 list(APPEND TEST_SUITES
-                       ${Mock_Test_Suite}
+            ${Mock_Test_Suite}
 )
 #@- ========================= END OF USER CONFIGURATION ============================
 
@@ -18,7 +18,7 @@ target_sources(${THIS} PRIVATE
 
 #@+ ==================== User TEST_DEPENDCIES configuration =======================
 list(APPEND TEST_DEPENDCIES
-                              Model
+            ${PROJECT_NAME}
 )
 #@- ========================= END OF USER CONFIGURATION ===========================
 

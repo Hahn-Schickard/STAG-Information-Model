@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.12) 
 
-set(THIS Model)
+set(MODULE ${PROJECT_NAME})
+
 
 list(APPEND THIS_INCLUDES_DIRS
-            ${INCLUDES_DIR}
+            ${INCLUDES_DIR}/
 )
 
 list(APPEND THIS_MOCK_INCLUDES_DIRS
@@ -13,27 +14,28 @@ list(APPEND THIS_MOCK_INCLUDES_DIRS
 INCLUDE_DIRS_AND_FILES("${THIS_INCLUDES_DIRS}" THIS_INCLUDES)
 INCLUDE_DIRS_AND_FILES("${THIS_MOCK_INCLUDES_DIRS}" THIS_MOCK_INCLUDES)
 
-add_library(${THIS} INTERFACE)
+add_library(${MODULE} INTERFACE)
 
-target_link_libraries(${THIS} INTERFACE 
+target_link_libraries(${MODULE} INTERFACE 
                               GTest::gmock
                               Variant_Visitor::Variant_Visitor
                               Nonempty::Nonempty
                               Event_Model::Event_Model
 )
 
-target_include_directories(${THIS} INTERFACE
+target_include_directories(${MODULE} INTERFACE
                            $<BUILD_INTERFACE:${INCLUDES_DIR}>
                            $<BUILD_INTERFACE:${INCLUDES_DIR}/mocks>
                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>/${PROJECT_NAME}>
 )
 
-target_compile_features(${THIS} INTERFACE cxx_std_17)
+target_compile_features(${MODULE} INTERFACE cxx_std_17)
 
 install(
-    TARGETS ${THIS}
-    EXPORT ${PROJECT_NAME}Targets
+    TARGETS ${MODULE}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 install(
