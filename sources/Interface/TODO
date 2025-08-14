@@ -1,0 +1,8 @@
+* refactor into a compiled library
+* move DataVariant.hpp inline functions to source file
+* move mock implementations to source files
+* refactor unit tests
+* add stoppable/0.3.0 to unit tests as an invisible build dependency
+* consider removing variant_visitor or making it an invisible build dependency
+* add separate mocks target that expose gmocks for users
+* refactor the main interface target to not expose gtest as a dependency

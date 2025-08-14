@@ -1,0 +1,23 @@
+
+#ifndef __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
+#define __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
+#include "Device.hpp"
+
+#include "GroupMock.hpp"
+#include "MetaInfoMock.hpp"
+
+#include <gmock/gmock.h>
+
+namespace Information_Model::testing {
+
+struct DeviceMock : virtual public Device, public MetaInfoMock {
+  DeviceMock() = default;
+
+  ~DeviceMock() override = default;
+
+  MOCK_METHOD(GroupPtr, group, (), (const final));
+  MOCK_METHOD(ElementPtr, element, (const std::string&), (const final));
+};
+using DeviceMockPtr = std::shared_ptr<DeviceMock>;
+} // namespace Information_Model::testing
+#endif //__STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP

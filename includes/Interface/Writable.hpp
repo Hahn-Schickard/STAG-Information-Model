@@ -1,13 +1,21 @@
-#ifndef __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
-#define __INFORMATION_MODEL_WRITEABLE_METRIC_HPP
+#ifndef __STAG_INFORMATION_MODEL_WRITEABLE_HPP
+#define __STAG_INFORMATION_MODEL_WRITEABLE_HPP
 
-#include "Metric.hpp"
+#include "Readable.hpp"
 
 namespace Information_Model {
 /**
  * @addtogroup WritableModeling Writable Metric Modelling
  * @{
  */
+struct NonReadable : public std::runtime_error {
+  NonReadable() : std::runtime_error("Metric is write only") {}
+};
+
+struct WriteCallbackUnavailable : public std::runtime_error {
+  WriteCallbackUnavailable()
+      : std::runtime_error("Write Callback is no longer available") {}
+};
 /**
  * @brief An interface to a read and writable Metric.
  *
@@ -21,7 +29,16 @@ namespace Information_Model {
  * This interface is implemented in Information Model Manager Project and is
  * built via DeviceBuilderInterface::addWritableMetric()
  */
-struct WritableMetric : public Metric {
+struct Writable : virtual public Readable {
+  virtual ~Writable() = default;
+
+  /**
+   * @brief Checks if the modeled metric does not supports value reading
+   *
+   * @return bool
+   */
+  virtual bool isWriteOnly() const = 0;
+
   /**
    * @brief Writes the given DataVariant as a metric value to the modeled
    * sensor/actor system
@@ -33,30 +50,11 @@ struct WritableMetric : public Metric {
    * error. May cause @ref Deregistration
    *
    */
-  virtual void setMetricValue(const DataVariant& /*value*/) const {
-    throw std::logic_error(
-        "Called based implementation of WritableMetric::setMetricValue()");
-  }
-
-  /**
-   * @brief Checks if the modeled metric does not supports value reading
-   *
-   * @return bool
-   */
-  virtual bool isWriteOnly() const {
-    throw std::logic_error(
-        "Called based implementation of WritableMetric::isWriteOnly()");
-  }
-
-  virtual ~WritableMetric() = default;
-
-protected:
-  explicit WritableMetric(DataType type) : Metric(type) {}
+  virtual void write(const DataVariant& /*value*/) const = 0;
 };
 
-using WritableMetricPtr = std::shared_ptr<WritableMetric>;
-using NonemptyWritableMetricPtr = Nonempty::Pointer<WritableMetricPtr>;
+using WritablePtr = std::shared_ptr<Writable>;
 /** @}*/
 } // namespace Information_Model
 
-#endif //__INFORMATION_MODEL_WRITEABLE_METRIC_HPP
+#endif //__STAG_INFORMATION_MODEL_WRITEABLE_HPP

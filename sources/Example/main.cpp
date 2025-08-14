@@ -1,268 +1,165 @@
-#include "DeviceMockBuilder.hpp"
+#include "ObservableMock.hpp"
+#include "WritableMock.hpp"
 
-#include <atomic>
-#include <condition_variable>
+#include <chrono>
+#include <functional>
+#include <future>
 #include <iostream>
+#include <memory>
+#include <mutex>
 #include <thread>
 
 using namespace std;
 using namespace Information_Model;
+using namespace Information_Model::testing;
 
-void print(const DevicePtr& device);
-void print(const NonemptyDeviceElementPtr& element, size_t offset);
-void print(const NonemptyWritableMetricPtr& element, size_t offset);
-void print(const NonemptyMetricPtr& element, size_t offset);
-void print(const NonemptyObservableMetricPtr& element, size_t offset);
-void print(const NonemptyFunctionPtr& element, size_t offset);
-void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
+struct Stoppable {
+  using Iteration = std::function<void()>;
 
-struct Executor {
-  using Callback = function<void(void)>;
+  explicit Stoppable(const Iteration& iteration)
+      : exit_future_(exit_signal_.get_future()), iteration_(iteration) {}
 
-  pair<uintmax_t, future<DataVariant>> execute(const Function::Parameters&) {
-    auto allocate_lock = scoped_lock(execute_mx_);
-    auto id = calls_.size();
-    auto promise = std::promise<DataVariant>();
-    auto future = make_pair(id, promise.get_future());
-    calls_.emplace(id, move(promise));
-    return future;
+  virtual ~Stoppable() = default;
+
+  void start() {
+    do {
+      iteration_();
+    } while (!stopRequested());
   }
 
-  void cancel(uintmax_t id) {
-    auto iter = calls_.find(id);
-    if (iter != calls_.end()) {
-      iter->second.set_exception(
-          make_exception_ptr(CallCanceled(id, "ExternalExecutor")));
-      auto clear_lock = scoped_lock(erase_mx_);
-      iter = calls_.erase(iter);
-    } else {
-      throw CallerNotFound(id, "ExternalExecutor");
+  bool stopRequested() {
+    return !(exit_future_.wait_for(0ms) == std::future_status::timeout);
+  }
+
+  void stop() { exit_signal_.set_value(); }
+
+private:
+  std::promise<void> exit_signal_;
+  std::future<void> exit_future_;
+  Iteration iteration_;
+};
+
+struct Task {
+  using ExceptionHandler = std::function<void(const std::exception_ptr&)>;
+
+  Task(const Stoppable::Iteration& iteration, const ExceptionHandler& handler)
+      : task_(std::make_unique<Stoppable>(iteration)), handler_(handler) {}
+
+  virtual ~Task() {
+    try {
+      stop();
+    } catch (...) {
+      handler_(std::current_exception());
     }
   }
 
-  void respondAll() {
-    auto execute_lock = scoped_lock(execute_mx_, erase_mx_);
-    // NOLINTNEXTLINE(modernize-loop-convert)
-    for (auto it = calls_.begin(); it != calls_.end(); it++) {
-      callback_();
-      it->second.set_value(DataVariant());
+  void start() {
+    if (!task_thread_) {
+      task_thread_ = std::make_unique<std::thread>([this]() {
+        try {
+          task_->start();
+        } catch (...) {
+          handler_(std::current_exception());
+        }
+      });
     }
-    calls_.clear();
+  }
+
+  void stop() {
+    if (task_thread_) {
+      if (task_thread_->joinable()) {
+        task_->stop();
+        task_thread_->join();
+      }
+    }
   }
 
 private:
-  void respond(uintmax_t id) {
-    auto erase_lock = scoped_lock(erase_mx_);
-    auto it = calls_.find(id);
-    if (it != calls_.end()) {
-      if (callback_) {
-        callback_();
-        it->second.set_value(DataVariant());
-      } else {
-        it->second.set_exception(
-            make_exception_ptr(runtime_error("Callback dos not exist")));
-      }
-      it = calls_.erase(it);
-    }
-  }
-
-  Callback callback_ = []() { cout << "Callback called" << endl; };
-  mutex execute_mx_;
-  mutex erase_mx_;
-  unordered_map<uintmax_t, promise<DataVariant>> calls_;
+  std::unique_ptr<Stoppable> task_;
+  ExceptionHandler handler_;
+  std::unique_ptr<std::thread> task_thread_;
 };
-
-DeviceBuilderInterface::ObservedValue observed_value = nullptr;
-
-void isObserved(bool observed) {
-  if (observed) {
-    cout << "Starting observation" << endl;
-    if (observed_value) {
-      // delaying event dispatch so observer has time to initialize
-      thread([] {
-        cout << "Dispatching event" << endl;
-        this_thread::sleep_for(100ms);
-        observed_value(false);
-      }).detach();
-    } else {
-      cerr << "ObservedValue callback is not set" << endl;
-    }
-  } else {
-    cout << "Stopping observation" << endl;
-  }
-}
 
 int main() {
-  try {
-    auto executor = make_shared<Executor>();
-    DevicePtr device;
-    string readable_id;
-    string callable_id;
-    string executable_id;
-    string custom_executable_id;
-    {
-      auto builder =
-          make_unique<Information_Model::testing::DeviceMockBuilder>();
-      builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
-      auto subgroup_1_ref_id =
-          builder->addDeviceElementGroup("Group 1", "First group");
-      builder->addReadableMetric(subgroup_1_ref_id,
-          "ReadsBoolean",
-          "Mocked readable metric",
-          DataType::Boolean);
-      readable_id = builder->addReadableMetric(
-          "ReadsInteger", "Mocked readable metric", DataType::Integer);
-      builder->addWritableMetric(
-          "WritesString", "Mocked writable metric", DataType::String);
-      observed_value = builder
-                           ->addObservableMetric("ObservesFalse",
-                               "Mocked observable metric",
-                               DataType::Boolean,
-                               bind(&isObserved, placeholders::_1))
-                           .second;
-      callable_id = builder->addFunction(
-          "ReturnsBoolean", "Mocked function with return", DataType::Boolean);
-      executable_id = builder->addFunction(
-          "ReturnsNone", "Mocked function with no return", DataType::None);
-      custom_executable_id = builder->addFunction("CustomExecutable",
-          "Mocked function with custom executor that does not return any "
-          "values",
-          DataType::None,
-          bind(&Executor::execute, executor, placeholders::_1),
-          bind(&Executor::cancel, executor, placeholders::_1));
+  DataVariant value = "Hello World";
+  mutex mx;
 
-      device = move(builder->getResult());
-      builder.reset();
+  auto read_cb = [&value, &mx]() -> DataVariant {
+    std::unique_lock guard(mx);
+    cout << "Reading value: " << toString(value) << endl;
+    return value;
+  };
+
+  auto write_cb = [&value, &mx](const DataVariant& new_value) {
+    std::unique_lock guard(mx);
+    value = new_value;
+    cout << "Writing value: " << toString(value) << endl;
+  };
+
+  auto writable = make_shared<::testing::NiceMock<WritableMock>>(
+      toDataType(value), read_cb, write_cb);
+
+  writable->read();
+  writable->write("Hello Universe");
+  writable->read();
+
+  auto observable = make_shared<::testing::NiceMock<ObservableMock>>(
+      toDataType(value), read_cb);
+
+  size_t notification_counter = 0;
+  auto task = Task(
+      [&notification_counter, observable_ptr = weak_ptr(observable)]() {
+        if (auto observable = observable_ptr.lock()) {
+          auto value = "Event " + to_string(notification_counter);
+          observable->notify(value);
+          ++notification_counter;
+          this_thread::sleep_for(10ms);
+        }
+      },
+      [&mx](const std::exception_ptr& ex_ptr) {
+        try {
+          if (ex_ptr) {
+            rethrow_exception(ex_ptr);
+          }
+        } catch (const std::exception& ex) {
+          std::unique_lock guard(mx);
+          cerr << "Stoppable task caught an exception: " << ex.what() << endl;
+        }
+      });
+  observable->enableSubscribeFaking([&mx, &task](bool observing) {
+    if (observing) {
+      std::unique_lock guard(mx);
+      cout << "Starting to dispatch notifications" << endl;
+      task.start();
+    } else {
+      std::unique_lock guard(mx);
+      cout << "Stopping notification dispatch" << endl;
+      task.stop();
     }
+  });
 
-    print(device);
-
-    auto readable = get<NonemptyMetricPtr>(
-        device->getDeviceElement(readable_id)->functionality);
-    auto value = get<intmax_t>(readable->getMetricValue());
-    cout << "Reading " << readable_id << " metric value as " << value << endl;
-
-    auto callable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(callable_id)->functionality);
-    auto call_result = callable->call();
-    match(
-        call_result,
-        [callable_id](bool result) {
-          cout << "Function " + callable_id + " result: "
-               << (result ? "true" : "false") << endl;
-        },
-        [callable_id](const auto&) {
-          cerr << "Received wrong result type from " + callable_id + " function"
-               << endl;
-        });
-
-    auto executable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(executable_id)->functionality);
-    executable->execute();
-
-    auto custom_executable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(custom_executable_id)->functionality);
-    custom_executable->execute();
-    executor->respondAll();
-
-    observed_value = nullptr; // cleanup mocked callback
-    return EXIT_SUCCESS;
-  } catch (const exception& ex) {
-    cerr << "An unhandled exception occurred during mock test. Exception: "
-         << ex.what() << endl;
-    return EXIT_FAILURE;
-  }
-}
-
-void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset) {
-  cout << string(offset, ' ') << "Group contains elements:" << endl;
-  for (const auto& element : elements->getSubelements()) {
-    print(element, offset + 3);
-  }
-}
-
-void print(const NonemptyMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  cout << endl;
-}
-
-void print(const NonemptyWritableMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  cout << string(offset, ' ') << "Writes " << toString(element->getDataType())
-       << " value type" << endl;
-  cout << endl;
-}
-
-struct ExampleObserver : public MetricObserver {
-  explicit ExampleObserver(const NonemptyObservableMetricPtr& source)
-      : MetricObserver(source) {}
-
-  void handleEvent(DataVariantPtr value) override {
-    {
-      lock_guard lck(mx_);
-      cout << "New value observed:  " << toString(*value) << endl;
-      ready_ = true;
-    }
-    cv_.notify_one();
-  }
-
-  void waitForEvent() {
-    unique_lock lck(mx_);
-    cv_.wait(lck, [this] { return ready_.load(); });
-  }
-
-private:
-  mutex mx_;
-  condition_variable cv_;
-  atomic<bool> ready_ = false;
-};
-
-void print(const NonemptyObservableMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Observes " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  auto observer = ExampleObserver(element);
-  observer.waitForEvent();
-}
-
-void print(const NonemptyFunctionPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Executes " << toString(element->resultType())
-       << " call(" << toString(element->parameterTypes()) << ")" << endl;
-  cout << endl;
-}
-
-void print(const NonemptyDeviceElementPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Element name: " << element->getElementName()
-       << endl;
-  cout << string(offset, ' ') << "Element id: " << element->getElementId()
-       << endl;
-  cout << string(offset, ' ')
-       << "Described as: " << element->getElementDescription() << endl;
-
-  match(
-      element->functionality, // clang-format off
-      [offset](const NonemptyDeviceElementGroupPtr& interface) {
-        print(interface, offset);
+  auto observer = observable->subscribe(
+      [&mx](const shared_ptr<DataVariant>& updated) {
+        std::unique_lock guard(mx);
+        cout << "Received value update: " << toString(*updated) << endl;
       },
-      [offset](const NonemptyMetricPtr& interface) {
-         print(interface, offset); 
-      },
-      [offset](const NonemptyWritableMetricPtr& interface) { 
-        print(interface, offset); 
-      },
-      [offset](const NonemptyObservableMetricPtr& interface) { 
-        print(interface, offset); 
-      },
-      [offset](const NonemptyFunctionPtr& interface) { 
-        print(interface, offset); 
-      }); // clang-format on
-}
+      [&mx](const std::exception_ptr& ex_ptr) {
+        try {
+          if (ex_ptr) {
+            rethrow_exception(ex_ptr);
+          }
+        } catch (const std::exception& ex) {
+          std::unique_lock guard(mx);
+          cerr << "Observer caught an exception: " << ex.what() << endl;
+        }
+      });
 
-void print(const DevicePtr& device) {
-  cout << "Device name: " << device->getElementName() << endl;
-  cout << "Device id: " << device->getElementId() << endl;
-  cout << "Described as: " << device->getElementDescription() << endl;
-  cout << endl;
-  print(device->getDeviceElementGroup(), 3);
+  this_thread::sleep_for(100ms);
+  observable->notify("Goodbye Everyone");
+
+  observer.reset();
+
+  observable->notify("No one is listening");
+
+  return 0;
 }

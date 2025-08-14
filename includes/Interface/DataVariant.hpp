@@ -1,8 +1,9 @@
-#ifndef __INFORMATION_MODEL_DATA_VARIANT_HPP_
-#define __INFORMATION_MODEL_DATA_VARIANT_HPP_
+#ifndef __STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_
+#define __STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_
 
-#include "Variant_Visitor.hpp"
+#include <Variant_Visitor/Visitor.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <iomanip>
 #include <memory>
@@ -95,7 +96,7 @@ inline bool operator>=(const DateTime& lhs, const DateTime& rhs) {
  * @brief DataType enumeration, specifying the supported data types
  *
  */
-enum class DataType {
+enum class DataType : uint8_t {
   Boolean, /*!< bool */
   Integer, /*!< intmax_t */
   Unsigned_Integer, /*!< uintmax_t */
@@ -116,11 +117,11 @@ inline std::string toString(DataType type) {
   case DataType::Unsigned_Integer:
     return "Unsigned Integer";
   case DataType::Double:
-    return "Double floating point";
+    return "Double Floating Point";
   case DataType::Time:
     return "Time";
   case DataType::Opaque:
-    return "Opaque byte array";
+    return "Opaque Byte Array";
   case DataType::String:
     return "String";
   case DataType::None:
@@ -132,27 +133,12 @@ inline std::string toString(DataType type) {
 }
 
 inline std::string toSanitizedString(DataType type) {
-  switch (type) {
-  case DataType::Boolean:
-    return "Boolean";
-  case DataType::Integer:
-    return "SignedInteger";
-  case DataType::Unsigned_Integer:
-    return "UnsignedInteger";
-  case DataType::Double:
-    return "Double";
-  case DataType::Time:
-    return "Time";
-  case DataType::Opaque:
-    return "OpaqueByteArray";
-  case DataType::String:
-    return "String";
-  case DataType::None:
-    return "None";
-  case DataType::Unknown:
-  default:
-    return "Unknown";
-  }
+  auto not_sanitized = toString(type);
+  not_sanitized.erase(std::remove_if(not_sanitized.begin(),
+                          not_sanitized.end(),
+                          [](unsigned char c) { return std::isspace(c); }),
+      not_sanitized.end());
+  return not_sanitized;
 }
 
 using DataVariant = std::variant<bool,
@@ -166,7 +152,7 @@ using DataVariant = std::variant<bool,
 using DataVariantPtr = std::shared_ptr<DataVariant>;
 
 inline std::size_t size_of(const DataVariant& variant) {
-  return match(
+  return Variant_Visitor::match(
       variant,
       [](auto value) -> std::size_t { return sizeof(value); },
       [](const DateTime& value) -> std::size_t { return value.size(); },
@@ -226,7 +212,7 @@ inline bool matchVariantType(const DataVariant& variant, DataType type) {
 }
 
 inline std::string toString(const DataVariant& variant) {
-  return match(
+  return Variant_Visitor::match(
       variant,
       [](bool value) -> std::string { return (value ? "true" : "false"); },
       [](auto value) -> std::string { return std::to_string(value); },
@@ -245,4 +231,4 @@ inline std::string toString(const DataVariant& variant) {
 /** @}*/
 } // namespace Information_Model
 
-#endif //__INFORMATION_MODEL_DATA_VARIANT_HPP_
+#endif //__STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_

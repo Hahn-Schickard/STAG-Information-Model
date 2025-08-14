@@ -1,5 +1,5 @@
-#ifndef __INFORMATION_MODEL_FUNCTION_HPP
-#define __INFORMATION_MODEL_FUNCTION_HPP
+#ifndef __STAG_INFORMATION_MODEL_CALLABLE_HPP
+#define __STAG_INFORMATION_MODEL_CALLABLE_HPP
 
 #include "DataVariant.hpp"
 
@@ -10,8 +10,6 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
-
-#include "Nonempty/Pointer.hpp"
 
 namespace Information_Model {
 /**
@@ -43,8 +41,8 @@ struct CallCanceled : public std::runtime_error {
             " canceled the execution call for Function " + name) {}
 };
 
-struct FunctionCallTimedout : public std::runtime_error {
-  explicit FunctionCallTimedout(const std::string& name)
+struct CallTimedout : public std::runtime_error {
+  explicit CallTimedout(const std::string& name)
       : std::runtime_error("Function " + name + " call timed out") {}
 };
 
@@ -58,7 +56,7 @@ struct FunctionCallTimedout : public std::runtime_error {
  * built via DeviceBuilderInterface::addFunction()
  */
 
-struct Function {
+struct Callable {
   using Parameter = std::optional<DataVariant>;
   /**
    * @brief Indexed map of the modeled function parameters
@@ -121,7 +119,7 @@ struct Function {
     CallClearer clear_caller_;
   };
 
-  virtual ~Function() = default;
+  virtual ~Callable() = default;
 
   /**
    * @brief Executes the modeled functionality without waiting for the execution
@@ -133,11 +131,7 @@ struct Function {
    *
    * @param parameters
    */
-  virtual void execute(const Parameters& /*parameters*/ = Parameters()) {
-    throw std::logic_error(
-        "Called based implementation of Function::execute()");
-  }
-
+  virtual void execute(const Parameters& parameters = Parameters()) = 0;
   /**
    * @brief Calls the modeled functionality and waits to return the execution
    * result
@@ -158,9 +152,7 @@ struct Function {
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
    */
-  DataVariant call(uintmax_t timeout = 100) {
-    return call(Parameters{}, timeout);
-  }
+  virtual DataVariant call(uintmax_t timeout = 100) = 0;
 
   /**
    * @brief Calls the modeled functionality and waits to return the execution
@@ -184,9 +176,7 @@ struct Function {
    * @return DataVariant
    */
   virtual DataVariant call(
-      const Parameters& /*parameters*/, uintmax_t /*timeout*/ = 100) {
-    throw ResultReturningNotSupported();
-  }
+      const Parameters& parameters, uintmax_t timeout = 100) = 0;
 
   /**
    * @brief Calls the modeled functionality and allocates a future for the
@@ -205,9 +195,7 @@ struct Function {
    * @return ResultFuture
    */
   virtual ResultFuture asyncCall(
-      const Parameters& /*parameters*/ = Parameters()) {
-    throw ResultReturningNotSupported();
-  }
+      const Parameters& parameters = Parameters()) = 0;
 
   /**
    * @brief Cancels a given asynchronous call
@@ -224,9 +212,7 @@ struct Function {
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
-  virtual void cancelAsyncCall(uintmax_t /*call_id*/) {
-    throw ResultReturningNotSupported();
-  }
+  virtual void cancelAsyncCall(uintmax_t call_id) = 0;
 
   /**
    * @brief Cancels all asynchronous call executions
@@ -240,28 +226,11 @@ struct Function {
    * @throws std::runtime_error - if internal cancellation mechanism encountered
    * an error
    */
-  virtual void cancelAllAsyncCalls() { throw ResultReturningNotSupported(); }
+  virtual void cancelAllAsyncCalls() = 0;
 
-  DataType resultType() const { return result_type_; }
+  DataType resultType() const = 0;
 
-  ParameterTypes parameterTypes() const { return parameters_; }
-
-  bool operator==(const Function& other) const noexcept {
-    return (result_type_ == other.result_type_) &&
-        (parameters_ == other.parameters_);
-  }
-
-  bool operator!=(const Function& other) const noexcept {
-    return !operator==(other);
-  }
-
-protected:
-  Function(DataType type, const ParameterTypes& supported_parameters_)
-      : result_type_(type), parameters_(supported_parameters_) {}
-
-private:
-  DataType result_type_;
-  ParameterTypes parameters_;
+  ParameterTypes parameterTypes() const = 0;
 }; // namespace Information_Model
 
 /**
@@ -347,7 +316,6 @@ inline std::string toString(Function::ParameterTypes params) {
 }
 
 using FunctionPtr = std::shared_ptr<Function>;
-using NonemptyFunctionPtr = Nonempty::Pointer<FunctionPtr>;
 /** @}*/
 } // namespace Information_Model
-#endif //__INFORMATION_MODEL_FUNCTION_HPP
+#endif //__STAG_INFORMATION_MODEL_CALLABLE_HPP
