@@ -1,8 +1,29 @@
-* refactor into a compiled library
-* move DataVariant.hpp inline functions to source file
-* move mock implementations to source files
 * refactor unit tests
-* add stoppable/0.3.0 to unit tests as an invisible build dependency
-* consider removing variant_visitor or making it an invisible build dependency
-* add separate mocks target that expose gmocks for users
-* refactor the main interface target to not expose gtest as a dependency
+* add CMake WITH_MOCKS option
+* move Callable implementation to source file
+* add CallableMock implementation
+* add ElementMock implementation
+* add GroupMock implementation
+* add DeviceMock implementation
+* add MockBuilder implementation
+* refactor example
+* refactor integration test
+* refactor unit tests
+* review time `DateTime` implementation 
+ * `std::chrono::system_clock::time_point` is easier to use, but is it
+    * precise
+    * consistent through different machines
+    * portable
+ * alternative: 
+    * third-party libs?
+    * `std::string` in ISO 8601 format? YYYY-MM-DD hh:mm[.zzzzzzzzz][+-TT[]]
+    * struct {
+        uint16 year; 
+        uint8 month; 
+        uint8 day; 
+        uint8 hour;
+        uint8 minute;
+        uint8 second;
+        uint32 sub_second;
+    }; //don`t bother with utc conversion, just ensure it is always UTC0
+* update documentation
