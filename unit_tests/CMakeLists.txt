@@ -19,6 +19,7 @@ target_sources(${THIS}
 #@+ ======================= User TEST_DECENCIES configuration ===========================
 list(APPEND TEST_DECENCIES
             ${PROJECT_NAME}_Mocks
+            Variant_Visitor::Variant_Visitor
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
 target_link_libraries(${THIS}
