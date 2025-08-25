@@ -55,8 +55,8 @@ include(GNUInstallDirs)
 find_package(GTest REQUIRED)
 
 #@+ ========================== User PACKAGES configuration ==============================
-find_package(Variant_Visitor)
-find_package(GTest)
+find_package(date REQUIRED)
+find_package(Variant_Visitor REQUIRED)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 if(CMAKE_CONAN)

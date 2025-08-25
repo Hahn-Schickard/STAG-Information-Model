@@ -12,8 +12,16 @@ class PackageConan(ConanFile):
     description = "STAG Information Model declarations"
     topics = ("conan", "stag", "stag-core", "information-model")
     settings = "os", "compiler", "build_type", "arch"
-    options = {}
-    default_options = {}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "with_mocks": [True, False]
+    }
+    default_options = {
+        "shared": True,
+        "fPIC": True,
+        "with_mocks": False
+    }
     default_user = "Hahn-Schickard"
     # @- END USER META CONFIG
     exports = [
@@ -30,7 +38,7 @@ class PackageConan(ConanFile):
         # @- END USER EXPORTS
     ]
     generators = "CMakeDeps"
-    package_type = "header-library"
+    package_type = "library"
     short_paths = True
 
     @property
@@ -52,20 +60,24 @@ class PackageConan(ConanFile):
 
     def requirements(self):
         # @+ START USER REQUIREMENTS
+        self.requires("date/3.0.4",
+                      visible=False
+                      )
         self.requires("variant_visitor/[~0.2]@hahn-schickard/stable",
-                      headers=True,
-                      transitive_headers=True
+                      visible=False
                       )
-        self.requires("gtest/1.16.0",
-                      headers=True,
-                      libs=True,
-                      transitive_headers=True,
-                      transitive_libs=True
-                      )
+        if self.options.with_mocks:
+            self.requires("gtest/1.16.0",
+                          headers=True,
+                          libs=True,
+                          transitive_headers=True,
+                          transitive_libs=True
+                          )
+        else:
+            self.test_requires("gtest/1.16.0")
         # @- END USER REQUIREMENTS
 
     def build_requirements(self):
-        # self.test_requires("gtest/[~1.16]")
         # @+ START USER BUILD REQUIREMENTS
         pass
         # @- END USER BUILD REQUIREMENTS
@@ -86,6 +98,7 @@ class PackageConan(ConanFile):
         tc.variables['COVERAGE_TRACKING'] = False
         tc.variables['CMAKE_CONAN'] = False
         # @+ START USER CMAKE OPTIONS
+        tc.variables['WITH_MOCKS'] = self.options.with_mocks
         # @- END USER CMAKE OPTIONS
         tc.generate()
 
@@ -109,6 +122,3 @@ class PackageConan(ConanFile):
         self.cpp_info.set_property("cmake_file_name", self.full_name)
         cmake_target_name = self.full_name + "::" + self.full_name
         self.cpp_info.set_property("cmake_target_name", cmake_target_name)
-
-    def package_id(self):
-        self.info.clear()
