@@ -11,77 +11,33 @@ struct WritableMock : virtual public Writable, public ReadableMock {
 
   WritableMock() = default;
 
-  explicit WritableMock(DataType type) : ReadableMock(type) {
-    setWriteOnly(false);
-  }
+  explicit WritableMock(DataType type);
 
-  WritableMock(DataType type, const ReadCallback& read_cb)
-      : ReadableMock(type, read_cb) {
-    setWriteOnly(false);
-  }
+  WritableMock(DataType type, const ReadCallback& read_cb);
 
-  WritableMock(const DataVariant& value) : ReadableMock(value) {
-    setWriteOnly(false);
-  }
+  WritableMock(const DataVariant& value);
 
-  WritableMock(DataType type, const WriteCallback& write_cb) {
-    updateType(type);
-    updateCallback(write_cb);
-    setWriteOnly(true);
-  }
-
-  WritableMock(const DataVariant& value,
-      const WriteCallback& write_cb,
-      bool write_only) {
-    updateValue(value);
-    updateCallback(write_cb);
-    setWriteOnly(write_only);
-  }
+  WritableMock(DataType type, const WriteCallback& write_cb);
 
   WritableMock(
-      DataType type, const ReadCallback& read_cb, const WriteCallback& write_cb)
-      : ReadableMock(type, read_cb) {
-    updateCallback(write_cb);
-    setWriteOnly(false);
-  }
+      const DataVariant& value, const WriteCallback& write_cb, bool write_only);
+
+  WritableMock(DataType type,
+      const ReadCallback& read_cb,
+      const WriteCallback& write_cb);
 
   WritableMock(const DataVariant& value,
       const ReadCallback& read_cb,
-      const WriteCallback& write_cb)
-      : ReadableMock(toDataType(value), read_cb) {
-    updateValue(value);
-    updateCallback(write_cb);
-    setWriteOnly(false);
-  }
+      const WriteCallback& write_cb);
 
   ~WritableMock() override = default;
 
-  void setWriteOnly(bool write_only) {
-    if (write_only) {
-      ON_CALL(*this, read).WillByDefault(::testing::Throw(NonReadable()));
-    }
-    ON_CALL(*this, isWriteOnly).WillByDefault(::testing::Return(write_only));
-  }
+  void setWriteOnly(bool write_only);
 
-  void updateCallback(const WriteCallback& write_cb) {
-    if ((write_ = write_cb)) {
-      ON_CALL(*this, write).WillByDefault(write_);
-    } else {
-      ON_CALL(*this, write)
-          .WillByDefault(::testing::Throw(WriteCallbackUnavailable()));
-    }
-  }
+  void updateCallback(const WriteCallback& write_cb);
 
   void updateCallbacks(
-      const ReadCallback& read_cb, const WriteCallback& write_cb) {
-    if (read_cb) {
-      ReadableMock::updateCallback(read_cb);
-    } else {
-      setWriteOnly(true);
-    }
-
-    updateCallback(write_cb);
-  }
+      const ReadCallback& read_cb, const WriteCallback& write_cb);
 
   MOCK_METHOD(bool, isWriteOnly, (), (const final));
   MOCK_METHOD(void, write, (const DataVariant&), (const final));

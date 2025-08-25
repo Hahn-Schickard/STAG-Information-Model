@@ -9,31 +9,25 @@
 
 namespace Information_Model::testing {
 
+struct ObserverPimpl : virtual public Observer {
+  ~ObserverPimpl() override = default;
+
+  virtual void dispatch(const std::shared_ptr<DataVariant>& value) = 0;
+};
+
 struct ObservableMock : virtual public Observable, public ReadableMock {
   using IsObservingCallback = std::function<void(bool)>;
 
   ObservableMock() = default;
 
-  explicit ObservableMock(DataType type) : ReadableMock(type) {}
+  explicit ObservableMock(DataType type);
 
-  explicit ObservableMock(const DataVariant& value) : ReadableMock(value) {}
+  explicit ObservableMock(const DataVariant& value);
 
-  ObservableMock(DataType type, const ReadCallback& read_cb)
-      : ReadableMock(type, read_cb) {}
-
+  ObservableMock(DataType type, const ReadCallback& read_cb);
   ~ObservableMock() override = default;
 
-  void enableSubscribeFaking(const IsObservingCallback& callback) {
-    if (callback) {
-      is_observing_ = callback;
-      ON_CALL(*this, subscribe)
-          .WillByDefault(
-              ::testing::Invoke(this, &ObservableMock::attachObserver));
-      ON_CALL(*this, notify)
-          .WillByDefault(
-              ::testing::Invoke(this, &ObservableMock::notifyObservers));
-    }
-  }
+  void enableSubscribeFaking(const IsObservingCallback& callback);
 
   MOCK_METHOD(void, notify, (const DataVariant&), (const final));
   MOCK_METHOD(ObserverPtr,
@@ -42,51 +36,13 @@ struct ObservableMock : virtual public Observable, public ReadableMock {
       (final));
 
 private:
-  struct ObserverImpl : public Observer {
-    explicit ObserverImpl(const Observable::ObserveCallback& callback,
-        const Observable::ExceptionHandler& handler)
-        : callback_(callback), handler_(handler) {}
-
-    void notify(const std::shared_ptr<DataVariant>& value) {
-      try {
-        callback_(value);
-      } catch (...) {
-        handler_(std::current_exception());
-      }
-    }
-
-  private:
-    Observable::ObserveCallback callback_;
-    Observable::ExceptionHandler handler_;
-  };
-
   ObserverPtr attachObserver(const Observable::ObserveCallback& callback,
-      const Observable::ExceptionHandler& handler) {
-    auto observer = std::make_shared<ObserverImpl>(callback, handler);
-    if (observers_.empty()) {
-      is_observing_(true);
-    }
-    observers_.emplace_back(observer);
-    return observer;
-  }
+      const Observable::ExceptionHandler& handler);
 
-  void notifyObservers(const DataVariant& value) {
-    auto value_ptr = std::make_shared<DataVariant>(value);
-    for (auto it = observers_.begin(); it != observers_.end();) {
-      if (auto observer = it->lock()) {
-        observer->notify(value_ptr);
-        ++it;
-      } else {
-        it = observers_.erase(it);
-      }
-    }
-    if (observers_.empty()) {
-      is_observing_(false);
-    }
-  }
+  void notifyObservers(const DataVariant& value);
 
   IsObservingCallback is_observing_;
-  std::vector<std::weak_ptr<ObserverImpl>> observers_;
+  std::vector<std::weak_ptr<ObserverPimpl>> observers_;
 };
 
 using ObservableMockPtr = std::shared_ptr<ObservableMock>;

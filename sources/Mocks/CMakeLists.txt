@@ -1,32 +1,35 @@
-
 #@+ ======================== User TARGET NAME configuration =============================
 set(THIS Mocks)
-
-list(APPEND THIS_INCLUDES_DIRS
-    ${INCLUDES_DIR}/Mocks
-)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 set(TARGET ${PROJECT_NAME}_${THIS})
 
-INCLUDE_DIRS_AND_FILES("${THIS_INCLUDES_DIRS}" THIS_INCLUDES)
+#@+ =========================== User TARGET configuration ===============================
+set(THIS_INCLUDES_DIR ${INCLUDES_DIR}/Mocks)
+file(GLOB THIS_INCLUDES ${THIS_INCLUDES_DIR}/*.hpp)
+file(GLOB SOURCEFILES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 
-add_library(${TARGET} INTERFACE)
-
-#@+ ======================== User DEPENDENCIES configuration ============================
-target_link_libraries(${TARGET}
-    INTERFACE
-        ${PROJECT_NAME}_Interface
-        GTest::gmock
+add_library(${TARGET})
+target_sources(${TARGET}
+    PUBLIC
+        ${THIS_INCLUDES}
+    PRIVATE
+        ${SOURCEFILES}
 )
-#@- =========================== END OF USER CONFIGURATION ===============================
+
+target_link_libraries(${TARGET} 
+    PUBLIC
+        ${PROJECT_NAME}_Interface
+        GTest::gmock              
+)
 
 target_include_directories(${TARGET}
-    INTERFACE
-        $<BUILD_INTERFACE:${INCLUDES_DIR}/Mocks>
+    PUBLIC
+        $<BUILD_INTERFACE:${THIS_INCLUDES_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}>
 )
+#@- =========================== END OF USER CONFIGURATION ===============================
 
 target_compile_features(${TARGET} INTERFACE cxx_std_17)
 
