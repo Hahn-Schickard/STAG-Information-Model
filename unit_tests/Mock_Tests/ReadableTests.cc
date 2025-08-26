@@ -1,6 +1,6 @@
 #include "ReadableMock.hpp"
+#include "TestResources.hpp"
 
-#include <Variant_Visitor/Visitor.hpp>
 #include <gtest/gtest.h>
 #include <optional>
 
@@ -8,125 +8,72 @@ namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
-struct ReadableTestParam {
-  explicit ReadableTestParam(const DataVariant& value) : value_(value) {}
-
-  ReadableTestParam(DataType type, const ReadableMock::ReadCallback& callback)
-      : value_(callback()), type_(type), read_cb_(callback) {}
-
-  bool hasCallback() const { return read_cb_ != nullptr; }
-
-  DataVariant readResult() const { return value_; }
-
-  DataType readType() const { return type_; }
-
-  ReadableMock::ReadCallback readCallback() const { return read_cb_; }
-
-  string testName() const {
-    string result;
-    if (hasCallback()) {
-      result += "callback";
-    } else {
-      result += "value";
-    }
-    return result + toSanitizedString(value_);
-  }
-
-private:
-  DataVariant value_;
-  DataType type_ = DataType::None;
-  ReadableMock::ReadCallback read_cb_ = nullptr;
-};
-
 struct ReadableTests : public TestWithParam<ReadableTestParam> {
   ReadableTests() {
     auto param = GetParam();
-    expected = param.readResult();
-    if (param.hasCallback()) {
-      tested =
-          make_shared<ReadableMock>(param.readType(), param.readCallback());
+    expected_type = param.dataType();
+    expected_variant = param.readResult();
+    if (param.hasReadCallback()) {
+      tested = make_shared<ReadableMock>(expected_type, param.readCallback());
     } else {
-      tested = make_shared<ReadableMock>(expected);
+      tested = make_shared<ReadableMock>(expected_variant);
     }
   }
 
-  DataVariant expected;
+  DataType expected_type;
+  DataVariant expected_variant;
   ReadableMockPtr tested;
 };
 
 TEST_P(ReadableTests, returnsDataType) {
   EXPECT_CALL(*tested, dataType).Times(Exactly(1));
 
-  EXPECT_EQ(tested->dataType(), toDataType(expected));
+  EXPECT_EQ(tested->dataType(), expected_type);
 }
 
 TEST_P(ReadableTests, canChangeDataType) {
   EXPECT_CALL(*tested, dataType).Times(Exactly(1));
 
-  auto other_type = Variant_Visitor::match(
-      expected,
-      [](bool) { return DataType::Opaque; },
-      [](intmax_t) { return DataType::Time; },
-      [](uintmax_t) { return DataType::String; },
-      [](double) { return DataType::Integer; },
-      [](DateTime) { return DataType::Unsigned_Integer; },
-      [](const vector<uint8_t>&) { return DataType::Boolean; },
-      [](const string&) { return DataType::Double; });
+  EXPECT_NO_THROW(tested->updateType(otherThan(expected_type)););
 
-  EXPECT_NO_THROW(tested->updateType(other_type););
-
-  EXPECT_NE(tested->dataType(), toDataType(expected));
+  EXPECT_NE(tested->dataType(), toDataType(expected_variant));
 }
 
 TEST_P(ReadableTests, canRead) {
   EXPECT_CALL(*tested, read).Times(Exactly(1));
 
-  EXPECT_EQ(tested->read(), expected);
+  EXPECT_EQ(tested->read(), expected_variant);
 }
 
 TEST_P(ReadableTests, canReadTwice) {
   EXPECT_CALL(*tested, read).Times(Exactly(2));
 
-  EXPECT_EQ(tested->read(), expected);
-  EXPECT_EQ(tested->read(), expected);
-}
-
-DataVariant otherThan(const DataVariant& input) {
-  return Variant_Visitor::match(
-      input, // NOLINTBEGIN(readability-magic-numbers)
-      [](bool) -> DataVariant { return vector<uint8_t>{0x00, 0x01, 0xAB}; },
-      [](intmax_t) -> DataVariant { return DateTime(1756130804); },
-      [](uintmax_t) -> DataVariant { return string("A new value"); },
-      [](double) -> DataVariant { return intmax_t{-698872}; },
-      [](DateTime) -> DataVariant { return uintmax_t{9789121}; },
-      [](const vector<uint8_t>&) -> DataVariant { return true; },
-      [](const string&) -> DataVariant {
-        return 20.3512;
-      }); // NOLINTEND(readability-magic-numbers)
+  EXPECT_EQ(tested->read(), expected_variant);
+  EXPECT_EQ(tested->read(), expected_variant);
 }
 
 TEST_P(ReadableTests, canChangeReadValue) {
   EXPECT_CALL(*tested, read).Times(Exactly(2));
 
-  EXPECT_NO_THROW(tested->updateValue(otherThan(expected)););
+  EXPECT_NO_THROW(tested->updateValue(otherThan(expected_variant)););
 
-  EXPECT_NE(tested->read(), expected);
-  EXPECT_NE(tested->read(), expected);
+  EXPECT_NE(tested->read(), expected_variant);
+  EXPECT_NE(tested->read(), expected_variant);
 }
 
 TEST_P(ReadableTests, canChangeCallback) {
-  MockFunction<DataVariant()> mock_callable;
+  MockFunction<DataVariant()> mock_readable;
   EXPECT_CALL(*tested, read).Times(Exactly(2));
-  EXPECT_CALL(mock_callable, Call())
+  EXPECT_CALL(mock_readable, Call())
       .Times(Exactly(2))
-      .WillRepeatedly(Return(otherThan(expected)));
+      .WillRepeatedly(Return(otherThan(expected_variant)));
 
-  tested->updateCallback(mock_callable.AsStdFunction());
+  tested->updateCallback(mock_readable.AsStdFunction());
 
   auto read_value = tested->read();
-  EXPECT_NE(read_value, expected);
-  EXPECT_EQ(read_value, otherThan(expected));
-  EXPECT_EQ(tested->read(), otherThan(expected));
+  EXPECT_NE(read_value, expected_variant);
+  EXPECT_EQ(read_value, otherThan(expected_variant));
+  EXPECT_EQ(tested->read(), otherThan(expected_variant));
 }
 
 // NOLINTBEGIN(readability-magic-numbers)
@@ -169,9 +116,15 @@ INSTANTIATE_TEST_SUITE_P(ReadableTestsValues,
             [](){ return DataVariant(string());}},
         ReadableTestParam{DataType::String,
             [](){ return DataVariant(string("Hello World"));}}
-    ),  // clang-format on 
+    ), // clang-format on
     [](const TestParamInfo<ReadableTests::ParamType>& info) {
-      return info.param.testName();
+      string name;
+      if (info.param.hasReadCallback()) {
+        name += "callback";
+      } else {
+        name += "value";
+      }
+      return name + toSanitizedString(info.param.readResult());
     });
 // NOLINTEND(readability-magic-numbers)
 } // namespace Information_Model::testing
