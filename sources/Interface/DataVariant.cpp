@@ -94,11 +94,11 @@ optional<DataVariant> setVariant(DataType type) {
   case DataType::Boolean:
     return DataVariant(false);
   case DataType::Integer:
-    return DataVariant((intmax_t)0);
+    return DataVariant((intmax_t)1);
   case DataType::Unsigned_Integer:
-    return DataVariant((uintmax_t)0);
+    return DataVariant((uintmax_t)-1);
   case DataType::Double:
-    return DataVariant(0.0);
+    return DataVariant(0.1); // NOLINT(readability-magic-numbers)
   case DataType::Time:
     return DataVariant(DateTime());
   case DataType::Opaque:
