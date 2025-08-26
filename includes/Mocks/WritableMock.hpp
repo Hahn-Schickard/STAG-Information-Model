@@ -7,7 +7,7 @@
 namespace Information_Model::testing {
 
 struct WritableMock : virtual public Writable, public ReadableMock {
-  using WriteCallback = std::function<void(DataVariant)>;
+  using WriteCallback = std::function<void(const DataVariant&)>;
 
   WritableMock() = default;
 
