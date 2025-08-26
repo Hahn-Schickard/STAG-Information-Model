@@ -76,6 +76,14 @@ TEST_P(ReadableTests, canChangeCallback) {
   EXPECT_EQ(tested->read(), otherThan(expected_variant));
 }
 
+TEST_P(ReadableTests, canUnsetCallback) {
+  EXPECT_CALL(*tested, read).Times(Exactly(1));
+
+  tested->updateCallback(nullptr);
+
+  EXPECT_THROW(tested->read(), ReadCallbackUnavailable);
+}
+
 // NOLINTBEGIN(readability-magic-numbers)
 INSTANTIATE_TEST_SUITE_P(ReadableTestsValues,
     ReadableTests,

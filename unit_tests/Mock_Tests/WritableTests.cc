@@ -145,6 +145,16 @@ TEST_P(WritableTests, canChangeWriteCallback) {
   EXPECT_NO_THROW(tested->write(otherThan(expected_variant)));
 }
 
+TEST_P(WritableTests, canUnsetCallbacks) {
+  EXPECT_CALL(*tested, read).Times(Exactly(1));
+  EXPECT_CALL(*tested, write).Times(Exactly(1));
+
+  tested->updateCallback(nullptr);
+
+  EXPECT_THROW(tested->read(), NonReadable);
+  EXPECT_THROW(tested->write(true), WriteCallbackUnavailable);
+}
+
 // NOLINTBEGIN(readability-magic-numbers)
 INSTANTIATE_TEST_SUITE_P(WritableTestsValues,
     WritableTests,
