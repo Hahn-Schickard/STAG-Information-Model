@@ -29,10 +29,10 @@ struct WritableTests : public TestWithParam<WritableTestParam> {
     expected_type = param.dataType();
     expected_variant = param.readResult();
     if (param.hasReadCallback()) {
-      tested = make_shared<WritableMock>(
+      tested = make_shared<NiceMock<WritableMock>>(
           expected_type, param.readCallback(), mock_writable.AsStdFunction());
     } else {
-      tested = make_shared<WritableMock>(
+      tested = make_shared<NiceMock<WritableMock>>(
           expected_type, mock_writable.AsStdFunction());
     }
   }
