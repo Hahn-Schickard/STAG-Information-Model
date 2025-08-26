@@ -29,7 +29,7 @@ struct DeviceBuilder {
    * @brief Used by the Writable to set a user given value
    *
    */
-  using WriteCallback = std::function<void(DataVariant)>;
+  using WriteCallback = std::function<void(const DataVariant&)>;
 
   /**
    * @brief Indexed future result that the Callble returns to the callers
@@ -41,7 +41,8 @@ struct DeviceBuilder {
    * @brief Used by the Callble to asynchronously execute the modeled function
    *
    */
-  using ExecuteCallback = std::function<ExecuteFuture(Callable::Parameters)>;
+  using ExecuteCallback =
+      std::function<ExecuteFuture(const Callable::Parameters&)>;
 
   /**
    * @brief Used by the Callable to cancel a previous ExecuteCallback call
