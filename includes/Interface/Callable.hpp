@@ -13,55 +13,96 @@
 
 namespace Information_Model {
 /**
- * @addtogroup ExecutableModeling Function Modelling
+ * @addtogroup ExecutableModeling Callable Modelling
  * @{
  */
 
 struct ResultReturningNotSupported : public std::runtime_error {
   ResultReturningNotSupported()
       : std::runtime_error(
-            "Function does not support returning execution results") {}
+            "Callable does not support returning execution results") {}
 };
 
 struct CallerNotFound : public std::runtime_error {
   CallerNotFound(uintmax_t call_id, const std::string& name)
       : std::runtime_error("No caller with id: " + std::to_string(call_id) +
-            " for Function " + name + " call exists") {}
+            " for Callable " + name + " call exists") {}
 };
 
 struct CallerIDExists : public std::runtime_error {
   CallerIDExists(uintmax_t call_id, const std::string& name)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
-            " for Function " + name + " was already dispatched") {}
+            " for Callable " + name + " was already dispatched") {}
 };
 
 struct CallCanceled : public std::runtime_error {
   CallCanceled(uintmax_t call_id, const std::string& name)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
-            " canceled the execution call for Function " + name) {}
+            " canceled the execution call for Callable " + name) {}
 };
 
 struct CallTimedout : public std::runtime_error {
   explicit CallTimedout(const std::string& name)
-      : std::runtime_error("Function " + name + " call timed out") {}
+      : std::runtime_error("Callable " + name + " call timed out") {}
 };
 
 /**
- * @brief An interface to a Function.
+ * @brief Async response future wrapper for the Callable execution result
+ *
+ */
+struct ResultFuture {
+  using CallClearer = std::function<void(uintmax_t)>;
+
+  ResultFuture(uintmax_t caller,
+      std::future<DataVariant>&& future_result,
+      const CallClearer& clearer);
+
+  ResultFuture(const ResultFuture&) = delete;
+
+  ResultFuture(ResultFuture&&) = default;
+
+  ~ResultFuture() = default;
+
+  ResultFuture& operator=(const ResultFuture&) = delete;
+
+  ResultFuture& operator=(ResultFuture&&) = default;
+
+  /**
+   * @brief Obtains the promised future result and removes the call_id from
+   * active operations list
+   *
+   * @throws CallCanceled - if the requested operation was canceled by the
+   * user
+   * @throws std::runtime_error - if internal callback encountered an error.
+   * It may have caused @ref Deregistration
+   *
+   * @return DataVariant
+   */
+  DataVariant get();
+
+  uintmax_t callerID() const;
+
+private:
+  uintmax_t call_id_;
+  std::future<DataVariant> future_result_;
+  CallClearer clear_caller_;
+};
+
+/**
+ * @brief An interface to a Callable.
  *
  * Models a single functionality for various sensors/actors
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addFunction()
+ * built via DeviceBuilderInterface::addCallable()
  */
-
 struct Callable {
   using Parameter = std::optional<DataVariant>;
   /**
    * @brief Indexed map of the modeled function parameters
    *
-   * @param Key - parameter number in the function
+   * @param Key - parameter number
    * @param Value - parameter value
    */
   using Parameters = std::unordered_map<uintmax_t, Parameter>;
@@ -78,46 +119,10 @@ struct Callable {
   /**
    * @brief Indexed map of the modeled function parameter types
    *
-   * @param Key - parameter number in the function
+   * @param Key - parameter number
    * @param Value - parameter type
    */
   using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
-
-  /**
-   * @brief Async response future wrapper
-   *
-   */
-  struct ResultFuture : std::future<DataVariant> {
-    using CallClearer = std::function<void(uintmax_t)>;
-
-    ResultFuture(std::future<DataVariant>&& future_result,
-        uintmax_t caller,
-        const CallClearer& clearer)
-        : std::future<DataVariant>(std::move(future_result)), call_id(caller),
-          clear_caller_(clearer) {}
-
-    /**
-     * @brief Obtains the promised future result and removes the call_id from
-     * active operations list
-     *
-     * @throws CallCanceled - if the requested operation was canceled by the
-     * user
-     * @throws std::runtime_error - if internal callback encountered an error.
-     * It may have caused @ref Deregistration
-     *
-     * @return DataVariant
-     */
-    DataVariant get() {
-      auto result = std::future<DataVariant>::get();
-      clear_caller_(call_id);
-      return result;
-    }
-
-    const uintmax_t call_id; // NOLINT(readability-identifier-naming)
-
-  private:
-    CallClearer clear_caller_;
-  };
 
   virtual ~Callable() = default;
 
@@ -131,7 +136,7 @@ struct Callable {
    *
    * @param parameters
    */
-  virtual void execute(const Parameters& parameters = Parameters()) = 0;
+  virtual void execute(const Parameters& parameters = Parameters()) const = 0;
   /**
    * @brief Calls the modeled functionality and waits to return the execution
    * result
@@ -143,7 +148,7 @@ struct Callable {
    *
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
-   * @throws FunctionCallTimedout - if execution call has timeout
+   * @throws CallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
    * @throws std::runtime_error - if internal callback encountered an
@@ -152,7 +157,7 @@ struct Callable {
    * @param timeout - number of miliseconds until a timeout occurs
    * @return DataVariant
    */
-  virtual DataVariant call(uintmax_t timeout = 100) = 0;
+  virtual DataVariant call(uintmax_t timeout = 100) const = 0;
 
   /**
    * @brief Calls the modeled functionality and waits to return the execution
@@ -165,7 +170,7 @@ struct Callable {
    *
    * @throws ResultReturningNotSupported - if modeled functionality does not
    * support returning execution result
-   * @throws FunctionCallTimedout - if execution call has timeout
+   * @throws CallTimedout - if execution call has timeout
    * @throws CallerIDExists - if internal callback returned a caller id
    * that is already assigned
    * @throws std::runtime_error - if internal callback encountered an
@@ -176,7 +181,7 @@ struct Callable {
    * @return DataVariant
    */
   virtual DataVariant call(
-      const Parameters& parameters, uintmax_t timeout = 100) = 0;
+      const Parameters& parameters, uintmax_t timeout = 100) const = 0;
 
   /**
    * @brief Calls the modeled functionality and allocates a future for the
@@ -195,12 +200,12 @@ struct Callable {
    * @return ResultFuture
    */
   virtual ResultFuture asyncCall(
-      const Parameters& parameters = Parameters()) = 0;
+      const Parameters& parameters = Parameters()) const = 0;
 
   /**
    * @brief Cancels a given asynchronous call
    *
-   * The linked result future (the second Function::ResultFuture parameter) will
+   * The linked result future (the second Callable::ResultFuture parameter) will
    * throw an exception to indicate that it was canceled
    *
    * @throws CallerNotFound - if the given call_id does not indicate a
@@ -212,7 +217,7 @@ struct Callable {
    *
    * @param call_id - obtained from the first ResultFuture parameter
    */
-  virtual void cancelAsyncCall(uintmax_t call_id) = 0;
+  virtual void cancelAsyncCall(uintmax_t call_id) const = 0;
 
   /**
    * @brief Cancels all asynchronous call executions
@@ -226,45 +231,34 @@ struct Callable {
    * @throws std::runtime_error - if internal cancellation mechanism encountered
    * an error
    */
-  virtual void cancelAllAsyncCalls() = 0;
+  virtual void cancelAllAsyncCalls() const = 0;
 
-  DataType resultType() const = 0;
+  virtual DataType resultType() const = 0;
 
-  ParameterTypes parameterTypes() const = 0;
+  virtual ParameterTypes parameterTypes() const = 0;
 }; // namespace Information_Model
 
 /**
  * @brief Helper function to expand an existing parameter map with a given
- * Function::Parameter
+ * Callable::Parameter
  *
- * @throws std::range_error - if Function::Parameter value is already assigned
+ * @throws std::range_error - if Callable::Parameter value is already assigned
  * at a given parameter number
  *
  * @param map
  * @param param_number
  * @param param
  */
-inline void addParameter(Function::Parameters& map,
+void addParameter(Callable::Parameters& map,
     uintmax_t param_number,
-    const Function::Parameter& param) {
-  if (!map.try_emplace(param_number, param).second) {
-    auto existing = map[param_number].value_or(DataVariant());
-    auto param_value = param.value_or(DataVariant());
-    std::string error_msg = "Could not add " +
-        toString(toDataType(param_value)) + "(" + toString(param_value) + ")" +
-        " as parameter number " + std::to_string(param_number) +
-        " because parameter " + toString(toDataType(existing)) + "(" +
-        toString(existing) + ") is already assigned to that number";
-    throw std::range_error(error_msg);
-  }
-}
+    const Callable::Parameter& param);
 
 /**
  * @brief Helper function to expand an existing parameter map with supported
  * parameter types only
  *
  * @throws std::invalid_argument - if parameter type or number is not supported
- * @throws std::range_error - if Function::Parameter value is already assigned
+ * @throws std::range_error - if Callable::Parameter value is already assigned
  * at a given parameter number
  *
  * @param map
@@ -272,50 +266,14 @@ inline void addParameter(Function::Parameters& map,
  * @param param_number
  * @param param
  */
-inline void addSupportedParameter(Function::Parameters& map,
-    const Function::ParameterTypes& supported_types,
+void addSupportedParameter(Callable::Parameters& map,
+    const Callable::ParameterTypes& supported_types,
     uintmax_t param_number,
-    const Function::Parameter& param) {
-  if (auto it = supported_types.find(param_number);
-      it != supported_types.end()) {
-    auto [type, optional] = it->second;
-    if (param) {
-      const auto& param_value = param.value();
-      if (matchVariantType(param_value, type)) {
-        addParameter(map, param_number, param);
-      } else {
-        std::string error_msg = "Parameter number " +
-            std::to_string(param_number) + " " + toString(type) +
-            " does not support " + toString(toDataType(param_value)) + "(" +
-            toString(param_value) + ") value";
-        throw std::invalid_argument(error_msg);
-      }
-    } else if (optional) {
-      addParameter(map, param_number, std::nullopt);
-    } else {
-      std::string error_msg = "Parameter number " +
-          std::to_string(param_number) + " " + toString(type) +
-          " does not support empty values";
-      throw std::invalid_argument(error_msg);
-    }
-  } else {
-    std::string error_msg = "Parameter number " + std::to_string(param_number) +
-        " is not supported";
-    throw std::invalid_argument(error_msg);
-  }
-}
+    const Callable::Parameter& param);
 
-inline std::string toString(Function::ParameterTypes params) {
-  return std::accumulate(std::next(params.begin()),
-      params.end(),
-      toString(params[0].first),
-      [](std::string& result,
-          std::pair<uintmax_t, Function::ParameterType> parameter) {
-        return result + ", " + toString(parameter.second.first);
-      });
-}
+std::string toString(Callable::ParameterTypes params);
 
-using FunctionPtr = std::shared_ptr<Function>;
+using CallablePtr = std::shared_ptr<Callable>;
 /** @}*/
 } // namespace Information_Model
 #endif //__STAG_INFORMATION_MODEL_CALLABLE_HPP
