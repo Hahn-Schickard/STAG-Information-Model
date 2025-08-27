@@ -20,6 +20,7 @@ target_sources(${THIS}
 list(APPEND TEST_DECENCIES
             ${PROJECT_NAME}_Mocks
             Variant_Visitor::Variant_Visitor
+            Stoppable::Stoppable
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
 target_link_libraries(${THIS}

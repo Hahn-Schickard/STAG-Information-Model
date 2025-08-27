@@ -15,6 +15,7 @@ target_sources(${TARGET}
 target_link_libraries(${TARGET}
     PRIVATE
         ${PROJECT_NAME}_Mocks
+        Stoppable::Stoppable
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
 target_compile_features(${TARGET} PUBLIC cxx_std_17)

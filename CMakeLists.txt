@@ -57,6 +57,7 @@ find_package(GTest REQUIRED)
 #@+ ========================== User PACKAGES configuration ==============================
 find_package(date REQUIRED)
 find_package(Variant_Visitor REQUIRED)
+find_package(Stoppable REQUIRED)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 if(CMAKE_CONAN)
