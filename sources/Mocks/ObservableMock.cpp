@@ -48,6 +48,14 @@ private:
 ObserverPtr ObservableMock::attachObserver(
     const Observable::ObserveCallback& callback,
     const Observable::ExceptionHandler& handler) {
+  if (!callback) {
+    throw invalid_argument("ObserveCallback can not be empty");
+  }
+
+  if (!handler) {
+    throw invalid_argument("ExceptionHandler can not be empty");
+  }
+
   unique_lock guard(mx_);
   auto was_empty = observers_.empty();
   auto observer = make_shared<FakeObserver>(callback, handler);
