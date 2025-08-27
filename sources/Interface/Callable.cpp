@@ -1,12 +1,6 @@
 #include "Callable.hpp"
 
-#include <future>
-#include <memory>
 #include <numeric>
-#include <optional>
-#include <stdexcept>
-#include <string>
-#include <unordered_map>
 
 namespace Information_Model {
 using namespace std;

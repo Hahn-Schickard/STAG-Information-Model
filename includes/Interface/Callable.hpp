@@ -5,7 +5,6 @@
 
 #include <future>
 #include <memory>
-#include <numeric>
 #include <optional>
 #include <stdexcept>
 #include <string>
