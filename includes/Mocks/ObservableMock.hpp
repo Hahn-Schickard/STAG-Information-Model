@@ -5,6 +5,7 @@
 #include "ReadableMock.hpp"
 
 #include <gmock/gmock.h>
+#include <mutex>
 #include <vector>
 
 namespace Information_Model::testing {
@@ -41,6 +42,7 @@ private:
 
   void notifyObservers(const DataVariant& value);
 
+  std::mutex mx_;
   IsObservingCallback is_observing_;
   std::vector<std::weak_ptr<ObserverPimpl>> observers_;
 };

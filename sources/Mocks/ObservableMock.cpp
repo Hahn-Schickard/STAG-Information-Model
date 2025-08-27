@@ -31,6 +31,7 @@ struct FakeObserver : public ObserverPimpl {
   ~FakeObserver() override = default;
 
   void dispatch(const shared_ptr<DataVariant>& value) override {
+    unique_lock guard(mx_);
     try {
       callback_(value);
     } catch (...) {
@@ -39,6 +40,7 @@ struct FakeObserver : public ObserverPimpl {
   }
 
 private:
+  mutex mx_;
   Observable::ObserveCallback callback_;
   Observable::ExceptionHandler handler_;
 };
@@ -46,22 +48,27 @@ private:
 ObserverPtr ObservableMock::attachObserver(
     const Observable::ObserveCallback& callback,
     const Observable::ExceptionHandler& handler) {
+  unique_lock guard(mx_);
+  auto was_empty = observers_.empty();
   auto observer = make_shared<FakeObserver>(callback, handler);
-  if (observers_.empty()) {
+  observers_.emplace_back(observer);
+  if (was_empty) {
     is_observing_(true);
   }
-  observers_.emplace_back(observer);
   return observer;
 }
 
 void ObservableMock::notifyObservers(const DataVariant& value) {
-  auto value_ptr = make_shared<DataVariant>(value);
-  for (auto it = observers_.begin(); it != observers_.end();) {
-    if (auto observer = it->lock()) {
-      observer->dispatch(value_ptr);
-      ++it;
-    } else {
-      it = observers_.erase(it);
+  unique_lock guard(mx_);
+  { // we want value_ptr to run out of scope and be destroyed
+    auto value_ptr = make_shared<DataVariant>(value);
+    for (auto it = observers_.begin(); it != observers_.end();) {
+      if (auto observer = it->lock()) {
+        observer->dispatch(value_ptr);
+        ++it;
+      } else {
+        it = observers_.erase(it);
+      }
     }
   }
   if (observers_.empty()) {
