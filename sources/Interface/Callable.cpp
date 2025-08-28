@@ -19,60 +19,77 @@ DataVariant ResultFuture::get() {
 
 uintmax_t ResultFuture::callerID() const { return call_id_; }
 
-void addParameter(Callable::Parameters& map,
-    uintmax_t param_number,
-    const Callable::Parameter& param) {
-  if (!map.try_emplace(param_number, param).second) {
-    auto existing = map[param_number].value_or(DataVariant());
-    auto param_value = param.value_or(DataVariant());
-    string error_msg = "Could not add " + toString(toDataType(param_value)) +
-        "(" + toString(param_value) + ")" + " as parameter number " +
-        to_string(param_number) + " because parameter " +
-        toString(toDataType(existing)) + "(" + toString(existing) +
-        ") is already assigned to that number";
-    throw range_error(error_msg);
+void checkParameter(uintmax_t position,
+    const Callable::Parameter& given,
+    const Callable::ParameterType& expected) {
+  if (const auto& given_value = given) {
+    auto given_type = toDataType(*given_value);
+    if (given_type != expected.type) {
+      throw ParameterTypeMismatch(position, expected.type, given_type);
+    }
+  } else if (expected.mandatory) {
+    throw MandatoryParameterHasNoValue(position, expected.type);
   }
 }
 
 void addSupportedParameter(Callable::Parameters& map,
     const Callable::ParameterTypes& supported_types,
-    uintmax_t param_number,
-    const Callable::Parameter& param) {
-  if (auto it = supported_types.find(param_number);
-      it != supported_types.end()) {
-    auto [type, optional] = it->second;
-    if (param) {
-      const auto& param_value = param.value();
-      if (matchVariantType(param_value, type)) {
-        addParameter(map, param_number, param);
-      } else {
-        string error_msg = "Parameter number " + to_string(param_number) + " " +
-            toString(type) + " does not support " +
-            toString(toDataType(param_value)) + "(" + toString(param_value) +
-            ") value";
-        throw invalid_argument(error_msg);
-      }
-    } else if (optional) {
-      addParameter(map, param_number, nullopt);
-    } else {
-      string error_msg = "Parameter number " + to_string(param_number) + " " +
-          toString(type) + " does not support empty values";
-      throw invalid_argument(error_msg);
-    }
+    uintmax_t position,
+    const Callable::Parameter& parameter,
+    bool strict_assign) {
+  auto it = supported_types.find(position);
+  if (it == supported_types.end()) {
+    throw ParameterDoesNotExist(position);
+  }
+
+  checkParameter(position, parameter, it->second);
+
+  if (strict_assign) {
+    map.insert_or_assign(position, parameter);
   } else {
-    string error_msg =
-        "Parameter number " + to_string(param_number) + " is not supported";
-    throw invalid_argument(error_msg);
+    map.try_emplace(position, parameter);
   }
 }
 
-string toString(Callable::ParameterTypes params) {
-  return accumulate(next(params.begin()),
-      params.end(),
-      toString(params[0].first),
-      [](string& result, pair<uintmax_t, Callable::ParameterType> parameter) {
-        return result + ", " + toString(parameter.second.first);
-      });
+void checkParameters(Callable::Parameters& input_parameters,
+    const Callable::ParameterTypes& supported_types) {
+  for (const auto& [pos, expected] : supported_types) {
+
+    auto it = input_parameters.find(pos);
+    if (it == input_parameters.end() && expected.mandatory) {
+      throw MandatoryParameterMissing(pos, expected.type);
+    }
+
+    if (it != input_parameters.end()) {
+      checkParameter(pos, it->second, expected);
+    }
+  }
+}
+
+string toString(const Callable::ParameterTypes& supported_types) {
+  if (supported_types.empty()) {
+    return "{}";
+  }
+  string result = "{";
+  for (const auto& [position, parameter] : supported_types) {
+    result += "{" + to_string(position) + "," + toString(parameter.type) +
+        (parameter.mandatory ? "mandatory" : "optional") + "},";
+  }
+  result.pop_back(); // pop last , character
+  return result += "}";
+}
+
+string toString(const Callable::Parameters& parameters) {
+  if (parameters.empty()) {
+    return "{}";
+  }
+  string result = "{";
+  for (const auto& [position, parameter] : parameters) {
+    result += "{" + to_string(position) + "," +
+        toString(parameter.value_or("NullOpt")) + "},";
+  }
+  result.pop_back(); // pop last , character
+  return result += "}";
 }
 
 } // namespace Information_Model

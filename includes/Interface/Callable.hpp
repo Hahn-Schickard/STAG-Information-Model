@@ -297,23 +297,65 @@ void addParameter(Callable::Parameters& map,
 
 /**
  * @brief Helper function to expand an existing parameter map with supported
- * parameter types only
+ * parameter types
  *
- * @throws std::invalid_argument - if parameter type or number is not supported
- * @throws std::range_error - if Callable::Parameter value is already assigned
- * at a given parameter number
+ * @throws ParameterDoesNotExist - if no supported parameter type is defined at
+ * a given position
+ * @throws ParameterTypeMismatch - if given parameter does not match the
+ * supported parameter type
+ * @throws MandatoryParameterHasNoValue - if given parameter is marked as
+ * mandatory, but has no value
  *
- * @param map
- * @param supported_types
- * @param param_number
- * @param param
+ * @param map - target container, if operation succeeded, the given container
+ * will be larger by one element
+ * @param supported_types - validation container, obtained from
+ * Callable::parameterTypes();
+ * @param position - parameter position
+ * @param parameter - assigned parameter value
+ * @param strict_assign - if true overrides existing parameter values, otherwise
+ * keeps the old value
  */
 void addSupportedParameter(Callable::Parameters& map,
     const Callable::ParameterTypes& supported_types,
-    uintmax_t param_number,
-    const Callable::Parameter& param);
+    uintmax_t position,
+    const Callable::Parameter& param,
+    bool strict_assign);
 
-std::string toString(Callable::ParameterTypes params);
+/**
+ * @brief Checks if a given container has all the mandatory parameters set and
+ * if set parameters have correct values
+ *
+ * @throws MandatoryParameterMissing - if given container does not have one of
+ * the required parameters
+ * @throws ParameterTypeMismatch - if given parameter does not match the
+ * supported parameter type
+ * @throws MandatoryParameterHasNoValue - if given parameter is marked as
+ * mandatory, but has no value
+ *
+ * @param input_parameters - input container
+ * @param supported_types - validation container, obtained from
+ * Callable::parameterTypes();
+ */
+void checkParameters(Callable::Parameters& input_parameters,
+    const Callable::ParameterTypes& supported_types);
+
+/**
+ * @brief Converts a given Callable::ParameterTypes container to a human
+ * readable string
+ *
+ * @param supported_types
+ * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
+ */
+std::string toString(const Callable::ParameterTypes& supported_types);
+
+/**
+ * @brief Converts a given Callable::Parameters container to a human
+ * readable string
+ *
+ * @param parameters
+ * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
+ */
+std::string toString(const Callable::Parameters& parameters);
 
 using CallablePtr = std::shared_ptr<Callable>;
 /** @}*/
