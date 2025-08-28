@@ -6,26 +6,41 @@
 
 namespace Information_Model::testing {
 
+struct Executor {
+  virtual ~Executor() = default;
+
+  virtual void execute(const Callable::Parameters& params) = 0;
+
+  virtual ResultFuture assignCall(const Callable::Parameters& params) = 0;
+
+  // nullopt disables autoresponse mechanism
+  virtual void autoRespond(const std::optional<DataVariant>& value) = 0;
+
+  virtual void respond(uintmax_t call_id, const DataVariant& value) = 0;
+
+  virtual void respond(
+      uintmax_t call_id, const std::exception_ptr& exception) = 0;
+
+  virtual void respondToAll(const DataVariant& value) = 0;
+
+  virtual void respondToAll(const std::exception_ptr& exception) = 0;
+
+  virtual void cancel(uintmax_t call_id) = 0;
+
+  virtual void cancelAll() = 0;
+};
+
+using ExecutorPtr = std::shared_ptr<Executor>;
+
 struct CallableMock : public Callable {
-  using ExecutorResult = std::pair<uintmax_t, std::future<DataVariant>>;
-  using Executor = std::function<ExecutorResult(Callable::Parameters)>;
-  using Canceler = std::function<void(uintmax_t)>;
-
-  CallableMock() = default;
-
-  explicit CallableMock(const Callable::ParameterTypes& supported_params);
+  CallableMock();
 
   explicit CallableMock(DataType result_type);
 
-  CallableMock(
-      DataType result_type, const std::optional<DataVariant>& result_value);
+  explicit CallableMock(const Callable::ParameterTypes& supported_params);
 
   CallableMock(
       DataType result_type, const Callable::ParameterTypes& supported_params);
-
-  CallableMock(DataType result_type,
-      const Callable::ParameterTypes& supported_params,
-      const std::optional<DataVariant>& result_value);
 
   ~CallableMock() override = default;
 
@@ -38,27 +53,22 @@ struct CallableMock : public Callable {
   MOCK_METHOD(DataType, resultType, (), (const final));
   MOCK_METHOD(ParameterTypes, parameterTypes, (), (const final));
 
-  void respond(uintmax_t call_id, const DataVariant& value);
+  ExecutorPtr getExecutor();
 
-  void respond(uintmax_t call_id, const std::exception_ptr& exception);
+  void changeExecutor(const ExecutorPtr& executor,
+      DataType result_type,
+      const Callable::ParameterTypes& supported_params);
 
-  void respondToAll(const DataVariant& value);
-
-  void respondToAll(const std::exception_ptr& exception);
-
-  void clearCall(uintmax_t call_id);
-
-  void cancelAllCalls();
+  void useDefaultExecutor(
+      std::chrono::milliseconds response_delay = std::chrono::milliseconds(
+          100));
 
 private:
-  ResultFuture allocateAsyncCall();
+  void setExecutor();
 
   DataType result_type_;
   Callable::ParameterTypes supported_params_;
-  std::optional<DataVariant> result_value_;
-  std::unordered_map<uintmax_t, std::promise<DataVariant>> result_promises_;
-  Executor executor_;
-  Canceler canceler_;
+  ExecutorPtr executor_;
 };
 
 using CallableMockPtr = std::shared_ptr<CallableMock>;
