@@ -22,6 +22,43 @@ struct ResultReturningNotSupported : public std::runtime_error {
             "Callable does not support returning execution results") {}
 };
 
+struct MandatoryParameterHasNoValue : public std::invalid_argument {
+  MandatoryParameterHasNoValue(uintmax_t param_id, DataType param_type)
+      : std::invalid_argument("Mandatory parameter " +
+            std::to_string(param_id) + ":" + toString(param_type) +
+            " has no value set") {}
+};
+
+struct MandatoryParameterMissing : public std::invalid_argument {
+  MandatoryParameterMissing(uintmax_t param_id, DataType param_type)
+      : std::invalid_argument("Mandatory parameter " +
+            std::to_string(param_id) + ":" + toString(param_type) +
+            " is missing") {}
+};
+
+struct ParameterTypeMismatch : public std::invalid_argument {
+  ParameterTypeMismatch(uintmax_t param_id, DataType expected, DataType given)
+      : std::invalid_argument("Parameter " + std::to_string(param_id) + ": " +
+            toString(expected) + " does not accept " + toString(given) +
+            " type values") {}
+};
+
+struct ParameterDoesNotExist : public std::invalid_argument {
+  ParameterDoesNotExist(uintmax_t param_id)
+      : std::invalid_argument(
+            "No parameter exists at position " + std::to_string(param_id)) {}
+};
+
+struct ExecutorNotAvailable : public std::runtime_error {
+  ExecutorNotAvailable()
+      : std::runtime_error("Executor callback is no longer available") {}
+};
+
+struct CancellerNotAvailable : public std::runtime_error {
+  CancellerNotAvailable()
+      : std::runtime_error("Canceler callback is no longer available") {}
+};
+
 struct CallerNotFound : public std::runtime_error {
   CallerNotFound(uintmax_t call_id, const std::string& name)
       : std::runtime_error("No caller with id: " + std::to_string(call_id) +
@@ -32,6 +69,12 @@ struct CallerIDExists : public std::runtime_error {
   CallerIDExists(uintmax_t call_id, const std::string& name)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
             " for Callable " + name + " was already dispatched") {}
+};
+
+struct CallAlreadyCanceled : public std::runtime_error {
+  CallAlreadyCanceled(uintmax_t call_id)
+      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
+            " call is already canceled") {}
 };
 
 struct CallCanceled : public std::runtime_error {
