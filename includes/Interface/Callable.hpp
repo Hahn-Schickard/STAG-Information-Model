@@ -3,6 +3,7 @@
 
 #include "DataVariant.hpp"
 
+#include <chrono>
 #include <future>
 #include <memory>
 #include <optional>
@@ -93,11 +94,11 @@ struct CallTimedout : public std::runtime_error {
  *
  */
 struct ResultFuture {
-  using CallClearer = std::function<void(uintmax_t)>;
+  using CallCanceler = std::function<void(uintmax_t)>;
 
   ResultFuture(uintmax_t caller,
-      std::future<DataVariant>&& future_result,
-      const CallClearer& clearer);
+      std::future<DataVariant>&& result,
+      const CallCanceler& canceler);
 
   ResultFuture(const ResultFuture&) = delete;
 
@@ -122,12 +123,20 @@ struct ResultFuture {
    */
   DataVariant get();
 
+  template <class Rep, class Period>
+  std::future_status wait_for(
+      const std::chrono::duration<Rep, Period>& timeout_duration) const {
+    return result_.wait_for(timeout_duration);
+  }
+
+  void cancel();
+
   uintmax_t callerID() const;
 
 private:
-  uintmax_t call_id_;
-  std::future<DataVariant> future_result_;
-  CallClearer clear_caller_;
+  uintmax_t id_;
+  std::future<DataVariant> result_;
+  CallCanceler cancel_;
 };
 
 /**
@@ -149,14 +158,10 @@ struct Callable {
    */
   using Parameters = std::unordered_map<uintmax_t, Parameter>;
 
-  /**
-   * @brief Contains parameter type information
-   *
-   * @param First - parameter data type
-   * @param Second - indicates if this parameter is optional
-   *
-   */
-  using ParameterType = std::pair<DataType, bool>;
+  struct ParameterType {
+    DataType type;
+    bool mandatory = false;
+  };
 
   /**
    * @brief Indexed map of the modeled function parameter types
@@ -241,7 +246,7 @@ struct Callable {
    * @param parameters
    * @return ResultFuture
    */
-  virtual ResultFuture asyncCall(
+  [[nodiscard]] virtual ResultFuture asyncCall(
       const Parameters& parameters = Parameters()) const = 0;
 
   /**
@@ -280,20 +285,11 @@ struct Callable {
   virtual ParameterTypes parameterTypes() const = 0;
 }; // namespace Information_Model
 
-/**
- * @brief Helper function to expand an existing parameter map with a given
- * Callable::Parameter
- *
- * @throws std::range_error - if Callable::Parameter value is already assigned
- * at a given parameter number
- *
- * @param map
- * @param param_number
- * @param param
- */
-void addParameter(Callable::Parameters& map,
-    uintmax_t param_number,
-    const Callable::Parameter& param);
+bool operator==(
+    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs);
+
+bool operator!=(
+    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs);
 
 /**
  * @brief Helper function to expand an existing parameter map with supported

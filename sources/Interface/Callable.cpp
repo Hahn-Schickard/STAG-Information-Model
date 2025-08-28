@@ -1,23 +1,39 @@
 #include "Callable.hpp"
 
-#include <numeric>
-
 namespace Information_Model {
 using namespace std;
 
 ResultFuture::ResultFuture(uintmax_t caller,
-    future<DataVariant>&& future_result,
-    const ResultFuture::CallClearer& clearer)
-    : call_id_(caller), future_result_(move(future_result)),
-      clear_caller_(clearer) {}
+    future<DataVariant>&& result,
+    const ResultFuture::CallCanceler& canceler)
+    : id_(caller), result_(move(result)), cancel_(canceler) {}
 
-DataVariant ResultFuture::get() {
-  auto result = future_result_.get();
-  clear_caller_(call_id_);
-  return result;
+DataVariant ResultFuture::get() { return result_.get(); }
+
+void ResultFuture::cancel() {
+  if (!cancel_) {
+    throw CancellerNotAvailable();
+  }
+
+  cancel_(id_);
+  try {
+    auto result = result_.get();
+  } catch (const CallCanceled&) {
+    // suppress CallCanceled exception
+  }
 }
 
-uintmax_t ResultFuture::callerID() const { return call_id_; }
+uintmax_t ResultFuture::callerID() const { return id_; }
+
+bool operator==(
+    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs) {
+  return lhs.mandatory == rhs.mandatory && lhs.type == rhs.type;
+}
+
+bool operator!=(
+    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs) {
+  return !(lhs == rhs);
+}
 
 void checkParameter(uintmax_t position,
     const Callable::Parameter& given,
