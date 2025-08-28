@@ -20,7 +20,9 @@ target_sources(${TARGET}
 target_link_libraries(${TARGET} 
     PUBLIC
         ${PROJECT_NAME}_Interface
-        GTest::gmock              
+        GTest::gmock
+    PRIVATE
+        Stoppable::Stoppable           
 )
 
 target_include_directories(${TARGET}
