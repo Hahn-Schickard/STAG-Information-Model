@@ -6,7 +6,7 @@ namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
-struct MetaInfoTestParams {
+struct MetaInfoTestParam {
   string test_name;
   string id;
   string name;
@@ -17,7 +17,7 @@ struct MetaInfoTestParams {
   }
 };
 
-struct MetaInfoTests : public TestWithParam<MetaInfoTestParams> {
+struct MetaInfoTests : public TestWithParam<MetaInfoTestParam> {
   MetaInfoTests() : expected(GetParam()) {
     if (expected) {
       tested = make_shared<MetaInfoMock>(
@@ -27,7 +27,7 @@ struct MetaInfoTests : public TestWithParam<MetaInfoTestParams> {
     }
   }
 
-  MetaInfoTestParams expected;
+  MetaInfoTestParam expected;
   MetaInfoMockPtr tested;
 };
 
@@ -52,98 +52,98 @@ TEST_P(MetaInfoTests, returnsDescription) {
 INSTANTIATE_TEST_SUITE_P(MetaInfoTestsValues,
     MetaInfoTests,
     Values( // clang-format off
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Empty",
             "",
             "",
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "ID_Only",
             "0", 
             "", 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Name_Only",
             "", 
             "no_id_is_bad", 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Description_Only",
             "", 
             "", 
             "Meta Info elements without ID are bad"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "ID_And_Name",
             "1", 
             "fake_name", 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "ID_And_Description",
             "2", 
             "", 
             "Meta Info elements without name but with ID are OK"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Simple_Fake",
             "3", 
             "fake", 
             "Fake Meta Info element"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Complex_ID_Fake",
             "id_0123456789!?=|[]{}()<>°^*+-~@#§$%&;:ßöäüµ`¸/\"\'\\", 
             "complex_id_fake", 
             "Fake Meta Info element with an ID containing special chars"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Complex_Name_Fake",
             "4", 
             "fake_0123456789!?=|[]{}()<>°^*+-~@#§$%&;:ßöäüµ`¸/\"\'\\", 
             "Fake Meta Info element with a name containing special chars"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Complex_Description_Fake",
             "5", 
             "complex_desc_fake", 
             "Fake Meta Info element with a description containing special chars\n"
             "_0123456789!?=|[]{}()<>°^*+-~@#§$%&;:ßöäüµ`¸/\"\'\\"
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Long_ID",
             string(261,'1'), 
             "", 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Long_Name",
             "", 
             string(261,'a'), 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Long_Description",
             "", 
             "", 
             string(261,'d')
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Very_Long_ID",
             string(32768,'1'), 
             "", 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Very_Long_Name",
             "", 
             string(32768,'a'), 
             ""
         },
-        MetaInfoTestParams{
+        MetaInfoTestParam{
             "Very_Long_Description",
             "", 
             "", 
