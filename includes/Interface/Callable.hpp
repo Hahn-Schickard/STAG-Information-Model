@@ -332,7 +332,7 @@ void addSupportedParameter(Callable::Parameters& map,
  * @param supported_types - validation container, obtained from
  * Callable::parameterTypes();
  */
-void checkParameters(Callable::Parameters& input_parameters,
+void checkParameters(const Callable::Parameters& input_parameters,
     const Callable::ParameterTypes& supported_types);
 
 /**

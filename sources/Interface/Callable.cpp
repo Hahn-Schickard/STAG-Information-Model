@@ -67,7 +67,7 @@ void addSupportedParameter(Callable::Parameters& map,
   }
 }
 
-void checkParameters(Callable::Parameters& input_parameters,
+void checkParameters(const Callable::Parameters& input_parameters,
     const Callable::ParameterTypes& supported_types) {
   for (const auto& [pos, expected] : supported_types) {
 
