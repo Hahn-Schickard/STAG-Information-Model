@@ -94,6 +94,14 @@ struct CallTimedout : public std::runtime_error {
  *
  */
 struct ResultFuture {
+  /**
+   * @brief Used to indicate that a given future has been consumed or canceled
+   *
+   *
+   * CallClearer(call_id, false) - indicates that the future result has been
+   * consumed CallClearer(call_id, true) - indicates that the given result
+   * request has been canceled
+   */
   using CallClearer = std::function<void(uintmax_t, bool)>;
 
   ResultFuture(uintmax_t caller,
@@ -129,6 +137,15 @@ struct ResultFuture {
     return result_.wait_for(timeout_duration);
   }
 
+  /**
+   * @brief Tries to cancel the requested result. If result was already set,
+   * suppresses the value, otherwise cancels the request.
+   *
+   * @throws std::runtime_error - if result was already delivered and contains
+   * an exception
+   * @throws CancellerNotAvailable - if assigned canceler is no longer available
+   *
+   */
   void cancel();
 
   uintmax_t callerID() const;
