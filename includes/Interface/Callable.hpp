@@ -94,11 +94,11 @@ struct CallTimedout : public std::runtime_error {
  *
  */
 struct ResultFuture {
-  using CallCanceler = std::function<void(uintmax_t)>;
+  using CallClearer = std::function<void(uintmax_t, bool)>;
 
   ResultFuture(uintmax_t caller,
       std::future<DataVariant>&& result,
-      const CallCanceler& canceler);
+      const CallClearer& clearer);
 
   ResultFuture(const ResultFuture&) = delete;
 
@@ -136,7 +136,7 @@ struct ResultFuture {
 private:
   uintmax_t id_;
   std::future<DataVariant> result_;
-  CallCanceler cancel_;
+  CallClearer clearer_;
 };
 
 /**

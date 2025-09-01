@@ -5,21 +5,27 @@ using namespace std;
 
 ResultFuture::ResultFuture(uintmax_t caller,
     future<DataVariant>&& result,
-    const ResultFuture::CallCanceler& canceler)
-    : id_(caller), result_(move(result)), cancel_(canceler) {}
+    const ResultFuture::CallClearer& clearer)
+    : id_(caller), result_(move(result)), clearer_(clearer) {}
 
-DataVariant ResultFuture::get() { return result_.get(); }
+DataVariant ResultFuture::get() {
+  auto result = result_.get();
+  clearer_(id_, false);
+  return result;
+}
 
 void ResultFuture::cancel() {
-  if (!cancel_) {
+  if (wait_for(0ms) == future_status::ready) {
+    auto result = get();
+  } else if (!clearer_) {
     throw CancellerNotAvailable();
-  }
-
-  cancel_(id_);
-  try {
-    auto result = result_.get();
-  } catch (const CallCanceled&) {
-    // suppress CallCanceled exception
+  } else {
+    clearer_(id_, true);
+    try {
+      auto result = get();
+    } catch (const CallCanceled&) { // NOLINT(bugprone-empty-catch)
+      // suppress CallCanceled exception
+    }
   }
 }
 
