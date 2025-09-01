@@ -22,7 +22,8 @@ target_link_libraries(${TARGET}
         ${PROJECT_NAME}_Interface
         GTest::gmock
     PRIVATE
-        Stoppable::Stoppable           
+        Stoppable::Stoppable
+        Variant_Visitor::Variant_Visitor      
 )
 
 target_include_directories(${TARGET}
