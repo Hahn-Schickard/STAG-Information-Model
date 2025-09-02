@@ -18,7 +18,13 @@ using ElementPtr = std::shared_ptr<Element>;
 struct ElementNotFound : public std::runtime_error {
   explicit ElementNotFound(const std::string& ref_id)
       : std::runtime_error(
-            "DeviceElement with reference id " + ref_id + " was not found") {}
+            "Element with reference id " + ref_id + " was not found") {}
+};
+
+struct IDPointsThisGroup : public std::logic_error {
+  explicit IDPointsThisGroup(const std::string& ref_id)
+      : std::logic_error(
+            "Reference ID " + ref_id + " points to this group element") {}
 };
 /**
  * @brief An interface to DeviceElementGroup
