@@ -77,7 +77,7 @@ struct Element : public MetaInfo {
   virtual ElementFunction function() const = 0;
 };
 
-using DeviceElementPtr = std::shared_ptr<DeviceElement>;
+using ElementPtr = std::shared_ptr<Element>;
 /** @}*/
 } // namespace Information_Model
 
