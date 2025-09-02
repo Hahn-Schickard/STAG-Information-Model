@@ -44,7 +44,7 @@ struct Group {
    *
    * @return DeviceElements
    */
-  virtual Elements elements() const = 0;
+  virtual Elements getElements() const = 0;
 
   /**
    * @brief Searches and returns a DeviceElement that matches a given reference
@@ -54,7 +54,7 @@ struct Group {
    * exists within this group
    *
    */
-  virtual ElementPtr element(const std::string& ref_id) const = 0;
+  virtual ElementPtr getElement(const std::string& ref_id) const = 0;
 
   virtual ~Group() = default;
 };

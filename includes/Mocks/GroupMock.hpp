@@ -12,8 +12,8 @@ struct GroupMock : public Group {
 
   ~GroupMock() override = default;
 
-  MOCK_METHOD(Group::Elements, elements, (), (const final));
-  MOCK_METHOD(ElementPtr, element, (const std::string&), (const final));
+  MOCK_METHOD(Group::Elements, getElements, (), (const final));
+  MOCK_METHOD(ElementPtr, getElement, (const std::string&), (const final));
 };
 
 using GroupMockPtr = std::shared_ptr<GroupMock>;
