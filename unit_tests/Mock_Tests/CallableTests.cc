@@ -1,17 +1,42 @@
 #include "CallableMock.hpp"
 
+#include <Variant_Visitor/Visitor.hpp>
 #include <gtest/gtest.h>
 
 namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
+string toString(const Executor::Response& response) {
+  return Variant_Visitor::match(
+      response,
+      [](const DataVariant& value) { return toString(value); },
+      [](const exception_ptr& exception) -> string {
+        if (!exception) {
+          return "No exception value";
+        }
+        try {
+          rethrow_exception(exception);
+        } catch (const std::exception& ex) {
+          return ex.what();
+        }
+      });
+}
+
 struct CallableTestParam {
   string test_name = "0";
   DataType result_type = DataType::None;
   Callable::ParameterTypes supported_params;
-  Executor::Response default_response;
+  Executor::Response default_response =
+      make_exception_ptr(logic_error("Response should not return values"));
   Callable::Parameters parameters;
+
+  friend void PrintTo(const CallableTestParam& param, std::ostream* os) {
+    *os << "(result_type: " << toString(param.result_type)
+        << ", supported_params: " << toString(param.supported_params)
+        << ", default_response: " << toString(param.default_response)
+        << ", parameters: " << toString(param.parameters) << ")";
+  }
 };
 
 struct CallableTests : public TestWithParam<CallableTestParam> {

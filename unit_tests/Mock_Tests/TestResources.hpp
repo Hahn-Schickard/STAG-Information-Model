@@ -5,6 +5,7 @@
 
 #include <Variant_Visitor/Visitor.hpp>
 #include <functional>
+#include <ostream>
 #include <stdexcept>
 
 namespace Information_Model::testing {
@@ -33,6 +34,15 @@ struct ReadableTestParam {
   DataType dataType() const { return type_; }
 
   ReadCallback readCallback() const { return read_cb_; }
+
+  friend void PrintTo(const ReadableTestParam& param, std::ostream* os) {
+    *os << "(value: " << toString(param.value_)
+        << ", type: " << toString(param.type_) << ", callback: "
+        << (param.read_cb_ == nullptr ? "nullptr"
+                                      : std::to_string((size_t)&param.read_cb_))
+
+        << ")";
+  }
 
 protected:
   DataVariant value_;
