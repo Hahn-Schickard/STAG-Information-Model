@@ -26,6 +26,7 @@ struct ObservableMock : virtual public Observable, public ReadableMock {
   explicit ObservableMock(const DataVariant& value);
 
   ObservableMock(DataType type, const ReadCallback& read_cb);
+
   ~ObservableMock() override = default;
 
   void enableSubscribeFaking(const IsObservingCallback& callback);
