@@ -97,7 +97,7 @@ int main() {
   cout << "Observer removed" << endl;
 
   observable->notify("No one is listening");
-  cout << "No once received the last notification" << endl;
+  cout << "No one received the last notification" << endl;
   cout << "Task is " << (task.running() ? "running" : "no longer running")
        << endl;
 
