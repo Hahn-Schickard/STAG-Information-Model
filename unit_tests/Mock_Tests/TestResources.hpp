@@ -35,6 +35,7 @@ struct ReadableTestParam {
 
   ReadCallback readCallback() const { return read_cb_; }
 
+  // fix for https://github.com/google/googletest/issues/3805
   friend void PrintTo(const ReadableTestParam& param, std::ostream* os) {
     *os << "(value: " << toString(param.value_)
         << ", type: " << toString(param.type_) << ", callback: "
