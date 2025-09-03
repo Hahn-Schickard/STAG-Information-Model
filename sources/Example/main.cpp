@@ -14,7 +14,7 @@ using namespace std;
 using namespace Information_Model;
 using namespace Information_Model::testing;
 
-int main() {
+int main(int argc, char** argv) {
   DataVariant value = "Hello World";
   mutex mx;
 
@@ -37,69 +37,70 @@ int main() {
   writable->write("Hello Universe");
   writable->read();
 
-  auto observable = make_shared<::testing::NiceMock<ObservableMock>>(
-      toDataType(value), read_cb);
+  if (argc == 1) { // if more than 1 arg, using valgrind, so disable this block
+    auto observable = make_shared<::testing::NiceMock<ObservableMock>>(
+        toDataType(value), read_cb);
 
-  size_t notification_counter = 0;
-  auto task = Stoppable::Task(
-      [&notification_counter, observable_ptr = weak_ptr(observable)]() {
-        if (auto observable = observable_ptr.lock()) {
-          auto value = "Event " + to_string(notification_counter);
-          observable->notify(value);
-          ++notification_counter;
-        }
-        this_thread::sleep_for(10ms);
-      },
-      [&mx](const std::exception_ptr& ex_ptr) {
-        try {
-          if (ex_ptr) {
-            rethrow_exception(ex_ptr);
+    size_t notification_counter = 0;
+    auto task = Stoppable::Task(
+        [&notification_counter, observable_ptr = weak_ptr(observable)]() {
+          if (auto observable = observable_ptr.lock()) {
+            auto value = "Event " + to_string(notification_counter);
+            observable->notify(value);
+            ++notification_counter;
           }
-        } catch (const std::exception& ex) {
+          this_thread::sleep_for(10ms);
+        },
+        [&mx](const std::exception_ptr& ex_ptr) {
+          try {
+            if (ex_ptr) {
+              rethrow_exception(ex_ptr);
+            }
+          } catch (const std::exception& ex) {
+            std::unique_lock guard(mx);
+            cerr << "Stoppable task caught an exception: " << ex.what() << endl;
+          }
+        });
+    observable->enableSubscribeFaking([&mx, &task](bool observing) {
+      std::unique_lock guard(mx);
+      if (observing) {
+        cout << "Starting to dispatch notifications" << endl;
+        task.start();
+        cout << "Task has been started" << endl;
+      } else {
+        cout << "Stopping notification dispatch" << endl;
+        task.stop();
+        cout << "Task has been stopped" << endl;
+      }
+    });
+
+    cout << "Attaching and observer" << endl;
+    auto observer = observable->subscribe(
+        [&mx](const shared_ptr<DataVariant>& updated) {
           std::unique_lock guard(mx);
-          cerr << "Stoppable task caught an exception: " << ex.what() << endl;
-        }
-      });
-  observable->enableSubscribeFaking([&mx, &task](bool observing) {
-    std::unique_lock guard(mx);
-    if (observing) {
-      cout << "Starting to dispatch notifications" << endl;
-      task.start();
-      cout << "Task has been started" << endl;
-    } else {
-      cout << "Stopping notification dispatch" << endl;
-      task.stop();
-      cout << "Task has been stopped" << endl;
-    }
-  });
-
-  cout << "Attaching and observer" << endl;
-  auto observer = observable->subscribe(
-      [&mx](const shared_ptr<DataVariant>& updated) {
-        std::unique_lock guard(mx);
-        cout << "Received value update: " << toString(*updated) << endl;
-      },
-      [&mx](const std::exception_ptr& ex_ptr) {
-        std::unique_lock guard(mx);
-        try {
-          if (ex_ptr) {
-            rethrow_exception(ex_ptr);
+          cout << "Received value update: " << toString(*updated) << endl;
+        },
+        [&mx](const std::exception_ptr& ex_ptr) {
+          std::unique_lock guard(mx);
+          try {
+            if (ex_ptr) {
+              rethrow_exception(ex_ptr);
+            }
+          } catch (const std::exception& ex) {
+            cerr << "Observer caught an exception: " << ex.what() << endl;
           }
-        } catch (const std::exception& ex) {
-          cerr << "Observer caught an exception: " << ex.what() << endl;
-        }
-      });
+        });
 
-  this_thread::sleep_for(100ms);
-  observable->notify("Goodbye Everyone");
+    this_thread::sleep_for(100ms);
+    observable->notify("Goodbye Everyone");
 
-  observer.reset();
-  cout << "Observer removed" << endl;
+    observer.reset();
+    cout << "Observer removed" << endl;
 
-  observable->notify("No one is listening");
-  cout << "No one received the last notification" << endl;
-  cout << "Task is " << (task.running() ? "running" : "no longer running")
-       << endl;
-
+    observable->notify("No one is listening");
+    cout << "No one received the last notification" << endl;
+    cout << "Task is " << (task.running() ? "running" : "no longer running")
+         << endl;
+  }
   return 0;
 }
