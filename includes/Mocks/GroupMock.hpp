@@ -12,6 +12,7 @@ struct GroupMock : public Group {
 
   ~GroupMock() override = default;
 
+  MOCK_METHOD(size_t, size, (), (const final));
   MOCK_METHOD(
       (std::unordered_map<std::string, ElementPtr>), asMap, (), (const final));
   MOCK_METHOD(std::vector<ElementPtr>, asVector, (), (const final));

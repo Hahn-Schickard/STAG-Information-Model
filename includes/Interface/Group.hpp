@@ -42,6 +42,8 @@ struct Group {
 
   virtual ~Group() = default;
 
+  virtual size_t size() const = 0;
+
   virtual std::unordered_map<std::string, ElementPtr> asMap() const = 0;
 
   /**

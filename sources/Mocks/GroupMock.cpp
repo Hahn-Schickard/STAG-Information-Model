@@ -18,6 +18,7 @@ vector<ElementPtr> toVector(const unordered_map<string, ElementPtr>& map) {
 }
 
 GroupMock::GroupMock(const string& id) : id_(id) {
+  ON_CALL(*this, size).WillByDefault(Return(elements_.size()));
   ON_CALL(*this, asMap).WillByDefault(Return(elements_));
   ON_CALL(*this, asVector).WillByDefault(Return(toVector(elements_)));
   ON_CALL(*this, element).WillByDefault(Invoke(this, &GroupMock::getElement));
