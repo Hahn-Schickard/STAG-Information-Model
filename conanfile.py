@@ -70,14 +70,14 @@ class PackageConan(ConanFile):
                       visible=False
                       )
         if self.options.with_mocks:
-            self.requires("gtest/1.16.0",
+            self.requires("gtest/1.17.0",
                           headers=True,
                           libs=True,
                           transitive_headers=True,
                           transitive_libs=True
                           )
         else:
-            self.test_requires("gtest/1.16.0")
+            self.test_requires("gtest/1.17.0")
         # @- END USER REQUIREMENTS
 
     def build_requirements(self):
