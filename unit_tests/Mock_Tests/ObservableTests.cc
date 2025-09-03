@@ -18,11 +18,6 @@ MATCHER_P(ExceptionPointee, exception_type, "") {
   }
 }
 
-struct ObservableTestParam : public ReadableTestParam {
-  using ReadCallback = ReadableTestParam::ReadCallback;
-  using IsObservingCallback = ObservableMock::IsObservingCallback;
-};
-
 struct ObservableTests : public TestWithParam<ReadableTestParam> {
   ObservableTests() {
     auto param = GetParam();
