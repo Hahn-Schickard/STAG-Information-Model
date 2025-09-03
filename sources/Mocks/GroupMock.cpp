@@ -13,7 +13,7 @@ string GroupMock::generateID() {
 
 GroupMock::GroupMock(const string& id) : id_(id) {}
 
-void GroupMock::addDeviceElement(const ElementPtr& element) {
+void GroupMock::addElement(const ElementPtr& element) {
   if (!element) {
     throw invalid_argument("Given element is empty");
   }
@@ -40,7 +40,7 @@ void GroupMock::addDeviceElement(const ElementPtr& element) {
   }
 }
 
-ElementPtr GroupMock::_getElement(const string& ref_id) {
+ElementPtr GroupMock::getElement(const string& ref_id) {
   if (ref_id.compare(0, id_.length(), id_) != 0) {
     // if referenced id does not start with this id, than the element is not in
     // this group
@@ -62,7 +62,7 @@ ElementPtr GroupMock::_getElement(const string& ref_id) {
   } else {
     auto subgroup_id = sub_id.substr(0, group_marker);
     if (auto it = subgroups_.find(subgroup_id); it != subgroups_.end()) {
-      return it->second->getElement(ref_id);
+      return it->second->element(ref_id);
     } else {
       // no subgroup containing given id exists
       throw ElementNotFound(ref_id);

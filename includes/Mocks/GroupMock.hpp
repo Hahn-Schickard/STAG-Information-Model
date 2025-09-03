@@ -12,14 +12,14 @@ struct GroupMock : public Group {
 
   ~GroupMock() override = default;
 
-  MOCK_METHOD(Group::Elements, getElements, (), (const final));
-  MOCK_METHOD(ElementPtr, getElement, (const std::string&), (const final));
+  MOCK_METHOD(Group::Elements, all, (), (const final));
+  MOCK_METHOD(ElementPtr, element, (const std::string&), (const final));
 
   std::string generateID();
-  void addDeviceElement(const ElementPtr& element);
+  void addElement(const ElementPtr& element);
 
 private:
-  ElementPtr _getElement(const std::string& ref_id);
+  ElementPtr getElement(const std::string& ref_id);
 
   std::unordered_map<std::string, ElementPtr> elements_;
   std::unordered_map<std::string, GroupPtr> subgroups_;
