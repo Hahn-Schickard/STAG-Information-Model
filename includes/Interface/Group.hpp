@@ -1,9 +1,11 @@
 #ifndef __STAG_INFORMATION_MODEL_GROUP_HPP
 #define __STAG_INFORMATION_MODEL_GROUP_HPP
 
+#include <functional>
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace Information_Model {
@@ -36,7 +38,11 @@ struct IDPointsThisGroup : public std::logic_error {
  * built via DeviceBuilderInterface::addDeviceElementGroup()
  */
 struct Group {
-  using Elements = std::vector<ElementPtr>;
+  using Visitor = std::function<void(const ElementPtr&)>;
+
+  virtual ~Group() = default;
+
+  virtual std::unordered_map<std::string, ElementPtr> asMap() const = 0;
 
   /**
    * @brief Returns a vector of contained elements ordered by DeviceElement
@@ -44,7 +50,7 @@ struct Group {
    *
    * @return DeviceElements
    */
-  virtual Elements all() const = 0;
+  virtual std::vector<ElementPtr> asVector() const = 0;
 
   /**
    * @brief Searches and returns a DeviceElement that matches a given reference
@@ -56,7 +62,7 @@ struct Group {
    */
   virtual ElementPtr element(const std::string& ref_id) const = 0;
 
-  virtual ~Group() = default;
+  virtual void visit(const Visitor& visitor) const = 0;
 };
 
 using GroupPtr = std::shared_ptr<Group>;

@@ -5,13 +5,34 @@ namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
+vector<ElementPtr> toVector(const unordered_map<string, ElementPtr>& map) {
+  vector<ElementPtr> result;
+
+  if (!map.empty()) {
+    result.reserve(map.size());
+    for (const auto& [_, element] : map) {
+      result.push_back(element);
+    }
+  }
+  return result;
+}
+
+GroupMock::GroupMock(const string& id) : id_(id) {
+  ON_CALL(*this, asMap).WillByDefault(Return(elements_));
+  ON_CALL(*this, asVector).WillByDefault(Return(toVector(elements_)));
+  ON_CALL(*this, element).WillByDefault(Invoke(this, &GroupMock::getElement));
+  ON_CALL(*this, visit).WillByDefault([this](const Group::Visitor& visitor) {
+    for_each(elements_.begin(), elements_.end(), [visitor](const auto& pair) {
+      visitor(pair.second);
+    });
+  });
+}
+
 string GroupMock::generateID() {
   string new_id = (id_.back() == ':' ? id_ : id_ + '.') + to_string(next_id_);
   next_id_++;
   return new_id;
 }
-
-GroupMock::GroupMock(const string& id) : id_(id) {}
 
 void GroupMock::addElement(const ElementPtr& element) {
   if (!element) {
