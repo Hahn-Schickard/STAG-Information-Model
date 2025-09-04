@@ -39,7 +39,7 @@ struct MandatoryParameterMissing : public std::invalid_argument {
 
 struct ParameterTypeMismatch : public std::invalid_argument {
   ParameterTypeMismatch(uintmax_t param_id, DataType expected, DataType given)
-      : std::invalid_argument("Parameter " + std::to_string(param_id) + ": " +
+      : std::invalid_argument("Parameter " + std::to_string(param_id) + ":" +
             toString(expected) + " does not accept " + toString(given) +
             " type values") {}
 };
