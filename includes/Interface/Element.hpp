@@ -69,7 +69,7 @@ using ElementFunction = std::variant< // clang-format off
  * Describes the modeled entity as well as provides the user with a
  * generic way of accessing the entity's functionality
  */
-struct Element : public MetaInfo {
+struct Element : virtual public MetaInfo {
   ~Element() override = default;
 
   virtual ElementType type() const = 0;
