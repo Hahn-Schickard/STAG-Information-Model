@@ -162,30 +162,20 @@ TEST_P(CallableTests, canCancelAllAsyncCalls) {
   }
 }
 
-// TEST_P(CallableTests, executorThrowsCallerNotFound) {
-//   auto executor = tested->getExecutor();
+TEST_P(CallableTests, executorThrowsCallerNotFound) {
+  auto executor = tested->getExecutor();
 
-//   auto respond_with_value = [&]() { executor->respond(0, true); };
-//   EXPECT_THAT(
-//       move(respond_with_value), //@todo: check if we can define lambda in
-//       place ThrowsMessage<CallerNotFound>(HasSubstr(
-//           "No caller with id: 0 for Callable ExternalExecutor call
-//           exists")));
+  EXPECT_THAT([&]() { executor->respond(0, true); },
+      ThrowsMessage<CallerNotFound>(HasSubstr(
+          "No caller with id: 0 for Callable ExternalExecutor call exists")));
 
-//   auto respond_with_exception = [&]() {
-//     executor->respond(1, make_exception_ptr(runtime_error("Not thrown")));
-//   };
-//   EXPECT_THAT(move(respond_with_exception),
-//       ThrowsMessage<CallerNotFound>(HasSubstr(
-//           "No caller with id: 1 for Callable ExternalExecutor call
-//           exists")));
-
-//   auto cancel_call = [&]() { executor->cancel(2); };
-//   EXPECT_THAT(move(cancel_call),
-//       ThrowsMessage<CallerNotFound>(HasSubstr(
-//           "No caller with id: 2 for Callable ExternalExecutor call
-//           exists")));
-// }
+  EXPECT_THAT(
+      [&]() {
+        executor->respond(1, make_exception_ptr(runtime_error("Not thrown")));
+      },
+      ThrowsMessage<CallerNotFound>(HasSubstr(
+          "No caller with id: 1 for Callable ExternalExecutor call exists")));
+}
 
 // NOLINTBEGIN(readability-magic-numbers)
 INSTANTIATE_TEST_SUITE_P(CallableTestsValues,
