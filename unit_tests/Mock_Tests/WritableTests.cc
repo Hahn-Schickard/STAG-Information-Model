@@ -19,6 +19,12 @@ struct WritableTestParam : public ReadableTestParam {
 
   bool isWriteOnly() const { return write_only_; }
 
+  friend void PrintTo(const WritableTestParam& param, std::ostream* os) {
+    *os << "(write_only: " << param.write_only_
+        << (param.write_only_ ? "" : ", value: " + toString(param.value_))
+        << ", type: " << toString(param.type_) << ")";
+  }
+
 protected:
   bool write_only_ = false;
 };
