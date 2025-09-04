@@ -53,12 +53,9 @@ void GroupMock::addElement(const ElementPtr& element) {
   }
   if (element->type() == ElementType::Group) {
     auto subgroup_id = sub_id.substr(0, sub_id.find('.'));
-    if (!subgroups_
-            .try_emplace(subgroup_id, dynamic_pointer_cast<Group>(element))
-            .second) {
-      throw logic_error("Subgroup with id " + subgroup_id + " for element " +
-          element->id() + " is already indexed");
-    }
+    auto subgroup =
+        dynamic_pointer_cast<GroupMock>(get<GroupPtr>(element->function()));
+    subgroups_.try_emplace(subgroup_id, subgroup);
   }
 }
 
