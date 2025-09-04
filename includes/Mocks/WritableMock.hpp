@@ -34,7 +34,9 @@ struct WritableMock : virtual public Writable, public ReadableMock {
 
   void setWriteOnly(bool write_only);
 
-  void updateCallback(const WriteCallback& write_cb);
+  void updateReadCallback(const ReadCallback& read_cb);
+
+  void updateWriteCallback(const WriteCallback& write_cb);
 
   void updateCallbacks(
       const ReadCallback& read_cb, const WriteCallback& write_cb);

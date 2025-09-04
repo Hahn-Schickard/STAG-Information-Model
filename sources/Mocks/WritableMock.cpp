@@ -18,21 +18,21 @@ WritableMock::WritableMock(const DataVariant& value) : ReadableMock(value) {
 
 WritableMock::WritableMock(DataType type, const WriteCallback& write_cb) {
   updateType(type);
-  updateCallback(write_cb);
+  updateWriteCallback(write_cb);
   setWriteOnly(true);
 }
 
 WritableMock::WritableMock(
     const DataVariant& value, const WriteCallback& write_cb, bool write_only) {
   updateValue(value);
-  updateCallback(write_cb);
+  updateWriteCallback(write_cb);
   setWriteOnly(write_only);
 }
 
 WritableMock::WritableMock(
     DataType type, const ReadCallback& read_cb, const WriteCallback& write_cb)
     : ReadableMock(type, read_cb) {
-  updateCallback(write_cb);
+  updateWriteCallback(write_cb);
   setWriteOnly(false);
 }
 
@@ -41,7 +41,7 @@ WritableMock::WritableMock(const DataVariant& value,
     const WriteCallback& write_cb)
     : ReadableMock(toDataType(value), read_cb) {
   updateValue(value);
-  updateCallback(write_cb);
+  updateWriteCallback(write_cb);
   setWriteOnly(false);
 }
 
@@ -52,7 +52,15 @@ void WritableMock::setWriteOnly(bool write_only) {
   ON_CALL(*this, isWriteOnly).WillByDefault(Return(write_only));
 }
 
-void WritableMock::updateCallback(const WriteCallback& write_cb) {
+void WritableMock::updateReadCallback(const ReadCallback& read_cb) {
+  if (read_cb) {
+    ReadableMock::updateReadCallback(read_cb);
+  } else {
+    setWriteOnly(true);
+  }
+}
+
+void WritableMock::updateWriteCallback(const WriteCallback& write_cb) {
   // NOLINTNEXTLINE(bugprone-assignment-in-if-condition)
   if ((write_ = write_cb)) { // we want to assign and check if it was unset
     ON_CALL(*this, write).WillByDefault(write_);
@@ -63,12 +71,7 @@ void WritableMock::updateCallback(const WriteCallback& write_cb) {
 
 void WritableMock::updateCallbacks(
     const ReadCallback& read_cb, const WriteCallback& write_cb) {
-  if (read_cb) {
-    ReadableMock::updateCallback(read_cb);
-  } else {
-    setWriteOnly(true);
-  }
-
-  updateCallback(write_cb);
+  updateReadCallback(read_cb);
+  updateWriteCallback(write_cb);
 }
 } // namespace Information_Model::testing

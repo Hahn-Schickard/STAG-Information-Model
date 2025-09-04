@@ -68,7 +68,7 @@ TEST_P(ReadableTests, canChangeCallback) {
       .Times(Exactly(2))
       .WillRepeatedly(Return(otherThan(expected_variant)));
 
-  tested->updateCallback(mock_readable.AsStdFunction());
+  tested->updateReadCallback(mock_readable.AsStdFunction());
 
   auto read_value = tested->read();
   EXPECT_NE(read_value, expected_variant);
@@ -79,7 +79,7 @@ TEST_P(ReadableTests, canChangeCallback) {
 TEST_P(ReadableTests, canUnsetCallback) {
   EXPECT_CALL(*tested, read).Times(Exactly(1));
 
-  tested->updateCallback(nullptr);
+  tested->updateReadCallback(nullptr);
 
   EXPECT_THROW(tested->read(), ReadCallbackUnavailable);
 }

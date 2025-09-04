@@ -145,7 +145,7 @@ TEST_P(WritableTests, canChangeWriteCallback) {
       .Times(Exactly(1));
   EXPECT_CALL(other_mock_writable, Call(expected_variant)).Times(Exactly(1));
 
-  tested->updateCallback(other_mock_writable.AsStdFunction());
+  tested->updateWriteCallback(other_mock_writable.AsStdFunction());
 
   EXPECT_NO_THROW(tested->write(expected_variant));
   EXPECT_NO_THROW(tested->write(otherThan(expected_variant)));
@@ -155,7 +155,7 @@ TEST_P(WritableTests, canUnsetCallbacks) {
   EXPECT_CALL(*tested, read).Times(Exactly(1));
   EXPECT_CALL(*tested, write).Times(Exactly(1));
 
-  tested->updateCallback(nullptr);
+  tested->updateCallbacks(nullptr, nullptr);
 
   EXPECT_THROW(tested->read(), NonReadable);
   EXPECT_THROW(tested->write(true), WriteCallbackUnavailable);

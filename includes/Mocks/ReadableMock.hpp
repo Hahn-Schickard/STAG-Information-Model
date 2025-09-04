@@ -22,7 +22,7 @@ struct ReadableMock : virtual public Readable {
 
   void updateType(DataType type);
 
-  void updateCallback(const ReadCallback& read_cb);
+  void updateReadCallback(const ReadCallback& read_cb);
 
   void updateValue(const DataVariant& value);
 

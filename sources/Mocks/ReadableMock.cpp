@@ -9,7 +9,7 @@ ReadableMock::ReadableMock(const DataVariant& value) { updateValue(value); }
 
 ReadableMock::ReadableMock(DataType type, const ReadCallback& read_cb)
     : ReadableMock(type) {
-  updateCallback(read_cb);
+  updateReadCallback(read_cb);
 }
 
 void ReadableMock::updateType(DataType type) {
@@ -17,7 +17,7 @@ void ReadableMock::updateType(DataType type) {
   ON_CALL(*this, dataType).WillByDefault(Return(type_));
 }
 
-void ReadableMock::updateCallback(const ReadCallback& read_cb) {
+void ReadableMock::updateReadCallback(const ReadCallback& read_cb) {
   // NOLINTNEXTLINE(bugprone-assignment-in-if-condition)
   if (read_ = read_cb) { // we want to assign and check if it was unset
     ON_CALL(*this, read).WillByDefault(read_);
