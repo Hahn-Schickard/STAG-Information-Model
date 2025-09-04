@@ -3,7 +3,7 @@
 
 #include "Element.hpp"
 #include "Group.hpp"
-#include "NamedElement.hpp"
+#include "MetaInfo.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -27,7 +27,7 @@ namespace Information_Model {
  * This interface is implemented in Information Model Manager Project and is
  * built via DeviceBuilderInterface
  */
-struct Device : public MetaInfo {
+struct Device : virtual public MetaInfo {
   virtual ~Device() = default;
 
   virtual GroupPtr group() const = 0;
