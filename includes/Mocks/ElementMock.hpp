@@ -12,23 +12,7 @@
 namespace Information_Model::testing {
 
 struct ElementMock : virtual public Element, public MetaInfoMock {
-  ElementMock(const GroupMockPtr& group,
-      const std::string& id,
-      const std::optional<FullMetaInfo>& meta = std::nullopt);
-
-  ElementMock(const ReadableMockPtr& readable,
-      const std::string& id,
-      const std::optional<FullMetaInfo>& meta = std::nullopt);
-
-  ElementMock(const WritableMockPtr& writable,
-      const std::string& id,
-      const std::optional<FullMetaInfo>& meta = std::nullopt);
-
-  ElementMock(const ObservableMockPtr& observable,
-      const std::string& id,
-      const std::optional<FullMetaInfo>& meta = std::nullopt);
-
-  ElementMock(const CallableMockPtr& callable,
+  ElementMock(const ElementFunction& function,
       const std::string& id,
       const std::optional<FullMetaInfo>& meta = std::nullopt);
 

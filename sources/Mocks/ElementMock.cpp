@@ -1,45 +1,30 @@
 #include "ElementMock.hpp"
 
+#include <Variant_Visitor/Visitor.hpp>
+
 namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
-ElementMock::ElementMock(const GroupMockPtr& group,
-    const std::string& id,
-    const std::optional<FullMetaInfo>& meta)
-    : MetaInfoMock(id, meta), type_(ElementType::Group), function_(group) {
-  setOnCall();
+ElementType getElementType(const ElementFunction& function) {
+  return Variant_Visitor::match(
+      function,
+      [](const GroupPtr&) { return ElementType::Group; },
+      [](const ReadablePtr&) { return ElementType::Readable; },
+      [](const WritablePtr&) { return ElementType::Writable; },
+      [](const ObservablePtr&) { return ElementType::Observable; },
+      [](const CallablePtr&) { return ElementType::Callable; },
+      [](auto) {
+        throw logic_error(
+            "Could not resolve ElementType based on ElementFunction value");
+      });
 }
 
-ElementMock::ElementMock(const ReadableMockPtr& readable,
+ElementMock::ElementMock(const ElementFunction& function,
     const std::string& id,
     const std::optional<FullMetaInfo>& meta)
-    : MetaInfoMock(id, meta), type_(ElementType::Readable),
-      function_(readable) {
-  setOnCall();
-}
-
-ElementMock::ElementMock(const WritableMockPtr& writable,
-    const std::string& id,
-    const std::optional<FullMetaInfo>& meta)
-    : MetaInfoMock(id, meta), type_(ElementType::Writable),
-      function_(writable) {
-  setOnCall();
-}
-
-ElementMock::ElementMock(const ObservableMockPtr& observable,
-    const std::string& id,
-    const std::optional<FullMetaInfo>& meta)
-    : MetaInfoMock(id, meta), type_(ElementType::Observable),
-      function_(observable) {
-  setOnCall();
-}
-
-ElementMock::ElementMock(const CallableMockPtr& callable,
-    const std::string& id,
-    const std::optional<FullMetaInfo>& meta)
-    : MetaInfoMock(id, meta), type_(ElementType::Callable),
-      function_(callable) {
+    : MetaInfoMock(id, meta), type_(getElementType(function)),
+      function_(function) {
   setOnCall();
 }
 
