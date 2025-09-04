@@ -12,12 +12,6 @@
 namespace Information_Model::testing {
 
 struct ElementMock : virtual public Element, public MetaInfoMock {
-  ElementMock() = default;
-
-  ElementMock(ElementType type,
-      const std::string& id,
-      const std::optional<FullMetaInfo>& meta = std::nullopt);
-
   ElementMock(const GroupMockPtr& group,
       const std::string& id,
       const std::optional<FullMetaInfo>& meta = std::nullopt);
@@ -44,8 +38,10 @@ struct ElementMock : virtual public Element, public MetaInfoMock {
   MOCK_METHOD(ElementFunction, function, (), (const final));
 
 private:
+  void setOnCall();
+
   ElementType type_;
-  std::optional<ElementFunction> function_;
+  ElementFunction function_;
 };
 
 using ElementMockPtr = std::shared_ptr<ElementMock>;
