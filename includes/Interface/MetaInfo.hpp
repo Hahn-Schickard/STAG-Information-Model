@@ -10,7 +10,9 @@ struct MetaInfo {
   virtual ~MetaInfo() = default;
 
   virtual std::string id() const = 0;
+
   virtual std::string name() const = 0;
+
   virtual std::string description() const = 0;
 };
 
