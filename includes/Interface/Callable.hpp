@@ -332,7 +332,7 @@ void addSupportedParameter(Callable::Parameters& map,
     const Callable::ParameterTypes& supported_types,
     uintmax_t position,
     const Callable::Parameter& param,
-    bool strict_assign);
+    bool strict_assign = false);
 
 /**
  * @brief Checks if a given container has all the mandatory parameters set and
