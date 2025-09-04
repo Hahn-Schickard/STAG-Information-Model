@@ -15,11 +15,6 @@ struct MetaInfoTestParam {
   explicit operator bool() const {
     return !id.empty() || !name.empty() || !description.empty();
   }
-
-  friend void PrintTo(const MetaInfoTestParam& param, std::ostream* os) {
-    *os << "(id: " << param.id << ", name:" << param.name
-        << ", description:" << param.description << ")";
-  }
 };
 
 struct MetaInfoTests : public TestWithParam<MetaInfoTestParam> {
