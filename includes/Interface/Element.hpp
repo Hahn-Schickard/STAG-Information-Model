@@ -78,6 +78,15 @@ struct Element : virtual public MetaInfo {
 };
 
 using ElementPtr = std::shared_ptr<Element>;
+
+inline bool operator==(const ElementPtr& lhs, const ElementPtr& rhs) {
+  return lhs->id() == rhs->id() && lhs->name() == rhs->name() &&
+      lhs->description() == rhs->description() && lhs->type() == rhs->type();
+}
+
+inline bool operator!=(const ElementPtr& lhs, const ElementPtr& rhs) {
+  return !(lhs == rhs);
+}
 /** @}*/
 } // namespace Information_Model
 
