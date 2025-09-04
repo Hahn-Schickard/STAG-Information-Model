@@ -14,11 +14,11 @@ using namespace std;
 using namespace Information_Model;
 using namespace Information_Model::testing;
 
-int main(int argc, char** argv) {
+int main(int argc, char**) {
   DataVariant value = "Hello World";
   mutex mx;
 
-  auto read_cb = [&value, &mx]() -> DataVariant {
+  auto read_cb = [&value, &mx]() {
     std::unique_lock guard(mx);
     cout << "Reading value: " << toString(value) << endl;
     return value;

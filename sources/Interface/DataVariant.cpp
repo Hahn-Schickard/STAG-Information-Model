@@ -83,10 +83,10 @@ string toSanitizedString(DataType type) {
 size_t size_of(const DataVariant& variant) {
   return Variant_Visitor::match(
       variant,
-      [](auto value) -> size_t { return sizeof(value); },
-      [](const DateTime& value) -> size_t { return value.size(); },
-      [](const vector<uint8_t>& value) -> size_t { return value.size(); },
-      [](const string& value) -> size_t { return value.size(); });
+      [](auto value) { return sizeof(value); },
+      [](const DateTime& value) { return value.size(); },
+      [](const vector<uint8_t>& value) { return value.size(); },
+      [](const string& value) { return value.size(); });
 }
 
 optional<DataVariant> setVariant(DataType type) {

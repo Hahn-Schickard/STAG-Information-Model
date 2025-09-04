@@ -43,19 +43,18 @@ void CallableMock::setExecutor() {
         .WillByDefault([this](const Callable::Parameters& params) {
           executor_->execute(params);
         });
-    ON_CALL(*this, call(_))
-        .WillByDefault([this](uintmax_t timeout) -> DataVariant {
-          auto result_future = executor_->asyncCall(Callable::Parameters{});
-          auto status = result_future.wait_for(chrono::milliseconds(timeout));
-          if (status == future_status::ready) {
-            return result_future.get();
-          } else {
-            throw CallTimedout("MockFunction");
-          }
-        });
+    ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
+      auto result_future = executor_->asyncCall(Callable::Parameters{});
+      auto status = result_future.wait_for(chrono::milliseconds(timeout));
+      if (status == future_status::ready) {
+        return result_future.get();
+      } else {
+        throw CallTimedout("MockFunction");
+      }
+    });
     ON_CALL(*this, call(_, _))
         .WillByDefault([this](const Callable::Parameters& params,
-                           uintmax_t timeout) -> DataVariant {
+                           uintmax_t timeout) {
           auto result_future = executor_->asyncCall(params);
           auto status = result_future.wait_for(chrono::milliseconds(timeout));
           if (status == future_status::ready) {
