@@ -4,9 +4,11 @@ set(THIS Unit_Tests_Runner)
 
 #@+ ======================== User TEST_SUITES configuration =============================
 file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
+file(GLOB Util_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Util_Tests/*")
 
 list(APPEND TEST_SUITES
     ${Mock_Test_Suite}
+    ${Util_Test_Suite}
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
 add_executable(${THIS})
