@@ -83,7 +83,7 @@ TEST_F(GroupTests, addElementThrows) {
   EXPECT_THAT(
       [&]() {
         tested->addElement(make_shared<ElementMock>(
-            make_shared<ReadableMock>(DataType::Opaque), "based_id:0"));
+            make_shared<ReadableMock>(DataType::Opaque), base_id));
       },
       ThrowsMessage<invalid_argument>(
           HasSubstr("Given element has the same ID as this group")));
@@ -91,10 +91,10 @@ TEST_F(GroupTests, addElementThrows) {
   EXPECT_THAT(
       [&]() {
         tested->addElement(make_shared<ElementMock>(
-            make_shared<ReadableMock>(DataType::Opaque), "based_id:0.0"));
+            make_shared<ReadableMock>(DataType::Opaque), base_id + ".0"));
       },
-      ThrowsMessage<logic_error>(
-          HasSubstr("Element with id based_id:0.0 is already in this group")));
+      ThrowsMessage<logic_error>(HasSubstr(
+          "Element with id " + base_id + ".0 is already in this group")));
 }
 
 TEST_F(GroupTests, throwsElementNotFound) {
@@ -114,9 +114,9 @@ TEST_F(GroupTests, throwsElementNotFound) {
 }
 
 TEST_F(GroupTests, throwsIDPointsThisGroup) {
-  EXPECT_THAT([&]() { tested->element("based_id:0"); },
-      ThrowsMessage<IDPointsThisGroup>(
-          HasSubstr("Reference ID based_id:0 points to this group element")));
+  EXPECT_THAT([&]() { tested->element(base_id); },
+      ThrowsMessage<IDPointsThisGroup>(HasSubstr(
+          "Reference ID " + base_id + " points to this group element")));
 }
 
 TEST_F(GroupTests, isCorrectSize) { EXPECT_EQ(tested->size(), built.size()); }
