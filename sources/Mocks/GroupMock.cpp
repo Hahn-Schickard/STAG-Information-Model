@@ -18,9 +18,9 @@ vector<ElementPtr> toVector(const unordered_map<string, ElementPtr>& map) {
 }
 
 GroupMock::GroupMock(const string& id) : id_(id) {
-  ON_CALL(*this, size).WillByDefault(Return(elements_.size()));
-  ON_CALL(*this, asMap).WillByDefault(Return(elements_));
-  ON_CALL(*this, asVector).WillByDefault(Return(toVector(elements_)));
+  ON_CALL(*this, size).WillByDefault([&]() { return elements_.size(); });
+  ON_CALL(*this, asMap).WillByDefault([&]() { return elements_; });
+  ON_CALL(*this, asVector).WillByDefault([&]() { return toVector(elements_); });
   ON_CALL(*this, element).WillByDefault(Invoke(this, &GroupMock::getElement));
   ON_CALL(*this, visit).WillByDefault([this](const Group::Visitor& visitor) {
     for_each(elements_.begin(), elements_.end(), [&visitor](const auto& pair) {
