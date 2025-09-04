@@ -1,8 +1,6 @@
 
-#ifndef __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
-#define __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
-#include "Element.hpp"
-
+#ifndef __STAG_INFORMATION_MODEL_ELEMENT_MOCK_HPP
+#define __STAG_INFORMATION_MODEL_ELEMENT_MOCK_HPP
 #include "CallableMock.hpp"
 #include "GroupMock.hpp"
 #include "MetaInfoMock.hpp"
@@ -44,4 +42,4 @@ private:
 
 using ElementMockPtr = std::shared_ptr<ElementMock>;
 } // namespace Information_Model::testing
-#endif //__STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
+#endif //__STAG_INFORMATION_MODEL_ELEMENT_MOCK_HPP

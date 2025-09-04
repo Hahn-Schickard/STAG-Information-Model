@@ -1,6 +1,6 @@
 
-#ifndef __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
-#define __STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
+#ifndef __STAG_INFORMATION_MODEL_GROUP_MOCK_HPP
+#define __STAG_INFORMATION_MODEL_GROUP_MOCK_HPP
 #include "Group.hpp"
 
 #include <gmock/gmock.h>
@@ -33,4 +33,4 @@ private:
 
 using GroupMockPtr = std::shared_ptr<GroupMock>;
 } // namespace Information_Model::testing
-#endif //__STAG_INFORMATION_MODEL_DEVICE_MOCK_HPP
+#endif //__STAG_INFORMATION_MODEL_GROUP_MOCK_HPP
