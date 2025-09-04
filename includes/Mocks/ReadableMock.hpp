@@ -22,9 +22,9 @@ struct ReadableMock : virtual public Readable {
 
   void updateType(DataType type);
 
-  void updateReadCallback(const ReadCallback& read_cb);
-
   void updateValue(const DataVariant& value);
+
+  void updateReadCallback(const ReadCallback& read_cb);
 
   MOCK_METHOD(DataType, dataType, (), (const final));
   MOCK_METHOD(DataVariant, read, (), (const final));

@@ -4,13 +4,22 @@ namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
-ObservableMock::ObservableMock(DataType type) : ReadableMock(type) {}
+ObservableMock::ObservableMock(DataType type) : readable_(type) {}
 
-ObservableMock::ObservableMock(const DataVariant& value)
-    : ReadableMock(value) {}
+ObservableMock::ObservableMock(const DataVariant& value) : readable_(value) {
+  setReadableCalls();
+}
 
 ObservableMock::ObservableMock(DataType type, const ReadCallback& read_cb)
-    : ReadableMock(type, read_cb) {}
+    : readable_(type, read_cb) {
+  setReadableCalls();
+}
+
+void ObservableMock::setReadableCalls() {
+  ON_CALL(*this, read).WillByDefault(Invoke(&readable_, &ReadableMock::read));
+  ON_CALL(*this, dataType)
+      .WillByDefault(Invoke(&readable_, &ReadableMock::dataType));
+}
 
 void ObservableMock::enableSubscribeFaking(
     const IsObservingCallback& callback) {
@@ -21,6 +30,16 @@ void ObservableMock::enableSubscribeFaking(
     ON_CALL(*this, notify)
         .WillByDefault(Invoke(this, &ObservableMock::notifyObservers));
   }
+}
+
+void ObservableMock::updateType(DataType type) { readable_.updateType(type); }
+
+void ObservableMock::updateValue(const DataVariant& value) {
+  readable_.updateValue(value);
+}
+
+void ObservableMock::updateReadCallback(const ReadCallback& read_cb) {
+  readable_.updateReadCallback(read_cb);
 }
 
 struct FakeObserver : public ObserverPimpl {

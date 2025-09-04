@@ -92,7 +92,7 @@ TEST_P(WritableTests, canChangeReadCallback) {
       .Times(Exactly(2))
       .WillRepeatedly(Return(otherThan(expected_variant)));
 
-  tested->updateCallbacks(mock_readable.AsStdFunction(), nullptr);
+  tested->updateReadCallback(mock_readable.AsStdFunction());
 
   auto read_value = tested->read();
   EXPECT_NE(read_value, expected_variant);

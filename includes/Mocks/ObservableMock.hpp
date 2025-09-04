@@ -1,7 +1,6 @@
 #ifndef __STAG_INFORMATION_MODEL_OBSERVABLE_MOCK_HPP
 #define __STAG_INFORMATION_MODEL_OBSERVABLE_MOCK_HPP
 #include "Observable.hpp"
-
 #include "ReadableMock.hpp"
 
 #include <gmock/gmock.h>
@@ -16,7 +15,8 @@ struct ObserverPimpl : virtual public Observer {
   virtual void dispatch(const std::shared_ptr<DataVariant>& value) = 0;
 };
 
-struct ObservableMock : virtual public Observable, public ReadableMock {
+struct ObservableMock : public Observable {
+  using ReadCallback = ReadableMock::ReadCallback;
   using IsObservingCallback = std::function<void(bool)>;
 
   ObservableMock() = default;
@@ -31,6 +31,14 @@ struct ObservableMock : virtual public Observable, public ReadableMock {
 
   void enableSubscribeFaking(const IsObservingCallback& callback);
 
+  void updateType(DataType type);
+
+  void updateValue(const DataVariant& value);
+
+  void updateReadCallback(const ReadCallback& read_cb);
+
+  MOCK_METHOD(DataType, dataType, (), (const final));
+  MOCK_METHOD(DataVariant, read, (), (const final));
   MOCK_METHOD(void, notify, (const DataVariant&), (const final));
   MOCK_METHOD(ObserverPtr,
       subscribe,
@@ -38,11 +46,14 @@ struct ObservableMock : virtual public Observable, public ReadableMock {
       (final));
 
 private:
+  void setReadableCalls();
+
   ObserverPtr attachObserver(const Observable::ObserveCallback& callback,
       const Observable::ExceptionHandler& handler);
 
   void notifyObservers(const DataVariant& value);
 
+  ReadableMock readable_;
   std::mutex mx_;
   IsObservingCallback is_observing_;
   std::vector<std::weak_ptr<ObserverPimpl>> observers_;

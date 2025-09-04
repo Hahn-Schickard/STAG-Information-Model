@@ -1,12 +1,12 @@
 #ifndef __STAG_INFORMATION_MODEL_WRITABLE_MOCK_HPP
 #define __STAG_INFORMATION_MODEL_WRITABLE_MOCK_HPP
-#include "Writable.hpp"
-
 #include "ReadableMock.hpp"
+#include "Writable.hpp"
 
 namespace Information_Model::testing {
 
-struct WritableMock : virtual public Writable, public ReadableMock {
+struct WritableMock : public Writable {
+  using ReadCallback = ReadableMock::ReadCallback;
   using WriteCallback = std::function<void(const DataVariant&)>;
 
   WritableMock() = default;
@@ -32,7 +32,11 @@ struct WritableMock : virtual public Writable, public ReadableMock {
 
   ~WritableMock() override = default;
 
-  void setWriteOnly(bool write_only);
+  void setWriteOnly(bool write_only) const;
+
+  void updateType(DataType type);
+
+  void updateValue(const DataVariant& value);
 
   void updateReadCallback(const ReadCallback& read_cb);
 
@@ -41,11 +45,16 @@ struct WritableMock : virtual public Writable, public ReadableMock {
   void updateCallbacks(
       const ReadCallback& read_cb, const WriteCallback& write_cb);
 
+  MOCK_METHOD(DataType, dataType, (), (const final));
+  MOCK_METHOD(DataVariant, read, (), (const final));
   MOCK_METHOD(bool, isWriteOnly, (), (const final));
   MOCK_METHOD(void, write, (const DataVariant&), (const final));
 
 private:
+  void setReadableCalls();
+
   WriteCallback write_;
+  ReadableMock readable_;
 };
 
 using WritableMockPtr = std::shared_ptr<WritableMock>;

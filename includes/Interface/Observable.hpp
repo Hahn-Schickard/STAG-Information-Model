@@ -1,9 +1,12 @@
 #ifndef __STAG_INFORMATION_MODEL_OBSERVABLE_HPP
 #define __STAG_INFORMATION_MODEL_OBSERVABLE_HPP
 
-#include "Readable.hpp"
+#include "DataVariant.hpp"
 
 #include <functional>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 namespace Information_Model {
 /**
@@ -34,12 +37,25 @@ using ObserverPtr = std::shared_ptr<Observer>;
  * This interface is implemented in Information Model Manager Project and is
  * built via DeviceBuilderInterface::addObservable()
  */
-struct Observable : virtual public Readable {
+struct Observable {
   using ObserveCallback =
       std::function<void(const std::shared_ptr<DataVariant>&)>;
   using ExceptionHandler = std::function<void(const std::exception_ptr&)>;
 
-  ~Observable() override = default;
+  virtual ~Observable() = default;
+
+  virtual DataType dataType() const = 0;
+
+  /**
+   * @brief Read the latest available metric value
+   *
+   * @throws ReadCallbackUnavailable - if internal callback does not exist
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
+   *
+   * @return DataVariant
+   */
+  virtual DataVariant read() const = 0;
 
   /**
    * @brief Informs all registered observers that a new DataVariant value has

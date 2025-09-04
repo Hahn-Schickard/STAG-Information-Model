@@ -1,7 +1,9 @@
 #ifndef __STAG_INFORMATION_MODEL_WRITEABLE_HPP
 #define __STAG_INFORMATION_MODEL_WRITEABLE_HPP
 
-#include "Readable.hpp"
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 namespace Information_Model {
 /**
@@ -29,8 +31,21 @@ struct WriteCallbackUnavailable : public std::runtime_error {
  * This interface is implemented in Information Model Manager Project and is
  * built via DeviceBuilderInterface::addWritableMetric()
  */
-struct Writable : virtual public Readable {
-  ~Writable() override = default;
+struct Writable {
+  virtual ~Writable() = default;
+
+  virtual DataType dataType() const = 0;
+
+  /**
+   * @brief Read the latest available metric value
+   *
+   * @throws ReadCallbackUnavailable - if internal callback does not exist
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
+   *
+   * @return DataVariant
+   */
+  virtual DataVariant read() const = 0;
 
   /**
    * @brief Checks if the modeled metric does not supports value reading
