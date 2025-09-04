@@ -17,10 +17,9 @@ CallableMock::CallableMock(DataType result_type,
 ExecutorPtr CallableMock::getExecutor() const { return executor_; }
 
 void CallableMock::changeExecutor(const ExecutorPtr& executor) {
-  // if (executor_) {
-  //   executor_->respondToAll(make_exception_ptr(
-  //       logic_error("Assigned a new external execution handler")));
-  // }
+  if (executor_) {
+    executor_->cancelAll();
+  }
 
   executor_ = executor;
 
