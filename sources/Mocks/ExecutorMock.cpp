@@ -23,11 +23,10 @@ struct ExecutorMock : public Executor {
       chrono::nanoseconds response_delay)
       : result_type_(result_type), supported_params_(supported),
         default_response_(default_response), delay_(response_delay),
-        task_(
-            make_shared<Stoppable::Task>(bind(&ExecutorMock::respondOnce, this),
-                [](const exception_ptr& ex) {
-                  // @todo decide hwo to handle exceptions
-                })) {}
+        task_(make_shared<Stoppable::Task>(
+            bind(&ExecutorMock::respondOnce, this), [](const exception_ptr&) {
+              // @todo decide how to handle exceptions
+            })) {}
 
   ~ExecutorMock() override = default;
 
