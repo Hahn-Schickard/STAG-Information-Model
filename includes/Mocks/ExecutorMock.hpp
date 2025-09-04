@@ -22,6 +22,8 @@ struct Executor {
 
   virtual Callable::ParameterTypes parameterTypes() const = 0;
 
+  virtual void respond(uintmax_t call_id, const Response& response) = 0;
+
   virtual void queueResponse(const Response& response) = 0;
 
   virtual void queueResponse(uintmax_t call_id, const Response& response) = 0;

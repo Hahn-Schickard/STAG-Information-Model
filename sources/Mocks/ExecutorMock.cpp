@@ -80,7 +80,7 @@ struct ExecutorMock : public Executor {
     return result_future;
   }
 
-  void respond(uintmax_t call_id, const Response& response) {
+  void respond(uintmax_t call_id, const Response& response) final {
     delayCall();
     auto it = result_promises_.find(call_id);
     if (it != result_promises_.end()) {
