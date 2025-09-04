@@ -15,7 +15,7 @@ struct FullMetaInfo {
 struct MetaInfoMock : virtual public MetaInfo {
   MetaInfoMock() = default;
 
-  MetaInfoMock(const std::string& id,
+  explicit MetaInfoMock(const std::string& id,
       const std::optional<FullMetaInfo>& meta = std::nullopt);
 
   ~MetaInfoMock() override = default;

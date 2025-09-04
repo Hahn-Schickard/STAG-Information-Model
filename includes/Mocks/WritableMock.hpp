@@ -15,7 +15,7 @@ struct WritableMock : virtual public Writable, public ReadableMock {
 
   WritableMock(DataType type, const ReadCallback& read_cb);
 
-  WritableMock(const DataVariant& value);
+  explicit WritableMock(const DataVariant& value);
 
   WritableMock(DataType type, const WriteCallback& write_cb);
 

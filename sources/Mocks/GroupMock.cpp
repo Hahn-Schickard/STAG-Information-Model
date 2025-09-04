@@ -23,7 +23,7 @@ GroupMock::GroupMock(const string& id) : id_(id) {
   ON_CALL(*this, asVector).WillByDefault(Return(toVector(elements_)));
   ON_CALL(*this, element).WillByDefault(Invoke(this, &GroupMock::getElement));
   ON_CALL(*this, visit).WillByDefault([this](const Group::Visitor& visitor) {
-    for_each(elements_.begin(), elements_.end(), [visitor](const auto& pair) {
+    for_each(elements_.begin(), elements_.end(), [&visitor](const auto& pair) {
       visitor(pair.second);
     });
   });

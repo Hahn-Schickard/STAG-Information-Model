@@ -45,7 +45,7 @@ struct ParameterTypeMismatch : public std::invalid_argument {
 };
 
 struct ParameterDoesNotExist : public std::invalid_argument {
-  ParameterDoesNotExist(uintmax_t param_id)
+  explicit ParameterDoesNotExist(uintmax_t param_id)
       : std::invalid_argument(
             "No parameter exists at position " + std::to_string(param_id)) {}
 };
@@ -73,7 +73,7 @@ struct CallerIDExists : public std::runtime_error {
 };
 
 struct CallAlreadyCanceled : public std::runtime_error {
-  CallAlreadyCanceled(uintmax_t call_id)
+  explicit CallAlreadyCanceled(uintmax_t call_id)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
             " call is already canceled") {}
 };

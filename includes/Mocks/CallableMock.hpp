@@ -29,7 +29,7 @@ struct CallableMock : public Callable {
   MOCK_METHOD(DataType, resultType, (), (const final));
   MOCK_METHOD(ParameterTypes, parameterTypes, (), (const final));
 
-  ExecutorPtr getExecutor();
+  ExecutorPtr getExecutor() const;
 
   void changeExecutor(const ExecutorPtr& executor);
   void useDefaultExecutor();

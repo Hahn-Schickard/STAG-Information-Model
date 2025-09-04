@@ -44,9 +44,9 @@ int main(int argc, char** argv) {
     size_t notification_counter = 0;
     auto task = Stoppable::Task(
         [&notification_counter, observable_ptr = weak_ptr(observable)]() {
-          if (auto observable = observable_ptr.lock()) {
-            auto value = "Event " + to_string(notification_counter);
-            observable->notify(value);
+          if (auto obs_ptr = observable_ptr.lock()) {
+            auto notification = "Event " + to_string(notification_counter);
+            obs_ptr->notify(notification);
             ++notification_counter;
           }
           this_thread::sleep_for(10ms);

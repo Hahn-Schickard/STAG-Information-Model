@@ -30,7 +30,7 @@ struct WriteCallbackUnavailable : public std::runtime_error {
  * built via DeviceBuilderInterface::addWritableMetric()
  */
 struct Writable : virtual public Readable {
-  virtual ~Writable() = default;
+  ~Writable() override = default;
 
   /**
    * @brief Checks if the modeled metric does not supports value reading

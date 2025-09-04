@@ -14,7 +14,7 @@ CallableMock::CallableMock(DataType result_type,
   setExecutor();
 }
 
-ExecutorPtr CallableMock::getExecutor() { return executor_; }
+ExecutorPtr CallableMock::getExecutor() const { return executor_; }
 
 void CallableMock::changeExecutor(const ExecutorPtr& executor) {
   // if (executor_) {

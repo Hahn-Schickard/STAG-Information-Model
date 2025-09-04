@@ -39,7 +39,7 @@ struct Observable : virtual public Readable {
       std::function<void(const std::shared_ptr<DataVariant>&)>;
   using ExceptionHandler = std::function<void(const std::exception_ptr&)>;
 
-  virtual ~Observable() = default;
+  ~Observable() override = default;
 
   /**
    * @brief Informs all registered observers that a new DataVariant value has

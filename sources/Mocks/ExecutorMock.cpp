@@ -45,7 +45,7 @@ struct ExecutorMock : public Executor {
     ids_.erase(id);
   }
 
-  void delayCall() {
+  void delayCall() const {
     if (delay_.count() > 0) {
       this_thread::sleep_for(delay_);
     }
@@ -72,7 +72,7 @@ struct ExecutorMock : public Executor {
     }
     promise<DataVariant> result_promise{};
     ResultFuture result_future(call_id, result_promise.get_future(), clear_cb);
-    result_promises_.emplace(call_id, move(result_promise));
+    result_promises_.try_emplace(call_id, move(result_promise));
     {
       lock_guard lock(dispatch_mx_);
       to_be_dispatched_.push(call_id);
@@ -98,8 +98,8 @@ struct ExecutorMock : public Executor {
   }
 
   void clear(uintmax_t call_id, bool call_canceled) final {
-    auto it = result_promises_.find(call_id);
-    if (it != result_promises_.end()) {
+    if (auto it = result_promises_.find(call_id);
+        it != result_promises_.end()) {
       if (call_canceled) {
         it->second.set_exception(
             make_exception_ptr(CallCanceled(call_id, "MockCallable")));
@@ -110,9 +110,9 @@ struct ExecutorMock : public Executor {
   }
 
   void cancelAll() final {
-    for (auto& result_promise : result_promises_) {
-      result_promise.second.set_exception(make_exception_ptr(
-          CallCanceled(result_promise.first, "MockCallable")));
+    for (auto& [promise_id, result_promise] : result_promises_) {
+      result_promise.set_exception(
+          make_exception_ptr(CallCanceled(promise_id, "MockCallable")));
     }
     result_promises_.clear();
   }
@@ -123,7 +123,7 @@ struct ExecutorMock : public Executor {
     return supported_params_;
   }
 
-  void checkType(const Response& response) {
+  void checkType(const Response& response) const {
     if (result_type_ == DataType::None &&
         holds_alternative<DataVariant>(response)) {
       throw invalid_argument("Can not set DataVariant response for executor. "
@@ -138,7 +138,7 @@ struct ExecutorMock : public Executor {
 
   void queueResponse(uintmax_t call_id, const Response& response) final {
     checkType(response);
-    responses_map_.emplace(call_id, response);
+    responses_map_.try_emplace(call_id, response);
   }
 
   void respondOnce() {
