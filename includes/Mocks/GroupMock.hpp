@@ -27,7 +27,7 @@ private:
 
   std::unordered_map<std::string, ElementPtr> elements_;
   std::unordered_map<std::string, GroupPtr> subgroups_;
-  size_t next_id_;
+  size_t next_id_ = 0;
   std::string id_;
 };
 
