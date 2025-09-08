@@ -1,8 +1,5 @@
 * refactor unit tests
 * add CMake WITH_MOCKS option
-* add ElementMock implementation
-* add GroupMock implementation
-* add DeviceMock implementation
 * add MockBuilder implementation
 * refactor example
 * refactor integration test
@@ -24,6 +21,4 @@
         uint8 second;
         uint32 sub_second;
     }; //don`t bother with utc conversion, just ensure it is always UTC0
-* check if all Callable methods can be made const
-* review Callable and CallableMock design (maybe create Executor Interface or Executor Fake for mocks?)
 * update documentation
