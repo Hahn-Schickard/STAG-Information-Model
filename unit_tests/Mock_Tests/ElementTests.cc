@@ -7,6 +7,12 @@ namespace Information_Model::testing {
 using namespace std;
 using namespace ::testing;
 
+TEST(ElementUtilTests, toStringThrows) {
+  EXPECT_THAT([]() { auto result = toString(static_cast<ElementType>(230)); },
+      ThrowsMessage<logic_error>(
+          HasSubstr("Could not decode ElementType enum value")));
+}
+
 struct ElementTestParam {
   string id;
   string name;
