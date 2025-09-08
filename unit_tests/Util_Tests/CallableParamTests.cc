@@ -40,7 +40,7 @@ TEST_F(CallableParamTests, throwsMandatoryParameterMissing) {
 }
 
 TEST_F(CallableParamTests, throwsParameterTypeMismatch) {
-  Callable::Parameters tested{{1, "hello world"}};
+  Callable::Parameters tested{{1, string("hello world")}};
   string exception_msg = "Parameter 1:" + toString(DataType::Unsigned_Integer) +
       " does not accept " + toString(DataType::String);
 
