@@ -11,12 +11,19 @@
 namespace Information_Model::testing {
 
 struct DeviceMock : virtual public Device, public MetaInfoMock {
-  DeviceMock() = default;
+  DeviceMock(const std::string& base_id,
+      const std::optional<FullMetaInfo>& meta = std::nullopt);
 
   ~DeviceMock() override = default;
 
   MOCK_METHOD(GroupPtr, group, (), (const final));
   MOCK_METHOD(ElementPtr, element, (const std::string&), (const final));
+
+  std::string generateID();
+  void addElement(const ElementPtr& element);
+
+private:
+  GroupMockPtr group_;
 };
 using DeviceMockPtr = std::shared_ptr<DeviceMock>;
 } // namespace Information_Model::testing
