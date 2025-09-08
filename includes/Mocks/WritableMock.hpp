@@ -51,7 +51,7 @@ struct WritableMock : public Writable {
   MOCK_METHOD(void, write, (const DataVariant&), (const final));
 
 private:
-  void setReadableCalls();
+  void setReadableCalls() const;
 
   WriteCallback write_;
   ReadableMockPtr readable_;

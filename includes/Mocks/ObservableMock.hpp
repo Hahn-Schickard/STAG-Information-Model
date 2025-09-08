@@ -46,7 +46,7 @@ struct ObservableMock : public Observable {
       (final));
 
 private:
-  void setReadableCalls();
+  void setReadableCalls() const;
 
   ObserverPtr attachObserver(const Observable::ObserveCallback& callback,
       const Observable::ExceptionHandler& handler);

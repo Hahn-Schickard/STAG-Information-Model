@@ -57,7 +57,7 @@ WritableMock::WritableMock(const DataVariant& value,
   setWriteOnly(false);
 }
 
-void WritableMock::setReadableCalls() {
+void WritableMock::setReadableCalls() const {
   ON_CALL(*this, read)
       .WillByDefault(Invoke(readable_.get(), &ReadableMock::read));
   ON_CALL(*this, dataType)

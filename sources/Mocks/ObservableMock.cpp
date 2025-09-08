@@ -17,7 +17,7 @@ ObservableMock::ObservableMock(DataType type, const ReadCallback& read_cb)
   setReadableCalls();
 }
 
-void ObservableMock::setReadableCalls() {
+void ObservableMock::setReadableCalls() const {
   ON_CALL(*this, read)
       .WillByDefault(Invoke(readable_.get(), &ReadableMock::read));
   ON_CALL(*this, dataType)
