@@ -24,7 +24,7 @@ string toString(const Executor::Response& response) {
 }
 
 struct CallableTestParam {
-  string test_name = "0";
+  string test_name;
   DataType result_type = DataType::None;
   ParameterTypes supported_params;
   Executor::Response default_response =
@@ -181,7 +181,51 @@ TEST_P(CallableTests, executorThrowsCallerNotFound) {
 INSTANTIATE_TEST_SUITE_P(CallableTestsValues,
     CallableTests,
     Values( // clang-format off
-        CallableTestParam{}
+        CallableTestParam{
+          "NoResultAndNoParameters"
+        },
+        CallableTestParam{
+          "BoolResultWithoutParameters",
+          DataType::Boolean, 
+          ParameterTypes{},
+          true
+        },
+        CallableTestParam{
+          "IntegerResultWithoutParameters",
+          DataType::Integer, 
+          ParameterTypes{},
+          -11
+        },
+        CallableTestParam{
+          "UIntegerResultWithoutParameters",
+          DataType::Unsigned_Integer, 
+          ParameterTypes{},
+          25
+        },
+        CallableTestParam{
+          "DoubleResultWithoutParameters",
+          DataType::Double, 
+          ParameterTypes{},
+          30.2
+        },
+        CallableTestParam{
+          "TimeResultWithoutParameters",
+          DataType::Time, 
+          ParameterTypes{},
+          DateTime(1757323947)
+        },
+        CallableTestParam{
+          "OpaqueResultWithoutParameters",
+          DataType::Opaque, 
+          ParameterTypes{},
+          vector<uint8_t>{0x00,0x01,0x02}
+        },
+        CallableTestParam{
+          "StringResultWithoutParameters",
+          DataType::String, 
+          ParameterTypes{},
+          "hello world"
+        }
     ), // clang-format on
     [](const TestParamInfo<CallableTests::ParamType>& info) {
       return info.param.test_name;
