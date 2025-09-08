@@ -32,17 +32,23 @@ struct DeviceBuilder {
   using WriteCallback = std::function<void(const DataVariant&)>;
 
   /**
+   * @brief Used by the Callable to execute the modeled functionality without
+   * returning a result
+   *
+   */
+  using ExecuteCallback = std::function<void(const Parameters&)>;
+  /**
    * @brief Indexed future result that the Callble returns to the callers
    *
    */
-  using ExecuteFuture = std::pair<uintmax_t, std::future<DataVariant>>;
+  using AsyncExecuteFuture = std::pair<uintmax_t, std::future<DataVariant>>;
 
   /**
    * @brief Used by the Callble to asynchronously execute the modeled function
    *
    */
-  using ExecuteCallback =
-      std::function<ExecuteFuture(const Callable::Parameters&)>;
+  using AsyncExecuteCallback =
+      std::function<AsyncExecuteFuture(const Parameters&)>;
 
   /**
    * @brief Used by the Callable to cancel a previous ExecuteCallback call
@@ -64,7 +70,7 @@ struct DeviceBuilder {
    */
   using IsObservingCallback = std::function<void(bool)>;
 
-  virtual ~DeviceBuilderInterface() = default;
+  virtual ~DeviceBuilder() = default;
 
   virtual void setDeviceInfo(
       const std::string& unique_id, const BuildInfo& element_info) = 0;
@@ -74,59 +80,60 @@ struct DeviceBuilder {
   virtual std::string addGroup(
       const std::string& parent_id, const BuildInfo& element_info) = 0;
 
-  std::string addReadable(
-      const BuildInfo& element_info, DataType, ReadCallback&& read_cb) = 0;
+  virtual std::string addReadable(
+      const BuildInfo& element_info, DataType, const ReadCallback& read_cb) = 0;
 
   virtual std::string addReadableMetric(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
-      ReadCallback&& read_cb) = 0;
+      const ReadCallback& read_cb) = 0;
 
-  std::string addWritable(const BuildInfo& element_info,
+  virtual std::string addWritable(const BuildInfo& element_info,
       DataType data_type,
-      WriteCallback&& write_cb,
-      ReadCallback&& read_cb = nullptr) = 0;
+      const WriteCallback& write_cb,
+      const ReadCallback& read_cb = nullptr) = 0;
 
   virtual std::string addWritableMetric(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
-      WriteCallback&& write_cb,
-      ReadCallback&& read_cb = nullptr) = 0;
+      const WriteCallback& write_cb,
+      const ReadCallback& read_cb = nullptr) = 0;
 
   virtual std::pair<std::string, NotifyCallback> addObservable(
       const BuildInfo& element_info,
       DataType data_type,
-      ReadCallback&& read_cb,
-      IsObservingCallback&& observe_cb) = 0;
+      const ReadCallback& read_cb,
+      const IsObservingCallback& observe_cb) = 0;
 
   virtual std::pair<std::string, NotifyCallback> addObservable(
       const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
-      ReadCallback&& read_cb,
-      IsObservingCallback&& observe_cb) = 0;
+      const ReadCallback& read_cb,
+      const IsObservingCallback& observe_cb) = 0;
 
   virtual std::string addCallable(const BuildInfo& element_info,
       DataType data_type,
-      ExecuteCallback&& execute_cb,
-      CancelCallback&& cancel_cb,
-      Callable::ParameterTypes&& parameter_types = {}) = 0;
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
+      const ParameterTypes& parameter_types = {}) = 0;
 
-  std::string addCallable(const BuildInfo& element_info,
+  virtual std::string addCallable(const BuildInfo& element_info,
       const ExecuteCallback& execute_cb,
-      const Callable::ParameterTypes& parameter_types = {}) = 0;
+      const ParameterTypes& parameter_types = {}) = 0;
 
   virtual std::string addCallable(const std::string& parent_id,
       const BuildInfo& element_info,
-      ExecuteCallback&& execute_cb,
-      Callable::ParameterTypes&& parameter_types = {}) = 0;
+      const ExecuteCallback& execute_cb,
+      const ParameterTypes& parameter_types = {}) = 0;
 
   virtual std::string addCallable(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType result_type,
-      ExecuteCallback& execute_cb,
-      CancelCallback&& cancel_cb,
-      Callable::ParameterTypes&& parameter_types = {}) = 0;
+      const ExecuteCallback& execute_cb,
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
+      const ParameterTypes& parameter_types = {}) = 0;
 
   virtual std::unique_ptr<Device> result() = 0;
 };
