@@ -194,13 +194,13 @@ INSTANTIATE_TEST_SUITE_P(CallableTestsValues,
           "IntegerResultWithoutParameters",
           DataType::Integer, 
           ParameterTypes{},
-          -11
+          (intmax_t)-11
         },
         CallableTestParam{
           "UIntegerResultWithoutParameters",
           DataType::Unsigned_Integer, 
           ParameterTypes{},
-          25
+          (uintmax_t)25
         },
         CallableTestParam{
           "DoubleResultWithoutParameters",
