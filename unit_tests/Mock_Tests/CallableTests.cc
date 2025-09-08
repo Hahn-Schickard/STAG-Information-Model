@@ -162,6 +162,34 @@ TEST_P(CallableTests, canCancelAllAsyncCalls) {
   }
 }
 
+TEST_P(CallableTests, canUnsetExecutor) {
+  tested->changeExecutor(nullptr);
+
+  EXPECT_THAT([&]() { tested->execute(expected.parameters); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+
+  EXPECT_THAT([&]() { auto result = tested->call(100); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+
+  EXPECT_THAT([&]() { auto result = tested->call(expected.parameters, 100); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+
+  EXPECT_THAT([&]() { auto result = tested->asyncCall(expected.parameters); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+
+  EXPECT_THAT([&]() { tested->cancelAsyncCall(25); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+
+  EXPECT_THAT([&]() { tested->cancelAllAsyncCalls(); },
+      ThrowsMessage<ExecutorNotAvailable>(
+          HasSubstr("Executor callback is no longer available")));
+}
+
 TEST_P(CallableTests, executorThrowsCallerNotFound) {
   auto executor = tested->getExecutor();
 
