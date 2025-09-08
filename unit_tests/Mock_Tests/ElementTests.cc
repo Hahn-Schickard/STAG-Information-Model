@@ -36,10 +36,14 @@ struct ElementTests : public TestWithParam<ElementTestParam> {
 };
 
 TEST_P(ElementTests, canGetType) {
+  EXPECT_CALL(*tested, type).Times(Exactly(1));
+
   EXPECT_EQ(tested->type(), expected.element_type);
 }
 
 TEST_P(ElementTests, canGetFunction) {
+  EXPECT_CALL(*tested, function).Times(Exactly(1));
+
   EXPECT_EQ(tested->function(), expected.function);
 }
 
