@@ -100,8 +100,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
             # Mark relocation table entries resolved at load-time as read-only. -Wl,-z,now can impact startup performance.
             # Full RELRO (-Wl,-z,relro -Wl,-z,now) disables lazy binding.
             # This allows ld.so to resolve the entire GOT at application startup and mark also the PLT portion of the GOT as read-only.
-            add_compile_options(-Wl,-z,relro -Wl,-z,now)
-            add_link_options(-Wl,--disable-new-dtags -pie -Wl,-z,relro -Wl,-z,now)
+            #add_compile_options(-Wl,-z,relro -Wl,-z,now)
+            #add_link_options(-Wl,--disable-new-dtags -pie -Wl,-z,relro -Wl,-z,now)
 
             if (COVERAGE_TRACKING)
                 add_compile_options(--coverage)
