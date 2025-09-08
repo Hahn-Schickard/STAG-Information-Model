@@ -50,21 +50,21 @@ struct DateTime {
 
   std::size_t size() const;
 
+  friend bool operator==(const DateTime& lhs, const DateTime& rhs);
+
+  friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
+
+  friend bool operator<(const DateTime& lhs, const DateTime& rhs);
+
+  friend bool operator>(const DateTime& lhs, const DateTime& rhs);
+
+  friend bool operator<=(const DateTime& lhs, const DateTime& rhs);
+
+  friend bool operator>=(const DateTime& lhs, const DateTime& rhs);
+
 private:
   TimePoint timestamp_;
 };
-
-bool operator==(const DateTime& lhs, const DateTime& rhs);
-
-bool operator!=(const DateTime& lhs, const DateTime& rhs);
-
-bool operator<(const DateTime& lhs, const DateTime& rhs);
-
-bool operator>(const DateTime& lhs, const DateTime& rhs);
-
-bool operator<=(const DateTime& lhs, const DateTime& rhs);
-
-bool operator>=(const DateTime& lhs, const DateTime& rhs);
 /**
  * @enum DataType
  * @brief DataType enumeration, specifying the supported data types
