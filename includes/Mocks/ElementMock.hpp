@@ -11,7 +11,7 @@
 
 namespace Information_Model::testing {
 
-struct ElementMock : virtual public Element, public MetaInfoMock {
+struct ElementMock : public virtual Element, public MetaInfoMock {
   ElementMock(const ElementFunction& function,
       const std::string& id,
       const std::optional<FullMetaInfo>& meta = std::nullopt);

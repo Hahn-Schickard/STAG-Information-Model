@@ -12,7 +12,7 @@ struct FullMetaInfo {
   std::string description;
 };
 
-struct MetaInfoMock : virtual public MetaInfo {
+struct MetaInfoMock : public virtual MetaInfo {
   MetaInfoMock() = default;
 
   explicit MetaInfoMock(const std::string& id,
