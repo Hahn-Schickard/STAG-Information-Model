@@ -103,14 +103,19 @@ TEST_F(GroupTests, throwsElementNotFound) {
           HasSubstr("Element with reference id bad_ref was not found")));
 
   string ex_msg1 =
-      "Element with reference id " + sub_group_id + "0 was not found";
-  EXPECT_THAT([&]() { tested->element(sub_group_id + "0"); },
+      "Element with reference id " + sub_group_id + ".2 was not found";
+  EXPECT_THAT([&]() { tested->element(sub_group_id + ".2"); },
       ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg1)));
 
   string ex_msg2 =
+      "Element with reference id " + sub_group_id + "0 was not found";
+  EXPECT_THAT([&]() { tested->element(sub_group_id + "0"); },
+      ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg2)));
+
+  string ex_msg3 =
       "Element with reference id " + sub_readable_id + "0 was not found";
   EXPECT_THAT([&]() { tested->element(sub_readable_id + "0"); },
-      ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg2)));
+      ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg3)));
 }
 
 TEST_F(GroupTests, throwsIDPointsThisGroup) {
