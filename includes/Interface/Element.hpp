@@ -24,36 +24,14 @@ namespace Information_Model {
  *
  */
 enum class ElementType : uint8_t {
-  Group, /*!< Grouping element, aka list */
-  Readable, /*!< Metric with read access */
-  Writable, /*!< Metric with write access */
-  Observable, /*!< Metric with read access and ability to self report
-                 changes */
-  Callable /*!< Metric with execute access */
+  Group,
+  Readable,
+  Writable,
+  Observable,
+  Callable
 };
 
-inline std::string toString(ElementType type) {
-  switch (type) {
-  case ElementType::Group: {
-    return "Group";
-  }
-  case ElementType::Readable: {
-    return "Readable";
-  }
-  case ElementType::Writable: {
-    return "Writable";
-  }
-  case ElementType::Observable: {
-    return "Observable";
-  }
-  case ElementType::Callable: {
-    return "Callable";
-  }
-  default: {
-    throw std::logic_error("Could not decode ElementType enum value");
-  }
-  }
-}
+std::string toString(ElementType type);
 
 using ElementFunction = std::variant< // clang-format off
     GroupPtr,
@@ -69,24 +47,19 @@ using ElementFunction = std::variant< // clang-format off
  * Describes the modeled entity as well as provides the user with a
  * generic way of accessing the entity's functionality
  */
-struct Element : virtual public MetaInfo {
+struct Element : public virtual MetaInfo {
   ~Element() override = default;
 
   virtual ElementType type() const = 0;
 
   virtual ElementFunction function() const = 0;
+
+  friend bool operator==(const ElementPtr& lhs, const ElementPtr& rhs);
+
+  friend bool operator!=(const ElementPtr& lhs, const ElementPtr& rhs);
 };
 
 using ElementPtr = std::shared_ptr<Element>;
-
-inline bool operator==(const ElementPtr& lhs, const ElementPtr& rhs) {
-  return lhs->id() == rhs->id() && lhs->name() == rhs->name() &&
-      lhs->description() == rhs->description() && lhs->type() == rhs->type();
-}
-
-inline bool operator!=(const ElementPtr& lhs, const ElementPtr& rhs) {
-  return !(lhs == rhs);
-}
 /** @}*/
 } // namespace Information_Model
 
