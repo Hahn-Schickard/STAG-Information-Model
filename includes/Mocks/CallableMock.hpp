@@ -10,7 +10,7 @@ namespace Information_Model::testing {
 struct CallableMock : public Callable {
   CallableMock() = default;
 
-  CallableMock(DataType result_type,
+  explicit CallableMock(DataType result_type,
       const ParameterTypes& supported_params = {},
       const Executor::Response& default_response = std::make_exception_ptr(
           std::logic_error("Default response exception")));
