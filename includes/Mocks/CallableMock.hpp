@@ -11,7 +11,7 @@ struct CallableMock : public Callable {
   CallableMock() = default;
 
   CallableMock(DataType result_type,
-      const Callable::ParameterTypes& supported_params = {},
+      const ParameterTypes& supported_params = {},
       const Executor::Response& default_response = std::make_exception_ptr(
           std::logic_error("Default response exception")));
 
@@ -39,7 +39,7 @@ private:
   void setExecutor();
 
   DataType result_type_;
-  Callable::ParameterTypes supported_params_;
+  ParameterTypes supported_params_;
   Executor::Response default_response_;
   ExecutorPtr executor_;
 };

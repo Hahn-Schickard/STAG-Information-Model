@@ -31,19 +31,17 @@ void ResultFuture::cancel() {
 
 uintmax_t ResultFuture::callerID() const { return id_; }
 
-bool operator==(
-    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs) {
+bool operator==(const ParameterType& lhs, const ParameterType& rhs) {
   return lhs.mandatory == rhs.mandatory && lhs.type == rhs.type;
 }
 
-bool operator!=(
-    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs) {
+bool operator!=(const ParameterType& lhs, const ParameterType& rhs) {
   return !(lhs == rhs);
 }
 
 void checkParameter(uintmax_t position,
-    const Callable::Parameter& given,
-    const Callable::ParameterType& expected) {
+    const optional<DataVariant>& given,
+    const ParameterType& expected) {
   if (const auto& given_value = given) {
     auto given_type = toDataType(*given_value);
     if (given_type != expected.type) {
@@ -54,10 +52,10 @@ void checkParameter(uintmax_t position,
   }
 }
 
-void addSupportedParameter(Callable::Parameters& map,
-    const Callable::ParameterTypes& supported_types,
+void addSupportedParameter(Parameters& map,
+    const ParameterTypes& supported_types,
     uintmax_t position,
-    const Callable::Parameter& parameter,
+    const optional<DataVariant>& parameter,
     bool strict_assign) {
   auto it = supported_types.find(position);
   if (it == supported_types.end()) {
@@ -73,8 +71,8 @@ void addSupportedParameter(Callable::Parameters& map,
   }
 }
 
-void checkParameters(const Callable::Parameters& input_parameters,
-    const Callable::ParameterTypes& supported_types) {
+void checkParameters(
+    const Parameters& input_parameters, const ParameterTypes& supported_types) {
   for (const auto& [pos, expected] : supported_types) {
 
     auto it = input_parameters.find(pos);
@@ -88,7 +86,7 @@ void checkParameters(const Callable::Parameters& input_parameters,
   }
 }
 
-string toString(const Callable::ParameterTypes& supported_types) {
+string toString(const ParameterTypes& supported_types) {
   if (supported_types.empty()) {
     return "{}";
   }
@@ -101,7 +99,7 @@ string toString(const Callable::ParameterTypes& supported_types) {
   return result += "}";
 }
 
-string toString(const Callable::Parameters& parameters) {
+string toString(const Parameters& parameters) {
   if (parameters.empty()) {
     return "{}";
   }

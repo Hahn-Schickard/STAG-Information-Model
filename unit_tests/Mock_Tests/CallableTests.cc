@@ -26,10 +26,10 @@ string toString(const Executor::Response& response) {
 struct CallableTestParam {
   string test_name = "0";
   DataType result_type = DataType::None;
-  Callable::ParameterTypes supported_params;
+  ParameterTypes supported_params;
   Executor::Response default_response =
       make_exception_ptr(logic_error("Response should not return values"));
-  Callable::Parameters parameters;
+  Parameters parameters;
 
   friend void PrintTo(const CallableTestParam& param, std::ostream* os) {
     *os << "(result_type: " << toString(param.result_type)

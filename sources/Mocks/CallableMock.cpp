@@ -5,7 +5,7 @@ using namespace std;
 using namespace ::testing;
 
 CallableMock::CallableMock(DataType result_type,
-    const Callable::ParameterTypes& supported_params,
+    const ParameterTypes& supported_params,
     const Executor::Response& default_response)
     : result_type_(result_type), supported_params_(supported_params),
       default_response_(default_response),
@@ -38,12 +38,11 @@ void CallableMock::setExecutor() {
         .WillByDefault(Invoke(executor_.get(), &Executor::resultType));
     ON_CALL(*this, parameterTypes)
         .WillByDefault(Invoke(executor_.get(), &Executor::parameterTypes));
-    ON_CALL(*this, execute)
-        .WillByDefault([this](const Callable::Parameters& params) {
-          executor_->execute(params);
-        });
+    ON_CALL(*this, execute).WillByDefault([this](const Parameters& params) {
+      executor_->execute(params);
+    });
     ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
-      auto result_future = executor_->asyncCall(Callable::Parameters{});
+      auto result_future = executor_->asyncCall(Parameters{});
       auto status = result_future.wait_for(chrono::milliseconds(timeout));
       if (status == future_status::ready) {
         return result_future.get();
@@ -52,8 +51,7 @@ void CallableMock::setExecutor() {
       }
     });
     ON_CALL(*this, call(_, _))
-        .WillByDefault([this](const Callable::Parameters& params,
-                           uintmax_t timeout) {
+        .WillByDefault([this](const Parameters& params, uintmax_t timeout) {
           auto result_future = executor_->asyncCall(params);
           auto status = result_future.wait_for(chrono::milliseconds(timeout));
           if (status == future_status::ready) {

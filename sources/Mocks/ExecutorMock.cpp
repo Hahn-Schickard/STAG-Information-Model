@@ -18,7 +18,7 @@ struct ExecutorMock : public Executor {
   ExecutorMock() = default;
 
   ExecutorMock(DataType result_type,
-      const Callable::ParameterTypes& supported,
+      const ParameterTypes& supported,
       const Executor::Response& default_response,
       chrono::nanoseconds response_delay)
       : result_type_(result_type), supported_params_(supported),
@@ -50,12 +50,12 @@ struct ExecutorMock : public Executor {
     }
   }
 
-  void execute(const Callable::Parameters& params) final {
+  void execute(const Parameters& params) final {
     delayCall();
     checkParameters(params, supported_params_);
   }
 
-  ResultFuture asyncCall(const Callable::Parameters& params) final {
+  ResultFuture asyncCall(const Parameters& params) final {
     if (result_type_ == DataType::None) {
       throw ResultReturningNotSupported();
     }
@@ -118,9 +118,7 @@ struct ExecutorMock : public Executor {
 
   DataType resultType() const final { return result_type_; }
 
-  Callable::ParameterTypes parameterTypes() const final {
-    return supported_params_;
-  }
+  ParameterTypes parameterTypes() const final { return supported_params_; }
 
   void checkType(const Response& response) const {
     if (result_type_ == DataType::None &&
@@ -167,7 +165,7 @@ struct ExecutorMock : public Executor {
 
 private:
   DataType result_type_ = DataType::None;
-  Callable::ParameterTypes supported_params_;
+  ParameterTypes supported_params_;
   Executor::Response default_response_;
   chrono::nanoseconds delay_;
   Stoppable::TaskPtr task_;
@@ -182,7 +180,7 @@ private:
 };
 
 ExecutorPtr makeExecutor(DataType result_type,
-    const Callable::ParameterTypes& supported_params,
+    const ParameterTypes& supported_params,
     const Executor::Response& default_response,
     chrono::nanoseconds delay) {
   return make_shared<ExecutorMock>(

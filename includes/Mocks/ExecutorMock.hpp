@@ -9,10 +9,9 @@ struct Executor {
 
   virtual ~Executor() = default;
 
-  virtual void execute(const Callable::Parameters& params) = 0;
+  virtual void execute(const Parameters& params) = 0;
 
-  [[nodiscard]] virtual ResultFuture asyncCall(
-      const Callable::Parameters& params) = 0;
+  [[nodiscard]] virtual ResultFuture asyncCall(const Parameters& params) = 0;
 
   virtual void clear(uintmax_t call_id, bool call_canceled) = 0;
 
@@ -20,7 +19,7 @@ struct Executor {
 
   virtual DataType resultType() const = 0;
 
-  virtual Callable::ParameterTypes parameterTypes() const = 0;
+  virtual ParameterTypes parameterTypes() const = 0;
 
   virtual void respond(uintmax_t call_id, const Response& response) = 0;
 
@@ -36,7 +35,7 @@ struct Executor {
 using ExecutorPtr = std::shared_ptr<Executor>;
 
 ExecutorPtr makeExecutor(DataType result_type,
-    const Callable::ParameterTypes& supported_params,
+    const ParameterTypes& supported_params,
     const Executor::Response& default_response,
     std::chrono::nanoseconds delay);
 

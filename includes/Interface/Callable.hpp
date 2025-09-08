@@ -157,6 +157,27 @@ private:
 };
 
 /**
+ * @brief Indexed map of the modeled function parameters
+ *
+ * @param Key - parameter number
+ * @param Value - parameter value
+ */
+using Parameters = std::unordered_map<uintmax_t, std::optional<DataVariant>>;
+
+struct ParameterType {
+  DataType type;
+  bool mandatory = false;
+};
+
+/**
+ * @brief Indexed map of the modeled function parameter types
+ *
+ * @param Key - parameter number
+ * @param Value - parameter type
+ */
+using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
+
+/**
  * @brief An interface to a Callable.
  *
  * Models a single functionality for various sensors/actors
@@ -166,27 +187,6 @@ private:
  * built via DeviceBuilderInterface::addCallable()
  */
 struct Callable {
-  using Parameter = std::optional<DataVariant>;
-  /**
-   * @brief Indexed map of the modeled function parameters
-   *
-   * @param Key - parameter number
-   * @param Value - parameter value
-   */
-  using Parameters = std::unordered_map<uintmax_t, Parameter>;
-
-  struct ParameterType {
-    DataType type;
-    bool mandatory = false;
-  };
-
-  /**
-   * @brief Indexed map of the modeled function parameter types
-   *
-   * @param Key - parameter number
-   * @param Value - parameter type
-   */
-  using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
 
   virtual ~Callable() = default;
 
@@ -302,11 +302,9 @@ struct Callable {
   virtual ParameterTypes parameterTypes() const = 0;
 }; // namespace Information_Model
 
-bool operator==(
-    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs);
+bool operator==(const ParameterType& lhs, const ParameterType& rhs);
 
-bool operator!=(
-    const Callable::ParameterType& lhs, const Callable::ParameterType& rhs);
+bool operator!=(const ParameterType& lhs, const ParameterType& rhs);
 
 /**
  * @brief Helper function to expand an existing parameter map with supported
@@ -328,10 +326,10 @@ bool operator!=(
  * @param strict_assign - if true overrides existing parameter values, otherwise
  * keeps the old value
  */
-void addSupportedParameter(Callable::Parameters& map,
-    const Callable::ParameterTypes& supported_types,
+void addSupportedParameter(Parameters& map,
+    const ParameterTypes& supported_types,
     uintmax_t position,
-    const Callable::Parameter& param,
+    const std::optional<DataVariant>& param,
     bool strict_assign = false);
 
 /**
@@ -349,26 +347,26 @@ void addSupportedParameter(Callable::Parameters& map,
  * @param supported_types - validation container, obtained from
  * Callable::parameterTypes();
  */
-void checkParameters(const Callable::Parameters& input_parameters,
-    const Callable::ParameterTypes& supported_types);
+void checkParameters(
+    const Parameters& input_parameters, const ParameterTypes& supported_types);
 
 /**
- * @brief Converts a given Callable::ParameterTypes container to a human
+ * @brief Converts a given ParameterTypes container to a human
  * readable string
  *
  * @param supported_types
  * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
  */
-std::string toString(const Callable::ParameterTypes& supported_types);
+std::string toString(const ParameterTypes& supported_types);
 
 /**
- * @brief Converts a given Callable::Parameters container to a human
+ * @brief Converts a given Parameters container to a human
  * readable string
  *
  * @param parameters
  * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
  */
-std::string toString(const Callable::Parameters& parameters);
+std::string toString(const Parameters& parameters);
 
 using CallablePtr = std::shared_ptr<Callable>;
 /** @}*/
