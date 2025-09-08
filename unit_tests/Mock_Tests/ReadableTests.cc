@@ -39,6 +39,16 @@ TEST_P(ReadableTests, canChangeDataType) {
   EXPECT_NE(tested->dataType(), toDataType(expected_variant));
 }
 
+TEST_P(ReadableTests, canChangeReadValue) {
+  EXPECT_CALL(*tested, read).Times(Exactly(2));
+
+  EXPECT_EQ(tested->read(), expected_variant);
+
+  EXPECT_NO_THROW(tested->updateValue(otherThan(expected_variant)););
+
+  EXPECT_NE(tested->read(), expected_variant);
+}
+
 TEST_P(ReadableTests, canRead) {
   EXPECT_CALL(*tested, read).Times(Exactly(1));
 
@@ -50,15 +60,6 @@ TEST_P(ReadableTests, canReadTwice) {
 
   EXPECT_EQ(tested->read(), expected_variant);
   EXPECT_EQ(tested->read(), expected_variant);
-}
-
-TEST_P(ReadableTests, canChangeReadValue) {
-  EXPECT_CALL(*tested, read).Times(Exactly(2));
-
-  EXPECT_NO_THROW(tested->updateValue(otherThan(expected_variant)););
-
-  EXPECT_NE(tested->read(), expected_variant);
-  EXPECT_NE(tested->read(), expected_variant);
 }
 
 TEST_P(ReadableTests, canChangeCallback) {
