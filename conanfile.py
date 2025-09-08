@@ -1,7 +1,7 @@
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.files import load, copy, collect_libs
-from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
+from conan.tools.cmake import cmake_layout, CMake, CMakeDeps, CMakeToolchain
 import re
 import os
 
@@ -37,7 +37,6 @@ class PackageConan(ConanFile):
         # @+ START USER EXPORTS
         # @- END USER EXPORTS
     ]
-    generators = "CMakeDeps"
     package_type = "library"
     short_paths = True
 
@@ -95,6 +94,8 @@ class PackageConan(ConanFile):
         cmake_layout(self)
 
     def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
         tc = CMakeToolchain(self)
         tc.user_presets_path = False
         tc.variables['STATIC_CODE_ANALYSIS'] = False
