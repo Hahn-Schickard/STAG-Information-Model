@@ -28,7 +28,7 @@ ElementMock::ElementMock(const ElementFunction& function,
   setOnCall();
 }
 
-void ElementMock::setOnCall() {
+void ElementMock::setOnCall() const {
   ON_CALL(*this, type).WillByDefault(Return(type_));
   ON_CALL(*this, function).WillByDefault(Return(function_));
 }

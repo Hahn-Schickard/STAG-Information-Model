@@ -22,7 +22,7 @@ struct ElementMock : public virtual Element, public MetaInfoMock {
   MOCK_METHOD(ElementFunction, function, (), (const final));
 
 private:
-  void setOnCall();
+  void setOnCall() const;
 
   ElementType type_;
   ElementFunction function_;

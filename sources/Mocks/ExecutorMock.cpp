@@ -62,14 +62,13 @@ struct ExecutorMock : public Executor {
     auto call_id = assignID();
     auto clear_cb =
         bind(&ExecutorMock::clear, this, placeholders::_1, placeholders::_2);
+    promise<DataVariant> result_promise{};
     try {
       checkParameters(params, supported_params_);
     } catch (...) {
-      promise<DataVariant> exception_promise{};
-      exception_promise.set_exception(current_exception());
-      return ResultFuture(call_id, exception_promise.get_future(), clear_cb);
+      result_promise.set_exception(current_exception());
+      return ResultFuture(call_id, result_promise.get_future(), clear_cb);
     }
-    promise<DataVariant> result_promise{};
     ResultFuture result_future(call_id, result_promise.get_future(), clear_cb);
     result_promises_.try_emplace(call_id, move(result_promise));
     {
