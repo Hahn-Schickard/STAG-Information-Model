@@ -52,6 +52,16 @@ TEST_P(ObservableTests, canChangeDataType) {
   EXPECT_NE(tested->dataType(), expected_type);
 }
 
+TEST_P(ObservableTests, canChangeReadValue) {
+  EXPECT_CALL(*tested, read).Times(Exactly(2));
+
+  EXPECT_EQ(tested->read(), expected_variant);
+
+  EXPECT_NO_THROW(tested->updateValue(otherThan(expected_variant)););
+
+  EXPECT_NE(tested->read(), expected_variant);
+}
+
 TEST_P(ObservableTests, canRead) {
   EXPECT_CALL(*tested, read).Times(Exactly(1));
 
