@@ -69,16 +69,16 @@ TEST_P(CallableTests, canExecute) {
 }
 
 TEST_P(CallableTests, canCall) {
-  EXPECT_CALL(*tested, call(expected.parameters, 100)).Times(Exactly(1));
+  EXPECT_CALL(*tested, call(expected.parameters, 200)).Times(Exactly(1));
 
   if (expected.result_type != DataType::None) {
     auto executor = tested->getExecutor();
     executor->start();
-    EXPECT_NO_THROW(tested->call(expected.parameters, 100));
+    EXPECT_NO_THROW(tested->call(expected.parameters, 200));
     executor->stop();
   } else {
     EXPECT_THROW(
-        tested->call(expected.parameters, 100), ResultReturningNotSupported);
+        tested->call(expected.parameters, 200), ResultReturningNotSupported);
   }
 }
 
