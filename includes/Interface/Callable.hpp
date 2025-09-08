@@ -167,6 +167,10 @@ using Parameters = std::unordered_map<uintmax_t, std::optional<DataVariant>>;
 struct ParameterType {
   DataType type;
   bool mandatory = false;
+
+  friend bool operator==(const ParameterType& lhs, const ParameterType& rhs);
+
+  friend bool operator!=(const ParameterType& lhs, const ParameterType& rhs);
 };
 
 /**
@@ -301,10 +305,6 @@ struct Callable {
 
   virtual ParameterTypes parameterTypes() const = 0;
 }; // namespace Information_Model
-
-bool operator==(const ParameterType& lhs, const ParameterType& rhs);
-
-bool operator!=(const ParameterType& lhs, const ParameterType& rhs);
 
 /**
  * @brief Helper function to expand an existing parameter map with supported
