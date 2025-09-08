@@ -89,7 +89,6 @@ struct ExecutorMock : public Executor {
           [&it](const exception_ptr& exception) {
             it->second.set_exception(exception);
           });
-      it = result_promises_.erase(it);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
     }
