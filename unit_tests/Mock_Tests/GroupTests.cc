@@ -54,7 +54,7 @@ struct GroupTests : public testing::Test {
   }
 
   string base_id = "based_id:0";
-  GroupMockPtr tested = make_shared<GroupMock>(base_id);
+  GroupMockPtr tested = make_shared<NiceMock<GroupMock>>(base_id);
   string sub_group_id;
   string sub_readable_id;
   unordered_map<string, ElementMockPtr> built;
@@ -66,7 +66,7 @@ TEST_F(GroupTests, addElementThrows) {
 
   EXPECT_THAT(
       [&]() {
-        tested->addElement(make_shared<ElementMock>(
+        tested->addElement(make_shared<NiceMock<ElementMock>>(
             make_shared<ReadableMock>(DataType::Opaque), "based_id:1"));
       },
       ThrowsMessage<invalid_argument>(
@@ -74,7 +74,7 @@ TEST_F(GroupTests, addElementThrows) {
 
   EXPECT_THAT(
       [&]() {
-        tested->addElement(make_shared<ElementMock>(
+        tested->addElement(make_shared<NiceMock<ElementMock>>(
             make_shared<ReadableMock>(DataType::Opaque), "another_id:0"));
       },
       ThrowsMessage<invalid_argument>(
@@ -82,7 +82,7 @@ TEST_F(GroupTests, addElementThrows) {
 
   EXPECT_THAT(
       [&]() {
-        tested->addElement(make_shared<ElementMock>(
+        tested->addElement(make_shared<NiceMock<ElementMock>>(
             make_shared<ReadableMock>(DataType::Opaque), base_id));
       },
       ThrowsMessage<invalid_argument>(
@@ -90,7 +90,7 @@ TEST_F(GroupTests, addElementThrows) {
 
   EXPECT_THAT(
       [&]() {
-        tested->addElement(make_shared<ElementMock>(
+        tested->addElement(make_shared<NiceMock<ElementMock>>(
             make_shared<ReadableMock>(DataType::Opaque), base_id + ".0"));
       },
       ThrowsMessage<logic_error>(HasSubstr(
