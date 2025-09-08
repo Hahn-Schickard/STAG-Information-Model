@@ -182,49 +182,60 @@ INSTANTIATE_TEST_SUITE_P(CallableTestsValues,
     CallableTests,
     Values( // clang-format off
         CallableTestParam{
-          "NoResultAndNoParameters"
+          "NoResultAndNoParameters",
+          DataType::None, 
+          ParameterTypes{},
+          make_exception_ptr(logic_error("Response should not return values")),
+          Parameters{}
         },
         CallableTestParam{
           "BoolResultWithoutParameters",
           DataType::Boolean, 
           ParameterTypes{},
-          true
+          true,
+          Parameters{}
         },
         CallableTestParam{
           "IntegerResultWithoutParameters",
           DataType::Integer, 
           ParameterTypes{},
-          (intmax_t)-11
+          (intmax_t)-11,
+          Parameters{}
         },
         CallableTestParam{
           "UIntegerResultWithoutParameters",
           DataType::Unsigned_Integer, 
           ParameterTypes{},
-          (uintmax_t)25
+          (uintmax_t)25,
+          Parameters{}
         },
         CallableTestParam{
           "DoubleResultWithoutParameters",
           DataType::Double, 
           ParameterTypes{},
-          30.2
+          30.2,
+          Parameters{}
         },
         CallableTestParam{
           "TimeResultWithoutParameters",
           DataType::Time, 
           ParameterTypes{},
-          DateTime(1757323947)
+          DateTime(1757323947),
+          Parameters{}
         },
         CallableTestParam{
           "OpaqueResultWithoutParameters",
           DataType::Opaque, 
           ParameterTypes{},
-          vector<uint8_t>{0x00,0x01,0x02}
+          vector<uint8_t>{0x00,0x01,0x02},
+          Parameters{}
         },
         CallableTestParam{
           "StringResultWithoutParameters",
           DataType::String, 
           ParameterTypes{},
-          "hello world"
+          "hello world",
+          Parameters{}
         }
     ), // clang-format on
     [](const TestParamInfo<CallableTests::ParamType>& info) {
