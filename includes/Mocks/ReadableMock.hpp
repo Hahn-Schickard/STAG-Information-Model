@@ -29,11 +29,9 @@ struct ReadableMock : virtual public Readable {
   MOCK_METHOD(DataType, dataType, (), (const final));
   MOCK_METHOD(DataVariant, read, (), (const final));
 
-protected:
+private:
   DataType type_ = DataType::Boolean;
   std::optional<DataVariant> value_;
-
-private:
   ReadCallback read_;
 };
 
