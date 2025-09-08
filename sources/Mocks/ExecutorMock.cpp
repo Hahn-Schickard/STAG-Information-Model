@@ -140,7 +140,7 @@ struct ExecutorMock : public Executor {
   void respondOnce() {
     unique_lock lock(dispatch_mx_);
     if (queue_not_empty_.wait_for(
-            lock, 10ms, [this]() { return !to_be_dispatched_.empty(); })) {
+            lock, 100us, [this]() { return !to_be_dispatched_.empty(); })) {
       auto dispatch_id = to_be_dispatched_.front();
 
       if (auto it = responses_map_.find(dispatch_id);
