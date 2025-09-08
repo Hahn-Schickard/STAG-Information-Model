@@ -53,7 +53,7 @@ private:
 
   void notifyObservers(const DataVariant& value);
 
-  ReadableMock readable_;
+  ReadableMockPtr readable_;
   std::mutex mx_;
   IsObservingCallback is_observing_;
   std::vector<std::weak_ptr<ObserverPimpl>> observers_;

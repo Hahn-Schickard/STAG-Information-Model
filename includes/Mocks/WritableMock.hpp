@@ -54,7 +54,7 @@ private:
   void setReadableCalls();
 
   WriteCallback write_;
-  ReadableMock readable_;
+  ReadableMockPtr readable_;
 };
 
 using WritableMockPtr = std::shared_ptr<WritableMock>;
