@@ -10,5 +10,7 @@ namespace Information_Model::testing {
 struct MockBuilder : public DeviceBuilder {
   // implement DeviceBuilder interface
 };
+
+using MockBuilderPtr = std::shared_ptr<MockBuilder>;
 } // namespace Information_Model::testing
 #endif //__STAG_INFORMATION_MODEL_MOCK_BUILDER_HPP
