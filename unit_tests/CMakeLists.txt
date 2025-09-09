@@ -25,6 +25,7 @@ list(APPEND TEST_DECENCIES
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
 target_link_libraries(${THIS}
+    PRIVATE
         GTest::gtest
         GTest::gmock
         ${TEST_DECENCIES}
