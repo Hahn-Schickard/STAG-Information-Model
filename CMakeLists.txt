@@ -49,7 +49,7 @@ include(GNUInstallDirs)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 #@+ ======================== User CMAKE_OPTIONS configuration ===========================
-# User defined options and cmake variables are set here
+option(WITH_MOCKS "Enable Information Model Mock target" OFF)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 find_package(GTest REQUIRED)
