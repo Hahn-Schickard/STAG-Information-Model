@@ -65,9 +65,9 @@ class PackageConan(ConanFile):
         self.requires("variant_visitor/[~0.2]@hahn-schickard/stable",
                       visible=False
                       )
-        self.requires("stoppable/[~0.3]@hahn-schickard/stable",
-                      visible=False
-                      )
+        # self.requires("stoppable/[~0.3]@hahn-schickard/stable",
+        #               visible=False
+        #               )
         if self.options.with_mocks:
             self.requires("gtest/1.17.0",
                           headers=True,

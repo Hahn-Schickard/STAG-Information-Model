@@ -1,6 +1,6 @@
 #include "FakeExecutor.hpp"
 
-#include <Stoppable/Task.hpp>
+// #include <Stoppable/Task.hpp>
 #include <Variant_Visitor/Visitor.hpp>
 
 #include <condition_variable>
@@ -22,11 +22,12 @@ struct FakeExecutor : public Executor {
       const Executor::Response& default_response,
       chrono::nanoseconds response_delay)
       : result_type_(result_type), supported_params_(supported),
-        default_response_(default_response), delay_(response_delay),
-        task_(make_shared<Stoppable::Task>(
-            bind(&FakeExecutor::respondOnce, this), [](const exception_ptr&) {
-              // @todo decide how to handle exceptions
-            })) {}
+        default_response_(default_response), delay_(response_delay) /* ,
+         task_(make_shared<Stoppable::Task>(
+             bind(&FakeExecutor::respondOnce, this), [](const exception_ptr&) {
+               // @todo decide how to handle exceptions
+             })) */
+  {}
 
   ~FakeExecutor() override { cancelAll(); }
 
@@ -160,16 +161,16 @@ struct FakeExecutor : public Executor {
     freeIDs();
   }
 
-  void start() final { task_->start(); }
+  void start() final { /* task_->start(); */ }
 
-  void stop() final { task_->stop(); }
+  void stop() final { /*  task_->stop(); */ }
 
 private:
   DataType result_type_ = DataType::None;
   ParameterTypes supported_params_;
   Executor::Response default_response_;
   chrono::nanoseconds delay_;
-  Stoppable::TaskPtr task_;
+  // Stoppable::TaskPtr task_;
   unordered_map<uintmax_t, weak_ptr<uintmax_t>> ids_;
   mutex id_mx_;
   queue<Response> responses_queue_;

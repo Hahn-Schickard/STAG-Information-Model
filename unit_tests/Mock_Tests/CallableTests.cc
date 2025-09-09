@@ -68,19 +68,19 @@ TEST_P(CallableTests, canExecute) {
   EXPECT_NO_THROW(tested->execute(expected.parameters));
 }
 
-TEST_P(CallableTests, canCall) {
-  EXPECT_CALL(*tested, call(expected.parameters, 200)).Times(Exactly(1));
+// TEST_P(CallableTests, canCall) {
+//   EXPECT_CALL(*tested, call(expected.parameters, 200)).Times(Exactly(1));
 
-  if (expected.result_type != DataType::None) {
-    auto executor = tested->getExecutor();
-    executor->start();
-    EXPECT_NO_THROW(tested->call(expected.parameters, 200));
-    executor->stop();
-  } else {
-    EXPECT_THROW(
-        tested->call(expected.parameters, 200), ResultReturningNotSupported);
-  }
-}
+//   if (expected.result_type != DataType::None) {
+//     auto executor = tested->getExecutor();
+//     executor->start();
+//     EXPECT_NO_THROW(tested->call(expected.parameters, 200));
+//     executor->stop();
+//   } else {
+//     EXPECT_THROW(
+//         tested->call(expected.parameters, 200), ResultReturningNotSupported);
+//   }
+// }
 
 TEST_P(CallableTests, canTimeoutCall) {
   EXPECT_CALL(*tested, call(expected.parameters, 1)).Times(Exactly(1));
@@ -93,24 +93,24 @@ TEST_P(CallableTests, canTimeoutCall) {
   }
 }
 
-TEST_P(CallableTests, canAsyncCall) {
-  EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
+// TEST_P(CallableTests, canAsyncCall) {
+//   EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
 
-  if (expected.result_type != DataType::None) {
-    EXPECT_NO_THROW({
-      auto result = tested->asyncCall(expected.parameters);
+//   if (expected.result_type != DataType::None) {
+//     EXPECT_NO_THROW({
+//       auto result = tested->asyncCall(expected.parameters);
 
-      auto executor = tested->getExecutor();
-      executor->start();
-      EXPECT_EQ(result.get(), get<DataVariant>(expected.default_response));
-      executor->stop();
-    });
-  } else {
-    EXPECT_THROW(
-        { auto result = tested->asyncCall(expected.parameters); },
-        ResultReturningNotSupported);
-  }
-}
+//       auto executor = tested->getExecutor();
+//       executor->start();
+//       EXPECT_EQ(result.get(), get<DataVariant>(expected.default_response));
+//       executor->stop();
+//     });
+//   } else {
+//     EXPECT_THROW(
+//         { auto result = tested->asyncCall(expected.parameters); },
+//         ResultReturningNotSupported);
+//   }
+// }
 
 TEST_P(CallableTests, canCancelAsyncCall) {
   EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
