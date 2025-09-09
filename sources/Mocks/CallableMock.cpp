@@ -14,6 +14,32 @@ CallableMock::CallableMock(DataType result_type,
   setExecutor();
 }
 
+CallableMock::CallableMock(
+    const ExecuteCallback& execute_cb, const ParameterTypes& supported_params)
+    : execute_cb_(execute_cb), supported_params_(supported_params) {
+  setCallbacks();
+}
+
+CallableMock::CallableMock(DataType result_type,
+    const AsyncExecuteCallback& async_execute_cb,
+    const CancelCallback& cancel_cb,
+    const ParameterTypes& supported_params)
+    : result_type_(result_type), async_execute_cb_(async_execute_cb),
+      cancel_cb_(cancel_cb), supported_params_(supported_params) {
+  setCallbacks();
+}
+
+CallableMock::CallableMock(DataType result_type,
+    const ExecuteCallback& execute_cb,
+    const AsyncExecuteCallback& async_execute_cb,
+    const CancelCallback& cancel_cb,
+    const ParameterTypes& supported_params)
+    : result_type_(result_type), execute_cb_(execute_cb),
+      async_execute_cb_(async_execute_cb), cancel_cb_(cancel_cb),
+      supported_params_(supported_params) {
+  setCallbacks();
+}
+
 ExecutorPtr CallableMock::getExecutor() const { return executor_; }
 
 void CallableMock::changeExecutor(const ExecutorPtr& executor) {
@@ -42,22 +68,23 @@ void CallableMock::setExecutor() {
       executor_->execute(params);
     });
     ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
-      auto result_future = executor_->asyncCall(Parameters{});
-      auto status = result_future.wait_for(chrono::milliseconds(timeout));
+      auto result = executor_->asyncCall(
+          Parameters{}); // @todo: decide if makeDefaultParams() is needed
+      auto status = result.wait_for(chrono::milliseconds(timeout));
       if (status == future_status::ready) {
-        return result_future.get();
+        return result.get();
       } else {
-        throw CallTimedout("MockFunction");
+        throw CallTimedout("CallableMock Executor");
       }
     });
     ON_CALL(*this, call(_, _))
         .WillByDefault([this](const Parameters& params, uintmax_t timeout) {
-          auto result_future = executor_->asyncCall(params);
-          auto status = result_future.wait_for(chrono::milliseconds(timeout));
+          auto result = executor_->asyncCall(params);
+          auto status = result.wait_for(chrono::milliseconds(timeout));
           if (status == future_status::ready) {
-            return result_future.get();
+            return result.get();
           } else {
-            throw CallTimedout("MockFunction");
+            throw CallTimedout("CallableMock Executor");
           }
         });
     ON_CALL(*this, asyncCall)
@@ -78,6 +105,36 @@ void CallableMock::setExecutor() {
     ON_CALL(*this, cancelAllAsyncCalls)
         .WillByDefault(Throw(ExecutorNotAvailable()));
   }
+}
+
+void CallableMock::setCallbacks() {
+  ON_CALL(*this, resultType).WillByDefault(Return(result_type_));
+  ON_CALL(*this, parameterTypes).WillByDefault(Return(supported_params_));
+  ON_CALL(*this, execute).WillByDefault(execute_cb_);
+  ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
+    auto result = executor_->asyncCall(Parameters{});
+    auto status = result.wait_for(chrono::milliseconds(timeout));
+    if (status == future_status::ready) {
+      return result.get();
+    } else {
+      throw CallTimedout("External Executor");
+    }
+  });
+  ON_CALL(*this, call(_, _))
+      .WillByDefault([this](const Parameters& params, uintmax_t timeout) {
+        auto result = async_execute_cb_(params);
+        auto status = result.wait_for(chrono::milliseconds(timeout));
+        if (status == future_status::ready) {
+          return result.get();
+        } else {
+          throw CallTimedout("External Executor");
+        }
+      });
+  ON_CALL(*this, asyncCall).WillByDefault(async_execute_cb_);
+  ON_CALL(*this, cancelAsyncCall).WillByDefault(cancel_cb_);
+  ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
+    // @todo: implement cancel all calls
+  });
 }
 
 } // namespace Information_Model::testing

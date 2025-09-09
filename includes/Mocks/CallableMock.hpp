@@ -8,12 +8,30 @@
 namespace Information_Model::testing {
 
 struct CallableMock : public Callable {
+  using ExecuteCallback = std::function<void(const Parameters&)>;
+  using AsyncExecuteCallback = std::function<ResultFuture(const Parameters&)>;
+  using CancelCallback = std::function<void(uintmax_t)>;
+
   CallableMock() = default;
 
   explicit CallableMock(DataType result_type,
       const ParameterTypes& supported_params = {},
       const Executor::Response& default_response = std::make_exception_ptr(
           std::logic_error("Default response exception")));
+
+  explicit CallableMock(const ExecuteCallback& execute_cb,
+      const ParameterTypes& supported_params = {});
+
+  CallableMock(DataType result_type,
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
+      const ParameterTypes& supported_params = {});
+
+  CallableMock(DataType result_type,
+      const ExecuteCallback& execute_cb,
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
+      const ParameterTypes& supported_params = {});
 
   ~CallableMock() override = default;
 
@@ -37,8 +55,12 @@ struct CallableMock : public Callable {
 
 private:
   void setExecutor();
+  void setCallbacks();
 
   DataType result_type_;
+  ExecuteCallback execute_cb_;
+  AsyncExecuteCallback async_execute_cb_;
+  CancelCallback cancel_cb_;
   ParameterTypes supported_params_;
   Executor::Response default_response_;
   ExecutorPtr executor_;

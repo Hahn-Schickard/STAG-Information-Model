@@ -1,5 +1,3 @@
-* refactor unit tests
-* add MockBuilder implementation
 * refactor example
 * refactor unit tests
 * review time `DateTime` implementation 

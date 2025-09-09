@@ -37,18 +37,12 @@ struct DeviceBuilder {
    *
    */
   using ExecuteCallback = std::function<void(const Parameters&)>;
-  /**
-   * @brief Indexed future result that the Callble returns to the callers
-   *
-   */
-  using AsyncExecuteFuture = std::pair<uintmax_t, std::future<DataVariant>>;
 
   /**
    * @brief Used by the Callble to asynchronously execute the modeled function
    *
    */
-  using AsyncExecuteCallback =
-      std::function<AsyncExecuteFuture(const Parameters&)>;
+  using AsyncExecuteCallback = std::function<ResultFuture(const Parameters&)>;
 
   /**
    * @brief Used by the Callable to cancel a previous ExecuteCallback call
@@ -80,8 +74,9 @@ struct DeviceBuilder {
   virtual std::string addGroup(
       const std::string& parent_id, const BuildInfo& element_info) = 0;
 
-  virtual std::string addReadable(
-      const BuildInfo& element_info, DataType, const ReadCallback& read_cb) = 0;
+  virtual std::string addReadable(const BuildInfo& element_info,
+      DataType data_type,
+      const ReadCallback& read_cb) = 0;
 
   virtual std::string addReadableMetric(const std::string& parent_id,
       const BuildInfo& element_info,
@@ -113,7 +108,7 @@ struct DeviceBuilder {
       const IsObservingCallback& observe_cb) = 0;
 
   virtual std::string addCallable(const BuildInfo& element_info,
-      DataType data_type,
+      DataType result_type,
       const AsyncExecuteCallback& async_execute_cb,
       const CancelCallback& cancel_cb,
       const ParameterTypes& parameter_types = {}) = 0;
