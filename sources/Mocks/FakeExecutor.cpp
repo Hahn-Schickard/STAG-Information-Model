@@ -121,10 +121,16 @@ struct FakeExecutor : public Executor {
   ParameterTypes parameterTypes() const final { return supported_params_; }
 
   void checkType(const Response& response) const {
-    if (result_type_ == DataType::None &&
-        holds_alternative<DataVariant>(response)) {
-      throw invalid_argument("Can not set DataVariant response for executor. "
-                             "Executor does not support returning values");
+    if (holds_alternative<DataVariant>(response)) {
+      if (result_type_ == DataType::None) {
+        throw invalid_argument("Can not set DataVariant response for executor. "
+                               "Executor does not support returning values");
+      }
+      if (result_type_ != toDataType(get<DataVariant>(response))) {
+        throw invalid_argument("Executor is suppose to return " +
+            toString(result_type_) + " data values, not " +
+            toString(toDataType(get<DataVariant>(response))));
+      }
     }
   }
 
