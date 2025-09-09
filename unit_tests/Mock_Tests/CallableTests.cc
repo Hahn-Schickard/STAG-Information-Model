@@ -1,4 +1,5 @@
 #include "CallableMock.hpp"
+#include "TestResources.hpp"
 
 #include <Variant_Visitor/Visitor.hpp>
 #include <gtest/gtest.h>
@@ -222,6 +223,44 @@ TEST_P(CallableTests, executorThrowsCallerNotFound) {
       },
       ThrowsMessage<CallerNotFound>(HasSubstr(
           "No caller with id: 1 for Callable ExternalExecutor call exists")));
+}
+
+TEST_P(CallableTests, executorThrowsOnBadQueueResponse) {
+  auto executor = tested->getExecutor();
+
+  if (expected.result_type == DataType::None) {
+    EXPECT_THAT([&]() { executor->queueResponse(true); },
+        ThrowsMessage<invalid_argument>(
+            HasSubstr("Can not set DataVariant response for executor. "
+                      "Executor does not support returning values")));
+
+    EXPECT_THAT([&]() { executor->queueResponse(1, true); },
+        ThrowsMessage<invalid_argument>(
+            HasSubstr("Can not set DataVariant response for executor. "
+                      "Executor does not support returning values")));
+  } else {
+    EXPECT_THAT(
+        [&]() {
+          executor->queueResponse(
+              otherThan(get<DataVariant>(expected.default_response)));
+        },
+        ThrowsMessage<invalid_argument>(
+            HasSubstr("Executor is suppose to return " +
+                toString(expected.result_type) + " data values, not " +
+                toString(toDataType(
+                    otherThan(get<DataVariant>(expected.default_response)))))));
+
+    EXPECT_THAT(
+        [&]() {
+          executor->queueResponse(
+              1, otherThan(get<DataVariant>(expected.default_response)));
+        },
+        ThrowsMessage<invalid_argument>(
+            HasSubstr("Executor is suppose to return " +
+                toString(expected.result_type) + " data values, not " +
+                toString(toDataType(
+                    otherThan(get<DataVariant>(expected.default_response)))))));
+  }
 }
 
 // NOLINTBEGIN(readability-magic-numbers)
