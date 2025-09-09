@@ -28,7 +28,7 @@ namespace Information_Model {
  * built via DeviceBuilderInterface
  */
 struct Device : virtual public MetaInfo {
-  virtual ~Device() = default;
+  ~Device() override = default;
 
   virtual GroupPtr group() const = 0;
 

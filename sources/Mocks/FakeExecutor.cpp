@@ -33,7 +33,7 @@ struct FakeExecutor : public Executor {
   shared_ptr<uintmax_t> assignID() {
     unique_lock lock(id_mx_);
     auto id = make_shared<uintmax_t>(0);
-    while (!ids_.emplace(*id, id).second) {
+    while (!ids_.try_emplace(*id, id).second) {
       (*id)++;
     }
     return id;

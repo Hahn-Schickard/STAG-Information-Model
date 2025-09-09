@@ -11,7 +11,7 @@
 namespace Information_Model::testing {
 
 struct DeviceMock : virtual public Device, public MetaInfoMock {
-  DeviceMock(const std::string& base_id,
+  explicit DeviceMock(const std::string& base_id,
       const std::optional<FullMetaInfo>& meta = std::nullopt);
 
   ~DeviceMock() override = default;
