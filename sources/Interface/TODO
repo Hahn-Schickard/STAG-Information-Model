@@ -1,8 +1,6 @@
 * refactor unit tests
-* add CMake WITH_MOCKS option
 * add MockBuilder implementation
 * refactor example
-* refactor integration test
 * refactor unit tests
 * review time `DateTime` implementation 
  * `std::chrono::system_clock::time_point` is easier to use, but is it
