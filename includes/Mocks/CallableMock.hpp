@@ -1,7 +1,7 @@
 #ifndef __STAG_INFORMATION_MODEL_CALLABLE_MOCK_HPP
 #define __STAG_INFORMATION_MODEL_CALLABLE_MOCK_HPP
 
-#include "ExecutorMock.hpp"
+#include "FakeExecutor.hpp"
 
 #include <gmock/gmock.h>
 

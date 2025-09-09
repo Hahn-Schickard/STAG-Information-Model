@@ -1,4 +1,4 @@
-#include "ExecutorMock.hpp"
+#include "FakeExecutor.hpp"
 
 #include <Stoppable/Task.hpp>
 #include <Variant_Visitor/Visitor.hpp>
@@ -14,21 +14,21 @@
 namespace Information_Model::testing {
 using namespace std;
 
-struct ExecutorMock : public Executor {
-  ExecutorMock() = default;
+struct FakeExecutor : public Executor {
+  FakeExecutor() = default;
 
-  ExecutorMock(DataType result_type,
+  FakeExecutor(DataType result_type,
       const ParameterTypes& supported,
       const Executor::Response& default_response,
       chrono::nanoseconds response_delay)
       : result_type_(result_type), supported_params_(supported),
         default_response_(default_response), delay_(response_delay),
         task_(make_shared<Stoppable::Task>(
-            bind(&ExecutorMock::respondOnce, this), [](const exception_ptr&) {
+            bind(&FakeExecutor::respondOnce, this), [](const exception_ptr&) {
               // @todo decide how to handle exceptions
             })) {}
 
-  ~ExecutorMock() override { cancelAll(); }
+  ~FakeExecutor() override { cancelAll(); }
 
   shared_ptr<uintmax_t> assignID() {
     unique_lock lock(id_mx_);
@@ -184,7 +184,7 @@ ExecutorPtr makeExecutor(DataType result_type,
     const ParameterTypes& supported_params,
     const Executor::Response& default_response,
     chrono::nanoseconds delay) {
-  return make_shared<ExecutorMock>(
+  return make_shared<FakeExecutor>(
       result_type, supported_params, default_response, delay);
 }
 } // namespace Information_Model::testing
