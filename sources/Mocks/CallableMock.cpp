@@ -63,8 +63,7 @@ void CallableMock::setExecutor() {
     ON_CALL(*this, asyncCall)
         .WillByDefault(bind(&Executor::asyncCall, executor_, placeholders::_1));
     ON_CALL(*this, cancelAsyncCall)
-        .WillByDefault(
-            bind(&Executor::clear, executor_, placeholders::_1, true));
+        .WillByDefault(bind(&Executor::cancel, executor_, placeholders::_1));
     ON_CALL(*this, cancelAllAsyncCalls)
         .WillByDefault(bind(&Executor::cancelAll, executor_));
   } else {

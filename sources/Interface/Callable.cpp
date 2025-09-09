@@ -3,33 +3,16 @@
 namespace Information_Model {
 using namespace std;
 
-ResultFuture::ResultFuture(uintmax_t caller,
-    future<DataVariant>&& result,
-    const ResultFuture::CallClearer& clearer)
-    : id_(caller), result_(move(result)), clearer_(clearer) {}
+ResultFuture::ResultFuture(
+    shared_ptr<uintmax_t> id, future<DataVariant>&& result)
+    : id_(id), result_(move(result)) {}
 
 DataVariant ResultFuture::get() {
   auto result = result_.get();
-  clearer_(id_, false);
   return result;
 }
 
-void ResultFuture::cancel() {
-  if (wait_for(0ms) == future_status::ready) {
-    auto result = get();
-  } else if (!clearer_) {
-    throw CancellerNotAvailable();
-  } else {
-    clearer_(id_, true);
-    try {
-      auto result = get();
-    } catch (const CallCanceled&) { // NOLINT(bugprone-empty-catch)
-      // suppress CallCanceled exception
-    }
-  }
-}
-
-uintmax_t ResultFuture::callerID() const { return id_; }
+uintmax_t ResultFuture::id() const { return *id_; }
 
 bool operator==(const ParameterType& lhs, const ParameterType& rhs) {
   return lhs.mandatory == rhs.mandatory && lhs.type == rhs.type;

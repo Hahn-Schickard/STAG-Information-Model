@@ -55,11 +55,6 @@ struct ExecutorNotAvailable : public std::runtime_error {
       : std::runtime_error("Executor callback is no longer available") {}
 };
 
-struct CancellerNotAvailable : public std::runtime_error {
-  CancellerNotAvailable()
-      : std::runtime_error("Canceler callback is no longer available") {}
-};
-
 struct CallerNotFound : public std::runtime_error {
   CallerNotFound(uintmax_t call_id, const std::string& name)
       : std::runtime_error("No caller with id: " + std::to_string(call_id) +
@@ -94,19 +89,8 @@ struct CallTimedout : public std::runtime_error {
  *
  */
 struct ResultFuture {
-  /**
-   * @brief Used to indicate that a given future has been consumed or canceled
-   *
-   *
-   * CallClearer(call_id, false) - indicates that the future result has been
-   * consumed CallClearer(call_id, true) - indicates that the given result
-   * request has been canceled
-   */
-  using CallClearer = std::function<void(uintmax_t, bool)>;
-
-  ResultFuture(uintmax_t caller,
-      std::future<DataVariant>&& result,
-      const CallClearer& clearer);
+  ResultFuture(
+      std::shared_ptr<uintmax_t> id, std::future<DataVariant>&& result);
 
   ResultFuture(const ResultFuture&) = delete;
 
@@ -118,17 +102,6 @@ struct ResultFuture {
 
   ResultFuture& operator=(ResultFuture&&) = default;
 
-  /**
-   * @brief Obtains the promised future result and removes the call_id from
-   * active operations list
-   *
-   * @throws CallCanceled - if the requested operation was canceled by the
-   * user
-   * @throws std::runtime_error - if internal callback encountered an error.
-   * It may have caused @ref Deregistration
-   *
-   * @return DataVariant
-   */
   DataVariant get();
 
   template <class Rep, class Period>
@@ -137,23 +110,11 @@ struct ResultFuture {
     return result_.wait_for(timeout_duration);
   }
 
-  /**
-   * @brief Tries to cancel the requested result. If result was already set,
-   * suppresses the value, otherwise cancels the request.
-   *
-   * @throws std::runtime_error - if result was already delivered and contains
-   * an exception
-   * @throws CancellerNotAvailable - if assigned canceler is no longer available
-   *
-   */
-  void cancel();
-
-  uintmax_t callerID() const;
+  uintmax_t id() const;
 
 private:
-  uintmax_t id_;
+  std::shared_ptr<uintmax_t> id_;
   std::future<DataVariant> result_;
-  CallClearer clearer_;
 };
 
 /**

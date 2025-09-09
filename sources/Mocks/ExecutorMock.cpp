@@ -28,20 +28,26 @@ struct ExecutorMock : public Executor {
               // @todo decide how to handle exceptions
             })) {}
 
-  ~ExecutorMock() override = default;
+  ~ExecutorMock() override { cancelAll(); }
 
-  uintmax_t assignID() {
+  shared_ptr<uintmax_t> assignID() {
     unique_lock lock(id_mx_);
-    uintmax_t id = 0;
-    while (!ids_.emplace(id).second) {
-      id++;
+    auto id = make_shared<uintmax_t>(0);
+    while (!ids_.emplace(*id, id).second) {
+      (*id)++;
     }
     return id;
   }
 
-  void freeID(uintmax_t id) {
+  void freeIDs() {
     unique_lock lock(id_mx_);
-    ids_.erase(id);
+    for (auto it = ids_.begin(); it != ids_.end();) {
+      if (it->second.expired()) {
+        it = ids_.erase(it);
+      } else {
+        ++it;
+      }
+    }
   }
 
   void delayCall() const {
@@ -60,20 +66,18 @@ struct ExecutorMock : public Executor {
       throw ResultReturningNotSupported();
     }
     auto call_id = assignID();
-    auto clear_cb =
-        bind(&ExecutorMock::clear, this, placeholders::_1, placeholders::_2);
     promise<DataVariant> result_promise{};
     try {
       checkParameters(params, supported_params_);
     } catch (...) {
       result_promise.set_exception(current_exception());
-      return ResultFuture(call_id, result_promise.get_future(), clear_cb);
+      return ResultFuture(call_id, result_promise.get_future());
     }
-    ResultFuture result_future(call_id, result_promise.get_future(), clear_cb);
-    result_promises_.try_emplace(call_id, move(result_promise));
+    ResultFuture result_future(call_id, result_promise.get_future());
+    result_promises_.try_emplace(*call_id, move(result_promise));
     {
       lock_guard lock(dispatch_mx_);
-      to_be_dispatched_.push(call_id);
+      to_be_dispatched_.push(*call_id);
       queue_not_empty_.notify_one();
     }
     return result_future;
@@ -89,21 +93,19 @@ struct ExecutorMock : public Executor {
           [&it](const exception_ptr& exception) {
             it->second.set_exception(exception);
           });
+      result_promises_.erase(it);
     } else {
       throw CallerNotFound(call_id, "ExternalExecutor");
     }
   }
 
-  void clear(uintmax_t call_id, bool call_canceled) final {
+  void cancel(uintmax_t call_id) final {
     if (auto it = result_promises_.find(call_id);
         it != result_promises_.end()) {
-      if (call_canceled) {
-        it->second.set_exception(
-            make_exception_ptr(CallCanceled(call_id, "MockCallable")));
-      }
+      it->second.set_exception(
+          make_exception_ptr(CallCanceled(call_id, "MockCallable")));
       it = result_promises_.erase(it);
     }
-    freeID(call_id);
   }
 
   void cancelAll() final {
@@ -136,7 +138,7 @@ struct ExecutorMock : public Executor {
     responses_map_.try_emplace(call_id, response);
   }
 
-  void respondOnce() {
+  void respondOnce() final {
     unique_lock lock(dispatch_mx_);
     if (queue_not_empty_.wait_for(
             lock, 100us, [this]() { return !to_be_dispatched_.empty(); })) {
@@ -155,6 +157,7 @@ struct ExecutorMock : public Executor {
       }
       to_be_dispatched_.pop();
     }
+    freeIDs();
   }
 
   void start() final { task_->start(); }
@@ -167,7 +170,7 @@ private:
   Executor::Response default_response_;
   chrono::nanoseconds delay_;
   Stoppable::TaskPtr task_;
-  unordered_set<uintmax_t> ids_;
+  unordered_map<uintmax_t, weak_ptr<uintmax_t>> ids_;
   mutex id_mx_;
   queue<Response> responses_queue_;
   unordered_map<uintmax_t, Response> responses_map_;

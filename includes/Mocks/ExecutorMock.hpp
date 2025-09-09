@@ -13,7 +13,7 @@ struct Executor {
 
   [[nodiscard]] virtual ResultFuture asyncCall(const Parameters& params) = 0;
 
-  virtual void clear(uintmax_t call_id, bool call_canceled) = 0;
+  virtual void cancel(uintmax_t call_id) = 0;
 
   virtual void cancelAll() = 0;
 
@@ -26,6 +26,8 @@ struct Executor {
   virtual void queueResponse(const Response& response) = 0;
 
   virtual void queueResponse(uintmax_t call_id, const Response& response) = 0;
+
+  virtual void respondOnce() = 0;
 
   virtual void start() = 0;
 

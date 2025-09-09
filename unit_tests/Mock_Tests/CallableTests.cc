@@ -113,21 +113,18 @@ TEST_P(CallableTests, canAsyncCall) {
 }
 
 TEST_P(CallableTests, canCancelAsyncCall) {
+  EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
+
   if (expected.result_type != DataType::None) {
-    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(2));
     EXPECT_CALL(*tested, cancelAsyncCall(_)).Times(Exactly(1));
 
     EXPECT_NO_THROW({
       auto result = tested->asyncCall(expected.parameters);
-      result.cancel();
 
-      auto another_result = tested->asyncCall(expected.parameters);
-      tested->cancelAsyncCall(another_result.callerID());
-      EXPECT_THROW(another_result.get(), CallCanceled);
+      tested->cancelAsyncCall(result.id());
+      EXPECT_THROW(result.get(), CallCanceled);
     });
   } else {
-    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
-
     EXPECT_THROW(
         { auto result = tested->asyncCall(expected.parameters); },
         ResultReturningNotSupported);
@@ -155,6 +152,28 @@ TEST_P(CallableTests, canCancelAllAsyncCalls) {
     });
   } else {
     EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times((1));
+
+    EXPECT_THROW(
+        { auto result = tested->asyncCall(expected.parameters); },
+        ResultReturningNotSupported);
+  }
+}
+
+TEST_P(CallableTests, resultOutlivesAsyncCall) {
+  if (expected.result_type != DataType::None) {
+    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(2));
+
+    auto result1 = tested->asyncCall(expected.parameters);
+    {
+      auto executor = tested->getExecutor();
+      executor->respondOnce();
+    }
+    auto result2 = tested->asyncCall(expected.parameters);
+    tested.reset();
+    EXPECT_EQ(result1.get(), get<DataVariant>(expected.default_response));
+    EXPECT_THROW(result2.get(), CallCanceled);
+  } else {
+    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
 
     EXPECT_THROW(
         { auto result = tested->asyncCall(expected.parameters); },
