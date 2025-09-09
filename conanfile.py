@@ -37,6 +37,7 @@ class PackageConan(ConanFile):
         # @+ START USER EXPORTS
         # @- END USER EXPORTS
     ]
+    generators = "CMakeDeps"
     package_type = "library"
     short_paths = True
 
@@ -94,8 +95,6 @@ class PackageConan(ConanFile):
         cmake_layout(self)
 
     def generate(self):
-        deps = CMakeDeps(self)
-        deps.generate()
         tc = CMakeToolchain(self)
         tc.user_presets_path = False
         tc.variables['STATIC_CODE_ANALYSIS'] = False
