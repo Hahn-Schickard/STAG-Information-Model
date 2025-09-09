@@ -23,7 +23,7 @@ target_link_libraries(${TARGET}
         GTest::gtest
         GTest::gmock
     PRIVATE
-        # Stoppable::Stoppable
+        Stoppable::Stoppable
         Variant_Visitor::Variant_Visitor      
 )
 
