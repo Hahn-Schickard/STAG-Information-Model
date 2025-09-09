@@ -122,6 +122,10 @@ class PackageConan(ConanFile):
         self.cpp_info.libs = collect_libs(self)
         self.cpp_info.set_property("cmake_find_mode", "both")
         # @+ START USER DEFINES
+        if self.options.with_mocks:
+            self.cpp_info.defines.append(
+                "__INFORMATION_MODEL_MOCKS_ENABLED_AE06")
+            self.cpp_info.requires = ["gtest::gtest", "gtest::gmock"]
         # @- END USER DEFINES
         self.cpp_info.set_property("cmake_file_name", self.full_name)
         cmake_target_name = self.full_name + "::" + self.full_name
