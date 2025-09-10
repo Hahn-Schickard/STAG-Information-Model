@@ -105,7 +105,7 @@ struct ResultFuture {
   DataVariant get();
 
   template <class Rep, class Period>
-  std::future_status wait_for(
+  std::future_status waitFor(
       const std::chrono::duration<Rep, Period>& timeout_duration) const {
     return result_.wait_for(timeout_duration);
   }

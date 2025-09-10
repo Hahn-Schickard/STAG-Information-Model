@@ -70,7 +70,7 @@ void CallableMock::setExecutor() {
     ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
       auto result = executor_->asyncCall(
           Parameters{}); // @todo: decide if makeDefaultParams() is needed
-      auto status = result.wait_for(chrono::milliseconds(timeout));
+      auto status = result.waitFor(chrono::milliseconds(timeout));
       if (status == future_status::ready) {
         return result.get();
       } else {
@@ -80,7 +80,7 @@ void CallableMock::setExecutor() {
     ON_CALL(*this, call(_, _))
         .WillByDefault([this](const Parameters& params, uintmax_t timeout) {
           auto result = executor_->asyncCall(params);
-          auto status = result.wait_for(chrono::milliseconds(timeout));
+          auto status = result.waitFor(chrono::milliseconds(timeout));
           if (status == future_status::ready) {
             return result.get();
           } else {
@@ -109,7 +109,7 @@ void CallableMock::setCallbacks() {
   ON_CALL(*this, execute).WillByDefault(execute_cb_);
   ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
     auto result = executor_->asyncCall(Parameters{});
-    auto status = result.wait_for(chrono::milliseconds(timeout));
+    auto status = result.waitFor(chrono::milliseconds(timeout));
     if (status == future_status::ready) {
       return result.get();
     } else {
@@ -119,7 +119,7 @@ void CallableMock::setCallbacks() {
   ON_CALL(*this, call(_, _))
       .WillByDefault([this](const Parameters& params, uintmax_t timeout) {
         auto result = async_execute_cb_(params);
-        auto status = result.wait_for(chrono::milliseconds(timeout));
+        auto status = result.waitFor(chrono::milliseconds(timeout));
         if (status == future_status::ready) {
           return result.get();
         } else {
