@@ -91,8 +91,6 @@ void CallableMock::setExecutor() {
         .WillByDefault(bind(&Executor::asyncCall, executor_, placeholders::_1));
     ON_CALL(*this, cancelAsyncCall)
         .WillByDefault(bind(&Executor::cancel, executor_, placeholders::_1));
-    ON_CALL(*this, cancelAllAsyncCalls)
-        .WillByDefault(bind(&Executor::cancelAll, executor_));
   } else {
     ON_CALL(*this, resultType).WillByDefault(Return(result_type_));
     ON_CALL(*this, parameterTypes).WillByDefault(Return(supported_params_));
@@ -101,8 +99,6 @@ void CallableMock::setExecutor() {
     ON_CALL(*this, call(_, _)).WillByDefault(Throw(ExecutorNotAvailable()));
     ON_CALL(*this, asyncCall).WillByDefault(Throw(ExecutorNotAvailable()));
     ON_CALL(*this, cancelAsyncCall)
-        .WillByDefault(Throw(ExecutorNotAvailable()));
-    ON_CALL(*this, cancelAllAsyncCalls)
         .WillByDefault(Throw(ExecutorNotAvailable()));
   }
 }
@@ -132,9 +128,6 @@ void CallableMock::setCallbacks() {
       });
   ON_CALL(*this, asyncCall).WillByDefault(async_execute_cb_);
   ON_CALL(*this, cancelAsyncCall).WillByDefault(cancel_cb_);
-  ON_CALL(*this, cancelAllAsyncCalls).WillByDefault([this]() {
-    // @todo: implement cancel all calls
-  });
 }
 
 } // namespace Information_Model::testing

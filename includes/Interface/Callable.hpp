@@ -248,20 +248,6 @@ struct Callable {
    */
   virtual void cancelAsyncCall(uintmax_t call_id) const = 0;
 
-  /**
-   * @brief Cancels all asynchronous call executions
-   *
-   * All result promises, that have not been fulfilled, will be canceled. All
-   * linked result futures will throw an exception to indicate that it was
-   * canceled
-   *
-   * @throws ResultReturningNotSupported- if modeled functionality does not
-   * support returning execution result
-   * @throws std::runtime_error - if internal cancellation mechanism encountered
-   * an error
-   */
-  virtual void cancelAllAsyncCalls() const = 0;
-
   virtual DataType resultType() const = 0;
 
   virtual ParameterTypes parameterTypes() const = 0;

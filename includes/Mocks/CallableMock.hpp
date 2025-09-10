@@ -44,7 +44,6 @@ struct CallableMock : public Callable {
   MOCK_METHOD(
       ResultFuture, asyncCall, (const Parameters& parameters), (const final));
   MOCK_METHOD(void, cancelAsyncCall, (uintmax_t), (const final));
-  MOCK_METHOD(void, cancelAllAsyncCalls, (), (const final));
   MOCK_METHOD(DataType, resultType, (), (const final));
   MOCK_METHOD(ParameterTypes, parameterTypes, (), (const final));
 

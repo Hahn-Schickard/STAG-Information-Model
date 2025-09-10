@@ -132,34 +132,6 @@ TEST_P(CallableTests, canCancelAsyncCall) {
   }
 }
 
-TEST_P(CallableTests, canCancelAllAsyncCalls) {
-  if (expected.result_type != DataType::None) {
-    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(3));
-    EXPECT_CALL(*tested, cancelAllAsyncCalls()).Times(Exactly(1));
-
-    EXPECT_NO_THROW({
-      auto result_1 = tested->asyncCall(expected.parameters);
-      auto result_2 = tested->asyncCall(expected.parameters);
-      auto result_3 = tested->asyncCall(expected.parameters);
-
-      auto executor = tested->getExecutor();
-      executor->start();
-
-      tested->cancelAllAsyncCalls();
-      EXPECT_THROW(result_1.get(), CallCanceled);
-      EXPECT_THROW(result_2.get(), CallCanceled);
-      EXPECT_THROW(result_3.get(), CallCanceled);
-      executor->stop();
-    });
-  } else {
-    EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times((1));
-
-    EXPECT_THROW(
-        { auto result = tested->asyncCall(expected.parameters); },
-        ResultReturningNotSupported);
-  }
-}
-
 TEST_P(CallableTests, resultOutlivesAsyncCall) {
   if (expected.result_type != DataType::None) {
     EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(2));
@@ -202,10 +174,6 @@ TEST_P(CallableTests, canUnsetExecutor) {
           HasSubstr("Executor callback is no longer available")));
 
   EXPECT_THAT([&]() { tested->cancelAsyncCall(25); },
-      ThrowsMessage<ExecutorNotAvailable>(
-          HasSubstr("Executor callback is no longer available")));
-
-  EXPECT_THAT([&]() { tested->cancelAllAsyncCalls(); },
       ThrowsMessage<ExecutorNotAvailable>(
           HasSubstr("Executor callback is no longer available")));
 }
