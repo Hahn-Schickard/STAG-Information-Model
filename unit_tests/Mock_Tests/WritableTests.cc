@@ -190,7 +190,7 @@ INSTANTIATE_TEST_SUITE_P(WritableTestsValues,
         WritableTestParam{DataVariant(uintmax_t{69})},
         WritableTestParam{DataVariant(3.14)},
         WritableTestParam{DataVariant(-45.33333333)},
-        WritableTestParam{DataVariant(DateTime(1756204016))},
+        WritableTestParam{DataVariant(Timestamp{2025, 9, 11, 10, 01, 24, 32})},
         WritableTestParam{DataVariant(vector<uint8_t>{0x11,0x22,0x31})},
         WritableTestParam{DataVariant(string("Hello World"))}
     ), // clang-format on

@@ -57,10 +57,12 @@ inline DataVariant otherThan(const DataVariant& input) {
       [](bool) -> DataVariant {
         return std::vector<uint8_t>{0x00, 0x01, 0xAB};
       },
-      [](intmax_t) -> DataVariant { return DateTime(1756130804); },
+      [](intmax_t) -> DataVariant {
+        return Timestamp{2025, 9, 10, 13, 01, 24, 32};
+      },
       [](uintmax_t) -> DataVariant { return std::string("A new value"); },
-      [](double) -> DataVariant { return intmax_t{-698872}; },
-      [](DateTime) -> DataVariant { return uintmax_t{9789121}; },
+      [](double) -> DataVariant { return uintmax_t{9789121}; },
+      [](Timestamp) -> DataVariant { return intmax_t{-698872}; },
       [](const std::vector<uint8_t>&) -> DataVariant { return true; },
       [](const std::string&) -> DataVariant {
         return 20.3512;

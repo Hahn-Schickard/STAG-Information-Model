@@ -306,7 +306,7 @@ INSTANTIATE_TEST_SUITE_P(CallableTestsValues,
           "TimeResultWithoutParameters",
           DataType::Time, 
           ParameterTypes{},
-          DateTime(1757323947),
+          Timestamp{2025, 9, 11, 10, 01, 24, 32},
           Parameters{}
         },
         CallableTestParam{

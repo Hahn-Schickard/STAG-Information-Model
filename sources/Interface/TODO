@@ -1,20 +1,2 @@
 * refactor example
 * refactor unit tests
-* review time `DateTime` implementation 
- * `std::chrono::system_clock::time_point` is easier to use, but is it
-    * precise
-    * consistent through different machines
-    * portable
- * alternative: 
-    * third-party libs?
-    * `std::string` in ISO 8601 format? YYYY-MM-DD hh:mm[.zzzzzzzzz][+-TT[]]
-    * struct {
-        uint16 year; 
-        uint8 month; 
-        uint8 day; 
-        uint8 hour;
-        uint8 minute;
-        uint8 second;
-        uint32 sub_second;
-    }; //don`t bother with utc conversion, just ensure it is always UTC0
-* update documentation

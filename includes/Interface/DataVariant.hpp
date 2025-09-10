@@ -14,57 +14,102 @@ namespace Information_Model {
  * @addtogroup DataTypeModelling Data Type Modelling
  * @{
  */
+
 /**
- * @brief POSIX time wrapper class with inbuilt comparators
+ * @brief UTC Timestamp
  *
  */
-struct DateTime {
-  using TimePoint = std::chrono::system_clock::time_point;
-  /**
-   * @brief Sets this time point as current system time at the point of calling
-   *
-   */
-  DateTime();
+struct Timestamp {
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hours;
+  uint8_t minutes;
+  uint8_t seconds;
+  uint32_t microseconds;
 
-  /**
-   * @brief Sets Specified time point
-   *
-   * @param time_point
-   */
-  explicit DateTime(size_t posix_time_point);
-  /**
-   * @brief Converts POSIX time to human readable format
-   *
-   * @return std::string
-   */
-  std::string toString() const;
+  friend bool operator==(const Timestamp& lhs, const Timestamp& rhs);
 
-  std::string toString(const std::string& format) const;
+  friend bool operator!=(const Timestamp& lhs, const Timestamp& rhs);
 
-  /**
-   * @brief Returns the amount of seconds since POSIX time epoch
-   *
-   * @return std::time_t
-   */
-  TimePoint timePoint() const;
+  friend bool operator<(const Timestamp& lhs, const Timestamp& rhs);
 
-  std::size_t size() const;
+  friend bool operator>(const Timestamp& lhs, const Timestamp& rhs);
 
-  friend bool operator==(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator<=(const Timestamp& lhs, const Timestamp& rhs);
 
-  friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
-
-  friend bool operator<(const DateTime& lhs, const DateTime& rhs);
-
-  friend bool operator>(const DateTime& lhs, const DateTime& rhs);
-
-  friend bool operator<=(const DateTime& lhs, const DateTime& rhs);
-
-  friend bool operator>=(const DateTime& lhs, const DateTime& rhs);
-
-private:
-  TimePoint timestamp_;
+  friend bool operator>=(const Timestamp& lhs, const Timestamp& rhs);
 };
+
+/**
+ * @brief Checks if a given timestamp contains valid values
+ *
+ * @throws std::invalid_argument if
+ *  - year is less than 1582 (ISO 8601 requirement)
+ *  - month is more than 12
+ *  - day is more than 31
+ *  - hours is more than 24
+ *  - minutes is more than 59
+ *  - seconds is more than 59
+ *
+ * @param timestamp
+ */
+void verifyTimestamp(const Timestamp& timestamp);
+
+/**
+ * @brief Creates a valid Timestamp for current time
+ *
+ * Result is the same as calling toTimestamp(std::chrono::system_clock::now())
+ *
+ * @return Timestamp
+ */
+Timestamp makeTimestamp();
+
+Timestamp toTimestamp(const std::chrono::system_clock::time_point& timepoint);
+
+std::chrono::system_clock::time_point toTimepoint(const Timestamp& timestamp);
+
+/**
+ * @brief Converts a given timestamp to ISO 8601 string format
+ *
+ * @throws std::invalid_argument - if given timestamp store nonsensical values,
+ * see @ref verifyTimestamp() documentation for exact checks
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const Timestamp& timestamp);
+
+/**
+ * @brief Converts a given timestamp to a string based on given strftime format
+ * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for reference
+ *
+ * @throws std::invalid_argument - if given timestamp store nonsensical values,
+ * see @ref verifyTimestamp() documentation for exact checks
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const Timestamp& timestamp, const std::string& format);
+
+/**
+ * @brief Converts a given timepoint to ISO 8601 string format
+ *
+ * @param time_point
+ * @return std::string
+ */
+std::string toString(const std::chrono::system_clock::time_point& timepoint);
+
+/**
+ * @brief Converts a given timepoint to a string based on given strftime format
+ * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for reference
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const std::chrono::system_clock::time_point& timepoint,
+    const std::string& format);
+
 /**
  * @enum DataType
  * @brief DataType enumeration, specifying the supported data types
@@ -90,7 +135,7 @@ using DataVariant = std::variant<bool,
     intmax_t,
     uintmax_t,
     double,
-    DateTime,
+    Timestamp,
     std::vector<uint8_t>,
     std::string>;
 

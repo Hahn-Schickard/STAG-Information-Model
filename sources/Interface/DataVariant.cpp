@@ -11,40 +11,118 @@
 
 namespace Information_Model {
 using namespace std;
-using namespace chrono;
 
-DateTime::DateTime()
-    : timestamp_(date::floor<microseconds>(chrono::system_clock::now())) {}
-
-DateTime::DateTime(size_t posix_time_point)
-    : timestamp_(seconds(posix_time_point)) {}
-
-string DateTime::toString() const { return DateTime::toString("%FT%TZ"); }
-
-string DateTime::toString(const string& format) const {
-  return date::format(format, date::floor<microseconds>(timestamp_));
+bool operator==(const Timestamp& lhs, const Timestamp& rhs) {
+  // clang-format off
+  return lhs.year         == rhs.year && 
+         lhs.month        == rhs.month &&
+         lhs.day          == rhs.day &&
+         lhs.hours        == rhs.hours && 
+         lhs.minutes      == rhs.minutes &&
+         lhs.seconds      == rhs.seconds &&
+         lhs.microseconds == rhs.microseconds;
+  // clang-format on
 }
 
-DateTime::TimePoint DateTime::timePoint() const { return timestamp_; }
-
-size_t DateTime::size() const { return sizeof(timestamp_); }
-
-bool operator==(const DateTime& lhs, const DateTime& rhs) {
-  return lhs.timePoint() == rhs.timePoint();
-}
-bool operator!=(const DateTime& lhs, const DateTime& rhs) {
+bool operator!=(const Timestamp& lhs, const Timestamp& rhs) {
   return !(lhs == rhs);
 }
-bool operator<(const DateTime& lhs, const DateTime& rhs) {
-  return lhs.timePoint() < rhs.timePoint();
-}
-bool operator>(const DateTime& lhs, const DateTime& rhs) { return rhs < lhs; }
 
-bool operator<=(const DateTime& lhs, const DateTime& rhs) {
+bool operator<(const Timestamp& lhs, const Timestamp& rhs) {
+  // clang-format off
+  return lhs.year         < rhs.year && 
+         lhs.month        < rhs.month &&
+         lhs.day          < rhs.day &&
+         lhs.hours        < rhs.hours && 
+         lhs.minutes      < rhs.minutes &&
+         lhs.seconds      < rhs.seconds &&
+         lhs.microseconds < rhs.microseconds;
+  // clang-format on
+}
+
+bool operator>(const Timestamp& lhs, const Timestamp& rhs) { return rhs < lhs; }
+
+bool operator<=(const Timestamp& lhs, const Timestamp& rhs) {
   return !(lhs > rhs);
 }
-bool operator>=(const DateTime& lhs, const DateTime& rhs) {
+
+bool operator>=(const Timestamp& lhs, const Timestamp& rhs) {
   return !(lhs < rhs);
+}
+
+void verifyTimestamp(const Timestamp& time) {
+  if (time.year < 1582) {
+    throw invalid_argument("Ancient time recording is not supported");
+  }
+  if (time.month > 12) {
+    throw invalid_argument("A year can not have more than 12 months");
+  }
+  if (time.day > 31) {
+    throw invalid_argument("A Month can not have more than 31 days");
+  }
+  if (time.hours > 24) {
+    throw invalid_argument("A day can not have more than 24 hours");
+  }
+  if (time.minutes > 59) {
+    throw invalid_argument("An hour can not have more than 59 minutes");
+  }
+  if (time.seconds > 59) {
+    // chrono::system_clock does not handle leap seconds, so we wont either
+    throw invalid_argument("A minute can not have more than 59 seconds");
+  }
+}
+
+Timestamp makeTimestamp() { return toTimestamp(chrono::system_clock::now()); }
+
+Timestamp toTimestamp(const chrono::system_clock::time_point& timepoint) {
+  auto days_count = date::floor<date::days>(timepoint);
+  auto calendar_date = date::year_month_day{days_count};
+  auto daytime = date::make_time(
+      chrono::duration_cast<chrono::microseconds>(timepoint - days_count));
+  Timestamp result{// clang-format off
+    .year=static_cast<uint16_t>(int{calendar_date.year()}),
+    .month=static_cast<uint8_t>(unsigned{calendar_date.month()}),
+    .day=static_cast<uint8_t>(unsigned{calendar_date.day()}),
+    .hours=static_cast<uint8_t>(daytime.hours().count()),
+    .minutes=static_cast<uint8_t>(daytime.minutes().count()),
+    .seconds=static_cast<uint8_t>(daytime.seconds().count()),
+    .microseconds=static_cast<uint32_t>(daytime.subseconds().count())
+  }; // clang-format on
+  return result;
+}
+
+chrono::system_clock::time_point toTimepoint(const Timestamp& timestamp) {
+  verifyTimestamp(timestamp);
+  auto result = // clang-format off
+      date::sys_days{
+        date::year_month_day{
+          date::year{timestamp.year},
+          date::month{timestamp.month},
+          date::day{timestamp.day}
+        }} +
+      chrono::hours{timestamp.hours} + 
+      chrono::minutes{timestamp.minutes} +
+      chrono::seconds{timestamp.seconds} +
+      chrono::microseconds{timestamp.microseconds};
+  // clang-format on
+  return result;
+}
+
+string toString(const Timestamp& timestamp) {
+  return toString(timestamp, "%Y-%m-%dT%H:%M:%SZ");
+}
+
+string toString(const Timestamp& timestamp, const string& format) {
+  return toString(toTimepoint(timestamp), format);
+}
+
+string toString(const chrono::system_clock::time_point& timepoint) {
+  return toString(timepoint, "%Y-%m-%dT%H:%M:%SZ");
+}
+
+string toString(
+    const chrono::system_clock::time_point& timepoint, const string& format) {
+  return date::format(format, date::floor<chrono::microseconds>(timepoint));
 }
 
 string toString(DataType type) {
@@ -84,7 +162,6 @@ size_t size_of(const DataVariant& variant) {
   return Variant_Visitor::match(
       variant,
       [](auto value) { return sizeof(value); },
-      [](const DateTime& value) { return value.size(); },
       [](const vector<uint8_t>& value) { return value.size(); },
       [](const string& value) { return value.size(); });
 }
@@ -100,7 +177,7 @@ optional<DataVariant> setVariant(DataType type) {
   case DataType::Double:
     return DataVariant(0.1); // NOLINT(readability-magic-numbers)
   case DataType::Time:
-    return DataVariant(DateTime());
+    return DataVariant(makeTimestamp());
   case DataType::Opaque:
     return DataVariant(vector<uint8_t>());
   case DataType::String:
@@ -123,7 +200,7 @@ DataType toDataType(const DataVariant& variant) {
     return DataType::Unsigned_Integer;
   } else if (holds_alternative<double>(variant)) {
     return DataType::Double;
-  } else if (holds_alternative<DateTime>(variant)) {
+  } else if (holds_alternative<Timestamp>(variant)) {
     return DataType::Time;
   } else if (holds_alternative<vector<uint8_t>>(variant)) {
     return DataType::Opaque;
@@ -143,7 +220,7 @@ string toString(const DataVariant& variant) {
       variant,
       [](bool value) -> string { return (value ? "true" : "false"); },
       [](auto value) -> string { return to_string(value); },
-      [](const DateTime& value) -> string { return value.toString(); },
+      [](const Timestamp& value) -> string { return toString(value); },
       [](const vector<uint8_t>& value) -> string {
         stringstream ss;
         ss << hex << setfill('0');
@@ -181,8 +258,8 @@ string toSanitizedString(const DataVariant& variant) {
         }
         return result;
       },
-      [](const DateTime& value) -> string {
-        auto result = value.toString("%YY%mM%dD%HH%MM%S");
+      [](const Timestamp& value) -> string {
+        auto result = toString(value, "%YY%mM%dD%HH%MM%S");
         replace(result.begin(), result.end(), '.', 'P');
         return result;
       },
