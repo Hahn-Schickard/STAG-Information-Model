@@ -115,8 +115,8 @@ TEST_F(CallableParamTests, canPrintParams) {
         {4, Timestamp{2025, 9, 11, 17, 25, 30, 31}},
         {5, vector<uint8_t>{0x00,0x01,0x02}},
         {6, vector<uint8_t>{}},
-        {7, "hello world"},
-        {8, ""},
+        {7, string("hello world")},
+        {8, string()},
         {9, std::nullopt}
     }; // clang-format on
     EXPECT_EQ(toString(params), expected);
