@@ -10,6 +10,7 @@ DeviceMock::DeviceMock(
       group_(make_shared<NiceMock<GroupMock>>(base_id + ":")) {
   ON_CALL(*this, group).WillByDefault(Return(group_));
   ON_CALL(*this, element).WillByDefault(Invoke(group_.get(), &Group::element));
+  ON_CALL(*this, visit).WillByDefault(Invoke(group_.get(), &Group::visit));
 }
 
 string DeviceMock::generateID() { return group_->generateID(); }

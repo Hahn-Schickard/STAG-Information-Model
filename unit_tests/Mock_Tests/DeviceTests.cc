@@ -151,4 +151,22 @@ TEST_F(DeviceTests, canGetElementById) {
   }
 }
 
+TEST_F(DeviceTests, canVisitEach) {
+  auto visitor = [&](const ElementPtr& tested_element) {
+    auto it = built.find(tested_element->id());
+    if (it != built.end()) {
+      auto element = it->second;
+      EXPECT_EQ(tested_element->id(), element->id());
+      EXPECT_EQ(tested_element->name(), element->name());
+      EXPECT_EQ(tested_element->description(), element->description());
+      EXPECT_EQ(tested_element->type(), element->type());
+    } else {
+      FAIL() << "Element " << tested_element->id()
+             << " was not built but exists in group" << endl;
+    }
+  };
+
+  EXPECT_NO_THROW(tested->visit(visitor));
+}
+
 } // namespace Information_Model::testing

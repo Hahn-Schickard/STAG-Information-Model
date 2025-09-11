@@ -18,6 +18,7 @@ struct DeviceMock : virtual public Device, public MetaInfoMock {
 
   MOCK_METHOD(GroupPtr, group, (), (const final));
   MOCK_METHOD(ElementPtr, element, (const std::string&), (const final));
+  MOCK_METHOD(void, visit, (const Group::Visitor&), (const final));
 
   std::string generateID();
   void addElement(const ElementPtr& element);
