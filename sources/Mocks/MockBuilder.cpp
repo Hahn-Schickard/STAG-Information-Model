@@ -258,6 +258,7 @@ void MockBuilder::checkGroups() {
 unique_ptr<Device> MockBuilder::result() {
   checkBase();
   checkGroups();
+  subgroups_.clear();
   return move(result_);
 }
 
