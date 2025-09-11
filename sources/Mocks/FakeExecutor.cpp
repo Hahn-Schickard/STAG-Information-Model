@@ -65,7 +65,7 @@ private:
 struct ResponseRepository {
   using Response = Executor::Response;
 
-  ResponseRepository(const Response& default_response)
+  explicit ResponseRepository(const Response& default_response)
       : default_(default_response) {}
 
   void enqueue(const Response& response) { queue_.push(response); }

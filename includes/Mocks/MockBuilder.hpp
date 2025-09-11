@@ -81,8 +81,8 @@ private:
       const std::string& id,
       const BuildInfo& element_info);
 
-  void checkBase();
-  void checkGroups();
+  void checkBase() const;
+  void checkGroups() const;
 
   std::unique_ptr<DeviceMock> result_;
   std::unordered_map<std::string, GroupMockPtr> subgroups_;

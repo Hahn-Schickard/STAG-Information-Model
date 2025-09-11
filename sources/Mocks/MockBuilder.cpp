@@ -238,13 +238,13 @@ GroupMockPtr MockBuilder::getParentGroup(const string& parent_id) {
   }
 }
 
-void MockBuilder::checkBase() {
+void MockBuilder::checkBase() const {
   if (!result_) {
     throw DeviceInfoNotSet();
   }
 }
 
-void MockBuilder::checkGroups() {
+void MockBuilder::checkGroups() const {
   if (result_->group()->size() == 0) {
     throw GroupEmpty(result_->id());
   }

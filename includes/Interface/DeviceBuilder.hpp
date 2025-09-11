@@ -19,7 +19,7 @@ struct BuildInfo {
 };
 
 struct GroupEmpty : public std::logic_error {
-  GroupEmpty(const std::string& device_id)
+  explicit GroupEmpty(const std::string& device_id)
       : std::logic_error("Device " + device_id + " root group is empty") {}
 
   GroupEmpty(const std::string& device_id, const std::string& group_id)
