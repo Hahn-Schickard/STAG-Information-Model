@@ -108,17 +108,17 @@ TEST_F(CallableParamTests, canPrintParams) {
         "7,hello_world},{8,NullString},{9,NullOpt}}";
 
     auto params = Parameters{// clang-format off
-        {0, true},
-        {1, (uintmax_t)32},
-        {2, -32},
-        {3, 32.2},
-        {4, Timestamp{2025, 9, 11, 17, 25, 30, 31}},
-        {5, vector<uint8_t>{0x00,0x01,0x02}},
-        {6, vector<uint8_t>{}},
-        {7, string("hello world")},
-        {8, string()},
+        {0, DataVariant(true)},
+        {1, DataVariant((uintmax_t)32)},
+        {2, DataVariant((intmax_t)-32)},
+        {3, DataVariant(32.2)},
+        {4, DataVariant(Timestamp{2025, 9, 11, 17, 25, 30, 31})},
+        {5, DataVariant(vector<uint8_t>{0x00,0x01,0x02})},
+        {6, DataVariant(vector<uint8_t>{})},
+        {7, DataVariant(string("hello world"))},
+        {8, DataVariant(string())},
         {9, std::nullopt}
-    }; // clang-format on
+    }; // clang-format on^
     EXPECT_EQ(toString(params), expected);
   }
 }
