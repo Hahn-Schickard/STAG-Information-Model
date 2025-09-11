@@ -68,8 +68,7 @@ void CallableMock::setExecutor() {
       executor_->execute(params);
     });
     ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
-      auto result = executor_->asyncCall(
-          Parameters{}); // @todo: decide if makeDefaultParams() is needed
+      auto result = executor_->asyncCall(makeDefaultParams(supported_params_));
       auto status = result.waitFor(chrono::milliseconds(timeout));
       if (status == future_status::ready) {
         return result.get();
@@ -108,7 +107,7 @@ void CallableMock::setCallbacks() {
   ON_CALL(*this, parameterTypes).WillByDefault(Return(supported_params_));
   ON_CALL(*this, execute).WillByDefault(execute_cb_);
   ON_CALL(*this, call(_)).WillByDefault([this](uintmax_t timeout) {
-    auto result = executor_->asyncCall(Parameters{});
+    auto result = executor_->asyncCall(makeDefaultParams(supported_params_));
     auto status = result.waitFor(chrono::milliseconds(timeout));
     if (status == future_status::ready) {
       return result.get();

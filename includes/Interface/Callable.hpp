@@ -297,6 +297,8 @@ void addSupportedParameter(Parameters& map,
 void checkParameters(
     const Parameters& input_parameters, const ParameterTypes& supported_types);
 
+Parameters makeDefaultParams(const ParameterTypes& supported_types);
+
 /**
  * @brief Converts a given ParameterTypes container to a human
  * readable string

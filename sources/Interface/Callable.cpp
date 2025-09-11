@@ -69,6 +69,16 @@ void checkParameters(
   }
 }
 
+Parameters makeDefaultParams(const ParameterTypes& supported_types) {
+  Parameters result;
+  for (const auto& [pos, supported] : supported_types) {
+    if (supported.mandatory) {
+      result.emplace(pos, setVariant(supported.type));
+    }
+  }
+  return result;
+}
+
 string toString(const ParameterTypes& supported_types) {
   if (supported_types.empty()) {
     return "{}";
