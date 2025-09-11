@@ -118,7 +118,7 @@ string toString(const Parameters& parameters) {
 
   string result = "{";
   for (const auto& position : keys) {
-    auto parameter = parameters.at(position);
+    const auto& parameter = parameters.at(position);
     result += "{" + to_string(position) + "," +
         toSanitizedString(parameter.value_or("NullOpt")) + "},";
   }
