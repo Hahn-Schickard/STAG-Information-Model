@@ -62,6 +62,38 @@ private:
   queue<uintmax_t> queue_;
 };
 
+struct ResponseRepository {
+  using Response = Executor::Response;
+
+  ResponseRepository(const Response& default_response)
+      : default_(default_response) {}
+
+  void enqueue(const Response& response) { queue_.push(response); }
+
+  void emplace(uintmax_t id, const Response& response) {
+    map_.try_emplace(id, response);
+  }
+
+  Response get(uintmax_t id) {
+    if (auto it = map_.find(id); it != map_.end()) {
+      auto response = it->second;
+      it = map_.erase(it);
+      return response;
+    } else if (!queue_.empty()) {
+      auto response = queue_.front();
+      queue_.pop();
+      return response;
+    } else {
+      return default_;
+    }
+  }
+
+private:
+  Response default_;
+  queue<Response> queue_;
+  unordered_map<uintmax_t, Response> map_;
+};
+
 struct FakeExecutor : public Executor {
   FakeExecutor() = default;
 
@@ -70,7 +102,8 @@ struct FakeExecutor : public Executor {
       const Executor::Response& default_response,
       chrono::nanoseconds response_delay)
       : result_type_(result_type), supported_params_(supported),
-        default_response_(default_response), delay_(response_delay),
+        responses_(ResponseRepository(default_response)),
+        delay_(response_delay),
         task_(make_shared<Stoppable::Task>(
             bind(&FakeExecutor::respondOnce, this), [](const exception_ptr&) {
               // @todo decide how to handle exceptions
@@ -160,28 +193,18 @@ struct FakeExecutor : public Executor {
 
   void queueResponse(const Response& response) final {
     checkType(response);
-    responses_queue_.push(response);
+    responses_.enqueue(response);
   }
 
   void queueResponse(uintmax_t call_id, const Response& response) final {
     checkType(response);
-    responses_map_.try_emplace(call_id, response);
+    responses_.emplace(call_id, response);
   }
 
   void respondOnce() final {
     if (auto next_dispatch = dispatch_queue_.dequeue()) {
-      auto dispatch_id = next_dispatch.value();
-      if (auto it = responses_map_.find(dispatch_id);
-          it != responses_map_.end()) {
-        respond(dispatch_id, it->second);
-        it = responses_map_.erase(it);
-      } else if (!responses_queue_.empty()) {
-        auto response = responses_queue_.front();
-        responses_queue_.pop();
-        respond(dispatch_id, response);
-      } else {
-        respond(dispatch_id, default_response_);
-      }
+      auto response_id = next_dispatch.value();
+      respond(response_id, responses_.get(response_id));
     }
     id_repo_.freeIDs();
   }
@@ -193,13 +216,12 @@ struct FakeExecutor : public Executor {
 private:
   DataType result_type_ = DataType::None;
   ParameterTypes supported_params_;
-  Executor::Response default_response_;
+  ResponseRepository responses_;
   chrono::nanoseconds delay_;
   Stoppable::TaskPtr task_;
   IdRepository id_repo_;
   DispatchQueue dispatch_queue_;
-  queue<Response> responses_queue_;
-  unordered_map<uintmax_t, Response> responses_map_;
+
   unordered_map<uintmax_t, promise<DataVariant>> result_promises_;
 };
 
