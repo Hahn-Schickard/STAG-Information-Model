@@ -189,9 +189,9 @@ optional<DataVariant> setVariant(DataType type) {
   case DataType::Time:
     return DataVariant(makeTimestamp());
   case DataType::Opaque:
-    return DataVariant(vector<uint8_t>());
+    return DataVariant(vector<uint8_t>{});
   case DataType::String:
-    return DataVariant(string());
+    return DataVariant(string{});
   case DataType::None:
     return nullopt;
   case DataType::Unknown:

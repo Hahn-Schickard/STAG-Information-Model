@@ -2,7 +2,6 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <string>
 
 namespace Information_Model::testing {
 using namespace std;
