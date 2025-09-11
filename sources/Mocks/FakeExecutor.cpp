@@ -37,6 +37,31 @@ private:
   unordered_map<uintmax_t, weak_ptr<uintmax_t>> ids_;
 };
 
+struct DispatchQueue {
+  void enqueue(uintmax_t call_id) {
+    lock_guard lock(mx_);
+    queue_.push(call_id);
+    queue_not_empty_.notify_one();
+  }
+
+  optional<uintmax_t> dequeue() {
+    unique_lock lock(mx_);
+    if (queue_not_empty_.wait_for(
+            lock, 100us, [this]() { return !queue_.empty(); })) {
+      auto dispatch_id = queue_.front();
+      queue_.pop();
+      return dispatch_id;
+    } else {
+      return nullopt;
+    }
+  }
+
+private:
+  mutex mx_;
+  condition_variable queue_not_empty_;
+  queue<uintmax_t> queue_;
+};
+
 struct FakeExecutor : public Executor {
   FakeExecutor() = default;
 
@@ -78,11 +103,7 @@ struct FakeExecutor : public Executor {
     }
     ResultFuture result_future(call_id, result_promise.get_future());
     result_promises_.try_emplace(*call_id, move(result_promise));
-    {
-      lock_guard lock(dispatch_mx_);
-      to_be_dispatched_.push(*call_id);
-      queue_not_empty_.notify_one();
-    }
+    dispatch_queue_.enqueue(*call_id);
     return result_future;
   }
 
@@ -148,11 +169,8 @@ struct FakeExecutor : public Executor {
   }
 
   void respondOnce() final {
-    unique_lock lock(dispatch_mx_);
-    if (queue_not_empty_.wait_for(
-            lock, 100us, [this]() { return !to_be_dispatched_.empty(); })) {
-      auto dispatch_id = to_be_dispatched_.front();
-
+    if (auto next_dispatch = dispatch_queue_.dequeue()) {
+      auto dispatch_id = next_dispatch.value();
       if (auto it = responses_map_.find(dispatch_id);
           it != responses_map_.end()) {
         respond(dispatch_id, it->second);
@@ -164,7 +182,6 @@ struct FakeExecutor : public Executor {
       } else {
         respond(dispatch_id, default_response_);
       }
-      to_be_dispatched_.pop();
     }
     id_repo_.freeIDs();
   }
@@ -180,11 +197,9 @@ private:
   chrono::nanoseconds delay_;
   Stoppable::TaskPtr task_;
   IdRepository id_repo_;
+  DispatchQueue dispatch_queue_;
   queue<Response> responses_queue_;
   unordered_map<uintmax_t, Response> responses_map_;
-  mutex dispatch_mx_;
-  condition_variable queue_not_empty_;
-  queue<uintmax_t> to_be_dispatched_;
   unordered_map<uintmax_t, promise<DataVariant>> result_promises_;
 };
 
