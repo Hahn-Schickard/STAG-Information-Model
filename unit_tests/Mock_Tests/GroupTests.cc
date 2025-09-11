@@ -46,17 +46,25 @@ struct GroupTests : public testing::Test {
     tested->addElement(sub_group_element);
     built.try_emplace(sub_group_id, sub_group_element);
 
-    auto sub_readable = make_shared<NiceMock<ReadableMock>>(DataType::Boolean);
-    sub_readable_id = sub_group->generateID();
-    auto sub_readable_element =
-        make_shared<NiceMock<ElementMock>>(sub_readable, sub_readable_id);
-    sub_group->addElement(sub_readable_element);
+    sub_element =
+        make_shared<NiceMock<ElementMock>>(readable, sub_group->generateID());
+    sub_group->addElement(sub_element);
+
+    auto sub_sub_group_id = sub_group->generateID();
+    sub_sub_group = make_shared<NiceMock<GroupMock>>(sub_sub_group_id);
+    sub_group->addElement(
+        make_shared<NiceMock<ElementMock>>(sub_sub_group, sub_sub_group_id));
+    sub_sub_element = make_shared<NiceMock<ElementMock>>(
+        readable, sub_sub_group->generateID());
+    sub_sub_group->addElement(sub_sub_element);
   }
 
   string base_id = "based_id:0";
   GroupMockPtr tested = make_shared<NiceMock<GroupMock>>(base_id);
   string sub_group_id;
-  string sub_readable_id;
+  ElementPtr sub_element;
+  GroupMockPtr sub_sub_group;
+  ElementPtr sub_sub_element;
   unordered_map<string, ElementMockPtr> built;
 };
 
@@ -113,8 +121,8 @@ TEST_F(GroupTests, throwsElementNotFound) {
       ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg2)));
 
   string ex_msg3 =
-      "Element with reference id " + sub_readable_id + "0 was not found";
-  EXPECT_THAT([&]() { tested->element(sub_readable_id + "0"); },
+      "Element with reference id " + sub_sub_element->id() + "0 was not found";
+  EXPECT_THAT([&]() { tested->element(sub_sub_element->id() + "0"); },
       ThrowsMessage<ElementNotFound>(HasSubstr(ex_msg3)));
 }
 
@@ -135,6 +143,19 @@ TEST_F(GroupTests, canGetElementById) {
     EXPECT_EQ(tested_element->description(), element->description());
     EXPECT_EQ(tested_element->type(), element->type());
   }
+
+  auto tested_sub_element = tested->element(sub_element->id());
+  EXPECT_EQ(tested_sub_element->id(), sub_element->id());
+  EXPECT_EQ(tested_sub_element->name(), sub_element->name());
+  EXPECT_EQ(tested_sub_element->description(), sub_element->description());
+  EXPECT_EQ(tested_sub_element->type(), sub_element->type());
+
+  auto tested_sub_sub_element = tested->element(sub_sub_element->id());
+  EXPECT_EQ(tested_sub_sub_element->id(), sub_sub_element->id());
+  EXPECT_EQ(tested_sub_sub_element->name(), sub_sub_element->name());
+  EXPECT_EQ(
+      tested_sub_sub_element->description(), sub_sub_element->description());
+  EXPECT_EQ(tested_sub_sub_element->type(), sub_sub_element->type());
 }
 
 TEST_F(GroupTests, canGetAsMap) {
