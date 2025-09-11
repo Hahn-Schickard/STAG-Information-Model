@@ -9,7 +9,7 @@ using namespace ::testing;
 void MockBuilder::setDeviceInfo(
     const string& unique_id, const BuildInfo& element_info) {
   if (!result_) {
-    result_ = make_unique<DeviceMock>(
+    result_ = make_unique<NiceMock<DeviceMock>>(
         unique_id, FullMetaInfo{element_info.name, element_info.description});
   } else {
     throw DeviceBuildInProgress();
