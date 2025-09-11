@@ -14,6 +14,29 @@
 namespace Information_Model::testing {
 using namespace std;
 
+struct IdRepository {
+  shared_ptr<uintmax_t> assignID() {
+    auto id = make_shared<uintmax_t>(0);
+    while (!ids_.try_emplace(*id, id).second) {
+      (*id)++;
+    }
+    return id;
+  }
+
+  void freeIDs() {
+    for (auto it = ids_.begin(); it != ids_.end();) {
+      if (it->second.expired()) {
+        it = ids_.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
+
+private:
+  unordered_map<uintmax_t, weak_ptr<uintmax_t>> ids_;
+};
+
 struct FakeExecutor : public Executor {
   FakeExecutor() = default;
 
@@ -30,26 +53,6 @@ struct FakeExecutor : public Executor {
 
   ~FakeExecutor() override { cancelAll(); }
 
-  shared_ptr<uintmax_t> assignID() {
-    unique_lock lock(id_mx_);
-    auto id = make_shared<uintmax_t>(0);
-    while (!ids_.try_emplace(*id, id).second) {
-      (*id)++;
-    }
-    return id;
-  }
-
-  void freeIDs() {
-    unique_lock lock(id_mx_);
-    for (auto it = ids_.begin(); it != ids_.end();) {
-      if (it->second.expired()) {
-        it = ids_.erase(it);
-      } else {
-        ++it;
-      }
-    }
-  }
-
   void delayCall() const {
     if (delay_.count() > 0) {
       this_thread::sleep_for(delay_);
@@ -65,7 +68,7 @@ struct FakeExecutor : public Executor {
     if (result_type_ == DataType::None) {
       throw ResultReturningNotSupported();
     }
-    auto call_id = assignID();
+    auto call_id = id_repo_.assignID();
     promise<DataVariant> result_promise{};
     try {
       checkParameters(params, supported_params_);
@@ -163,7 +166,7 @@ struct FakeExecutor : public Executor {
       }
       to_be_dispatched_.pop();
     }
-    freeIDs();
+    id_repo_.freeIDs();
   }
 
   void start() final { task_->start(); }
@@ -176,8 +179,7 @@ private:
   Executor::Response default_response_;
   chrono::nanoseconds delay_;
   Stoppable::TaskPtr task_;
-  unordered_map<uintmax_t, weak_ptr<uintmax_t>> ids_;
-  mutex id_mx_;
+  IdRepository id_repo_;
   queue<Response> responses_queue_;
   unordered_map<uintmax_t, Response> responses_map_;
   mutex dispatch_mx_;
