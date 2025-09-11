@@ -29,15 +29,19 @@ bool operator!=(const Timestamp& lhs, const Timestamp& rhs) {
 }
 
 bool operator<(const Timestamp& lhs, const Timestamp& rhs) {
-  // clang-format off
-  return lhs.year         < rhs.year && 
-         lhs.month        < rhs.month &&
-         lhs.day          < rhs.day &&
-         lhs.hours        < rhs.hours && 
-         lhs.minutes      < rhs.minutes &&
-         lhs.seconds      < rhs.seconds &&
-         lhs.microseconds < rhs.microseconds;
-  // clang-format on
+  return tie(lhs.year,
+             lhs.month,
+             lhs.day,
+             lhs.hours,
+             lhs.minutes,
+             lhs.seconds,
+             lhs.microseconds) < tie(rhs.year,
+                                     rhs.month,
+                                     rhs.day,
+                                     rhs.hours,
+                                     rhs.minutes,
+                                     rhs.seconds,
+                                     rhs.microseconds);
 }
 
 bool operator>(const Timestamp& lhs, const Timestamp& rhs) { return rhs < lhs; }
@@ -54,8 +58,14 @@ void verifyTimestamp(const Timestamp& time) {
   if (time.year < 1582) {
     throw invalid_argument("Ancient time recording is not supported");
   }
+  if (time.month == 0) {
+    throw invalid_argument("A year can not have 0 months");
+  }
   if (time.month > 12) {
     throw invalid_argument("A year can not have more than 12 months");
+  }
+  if (time.day == 0) {
+    throw invalid_argument("A Month can not have 0 days");
   }
   if (time.day > 31) {
     throw invalid_argument("A Month can not have more than 31 days");

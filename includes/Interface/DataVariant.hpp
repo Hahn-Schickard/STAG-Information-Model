@@ -46,7 +46,9 @@ struct Timestamp {
  *
  * @throws std::invalid_argument if
  *  - year is less than 1582 (ISO 8601 requirement)
+ *  - month is 0
  *  - month is more than 12
+ *  - day is 0
  *  - day is more than 31
  *  - hours is more than 24
  *  - minutes is more than 59
