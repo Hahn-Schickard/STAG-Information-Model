@@ -59,15 +59,27 @@ void GroupMock::addElement(const ElementPtr& element) {
   if (sub_id.back() == '.') {
     sub_id.pop_back();
   }
-  if (!elements_.try_emplace(sub_id, element).second) {
-    throw logic_error(
-        "Element with id " + element->id() + " is already in this group");
-  }
-  if (element->type() == ElementType::Group) {
-    auto subgroup_id = sub_id.substr(0, sub_id.find('.'));
-    auto subgroup =
-        dynamic_pointer_cast<GroupMock>(get<GroupPtr>(element->function()));
-    subgroups_.try_emplace(subgroup_id, subgroup);
+  auto group_marker = sub_id.find('.');
+  if (group_marker != string::npos) {
+    auto parent = getElement(id_ + sub_id.substr(0, group_marker));
+    if (parent->type() != ElementType::Group) {
+      throw invalid_argument(
+          "Parent element " + parent->id() + " is not a group");
+    }
+    auto parent_function =
+        dynamic_pointer_cast<GroupMock>(get<GroupPtr>(parent->function()));
+    parent_function->addElement(element);
+  } else {
+    if (!elements_.try_emplace(sub_id, element).second) {
+      throw logic_error(
+          "Element with id " + element->id() + " is already in this group");
+    }
+    if (element->type() == ElementType::Group) {
+      auto subgroup_id = sub_id.substr(0, sub_id.find('.'));
+      auto subgroup =
+          dynamic_pointer_cast<GroupMock>(get<GroupPtr>(element->function()));
+      subgroups_.emplace(subgroup_id, subgroup);
+    }
   }
 }
 
