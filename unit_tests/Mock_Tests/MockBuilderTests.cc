@@ -338,6 +338,8 @@ TEST(MockBuilderTests, returnsCorrectID) {
                 },
                 [](uintmax_t) {}),
       "base_id:0.0.4");
+
+  EXPECT_NO_THROW(builder->result());
 }
 
 } // namespace Information_Model::testing
