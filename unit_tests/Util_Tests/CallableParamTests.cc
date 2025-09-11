@@ -107,8 +107,7 @@ TEST_F(CallableParamTests, canPrintParams) {
         "2025Y09M11D17H25M30P000031Z},{5,Hex000102},{6,NullOpaque},{"
         "7,hello_world},{8,NullString},{9,NullOpt}}";
 
-    auto tested = toString( // clang-format off
-      Parameters{
+    auto params = Parameters{// clang-format off
         {0, true},
         {1, (uintmax_t)32},
         {2, -32},
@@ -118,9 +117,9 @@ TEST_F(CallableParamTests, canPrintParams) {
         {6, vector<uint8_t>{}},
         {7, "hello world"},
         {8, ""},
-        {9, nullopt},
-    }); // clang-format on
-    EXPECT_EQ(tested, expected);
+        {9, std::nullopt}
+    }; // clang-format on
+    EXPECT_EQ(toString(params), expected);
   }
 }
 } // namespace Information_Model::testing
