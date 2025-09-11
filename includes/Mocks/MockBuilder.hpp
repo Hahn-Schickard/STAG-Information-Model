@@ -19,7 +19,7 @@ struct MockBuilder : public DeviceBuilder {
       DataType data_type,
       const ReadCallback& read_cb) final;
 
-  std::string addReadableMetric(const std::string& parent_id,
+  std::string addReadable(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
       const ReadCallback& read_cb) final;
@@ -29,7 +29,7 @@ struct MockBuilder : public DeviceBuilder {
       const WriteCallback& write_cb,
       const ReadCallback& read_cb = nullptr) final;
 
-  std::string addWritableMetric(const std::string& parent_id,
+  std::string addWritable(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
       const WriteCallback& write_cb,
@@ -49,18 +49,19 @@ struct MockBuilder : public DeviceBuilder {
       const IsObservingCallback& observe_cb) final;
 
   std::string addCallable(const BuildInfo& element_info,
-      DataType result_type,
-      const AsyncExecuteCallback& async_execute_cb,
-      const CancelCallback& cancel_cb,
-      const ParameterTypes& parameter_types = {}) final;
-
-  std::string addCallable(const BuildInfo& element_info,
       const ExecuteCallback& execute_cb,
       const ParameterTypes& parameter_types = {}) final;
 
   std::string addCallable(const std::string& parent_id,
       const BuildInfo& element_info,
       const ExecuteCallback& execute_cb,
+      const ParameterTypes& parameter_types = {}) final;
+
+  std::string addCallable(const BuildInfo& element_info,
+      DataType result_type,
+      const ExecuteCallback& execute_cb,
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
       const ParameterTypes& parameter_types = {}) final;
 
   std::string addCallable(const std::string& parent_id,
@@ -80,6 +81,7 @@ private:
       const std::string& id,
       const BuildInfo& element_info);
 
+  void checkBase();
   void checkGroups();
 
   std::unique_ptr<DeviceMock> result_;

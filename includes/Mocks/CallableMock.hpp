@@ -23,11 +23,6 @@ struct CallableMock : public Callable {
       const ParameterTypes& supported_params = {});
 
   CallableMock(DataType result_type,
-      const AsyncExecuteCallback& async_execute_cb,
-      const CancelCallback& cancel_cb,
-      const ParameterTypes& supported_params = {});
-
-  CallableMock(DataType result_type,
       const ExecuteCallback& execute_cb,
       const AsyncExecuteCallback& async_execute_cb,
       const CancelCallback& cancel_cb,

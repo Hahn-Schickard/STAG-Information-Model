@@ -221,7 +221,6 @@ private:
   Stoppable::TaskPtr task_;
   IdRepository id_repo_;
   DispatchQueue dispatch_queue_;
-
   unordered_map<uintmax_t, promise<DataVariant>> result_promises_;
 };
 

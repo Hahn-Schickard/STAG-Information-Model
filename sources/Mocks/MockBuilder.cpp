@@ -8,22 +8,30 @@ using namespace ::testing;
 
 void MockBuilder::setDeviceInfo(
     const string& unique_id, const BuildInfo& element_info) {
-  result_ = make_unique<DeviceMock>(
-      unique_id, FullMetaInfo{element_info.name, element_info.description});
+  if (!result_) {
+    result_ = make_unique<DeviceMock>(
+        unique_id, FullMetaInfo{element_info.name, element_info.description});
+  } else {
+    throw DeviceBuildInProgress();
+  }
 }
 
 string MockBuilder::addGroup(const BuildInfo& element_info) {
-  auto id = result_->generateID();
-  auto group = make_shared<NiceMock<GroupMock>>(id);
-  subgroups_.try_emplace(id, group);
-  addElementMock(group, id, element_info);
-  return id;
+  return addGroup("", element_info);
 }
 
 string MockBuilder::addGroup(
     const string& parent_id, const BuildInfo& element_info) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
+  checkBase();
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
   auto group = make_shared<NiceMock<GroupMock>>(id);
   subgroups_.try_emplace(id, group);
   addElementMock(group, id, element_info);
@@ -33,18 +41,29 @@ string MockBuilder::addGroup(
 string MockBuilder::addReadable(const BuildInfo& element_info,
     DataType data_type,
     const ReadCallback& read_cb) {
-  auto id = result_->generateID();
-  auto readable = make_shared<NiceMock<ReadableMock>>(data_type, read_cb);
-  addElementMock(readable, id, element_info);
-  return id;
+  return addReadable("", element_info, data_type, read_cb);
 }
 
-string MockBuilder::addReadableMetric(const string& parent_id,
+string MockBuilder::addReadable(const string& parent_id,
     const BuildInfo& element_info,
     DataType data_type,
     const ReadCallback& read_cb) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
+  checkBase();
+  if (data_type == DataType::None || data_type == DataType::Unknown) {
+    throw invalid_argument("Data Type can not be None or Unknown");
+  }
+  if (!read_cb) {
+    throw invalid_argument("ReadCallback can not be nullptr");
+  }
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
   auto readable = make_shared<NiceMock<ReadableMock>>(data_type, read_cb);
   addElementMock(readable, id, element_info);
   return id;
@@ -54,20 +73,30 @@ string MockBuilder::addWritable(const BuildInfo& element_info,
     DataType data_type,
     const WriteCallback& write_cb,
     const ReadCallback& read_cb) {
-  auto id = result_->generateID();
-  auto writable =
-      make_shared<NiceMock<WritableMock>>(data_type, read_cb, write_cb);
-  addElementMock(writable, id, element_info);
-  return id;
+  return addWritable("", element_info, data_type, write_cb, read_cb);
 }
 
-string MockBuilder::addWritableMetric(const string& parent_id,
+string MockBuilder::addWritable(const string& parent_id,
     const BuildInfo& element_info,
     DataType data_type,
     const WriteCallback& write_cb,
     const ReadCallback& read_cb) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
+  checkBase();
+  if (data_type == DataType::None || data_type == DataType::Unknown) {
+    throw invalid_argument("Data Type can not be None or Unknown");
+  }
+  if (!write_cb) {
+    throw invalid_argument("WriteCallback can not be nullptr");
+  }
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
   auto writable =
       make_shared<NiceMock<WritableMock>>(data_type, read_cb, write_cb);
   addElementMock(writable, id, element_info);
@@ -79,11 +108,7 @@ pair<string, MockBuilder::NotifyCallback> MockBuilder::addObservable(
     DataType data_type,
     const ReadCallback& read_cb,
     const IsObservingCallback& observe_cb) {
-  auto id = result_->generateID();
-  auto observable = make_shared<NiceMock<ObservableMock>>(data_type, read_cb);
-  observable->enableSubscribeFaking(observe_cb);
-  addElementMock(observable, id, element_info);
-  return make_pair(id, bind(&Observable::notify, observable, placeholders::_1));
+  return addObservable("", element_info, data_type, read_cb, observe_cb);
 }
 
 pair<string, MockBuilder::NotifyCallback> MockBuilder::addObservable(
@@ -92,8 +117,25 @@ pair<string, MockBuilder::NotifyCallback> MockBuilder::addObservable(
     DataType data_type,
     const ReadCallback& read_cb,
     const IsObservingCallback& observe_cb) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
+  checkBase();
+  if (data_type == DataType::None || data_type == DataType::Unknown) {
+    throw invalid_argument("Data Type can not be None or Unknown");
+  }
+  if (!read_cb) {
+    throw invalid_argument("ReadCallback can not be nullptr");
+  }
+  if (!observe_cb) {
+    throw invalid_argument("IsObservingCallback can not be nullptr");
+  }
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
   auto observable = make_shared<NiceMock<ObservableMock>>(data_type, read_cb);
   observable->enableSubscribeFaking(observe_cb);
   addElementMock(observable, id, element_info);
@@ -101,37 +143,47 @@ pair<string, MockBuilder::NotifyCallback> MockBuilder::addObservable(
 }
 
 string MockBuilder::addCallable(const BuildInfo& element_info,
-    DataType result_type,
-    const AsyncExecuteCallback& async_execute_cb,
-    const CancelCallback& cancel_cb,
+    const ExecuteCallback& execute_cb,
     const ParameterTypes& parameter_types) {
-  auto id = result_->generateID();
-  auto callable = make_shared<NiceMock<CallableMock>>(
-      result_type, async_execute_cb, cancel_cb, parameter_types);
+  return addCallable("", element_info, execute_cb, parameter_types);
+}
+
+string MockBuilder::addCallable(const string& parent_id,
+    const BuildInfo& element_info,
+    const ExecuteCallback& execute_cb,
+    const ParameterTypes& parameter_types) {
+  checkBase();
+  if (!execute_cb) {
+    throw invalid_argument("ExecuteCallback can not be nullptr");
+  }
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
+  auto callable =
+      make_shared<NiceMock<CallableMock>>(execute_cb, parameter_types);
   addElementMock(callable, id, element_info);
   return id;
 }
 
 string MockBuilder::addCallable(const BuildInfo& element_info,
+    DataType result_type,
     const ExecuteCallback& execute_cb,
+    const AsyncExecuteCallback& async_execute_cb,
+    const CancelCallback& cancel_cb,
     const ParameterTypes& parameter_types) {
-  auto id = result_->generateID();
-  auto callable =
-      make_shared<NiceMock<CallableMock>>(execute_cb, parameter_types);
-  addElementMock(callable, id, element_info);
-  return id;
-}
-
-string MockBuilder::addCallable(const string& parent_id,
-    const BuildInfo& element_info,
-    const ExecuteCallback& execute_cb,
-    const ParameterTypes& parameter_types) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
-  auto callable =
-      make_shared<NiceMock<CallableMock>>(execute_cb, parameter_types);
-  addElementMock(callable, id, element_info);
-  return id;
+  return addCallable("",
+      element_info,
+      result_type,
+      execute_cb,
+      async_execute_cb,
+      cancel_cb,
+      parameter_types);
 }
 
 string MockBuilder::addCallable(const string& parent_id,
@@ -141,8 +193,28 @@ string MockBuilder::addCallable(const string& parent_id,
     const AsyncExecuteCallback& async_execute_cb,
     const CancelCallback& cancel_cb,
     const ParameterTypes& parameter_types) {
-  auto subgroup = getParentGroup(parent_id);
-  auto id = subgroup->generateID();
+  checkBase();
+  if (result_type == DataType::None || result_type == DataType::Unknown) {
+    throw invalid_argument("Result Type can not be None or Unknown");
+  }
+  if (!execute_cb) {
+    throw invalid_argument("ExecuteCallback can not be nullptr");
+  }
+  if (!async_execute_cb) {
+    throw invalid_argument("AsyncExecuteCallback can not be nullptr");
+  }
+  if (!cancel_cb) {
+    throw invalid_argument("CancelCallback can not be nullptr");
+  }
+
+  string id;
+  if (parent_id.empty()) {
+    id = result_->generateID();
+  } else {
+    auto subgroup = getParentGroup(parent_id);
+    id = subgroup->generateID();
+  }
+
   auto callable = make_shared<NiceMock<CallableMock>>(
       result_type, execute_cb, async_execute_cb, cancel_cb, parameter_types);
   addElementMock(callable, id, element_info);
@@ -166,18 +238,25 @@ GroupMockPtr MockBuilder::getParentGroup(const string& parent_id) {
   }
 }
 
+void MockBuilder::checkBase() {
+  if (!result_) {
+    throw DeviceInfoNotSet();
+  }
+}
+
 void MockBuilder::checkGroups() {
   if (result_->group()->size() == 0) {
-    throw logic_error("Device root group is empty. Add elements to it");
+    throw GroupEmpty(result_->id());
   }
   for (const auto& [id, group] : subgroups_) {
     if (group->size() == 0) {
-      throw logic_error("Device group " + id + " is empty. Add elements to it");
+      throw GroupEmpty(result_->id(), id);
     }
   }
 }
 
 unique_ptr<Device> MockBuilder::result() {
+  checkBase();
   checkGroups();
   return move(result_);
 }

@@ -14,8 +14,25 @@
 namespace Information_Model {
 
 struct BuildInfo {
-  std::string name;
-  std::string description;
+  std::string name{};
+  std::string description{};
+};
+
+struct GroupEmpty : public std::logic_error {
+  GroupEmpty(const std::string& device_id)
+      : std::logic_error("Device " + device_id + " root group is empty") {}
+
+  GroupEmpty(const std::string& device_id, const std::string& group_id)
+      : std::logic_error(
+            "Device " + device_id + " group " + group_id + " is empty") {}
+};
+
+struct DeviceInfoNotSet : public std::logic_error {
+  DeviceInfoNotSet() : std::logic_error("Device Information was never built") {}
+};
+
+struct DeviceBuildInProgress : public std::logic_error {
+  DeviceBuildInProgress() : std::logic_error("Device is already being built") {}
 };
 
 struct DeviceBuilder {
@@ -78,7 +95,7 @@ struct DeviceBuilder {
       DataType data_type,
       const ReadCallback& read_cb) = 0;
 
-  virtual std::string addReadableMetric(const std::string& parent_id,
+  virtual std::string addReadable(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
       const ReadCallback& read_cb) = 0;
@@ -88,7 +105,7 @@ struct DeviceBuilder {
       const WriteCallback& write_cb,
       const ReadCallback& read_cb = nullptr) = 0;
 
-  virtual std::string addWritableMetric(const std::string& parent_id,
+  virtual std::string addWritable(const std::string& parent_id,
       const BuildInfo& element_info,
       DataType data_type,
       const WriteCallback& write_cb,
@@ -108,18 +125,19 @@ struct DeviceBuilder {
       const IsObservingCallback& observe_cb) = 0;
 
   virtual std::string addCallable(const BuildInfo& element_info,
-      DataType result_type,
-      const AsyncExecuteCallback& async_execute_cb,
-      const CancelCallback& cancel_cb,
-      const ParameterTypes& parameter_types = {}) = 0;
-
-  virtual std::string addCallable(const BuildInfo& element_info,
       const ExecuteCallback& execute_cb,
       const ParameterTypes& parameter_types = {}) = 0;
 
   virtual std::string addCallable(const std::string& parent_id,
       const BuildInfo& element_info,
       const ExecuteCallback& execute_cb,
+      const ParameterTypes& parameter_types = {}) = 0;
+
+  virtual std::string addCallable(const BuildInfo& element_info,
+      DataType result_type,
+      const ExecuteCallback& execute_cb,
+      const AsyncExecuteCallback& async_execute_cb,
+      const CancelCallback& cancel_cb,
       const ParameterTypes& parameter_types = {}) = 0;
 
   virtual std::string addCallable(const std::string& parent_id,

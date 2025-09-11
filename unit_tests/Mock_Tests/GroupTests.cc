@@ -128,21 +128,26 @@ TEST_F(GroupTests, isCorrectSize) { EXPECT_EQ(tested->size(), built.size()); }
 
 TEST_F(GroupTests, canGetElementById) {
   for (const auto& [id, element] : built) {
-    EXPECT_NO_THROW({
-      auto tested_element = tested->element(id);
+    auto tested_element = tested->element(id);
 
-      EXPECT_EQ(tested_element->id(), element->id());
-      EXPECT_EQ(tested_element->name(), element->name());
-      EXPECT_EQ(tested_element->description(), element->description());
-      EXPECT_EQ(tested_element->type(), element->type());
-    });
+    EXPECT_EQ(tested_element->id(), element->id());
+    EXPECT_EQ(tested_element->name(), element->name());
+    EXPECT_EQ(tested_element->description(), element->description());
+    EXPECT_EQ(tested_element->type(), element->type());
   }
 }
 
 TEST_F(GroupTests, canGetAsMap) {
   unordered_map<string, ElementPtr> built_as_base;
   for (const auto& [id, element] : built) {
-    built_as_base.try_emplace(id.substr(base_id.size() + 1), element);
+    auto correct_id = id.substr(base_id.size());
+    if (correct_id.front() == '.') {
+      correct_id.erase(0, 1);
+    }
+    if (correct_id.back() == '.') {
+      correct_id.pop_back();
+    }
+    built_as_base.try_emplace(correct_id, element);
   }
 
   EXPECT_THAT(tested->asMap(), ContainerEq(built_as_base));
