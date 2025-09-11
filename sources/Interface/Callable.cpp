@@ -1,5 +1,7 @@
 #include "Callable.hpp"
 
+#include <algorithm>
+
 namespace Information_Model {
 using namespace std;
 
@@ -83,10 +85,20 @@ string toString(const ParameterTypes& supported_types) {
   if (supported_types.empty()) {
     return "{}";
   }
+
+  vector<uintmax_t> keys;
+  keys.reserve(supported_types.size());
+  for (auto it = supported_types.begin(); it != supported_types.end(); it++) {
+    keys.push_back(it->first);
+  }
+  sort(keys.begin(), keys.end());
+
   string result = "{";
-  for (const auto& [position, parameter] : supported_types) {
-    result += "{" + to_string(position) + "," + toString(parameter.type) +
-        (parameter.mandatory ? "mandatory" : "optional") + "},";
+  for (const auto& position : keys) {
+    auto parameter = supported_types.at(position);
+    result += "{" + to_string(position) + "," +
+        toSanitizedString(parameter.type) +
+        (parameter.mandatory ? ",mandatory" : ",optional") + "},";
   }
   result.pop_back(); // pop last , character
   return result += "}";
@@ -96,10 +108,19 @@ string toString(const Parameters& parameters) {
   if (parameters.empty()) {
     return "{}";
   }
+
+  vector<uintmax_t> keys;
+  keys.reserve(parameters.size());
+  for (auto it = parameters.begin(); it != parameters.end(); it++) {
+    keys.push_back(it->first);
+  }
+  sort(keys.begin(), keys.end());
+
   string result = "{";
-  for (const auto& [position, parameter] : parameters) {
+  for (const auto& position : keys) {
+    auto parameter = parameters.at(position);
     result += "{" + to_string(position) + "," +
-        toString(parameter.value_or("NullOpt")) + "},";
+        toSanitizedString(parameter.value_or("NullOpt")) + "},";
   }
   result.pop_back(); // pop last , character
   return result += "}";

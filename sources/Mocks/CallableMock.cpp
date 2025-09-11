@@ -94,6 +94,13 @@ void CallableMock::setExecutor() {
   }
 }
 
+void CallableMock::useDefaultCallbacks() {
+  if (!execute_cb_) {
+    throw logic_error("Default callbacks not set");
+  }
+  setCallbacks();
+}
+
 void CallableMock::setCallbacks() {
   ON_CALL(*this, resultType).WillByDefault(Return(result_type_));
   ON_CALL(*this, parameterTypes).WillByDefault(Return(supported_params_));

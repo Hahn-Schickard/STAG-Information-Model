@@ -46,6 +46,7 @@ struct CallableMock : public Callable {
 
   void changeExecutor(const ExecutorPtr& executor);
   void useDefaultExecutor();
+  void useDefaultCallbacks();
 
 private:
   void setExecutor();

@@ -218,7 +218,7 @@ bool matchVariantType(const DataVariant& variant, DataType type) {
 string toString(const DataVariant& variant) {
   return Variant_Visitor::match(
       variant,
-      [](bool value) -> string { return (value ? "true" : "false"); },
+      [](bool value) -> string { return (value ? "True" : "False"); },
       [](auto value) -> string { return to_string(value); },
       [](const Timestamp& value) -> string { return toString(value); },
       [](const vector<uint8_t>& value) -> string {
@@ -259,7 +259,7 @@ string toSanitizedString(const DataVariant& variant) {
         return result;
       },
       [](const Timestamp& value) -> string {
-        auto result = toString(value, "%YY%mM%dD%HH%MM%S");
+        auto result = toString(value, "%YY%mM%dD%HH%MM%SZ");
         replace(result.begin(), result.end(), '.', 'P');
         return result;
       },
