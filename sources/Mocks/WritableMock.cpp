@@ -13,7 +13,7 @@ WritableMock::WritableMock(DataType type)
 WritableMock::WritableMock(DataType type, const ReadCallback& read_cb)
     : readable_(make_shared<NiceMock<ReadableMock>>(type, read_cb)) {
   setReadableCalls();
-  setWriteOnly(!(read_cb));
+  setWriteOnly(!read_cb);
 }
 
 WritableMock::WritableMock(const DataVariant& value)

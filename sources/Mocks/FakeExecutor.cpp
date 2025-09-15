@@ -106,7 +106,7 @@ struct FakeExecutor : public Executor {
         delay_(response_delay),
         task_(make_shared<Stoppable::Task>(
             bind(&FakeExecutor::respondOnce, this), [](const exception_ptr&) {
-              // @todo decide how to handle exceptions
+              // suppress any thrown exception
             })) {}
 
   ~FakeExecutor() override { cancelAll(); }

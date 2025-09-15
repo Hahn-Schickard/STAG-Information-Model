@@ -47,8 +47,8 @@ void printElement(const ElementPtr& element, size_t padding) {
         cout << "groups other elements. It contains: " << group->size()
              << " elements as follows: [" << endl;
         padding += 2;
-        group->visit([&padding](const ElementPtr& element) {
-          printElement(element, padding);
+        group->visit([&padding](const ElementPtr& sub_element) {
+          printElement(sub_element, padding);
         });
         padding -= 2;
         cout << string(padding, ' ') << "]" << endl;
@@ -144,7 +144,8 @@ DevicePtr makeDevice() {
       },
       bind(&readCallback));
 
-  auto notifier_pair = // this holds the DeviceBuilder::NotifyCallback callable
+  [[maybe_unused]] auto [observable_id, // this holds the built element id
+      notifier] = // this holds the DeviceBuilder::NotifyCallback callable
       builder->addObservable(BuildInfo{"observable", "Observable"},
           DataType::String,
           &readCallback,
