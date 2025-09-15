@@ -6,33 +6,33 @@ using namespace ::testing;
 
 WritableMock::WritableMock(DataType type)
     : readable_(make_shared<NiceMock<ReadableMock>>(type)) {
-  setReadableCalls();
   setWriteOnly(false);
+  setReadableCalls();
 }
 
 WritableMock::WritableMock(DataType type, const ReadCallback& read_cb)
     : readable_(make_shared<NiceMock<ReadableMock>>(type, read_cb)) {
+  setWriteOnly(!(read_cb));
   setReadableCalls();
-  setWriteOnly(false);
 }
 
 WritableMock::WritableMock(const DataVariant& value)
     : readable_(make_shared<NiceMock<ReadableMock>>(value)) {
   setWriteOnly(false);
+  setReadableCalls();
 }
 
 WritableMock::WritableMock(DataType type, const WriteCallback& write_cb)
     : WritableMock(type) {
-  setReadableCalls();
   readable_->updateType(type);
   updateWriteCallback(write_cb);
   setWriteOnly(true);
+  setReadableCalls();
 }
 
 WritableMock::WritableMock(
     const DataVariant& value, const WriteCallback& write_cb, bool write_only)
     : WritableMock(value) {
-  setReadableCalls();
   readable_->updateValue(value);
   updateWriteCallback(write_cb);
   setWriteOnly(write_only);
@@ -42,19 +42,7 @@ WritableMock::WritableMock(
 WritableMock::WritableMock(
     DataType type, const ReadCallback& read_cb, const WriteCallback& write_cb)
     : WritableMock(type, read_cb) {
-  setReadableCalls();
   updateWriteCallback(write_cb);
-  setWriteOnly(false);
-}
-
-WritableMock::WritableMock(const DataVariant& value,
-    const ReadCallback& read_cb,
-    const WriteCallback& write_cb)
-    : WritableMock(toDataType(value), read_cb) {
-  setReadableCalls();
-  readable_->updateValue(value);
-  updateWriteCallback(write_cb);
-  setWriteOnly(false);
 }
 
 void WritableMock::setReadableCalls() const {

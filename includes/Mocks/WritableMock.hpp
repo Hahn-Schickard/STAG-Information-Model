@@ -26,10 +26,6 @@ struct WritableMock : public Writable {
       const ReadCallback& read_cb,
       const WriteCallback& write_cb);
 
-  WritableMock(const DataVariant& value,
-      const ReadCallback& read_cb,
-      const WriteCallback& write_cb);
-
   ~WritableMock() override = default;
 
   void setWriteOnly(bool write_only) const;
