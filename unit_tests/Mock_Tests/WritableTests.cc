@@ -32,7 +32,7 @@ protected:
 
 struct WritableTests : public TestWithParam<WritableTestParam> {
   WritableTests() {
-    auto param = GetParam();
+    const auto& param = GetParam();
     expected_type = param.dataType();
     expected_variant = param.readResult();
     if (param.hasReadCallback()) {

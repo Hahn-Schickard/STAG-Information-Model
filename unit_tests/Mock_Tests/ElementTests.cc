@@ -9,6 +9,8 @@ using namespace ::testing;
 
 TEST(ElementUtilTests, toStringThrows) {
   string result{};
+  // we deliberately want to test how out of range casts are handled
+  // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange)
   EXPECT_THAT([&result]() { result = toString(static_cast<ElementType>(230)); },
       ThrowsMessage<logic_error>(
           HasSubstr("Could not decode ElementType enum value")));
