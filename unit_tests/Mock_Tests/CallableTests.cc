@@ -155,6 +155,12 @@ TEST_P(CallableTests, resultOutlivesAsyncCall) {
 }
 
 TEST_P(CallableTests, canUnsetExecutor) {
+  EXPECT_CALL(*tested, execute(expected.parameters)).Times(Exactly(1));
+  EXPECT_CALL(*tested, call(100)).Times(Exactly(1));
+  EXPECT_CALL(*tested, call(expected.parameters, 100)).Times(Exactly(1));
+  EXPECT_CALL(*tested, asyncCall(expected.parameters)).Times(Exactly(1));
+  EXPECT_CALL(*tested, cancelAsyncCall(25)).Times(Exactly(1));
+
   tested->changeExecutor(nullptr);
 
   EXPECT_THAT([&]() { tested->execute(expected.parameters); },
