@@ -117,7 +117,7 @@ TEST_F(CallableParamTests, canPrintParams) {
         {6, DataVariant(vector<uint8_t>{})},
         {7, DataVariant(string("hello world"))},
         {8, DataVariant(string())},
-        {9, std::nullopt}
+        {9, optional<DataVariant>()}
     }; // clang-format on^
     EXPECT_EQ(toString(params), expected);
   }
