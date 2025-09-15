@@ -32,6 +32,7 @@ struct CallableTestParam {
       make_exception_ptr(logic_error("Response should not return values"));
   Parameters parameters;
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   friend void PrintTo(const CallableTestParam& param, std::ostream* os) {
     *os << "(result_type: " << toString(param.result_type)
         << ", supported_params: " << toString(param.supported_params)

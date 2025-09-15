@@ -7,7 +7,7 @@ using namespace std;
 
 ResultFuture::ResultFuture(
     shared_ptr<uintmax_t> id, future<DataVariant>&& result)
-    : id_(id), result_(move(result)) {}
+    : id_(move(id)), result_(move(result)) {}
 
 DataVariant ResultFuture::get() {
   auto result = result_.get();
@@ -81,6 +81,7 @@ Parameters makeDefaultParams(const ParameterTypes& supported_types) {
   return result;
 }
 
+// NOLINTBEGIN(modernize-loop-convert)
 string toString(const ParameterTypes& supported_types) {
   if (supported_types.empty()) {
     return "{}";
@@ -125,5 +126,5 @@ string toString(const Parameters& parameters) {
   result.pop_back(); // pop last , character
   return result += "}";
 }
-
+// NOLINTEND(modernize-loop-convert)
 } // namespace Information_Model

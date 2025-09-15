@@ -55,6 +55,7 @@ bool operator>=(const Timestamp& lhs, const Timestamp& rhs) {
 }
 
 void verifyTimestamp(const Timestamp& time) {
+  // NOLINTBEGIN(readability-magic-numbers)
   if (time.year < 1582) {
     throw invalid_argument("Ancient time recording is not supported");
   }
@@ -80,6 +81,7 @@ void verifyTimestamp(const Timestamp& time) {
     // chrono::system_clock does not handle leap seconds, so we wont either
     throw invalid_argument("A minute can not have more than 59 seconds");
   }
+  // NOLINTEND(readability-magic-numbers)
 }
 
 Timestamp makeTimestamp() { return toTimestamp(chrono::system_clock::now()); }

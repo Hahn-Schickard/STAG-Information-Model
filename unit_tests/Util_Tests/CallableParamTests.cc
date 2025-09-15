@@ -54,7 +54,7 @@ TEST_F(CallableParamTests, throwsParameterDoesNotExist) {
   Parameters tested{};
   string exception_msg = "No parameter exists at position 5";
 
-  EXPECT_THAT(
+  EXPECT_THAT( // NOLINTNEXTLINE(readability-magic-numbers)
       [&]() { addSupportedParameter(tested, supported_params, 5, 20.2); },
       ThrowsMessage<ParameterDoesNotExist>(HasSubstr(exception_msg)));
 }
@@ -107,6 +107,7 @@ TEST_F(CallableParamTests, canPrintParams) {
         "2025Y09M11D17H25M30P000031Z},{5,0x000102},{6,NullOpaque},{"
         "7,hello_world},{8,NullString},{9,NullOpt}}";
 
+    // NOLINTBEGIN(readability-magic-numbers)
     auto params = Parameters{// clang-format off
         {0, DataVariant(true)},
         {1, DataVariant((uintmax_t)32)},
@@ -118,7 +119,8 @@ TEST_F(CallableParamTests, canPrintParams) {
         {7, DataVariant(string("hello world"))},
         {8, DataVariant(string())},
         {9, optional<DataVariant>()}
-    }; // clang-format on^
+    }; // clang-format on
+    // NOLINTEND(readability-magic-numbers)
     EXPECT_EQ(toString(params), expected);
   }
 }

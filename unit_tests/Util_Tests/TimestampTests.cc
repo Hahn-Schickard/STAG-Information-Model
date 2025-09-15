@@ -10,6 +10,7 @@ using namespace ::testing;
 struct TimestampTests : public testing::Test {
   TimestampTests() = default;
 
+  // NOLINTBEGIN(readability-magic-numbers)
   Timestamp time1{2025, 9, 11, 18, 9, 23, 521};
   Timestamp time2{2025, 9, 11, 18, 9, 0, 521};
   Timestamp time3{2025, 9, 11, 18, 0, 23, 521};
@@ -24,6 +25,7 @@ struct TimestampTests : public testing::Test {
   Timestamp bad_time6{2025, 9, 11, 18, 9, 61, 521};
   Timestamp bad_time7{2025, 0, 11, 18, 9, 61, 521};
   Timestamp bad_time8{2025, 9, 0, 18, 9, 61, 521};
+  // NOLINTEND(readability-magic-numbers)
 };
 
 TEST_F(TimestampTests, timestampsEqual) {

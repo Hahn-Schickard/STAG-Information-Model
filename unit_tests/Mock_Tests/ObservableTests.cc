@@ -20,7 +20,7 @@ MATCHER_P(ExceptionPointee, exception_type, "") {
 
 struct ObservableTests : public TestWithParam<ReadableTestParam> {
   ObservableTests() {
-    auto param = GetParam();
+    const auto& param = GetParam();
     expected_type = param.dataType();
     expected_variant = param.readResult();
     if (param.hasReadCallback()) {

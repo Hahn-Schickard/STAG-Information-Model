@@ -8,9 +8,12 @@ using namespace std;
 using namespace ::testing;
 
 TEST(ElementUtilTests, toStringThrows) {
-  EXPECT_THAT([]() { auto result = toString(static_cast<ElementType>(230)); },
+  string result{};
+  EXPECT_THAT([&result]() { result = toString(static_cast<ElementType>(230)); },
       ThrowsMessage<logic_error>(
           HasSubstr("Could not decode ElementType enum value")));
+
+  EXPECT_TRUE(result.empty());
 }
 
 struct ElementTestParam {
@@ -21,6 +24,7 @@ struct ElementTestParam {
   DataType data_type;
   ElementFunction function;
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   friend void PrintTo(const ElementTestParam& param, std::ostream* os) {
     *os << "(id: " << param.id << ", name:" << param.name
         << ", description:" << param.description

@@ -39,7 +39,7 @@ private:
 
 struct DispatchQueue {
   void enqueue(uintmax_t call_id) {
-    lock_guard lock(mx_);
+    scoped_lock lock(mx_);
     queue_.push(call_id);
     queue_not_empty_.notify_one();
   }

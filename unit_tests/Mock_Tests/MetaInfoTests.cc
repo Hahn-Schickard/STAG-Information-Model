@@ -16,6 +16,7 @@ struct MetaInfoTestParam {
     return !id.empty() || !name.empty() || !description.empty();
   }
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   friend void PrintTo(const MetaInfoTestParam& param, std::ostream* os) {
     *os << "(id: " << param.id << ", name:" << param.name
         << ", description:" << param.description << ")";

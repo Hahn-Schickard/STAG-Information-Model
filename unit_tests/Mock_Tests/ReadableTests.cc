@@ -10,7 +10,7 @@ using namespace ::testing;
 
 struct ReadableTests : public TestWithParam<ReadableTestParam> {
   ReadableTests() {
-    auto param = GetParam();
+    const auto& param = GetParam();
     expected_type = param.dataType();
     expected_variant = param.readResult();
     if (param.hasReadCallback()) {

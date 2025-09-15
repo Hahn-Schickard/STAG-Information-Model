@@ -20,6 +20,7 @@ TEST(DataVariantTests, returnsCorrectSanitizedString) {
 }
 
 TEST(DataVariantTests, returnsCorrectSize) {
+  // NOLINTBEGIN(bugprone-unchecked-optional-access)
   EXPECT_EQ(size_of(setVariant(DataType::Boolean).value()), sizeof(bool));
   EXPECT_EQ(size_of(setVariant(DataType::Integer).value()), sizeof(intmax_t));
   EXPECT_EQ(size_of(setVariant(DataType::Unsigned_Integer).value()),
@@ -29,6 +30,7 @@ TEST(DataVariantTests, returnsCorrectSize) {
   EXPECT_EQ(
       size_of(setVariant(DataType::Opaque).value()), vector<uint8_t>{}.size());
   EXPECT_EQ(size_of(setVariant(DataType::String).value()), string().size());
+  // NOLINTEND(bugprone-unchecked-optional-access)
 }
 
 } // namespace Information_Model::testing

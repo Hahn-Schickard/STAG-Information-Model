@@ -231,7 +231,7 @@ TEST(MockBuilderTests, throwsInvalidArgument) {
       },
       ThrowsMessage<invalid_argument>(
           HasSubstr("AsyncExecuteCallback can not be nullptr")));
-
+  // NOLINTBEGIN(modernize-use-nullptr)
   EXPECT_THAT(
       [builder_ptr]() {
         builder_ptr->addCallable(
@@ -242,6 +242,7 @@ TEST(MockBuilderTests, throwsInvalidArgument) {
               promise<DataVariant> promise;
               promise.set_exception(
                   make_exception_ptr(CallCanceled(0, "Mock Builder Test")));
+              // we need to set it as 0, not nullptr
               return ResultFuture(0, promise.get_future());
             },
             nullptr);
@@ -338,8 +339,7 @@ TEST(MockBuilderTests, returnsCorrectID) {
                 },
                 [](uintmax_t) {}),
       "base_id:0.0.4");
-
+  // NOLINTEND(modernize-use-nullptr)
   EXPECT_NO_THROW(builder->result());
 }
-
 } // namespace Information_Model::testing

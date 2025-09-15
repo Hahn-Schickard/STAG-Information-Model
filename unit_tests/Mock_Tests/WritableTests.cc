@@ -19,6 +19,7 @@ struct WritableTestParam : public ReadableTestParam {
 
   bool isWriteOnly() const { return write_only_; }
 
+  // NOLINTNEXTLINE(readability-identifier-naming)
   friend void PrintTo(const WritableTestParam& param, std::ostream* os) {
     *os << "(write_only: " << param.write_only_
         << (param.write_only_ ? "" : ", value: " + toString(param.value_))
