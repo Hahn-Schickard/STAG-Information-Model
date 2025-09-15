@@ -16,7 +16,6 @@ namespace Information_Model {
  * @addtogroup ExecutableModeling Callable Modelling
  * @{
  */
-
 struct ResultReturningNotSupported : public std::runtime_error {
   ResultReturningNotSupported()
       : std::runtime_error(
@@ -137,13 +136,14 @@ struct ParameterType {
 using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
 
 /**
- * @brief An interface to a Callable.
+ * @brief An interface to a function like elements.
  *
- * Models a single functionality for various sensors/actors
+ * Models a single function for various sensors/actors that can accept a list
+ * of various parameters and may return a result to the caller
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addCallable()
+ * built via DeviceBuilder::addCallable()
  */
 struct Callable {
 
@@ -153,13 +153,10 @@ struct Callable {
    * @brief Executes the modeled functionality without waiting for the execution
    * result
    *
-   * @throws std::logic_error - if base implementation was called
-   *
-   * @attention May cause @ref Deregistration
-   *
    * @param parameters
    */
   virtual void execute(const Parameters& parameters = Parameters()) const = 0;
+
   /**
    * @brief Calls the modeled functionality and waits to return the execution
    * result
@@ -184,20 +181,7 @@ struct Callable {
 
   /**
    * @brief Calls the modeled functionality and waits to return the execution
-   * result
-   *
-   * Blocks until the execution result is available or a timeout occurs
-   *
-   * If execution call timesout, the request will be canceled and an exception
-   * will be thrown
-   *
-   * @throws ResultReturningNotSupported - if modeled functionality does not
-   * support returning execution result
-   * @throws CallTimedout - if execution call has timeout
-   * @throws CallerIDExists - if internal callback returned a caller id
-   * that is already assigned
-   * @throws std::runtime_error - if internal callback encountered an
-   * error. May cause @ref Deregistration
+   * result, see @ref Callable::call(uintmax_t)
    *
    * @param parameters
    * @param timeout - number of miliseconds until a timeout occurs

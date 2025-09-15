@@ -6,6 +6,10 @@
 
 namespace Information_Model {
 
+/**
+ * @brief Base modeling entity for Device and Element instances
+ *
+ */
 struct MetaInfo {
   virtual ~MetaInfo() = default;
 

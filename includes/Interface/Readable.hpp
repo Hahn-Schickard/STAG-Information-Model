@@ -19,17 +19,22 @@ struct ReadCallbackUnavailable : public std::runtime_error {
 };
 
 /**
- * @brief An interface to read only Metric.
+ * @brief An interface to read only metric.
  *
  * Models a single read only element for various sensors/actors
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addReadableMetric()
+ * built via DeviceBuilder::addReadableMetric()
  */
 struct Readable {
   virtual ~Readable() = default;
 
+  /**
+   * @brief Returns the modeled data type
+   *
+   * @return DataType
+   */
   virtual DataType dataType() const = 0;
 
   /**
