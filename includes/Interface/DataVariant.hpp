@@ -122,7 +122,7 @@ enum class DataType : uint8_t {
   Integer, /*!< intmax_t */
   Unsigned_Integer, /*!< uintmax_t */
   Double, /*!< double */
-  Time, /*!< Information_Model::DateTime */
+  Timestamp, /*!< Information_Model::Timestamp */
   Opaque, /*!< std::vector<uint8_t> */
   String, /*!< std::string */
   None, /*!< void */
