@@ -68,6 +68,7 @@ TEST_F(CallableParamTests, canAddSupportedParameter) {
   addSupportedParameter(tested, supported_params, 2, nullopt);
 
   EXPECT_EQ(tested.size(), 1);
+  // NOLINTNEXTLINE(bugprone-unchecked-optional-access)
   EXPECT_EQ(get<string>(tested.at(2).value()), "Goodbye");
 }
 
