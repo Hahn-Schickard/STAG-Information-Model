@@ -186,8 +186,6 @@ TEST_F(GroupTests, canGetAsVector) {
   sort(built_as_vector.begin(), built_as_vector.end(), predicate);
 
   auto tested_vector = tested->asVector();
-  sort(tested_vector.begin(), tested_vector.end(), predicate);
-
   EXPECT_THAT(tested_vector, ContainerEq(built_as_vector));
 }
 

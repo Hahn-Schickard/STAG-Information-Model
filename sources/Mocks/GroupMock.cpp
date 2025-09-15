@@ -10,8 +10,11 @@ vector<ElementPtr> toVector(const unordered_map<string, ElementPtr>& map) {
 
   if (!map.empty()) {
     result.reserve(map.size());
-    for (const auto& [_, element] : map) {
+    size_t i = 0;
+    while (i < map.size()) {
+      auto element = map.at(to_string(i));
       result.push_back(element);
+      i++;
     }
   }
   return result;
