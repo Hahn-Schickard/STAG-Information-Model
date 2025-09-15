@@ -1,6 +1,4 @@
 {
-    "build/sources/Example/Information_Model_Example": [
-        "true"
-    ],
+    "build/sources/Example/Information_Model_Example": [],
     "build/unit_tests/Unit_Tests_Runner": []
 }
