@@ -6,13 +6,13 @@
 
 To better understand how a Device Abstraction looks like, let us look over Example Device Abstraction, shown on the right side. 
 
-In this figure, we see that each Device organizes multiple DeviceElement instances, made up of Metric, Function or DeviceElementGroup entities. 
+In this figure, we see that each Device organizes multiple Element instances, made up of Metric, Callable or Group entities. 
 
-Furthermore, each DeviceElementGroup contains other DeviceElement instances, which in turn can be Metric, Function or even other DeviceElementGroup entities as well. 
+Furthermore, each Group contains other Element instances, which in turn can be Metric, Callable or even other Group entities as well. 
 
-This nesting approach allows *Technology Adapter Implementations* to logically structure various parts of sensor/actor system abstraction and hide more complex parts within dedicated DeviceElementGroup instances. 
+This nesting approach allows *Technology Adapter Implementations* to logically structure various parts of sensor/actor system abstraction and hide more complex parts within dedicated Group instances. 
 
-This approach is also reflected in how DeviceElement reference ID are generated.
+This approach is also reflected in how Element reference ID are generated.
 
 </td>
 <td style="vertical-align:top;width:20%">
