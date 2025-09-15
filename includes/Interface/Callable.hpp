@@ -67,12 +67,6 @@ struct CallerIDExists : public std::runtime_error {
             " for Callable " + name + " was already dispatched") {}
 };
 
-struct CallAlreadyCanceled : public std::runtime_error {
-  explicit CallAlreadyCanceled(uintmax_t call_id)
-      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
-            " call is already canceled") {}
-};
-
 struct CallCanceled : public std::runtime_error {
   CallCanceled(uintmax_t call_id, const std::string& name)
       : std::runtime_error("Caller with id: " + std::to_string(call_id) +
