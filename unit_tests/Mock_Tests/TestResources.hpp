@@ -76,7 +76,7 @@ inline DataType otherThan(DataType input) {
     return DataType::Opaque;
   }
   case DataType::Integer: {
-    return DataType::Time;
+    return DataType::Timestamp;
   }
   case DataType::Unsigned_Integer: {
     return DataType::String;
@@ -84,7 +84,7 @@ inline DataType otherThan(DataType input) {
   case DataType::Double: {
     return DataType::Integer;
   }
-  case DataType::Time: {
+  case DataType::Timestamp: {
     return DataType::Unsigned_Integer;
   }
   case DataType::Opaque: {

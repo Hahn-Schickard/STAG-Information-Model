@@ -147,8 +147,8 @@ string toString(DataType type) {
     return "Unsigned Integer";
   case DataType::Double:
     return "Double Floating Point";
-  case DataType::Time:
-    return "Time";
+  case DataType::Timestamp:
+    return "Timestamp";
   case DataType::Opaque:
     return "Opaque Byte Array";
   case DataType::String:
@@ -188,7 +188,7 @@ optional<DataVariant> setVariant(DataType type) {
     return DataVariant((uintmax_t)-1);
   case DataType::Double:
     return DataVariant(0.1); // NOLINT(readability-magic-numbers)
-  case DataType::Time:
+  case DataType::Timestamp:
     return DataVariant(makeTimestamp());
   case DataType::Opaque:
     return DataVariant(vector<uint8_t>{});
@@ -213,7 +213,7 @@ DataType toDataType(const DataVariant& variant) {
   } else if (holds_alternative<double>(variant)) {
     return DataType::Double;
   } else if (holds_alternative<Timestamp>(variant)) {
-    return DataType::Time;
+    return DataType::Timestamp;
   } else if (holds_alternative<vector<uint8_t>>(variant)) {
     return DataType::Opaque;
   } else if (holds_alternative<string>(variant)) {
