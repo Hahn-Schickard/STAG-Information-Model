@@ -249,7 +249,7 @@ string toSanitizedString(const DataVariant& variant) {
       [](double value) -> string {
         string result;
         if (value < 0) {
-          auto abs_value = abs(value);
+          auto abs_value = std::abs(value);
           result = "Neg" + to_string(abs_value);
         } else {
           result = to_string(value);
@@ -261,7 +261,7 @@ string toSanitizedString(const DataVariant& variant) {
         string result;
         if (value < 0) {
           // avoid ambiguous abs()
-          auto abs_value = abs(static_cast<intmax_t>(value));
+          auto abs_value = std::abs(static_cast<intmax_t>(value));
           result = "Neg" + to_string(abs_value);
         } else {
           result = to_string(value);
@@ -282,7 +282,7 @@ string toSanitizedString(const DataVariant& variant) {
           for (auto byte : value) {
             ss << hex << setw(2) << static_cast<int>(byte);
           }
-          return "Hex" + ss.str();
+          return "0x" + ss.str();
         }
       },
       [](string value) -> string {
