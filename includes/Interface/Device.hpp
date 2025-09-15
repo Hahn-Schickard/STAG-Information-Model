@@ -32,6 +32,8 @@ struct Device : virtual public MetaInfo {
 
   virtual GroupPtr group() const = 0;
 
+  virtual size_t size() const = 0;
+
   virtual ElementPtr element(const std::string& ref_id) const = 0;
 
   virtual void visit(const Group::Visitor& visitor) const = 0;

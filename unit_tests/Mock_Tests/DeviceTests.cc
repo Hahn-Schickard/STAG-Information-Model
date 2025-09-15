@@ -134,9 +134,7 @@ TEST_F(DeviceTests, throwsIDPointsThisGroup) {
           "Reference ID " + base_id + " points to this group element")));
 }
 
-TEST_F(DeviceTests, isCorrectSize) {
-  EXPECT_EQ(tested->group()->size(), built.size());
-}
+TEST_F(DeviceTests, isCorrectSize) { EXPECT_EQ(tested->size(), built.size()); }
 
 TEST_F(DeviceTests, canGetElementById) {
   for (const auto& [id, element] : built) {
