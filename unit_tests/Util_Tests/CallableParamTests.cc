@@ -104,7 +104,7 @@ TEST_F(CallableParamTests, canPrintParams) {
   {
     string expected =
         "{{0,True},{1,32},{2,Neg32},{3,32P200000},{4,"
-        "2025Y09M11D17H25M30P000031Z},{5,Hex000102},{6,NullOpaque},{"
+        "2025Y09M11D17H25M30P000031Z},{5,0x000102},{6,NullOpaque},{"
         "7,hello_world},{8,NullString},{9,NullOpt}}";
 
     auto params = Parameters{// clang-format off
