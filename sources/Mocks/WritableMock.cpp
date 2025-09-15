@@ -6,37 +6,37 @@ using namespace ::testing;
 
 WritableMock::WritableMock(DataType type)
     : readable_(make_shared<NiceMock<ReadableMock>>(type)) {
-  setWriteOnly(false);
   setReadableCalls();
+  setWriteOnly(false);
 }
 
 WritableMock::WritableMock(DataType type, const ReadCallback& read_cb)
     : readable_(make_shared<NiceMock<ReadableMock>>(type, read_cb)) {
-  setWriteOnly(!(read_cb));
   setReadableCalls();
+  setWriteOnly(!(read_cb));
 }
 
 WritableMock::WritableMock(const DataVariant& value)
     : readable_(make_shared<NiceMock<ReadableMock>>(value)) {
-  setWriteOnly(false);
   setReadableCalls();
+  setWriteOnly(false);
 }
 
 WritableMock::WritableMock(DataType type, const WriteCallback& write_cb)
     : WritableMock(type) {
+  setReadableCalls();
   readable_->updateType(type);
   updateWriteCallback(write_cb);
   setWriteOnly(true);
-  setReadableCalls();
 }
 
 WritableMock::WritableMock(
     const DataVariant& value, const WriteCallback& write_cb, bool write_only)
     : WritableMock(value) {
+  setReadableCalls();
   readable_->updateValue(value);
   updateWriteCallback(write_cb);
   setWriteOnly(write_only);
-  setReadableCalls();
 }
 
 WritableMock::WritableMock(
