@@ -139,7 +139,8 @@ pair<string, MockBuilder::NotifyCallback> MockBuilder::addObservable(
   auto observable = make_shared<NiceMock<ObservableMock>>(data_type, read_cb);
   observable->enableSubscribeFaking(observe_cb);
   addElementMock(observable, id, element_info);
-  return make_pair(id, bind(&Observable::notify, observable, placeholders::_1));
+  return make_pair(
+      id, bind(&ObservableMock::notify, observable, placeholders::_1));
 }
 
 string MockBuilder::addCallable(const BuildInfo& element_info,

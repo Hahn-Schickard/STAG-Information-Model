@@ -15,10 +15,10 @@ namespace Information_Model {
  */
 
 /**
- * @brief An interface for ObservableMetric value change observation
+ * @brief Manages the life-time of the Observable subscription
  *
- * Anyone whishing to observe ObservableMetric value changes SHOULD inherit this
- * class and implement the handleEvent(DataVariantPtr) method
+ * As long as this object and the source Observable are alive, new notification
+ * calls will be dispatched to the attached ObserveCallback.
  *
  */
 struct Observer {
@@ -28,14 +28,14 @@ struct Observer {
 using ObserverPtr = std::shared_ptr<Observer>;
 
 /**
- * @brief An interface to a an observable Metric with read support.
+ * @brief An interface to a an observable metric with read support.
  *
  * Models a single observable element for various sensors/actors that informs
- * observers with new values
+ * observers with new values when they are available
  *
  * @attention
  * This interface is implemented in Information Model Manager Project and is
- * built via DeviceBuilderInterface::addObservable()
+ * built via DeviceBuilder::addObservable()
  */
 struct Observable {
   using ObserveCallback =
@@ -44,6 +44,11 @@ struct Observable {
 
   virtual ~Observable() = default;
 
+  /**
+   * @brief Returns the modeled data type
+   *
+   * @return DataType
+   */
   virtual DataType dataType() const = 0;
 
   /**
@@ -58,13 +63,12 @@ struct Observable {
   virtual DataVariant read() const = 0;
 
   /**
-   * @brief Informs all registered observers that a new DataVariant value has
-   * been observed
+   * @brief Attach a new observer to this source
    *
-   * @param value - new observation
+   * @param observe_cb - called when new notification is available
+   * @param handler - called when observe_cb throws an exception
+   * @return ObserverPtr
    */
-  virtual void notify(const DataVariant& value) const = 0;
-
   [[nodiscard]] virtual ObserverPtr subscribe(
       const ObserveCallback& observe_cb, const ExceptionHandler& handler) = 0;
 };

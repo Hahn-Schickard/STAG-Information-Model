@@ -138,7 +138,6 @@ TEST_P(ObservableTests, canSubAndUnsub) {
   EXPECT_CALL(mock_enable_observation, Call(false)).Times(Exactly(1));
   EXPECT_CALL(mock_enable_observation, Call(true)).Times(Exactly(1));
   EXPECT_CALL(*tested, subscribe).Times(Exactly(1));
-  EXPECT_CALL(*tested, notify).Times(Exactly(1));
   EXPECT_CALL(mock_observer_cb, Call(_)).Times(Exactly(0));
   EXPECT_CALL(mock_exception_handler, Call(_)).Times(Exactly(0));
 
@@ -159,7 +158,6 @@ TEST_P(ObservableTests, canNotifyOne) {
 
   EXPECT_CALL(mock_enable_observation, Call(true)).Times(Exactly(1));
   EXPECT_CALL(*tested, subscribe).Times(Exactly(1));
-  EXPECT_CALL(*tested, notify).Times(Exactly(2));
   EXPECT_CALL(mock_observer_cb, Call(_)).Times(Exactly(0));
   EXPECT_CALL(mock_observer_cb, Call(Pointee(otherThan(expected_variant))))
       .Times(Exactly(1));
@@ -183,7 +181,6 @@ TEST_P(ObservableTests, canNotifyTwo) {
 
   EXPECT_CALL(mock_enable_observation, Call(true)).Times(Exactly(1));
   EXPECT_CALL(*tested, subscribe).Times(Exactly(2));
-  EXPECT_CALL(*tested, notify).Times(Exactly(3));
   EXPECT_CALL(mock_observer_1_cb, Call(_)).Times(Exactly(0));
   EXPECT_CALL(mock_observer_1_cb, Call(Pointee(otherThan(expected_variant))))
       .Times(Exactly(1));
@@ -218,7 +215,6 @@ TEST_P(ObservableTests, canHandleSharedExceptions) {
 
   EXPECT_CALL(mock_enable_observation, Call(true)).Times(Exactly(1));
   EXPECT_CALL(*tested, subscribe).Times(Exactly(1));
-  EXPECT_CALL(*tested, notify).Times(Exactly(2));
   EXPECT_CALL(mock_observer_cb, Call(_)).Times(Exactly(0));
   EXPECT_CALL(mock_observer_cb, Call(Pointee(otherThan(expected_variant))))
       .Times(Exactly(1));
@@ -247,7 +243,6 @@ TEST_P(ObservableTests, canHandleSeparateExceptions) {
 
   EXPECT_CALL(mock_enable_observation, Call(true)).Times(Exactly(1));
   EXPECT_CALL(*tested, subscribe).Times(Exactly(2));
-  EXPECT_CALL(*tested, notify).Times(Exactly(3));
   EXPECT_CALL(mock_observer_1_cb, Call(_)).Times(Exactly(0));
   EXPECT_CALL(mock_observer_1_cb, Call(Pointee(otherThan(expected_variant))))
       .Times(Exactly(1));

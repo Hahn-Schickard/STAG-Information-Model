@@ -30,8 +30,6 @@ void ObservableMock::enableSubscribeFaking(
     is_observing_ = callback;
     ON_CALL(*this, subscribe)
         .WillByDefault(Invoke(this, &ObservableMock::attachObserver));
-    ON_CALL(*this, notify)
-        .WillByDefault(Invoke(this, &ObservableMock::notifyObservers));
   }
 }
 
@@ -88,7 +86,7 @@ ObserverPtr ObservableMock::attachObserver(
   return observer;
 }
 
-void ObservableMock::notifyObservers(const DataVariant& value) {
+void ObservableMock::notify(const DataVariant& value) {
   unique_lock guard(mx_);
   { // we want value_ptr to run out of scope and be destroyed
     auto value_ptr = make_shared<DataVariant>(value);

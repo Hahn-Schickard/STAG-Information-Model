@@ -37,9 +37,10 @@ struct ObservableMock : public Observable {
 
   void updateReadCallback(const ReadCallback& read_cb);
 
+  void notify(const DataVariant& value);
+
   MOCK_METHOD(DataType, dataType, (), (const final));
   MOCK_METHOD(DataVariant, read, (), (const final));
-  MOCK_METHOD(void, notify, (const DataVariant&), (const final));
   MOCK_METHOD(ObserverPtr,
       subscribe,
       (const Observable::ObserveCallback&, const Observable::ExceptionHandler&),
@@ -50,8 +51,6 @@ private:
 
   ObserverPtr attachObserver(const Observable::ObserveCallback& callback,
       const Observable::ExceptionHandler& handler);
-
-  void notifyObservers(const DataVariant& value);
 
   ReadableMockPtr readable_;
   std::mutex mx_;
