@@ -29,7 +29,7 @@ int main() {
       // access it
       auto uint_value = get<uintmax_t>(variant_value);
       cout << uint_value << endl;
-    } catch (const bad_variant_access& ex) {
+    } catch (const bad_variant_access&) {
       // But if you are wrong, you will get a bad_variant_access exception
       cerr << "Opps, variant value is not a integer" << endl;
     }
