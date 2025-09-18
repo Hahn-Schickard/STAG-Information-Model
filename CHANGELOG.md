@@ -1,4 +1,48 @@
 # Changelog
+## [0.5.0] - 2025.09.18
+### Removed 
+ - Mock implementations
+ - nonempty dependency
+ - event_model dependency
+ - `NamedElement` class
+ - exposing Variant_Visitor to package consumers
+ - exposing gtest to package consumers
+
+### Changed
+ - variant_visitor to v0.2
+ - gtest to v1.17
+ - Cmake target into a compiled library
+ - `Function` abstract class into `Callable` interface
+ - `Metric` abstract class into `Readable` interface
+ - `WritableMetric` abstract class into `Writable` interface
+ - `ObservableMetric` abstract class into `Observable` interface
+ - `DeviceElement` abstract class into `Element` interface
+ - `DeviceElementGroup` abstract class into `Group` interface
+ - `DeviceBuilderInterface` abstract class into `DeviceBuilder` interface
+ - `DateTime` into `Timestamp` struct
+ - `DataType::DateTime` into `DataType::Timestamp`
+ - `DataVariant<DateTime>` into `DataVariant<Timestamp>`
+ - `FunctionCallTimedout` into `CallTimedout`
+
+### Added
+ - date v3.0.4 as an invisible dependency
+ - `MetaInfo` interface
+ - `verifyTimestamp()`
+ - `makeTimestamp()`
+ - `toTimestamp()`
+ - `toTimepoint()`
+ - `toString(const Timestamp&)`
+ - `toString(const Timestamp&, const string&)`
+ - `toString(const std::chrono::system_clock::time_point&)`
+ - `toString(const std::chrono::system_clock::time_point&, const string&)`
+  - `MandatoryParameterHasNoValue` exception
+ - `MandatoryParameterMissing` exception
+ - `ParameterTypeMismatch` exception
+ - `ParameterDoesNotExist` exception
+ - `ExecutorNotAvailable` exception
+ - `ResultFuture` class
+ - `ParameterType` class
+
 ## [0.4.0] - 2025.03.06
 ### Added 
  - event_model v0.3 dependency
