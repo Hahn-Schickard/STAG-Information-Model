@@ -1,4 +1,4 @@
-#include "MockBuilder.hpp"
+#include "DataVariant.hpp"
 
 #include <Variant_Visitor/Visitor.hpp>
 
@@ -8,177 +8,130 @@
 using namespace std;
 using namespace Information_Model;
 
-void printElement(const ElementPtr& element, size_t padding) {
-  cout << string(padding, ' ') << "Element: {" << element->id() << "} named: {"
-       << element->name() << "} and described as {" << element->description()
-       << "} This element ";
-  Variant_Visitor::match(
-      element->function(),
-      [](const ReadablePtr& readable) {
-        cout << "can read " << toString(readable->dataType()) << ": "
-             << toString(readable->read()) << " value" << endl;
-      },
-      [](const WritablePtr& writable) {
-        if (writable->isWriteOnly()) {
-          cout << "can only write " << toString(writable->dataType())
-               << " values" << endl;
-        } else {
-          cout << "can read and write " << toString(writable->dataType())
-               << " values. It currently reads " << toString(writable->read())
-               << " value" << endl;
-        }
-      },
-      [](const ObservablePtr& observable) {
-        cout << "can observe " << toString(observable->dataType())
-             << " values. Current value is: " << toString(observable->read())
-             << " value" << endl;
-      },
-      [](const CallablePtr& callable) {
-        cout << "can execute operations that accept "
-             << toString(callable->parameterTypes()) << " parameters";
-        if (callable->resultType() == DataType::None) {
-          cout << " and returns no value" << endl;
-        } else {
-          cout << " and returns " << toString(callable->resultType())
-               << " value" << endl;
-        }
-      },
-      [&padding](const GroupPtr& group) {
-        cout << "groups other elements. It contains: " << group->size()
-             << " elements as follows: [" << endl;
-        padding += 2;
-        group->visit([&padding](const ElementPtr& sub_element) {
-          printElement(sub_element, padding);
-        });
-        padding -= 2;
-        cout << string(padding, ' ') << "]" << endl;
-      });
-}
-
-void printDevice(const DevicePtr& device) {
-  cout << "Device {" << device->id() << "} named: {" << device->name()
-       << "} and described as {" << device->description() << "} has "
-       << device->size() << " elements. These elements are as follow: ["
-       << endl;
-  device->visit([](const ElementPtr& element) { printElement(element, 1); });
-  cout << "]" << endl;
-}
-
-DevicePtr makeDevice();
-
+// NOLINTBEGIN(readability-magic-numbers,bugprone-*)
 int main() {
-  try {
-    // Build example device
-    auto device = makeDevice();
+  // You can set default variant value, based on given a DataType
+  auto variant_value =
+      setVariant(DataType::Boolean)
+          .value(); // dont forget to get the value, since the result is
+                    // std::optional<DataVariant>, not DataVariant
 
-    // Print out it's contnet
-    printDevice(device);
-  } catch (const exception& ex) {
-    cerr << "Example runner encountered an exception: " << ex.what() << endl;
+  // You can check the internal variant value size
+  cout << "Given variant size is: " << size_of(variant_value) << " bytes"
+       << endl;
+
+  // You can check if a given variant holds a certain DataType
+  if (!matchVariantType(variant_value, DataType::Integer)) {
+    cout << "Given variant value is not an integer" << endl;
+  } else {
+    try {
+      // If you know the underlying data type, you can use the std::get to
+      // access it
+      auto uint_value = get<uintmax_t>(variant_value);
+      cout << uint_value << endl;
+    } catch (const bad_variant_access& ex) {
+      // But if you are wrong, you will get a bad_variant_access exception
+      cerr << "Opps, variant value is not a integer" << endl;
+    }
+  }
+
+  // You can get the exact DataType of the stored variant value
+  auto data_type = toDataType(variant_value);
+
+  // You can convert any DataType into a human readable string
+  cout << "Stored data variant is of " << toString(data_type) << " type"
+       << endl;
+
+  // You can remove all of the whitespaces from the human readable string
+  cout << "Stored data variant is of " << toSanitizedString(data_type)
+       << " type (sanitized)" << endl;
+
+  // A safer way to process the DataVariant value is to use data type pattern
+  // matching with Variant_Visitor library, just make sure all of the
+  // possibilities are covered in your lambdas
+  Variant_Visitor::match(
+      variant_value,
+      [](bool value) { cout << "matched to a boolean " << value << endl; },
+      [](uintmax_t value) { cout << "matched to an uint " << value << endl; },
+      [](intmax_t value) { cout << "matched to an int " << value << endl; },
+      [](double value) { cout << "matched to a double " << value << endl; },
+      [](const Timestamp& value) {
+        // you can convert a time stamp into a custom formatted string by using
+        // strftime flags
+        cout << "matched to a timestamp" << toString(value, "%Y-%M-%D") << endl;
+      },
+      [](const vector<uint8_t>&) {
+        // you can suppress capture value, if all you need to do is match for
+        // specific type
+        cout << "matched to a byte vector" << endl;
+      },
+      [](const string& value) {
+        cout << "matched to a string " << value << endl;
+      });
+
+  // If you only need to cover certain data types, you can use auto keyword as a
+  // suppressor or a general matcher
+  Variant_Visitor::match(
+      variant_value,
+      [](const auto&) { cout << "matched to an integer like" << endl; },
+      [](const Timestamp&) { cout << "matched to a timestamp" << endl; },
+      [](const vector<uint8_t>&) {
+        cout << "matched to a byte vector" << endl;
+      },
+      // You can also capture the string as a string_view if you only want to
+      // read the data
+      [](string_view value) {
+        cout << "matched as a string view " << value << endl;
+      });
+
+  // You can convert the variant value into a human readable string
+  cout << "Stored variant value as string is: " << toString(variant_value)
+       << endl;
+
+  // You can convert the variant value into an alphanumeric string
+  cout << "Stored variant value as a sanitized string is: "
+       << toSanitizedString(variant_value) << endl;
+
+  // You can generate a timestamp of a current value
+  auto current_time = makeTimestamp();
+
+  // You can convert a given Timestamp into an ISO 8601 string
+  cout << "Current system time is " << toString(current_time) << endl;
+
+  // You can manually pass a time_point value, though it must come from
+  // system_clock
+  auto current_timepoint = chrono::system_clock::now();
+  auto as_timestamp = toTimestamp(current_timepoint);
+
+  // You can also convert a given Timestamp into system_clock time point
+  auto as_time_point = toTimepoint(as_timestamp);
+  if (chrono::time_point_cast<chrono::seconds>(current_timepoint) !=
+      chrono::time_point_cast<chrono::seconds>(as_time_point)) {
+    // But don't expect the timepoints to match on subsecond level
+    cerr << "Current timepoint " << current_timepoint.time_since_epoch().count()
+         << "does not match converted "
+         << as_time_point.time_since_epoch().count() << " time point" << endl;
+    cerr << "This should not happen" << endl;
+  }
+
+  // You need to be careful when manually creating timestamps
+  auto bad_timestamp = Timestamp{.year = 0,
+      .month = 25,
+      .day = 100,
+      .hours = 86,
+      .minutes = 255,
+      .seconds = 92,
+      .microseconds = 100};
+
+  try {
+    // You can check if a given timestamp is correct
+    verifyTimestamp(bad_timestamp);
+  } catch (const invalid_argument& ex) {
+    // thought it only throws an error message for the first offending field,
+    // not all of them
+    cout << "Bad time format: " << ex.what() << endl;
   }
 
   return 0;
 }
-
-DataVariant readCallback() {
-  // Your read operation
-  return "Hello World";
-}
-
-void executeCallback(const Parameters&) {
-  // Your execute operation, it MUsT NOT block the caller
-}
-
-ResultFuture asyncExecuteCallback(const Parameters&) {
-  // Your async execute operation
-  // The promise is your placeholder buffer for the async result value
-  auto promised_result = promise<DataVariant>();
-  shared_ptr<uintmax_t> caller_id; // this id is used to cancel async operation
-  {
-    // the caller ID value SHOULD be unique to avoid canceling newer calls
-    caller_id = make_shared<uintmax_t>(0);
-    // you should set the value in a separate operation, the one that is
-    // fulfilling the promise, (most likely in another thread), but for brevity,
-    // we are setting the value at the same time we are creating the promise
-    promised_result.set_value("Hello from async!");
-  }
-  // ResultFuture fully owns both the caller_id and the std::future objects
-  return ResultFuture(move(caller_id), promised_result.get_future());
-}
-
-void cancelAsyncExecuteCallback(uintmax_t) {
-  // Your cancel async execute operation
-  /* Find the promised result and set CallCanceled exception to indicate the
-    call was canceled
-     promised_result.set_exception(
-      make_exception_ptr(CallCanceled(caller_id, "[CALLBACK]: User canceled")));
-  */
-  // If you cant find the promised result, throw CallerNotFound exception
-  // to the caller directly
-}
-
-void enableObservationCallback(bool) {
-  // Your enable observation callback
-  // This operation is called to indicate when you should start/stop calling the
-  // DeviceBuilder::NotifyCallback callable
-  // This operation MUST NOT block the caller indefinitely
-}
-
-DevicePtr makeDevice() {
-  using namespace Information_Model::testing;
-
-  auto builder = make_shared<MockBuilder>();
-
-  builder->setDeviceInfo(
-      "12345Example", BuildInfo{"Example", "Device example"});
-
-  builder->addReadable(BuildInfo{"readable", "C style callback"},
-      DataType::String,
-      &readCallback);
-
-  builder->addWritable(
-      BuildInfo{"writable", "C++ lambda and std::bind callbacks"},
-      DataType::String,
-      [](const DataVariant& value) {
-        cout << "[CALLBACK] Writing value: " << toString(value) << endl;
-      },
-      bind(&readCallback));
-
-  [[maybe_unused]] auto [observable_id, // this holds the built element id
-      notifier] = // this holds the DeviceBuilder::NotifyCallback callable
-      builder->addObservable(BuildInfo{"observable", "Observable"},
-          DataType::String,
-          &readCallback,
-          &enableObservationCallback);
-
-  builder->addCallable(
-      BuildInfo{"executable", "Simple fire and forget executable method"},
-      &executeCallback);
-
-  builder->addCallable(
-      BuildInfo{"asyncExecutable", "Asynchronous executable method"},
-      DataType::String,
-      &executeCallback,
-      &asyncExecuteCallback,
-      &cancelAsyncExecuteCallback);
-
-  auto group_id = builder->addGroup(BuildInfo{"group", "Group element"});
-  builder->addReadable(group_id,
-      BuildInfo{"sub_readable", "A readable element within a group"},
-      DataType::Boolean,
-      []() {
-        // Your read operation
-        return true;
-      });
-
-  auto subgroup_id = builder->addGroup(
-      group_id, BuildInfo{"sub_group", "A group within another group"});
-  builder->addWritable(subgroup_id,
-      BuildInfo{"sub_sub_writable", "A writable element within a subgroup"},
-      DataType::Boolean,
-      [](const DataVariant&) {
-        // Your write operation
-      });
-
-  return builder->result();
-}
+// NOLINTEND(readability-magic-numbers,bugprone-*)

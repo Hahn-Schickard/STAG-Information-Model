@@ -14,7 +14,7 @@ target_sources(${TARGET}
 #@+ ======================== User DEPENDENCIES configuration ============================
 target_link_libraries(${TARGET}
     PRIVATE
-        ${PROJECT_NAME}_Mocks
+        ${PROJECT_NAME}
         Variant_Visitor::Variant_Visitor
 )
 #@- =========================== END OF USER CONFIGURATION ===============================

@@ -49,7 +49,7 @@ include(GNUInstallDirs)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 #@+ ======================== User CMAKE_OPTIONS configuration ===========================
-option(WITH_MOCKS "Enable Information Model Mock target" OFF)
+# User defined cmake options go here
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 find_package(GTest REQUIRED)
@@ -57,7 +57,6 @@ find_package(GTest REQUIRED)
 #@+ ========================== User PACKAGES configuration ==============================
 find_package(date REQUIRED)
 find_package(Variant_Visitor REQUIRED)
-find_package(Stoppable REQUIRED)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 if(CMAKE_CONAN)

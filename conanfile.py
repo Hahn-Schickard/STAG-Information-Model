@@ -14,13 +14,11 @@ class PackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
-        "fPIC": [True, False],
-        "with_mocks": [True, False]
+        "fPIC": [True, False]
     }
     default_options = {
         "shared": True,
-        "fPIC": True,
-        "with_mocks": False
+        "fPIC": True
     }
     default_user = "Hahn-Schickard"
     # @- END USER META CONFIG
@@ -66,23 +64,11 @@ class PackageConan(ConanFile):
         self.requires("variant_visitor/[~0.2]@hahn-schickard/stable",
                       visible=False
                       )
-        self.requires("stoppable/[~0.3]@hahn-schickard/stable",
-                      visible=False
-                      )
-        if self.options.with_mocks:
-            self.requires("gtest/1.17.0",
-                          headers=True,
-                          libs=True,
-                          transitive_headers=True,
-                          transitive_libs=True
-                          )
-        else:
-            self.test_requires("gtest/1.17.0")
         # @- END USER REQUIREMENTS
 
     def build_requirements(self):
         # @+ START USER BUILD REQUIREMENTS
-        pass
+        self.test_requires("gtest/1.17.0")
         # @- END USER BUILD REQUIREMENTS
 
     def configure(self):
@@ -102,7 +88,6 @@ class PackageConan(ConanFile):
         tc.variables['COVERAGE_TRACKING'] = False
         tc.variables['CMAKE_CONAN'] = False
         # @+ START USER CMAKE OPTIONS
-        tc.variables['WITH_MOCKS'] = self.options.with_mocks
         # @- END USER CMAKE OPTIONS
         tc.generate()
 
@@ -122,10 +107,6 @@ class PackageConan(ConanFile):
         self.cpp_info.libs = collect_libs(self)
         self.cpp_info.set_property("cmake_find_mode", "both")
         # @+ START USER DEFINES
-        if self.options.with_mocks:
-            self.cpp_info.defines.append(
-                "__INFORMATION_MODEL_MOCKS_ENABLED_AE06")
-            self.cpp_info.requires = ["gtest::gtest", "gtest::gmock"]
         # @- END USER DEFINES
         self.cpp_info.set_property("cmake_file_name", self.full_name)
         cmake_target_name = self.full_name + "::" + self.full_name

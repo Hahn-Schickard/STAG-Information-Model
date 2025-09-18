@@ -1,12 +1,8 @@
 
-#@+ ======================== User TARGET NAME configuration =============================
-set(THIS Interface)
-#@- =========================== END OF USER CONFIGURATION ===============================
-
-set(TARGET ${PROJECT_NAME}_${THIS})
+set(TARGET ${PROJECT_NAME})
 
 #@+ =========================== User TARGET configuration ===============================
-set(THIS_INCLUDES_DIR ${INCLUDES_DIR}/Interface)
+set(THIS_INCLUDES_DIR ${INCLUDES_DIR})
 file(GLOB THIS_INCLUDES ${THIS_INCLUDES_DIR}/*.hpp)
 file(GLOB SOURCEFILES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 

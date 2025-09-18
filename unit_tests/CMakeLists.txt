@@ -3,11 +3,9 @@ set(THIS Unit_Tests_Runner)
 #@- =========================== END OF USER CONFIGURATION ===============================
 
 #@+ ======================== User TEST_SUITES configuration =============================
-file(GLOB Mock_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Mock_Tests/*")
 file(GLOB Util_Test_Suite "${CMAKE_CURRENT_LIST_DIR}/Util_Tests/*")
 
 list(APPEND TEST_SUITES
-    ${Mock_Test_Suite}
     ${Util_Test_Suite}
 )
 #@- =========================== END OF USER CONFIGURATION ===============================
@@ -20,7 +18,7 @@ target_sources(${THIS}
 )
 #@+ ======================= User TEST_DECENCIES configuration ===========================
 list(APPEND TEST_DECENCIES
-            ${PROJECT_NAME}_Mocks
+            ${PROJECT_NAME}
             Variant_Visitor::Variant_Visitor
 )
 #@- =========================== END OF USER CONFIGURATION ===============================

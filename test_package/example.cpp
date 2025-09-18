@@ -1,11 +1,6 @@
 #include <Information_Model/DeviceBuilder.hpp>
 #include <Information_Model/Element.hpp>
 
-#ifdef __INFORMATION_MODEL_MOCKS_ENABLED_AE06
-#include <Information_Model/ElementMock.hpp>
-#include <Information_Model/MockBuilder.hpp>
-#endif //__INFORMATION_MODEL_MOCKS_ENABLED_AE06
-
 #include <iostream>
 
 int main() {
@@ -18,14 +13,6 @@ int main() {
   Information_Model::Parameters parameters;
   Information_Model::ParameterTypes supported_parameters;
   Information_Model::DataVariant value;
-
-#ifdef __INFORMATION_MODEL_MOCKS_ENABLED_AE06
-  Information_Model::testing::FullMetaInfo meta_info;
-  Information_Model::testing::MockBuilderPtr mock_builder;
-  Information_Model::testing::DeviceMockPtr device_mock;
-  Information_Model::testing::ElementMockPtr element_mock;
-  Information_Model::testing::ExecutorPtr executor;
-#endif //__INFORMATION_MODEL_MOCKS_ENABLED_AE06
 
   std::cout << "Integration test successful." << std::endl;
 
