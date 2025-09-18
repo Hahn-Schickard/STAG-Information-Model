@@ -1,26 +1,31 @@
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.files import load, copy, collect_libs
-from conan.tools.cmake import cmake_layout, CMake, CMakeToolchain
+from conan.tools.cmake import cmake_layout, CMake, CMakeDeps, CMakeToolchain
 import re
 import os
-
-
-def to_camel_case(input: str):
-    words = input.replace("_", " ").split()
-    return '_'.join(word.capitalize() for word in words)
 
 
 class PackageConan(ConanFile):
     # @+ START USER META CONFIG
     license = "Apache 2.0"
     description = "STAG Information Model declarations"
-    topics = ("conan", "stag", "modelling", "lwm2m", "technology-adapter")
+    topics = ("conan", "stag", "stag-core", "information-model")
     settings = "os", "compiler", "build_type", "arch"
-    options = {}
-    default_options = {}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False]
+    }
+    default_options = {
+        "shared": True,
+        "fPIC": True
+    }
     default_user = "Hahn-Schickard"
     # @- END USER META CONFIG
+    exports = [
+        "CMakeLists.txt",
+        "conanfile.py"
+    ]
     exports_sources = [
         "cmake*",
         "includes*",
@@ -31,17 +36,21 @@ class PackageConan(ConanFile):
         # @- END USER EXPORTS
     ]
     generators = "CMakeDeps"
+    package_type = "library"
     short_paths = True
-    package_type = "header-library"
 
     @property
     def cwd(self):
         return os.path.dirname(os.path.realpath(__file__))
 
+    @property
+    def full_name(self):
+        content = load(self, path=os.path.join(
+            self.recipe_folder, 'CMakeLists.txt'))
+        return re.search('set\(THIS (.*)\)', content).group(1).strip()
+
     def set_name(self):
-        content = load(self, path=os.path.join(self.cwd, 'CMakeLists.txt'))
-        name = re.search('set\(THIS (.*)\)', content).group(1)
-        self.name = name.strip().lower()
+        self.name = self.full_name.lower()
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
@@ -49,28 +58,23 @@ class PackageConan(ConanFile):
 
     def requirements(self):
         # @+ START USER REQUIREMENTS
-        self.requires("variant_visitor/[~0.1]@hahn-schickard/stable",
-                      headers=True,
-                      transitive_headers=True
-        )
-        self.requires("nonempty/[~0.4]@hahn-schickard/stable",
-                      headers=True,
-                      transitive_headers=True
-        )
-        self.requires("event_model/[~0.4]@hahn-schickard/stable", 
-                      headers=True, transitive_headers=True
-        )
-        self.requires("gtest/1.16.0",
-                      headers=True,
-                      libs=True,
-                      transitive_headers=True,
-                      transitive_libs=True
-        )
+        self.requires("date/3.0.4",
+                      visible=False
+                      )
+        self.requires("variant_visitor/[~0.2]@hahn-schickard/stable",
+                      visible=False
+                      )
         # @- END USER REQUIREMENTS
+
+    def build_requirements(self):
+        # @+ START USER BUILD REQUIREMENTS
+        self.test_requires("gtest/1.17.0")
+        # @- END USER BUILD REQUIREMENTS
 
     def configure(self):
         # @+ START USER REQUIREMENTS OPTION CONFIGURATION
-        self.options["gtest"].shared = True
+        self.options["gtest/*"].shared = True
+        self.options["date/*"].use_system_tz_db = True
         # @- END USER REQUIREMENTS OPTION CONFIGURATION
 
     def layout(self):
@@ -78,11 +82,13 @@ class PackageConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
+        tc.user_presets_path = False
         tc.variables['STATIC_CODE_ANALYSIS'] = False
         tc.variables['RUN_TESTS'] = False
         tc.variables['COVERAGE_TRACKING'] = False
         tc.variables['CMAKE_CONAN'] = False
-        tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0077"] = "NEW"
+        # @+ START USER CMAKE OPTIONS
+        # @- END USER CMAKE OPTIONS
         tc.generate()
 
     def build(self):
@@ -98,14 +104,10 @@ class PackageConan(ConanFile):
         copy(self, pattern='AUTHORS', dst='licenses', src=self.cwd)
 
     def package_info(self):
-        self.cpp_info.libs = []
+        self.cpp_info.libs = collect_libs(self)
         self.cpp_info.set_property("cmake_find_mode", "both")
         # @+ START USER DEFINES
-        project_name = to_camel_case(self.name)
         # @- END USER DEFINES
-        self.cpp_info.set_property("cmake_file_name", project_name)
-        cmake_target_name = project_name + "::" + project_name
+        self.cpp_info.set_property("cmake_file_name", self.full_name)
+        cmake_target_name = self.full_name + "::" + self.full_name
         self.cpp_info.set_property("cmake_target_name", cmake_target_name)
-
-    def package_id(self):
-        self.info.clear()

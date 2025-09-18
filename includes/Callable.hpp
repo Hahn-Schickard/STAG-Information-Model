@@ -1,0 +1,301 @@
+#ifndef __STAG_INFORMATION_MODEL_CALLABLE_HPP
+#define __STAG_INFORMATION_MODEL_CALLABLE_HPP
+
+#include "DataVariant.hpp"
+
+#include <chrono>
+#include <future>
+#include <memory>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+
+namespace Information_Model {
+/**
+ * @addtogroup ExecutableModeling Callable Modelling
+ * @{
+ */
+struct ResultReturningNotSupported : public std::runtime_error {
+  ResultReturningNotSupported()
+      : std::runtime_error(
+            "Callable does not support returning execution results") {}
+};
+
+struct MandatoryParameterHasNoValue : public std::invalid_argument {
+  MandatoryParameterHasNoValue(uintmax_t param_id, DataType param_type)
+      : std::invalid_argument("Mandatory parameter " +
+            std::to_string(param_id) + ":" + toString(param_type) +
+            " has no value set") {}
+};
+
+struct MandatoryParameterMissing : public std::invalid_argument {
+  MandatoryParameterMissing(uintmax_t param_id, DataType param_type)
+      : std::invalid_argument("Mandatory parameter " +
+            std::to_string(param_id) + ":" + toString(param_type) +
+            " is missing") {}
+};
+
+struct ParameterTypeMismatch : public std::invalid_argument {
+  ParameterTypeMismatch(uintmax_t param_id, DataType expected, DataType given)
+      : std::invalid_argument("Parameter " + std::to_string(param_id) + ":" +
+            toString(expected) + " does not accept " + toString(given) +
+            " type values") {}
+};
+
+struct ParameterDoesNotExist : public std::invalid_argument {
+  explicit ParameterDoesNotExist(uintmax_t param_id)
+      : std::invalid_argument(
+            "No parameter exists at position " + std::to_string(param_id)) {}
+};
+
+struct ExecutorNotAvailable : public std::runtime_error {
+  ExecutorNotAvailable()
+      : std::runtime_error("Executor callback is no longer available") {}
+};
+
+struct CallerNotFound : public std::runtime_error {
+  CallerNotFound(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("No caller with id: " + std::to_string(call_id) +
+            " for Callable " + name + " call exists") {}
+};
+
+struct CallerIDExists : public std::runtime_error {
+  CallerIDExists(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
+            " for Callable " + name + " was already dispatched") {}
+};
+
+struct CallCanceled : public std::runtime_error {
+  CallCanceled(uintmax_t call_id, const std::string& name)
+      : std::runtime_error("Caller with id: " + std::to_string(call_id) +
+            " canceled the execution call for Callable " + name) {}
+};
+
+struct CallTimedout : public std::runtime_error {
+  explicit CallTimedout(const std::string& name)
+      : std::runtime_error("Callable " + name + " call timed out") {}
+};
+
+/**
+ * @brief Async response future wrapper for the Callable execution result
+ *
+ */
+struct ResultFuture {
+  ResultFuture(
+      std::shared_ptr<uintmax_t> id, std::future<DataVariant>&& result);
+
+  ResultFuture(const ResultFuture&) = delete;
+
+  ResultFuture(ResultFuture&&) = default;
+
+  ~ResultFuture() = default;
+
+  ResultFuture& operator=(const ResultFuture&) = delete;
+
+  ResultFuture& operator=(ResultFuture&&) = default;
+
+  DataVariant get();
+
+  template <class Rep, class Period>
+  std::future_status waitFor(
+      const std::chrono::duration<Rep, Period>& timeout_duration) const {
+    return result_.wait_for(timeout_duration);
+  }
+
+  uintmax_t id() const;
+
+private:
+  std::shared_ptr<uintmax_t> id_;
+  std::future<DataVariant> result_;
+};
+
+/**
+ * @brief Indexed map of the modeled function parameters
+ *
+ * @param Key - parameter number
+ * @param Value - parameter value
+ */
+using Parameters = std::unordered_map<uintmax_t, std::optional<DataVariant>>;
+
+struct ParameterType {
+  DataType type;
+  bool mandatory = false;
+
+  friend bool operator==(const ParameterType& lhs, const ParameterType& rhs);
+
+  friend bool operator!=(const ParameterType& lhs, const ParameterType& rhs);
+};
+
+/**
+ * @brief Indexed map of the modeled function parameter types
+ *
+ * @param Key - parameter number
+ * @param Value - parameter type
+ */
+using ParameterTypes = std::unordered_map<uintmax_t, ParameterType>;
+
+/**
+ * @brief An interface to a function like elements.
+ *
+ * Models a single function for various sensors/actors that can accept a list
+ * of various parameters and may return a result to the caller
+ *
+ * @attention
+ * This interface is implemented in Information Model Manager Project and is
+ * built via DeviceBuilder::addCallable()
+ */
+struct Callable {
+
+  virtual ~Callable() = default;
+
+  /**
+   * @brief Executes the modeled functionality without waiting for the execution
+   * result
+   *
+   * @param parameters
+   */
+  virtual void execute(const Parameters& parameters = Parameters()) const = 0;
+
+  /**
+   * @brief Calls the modeled functionality and waits to return the execution
+   * result
+   *
+   * Blocks until the execution result is available or a timeout occurs
+   *
+   * If execution call timesout, the request will be canceled and an exception
+   * will be thrown
+   *
+   * @throws ResultReturningNotSupported - if modeled functionality does not
+   * support returning execution result
+   * @throws CallTimedout - if execution call has timeout
+   * @throws CallerIDExists - if internal callback returned a caller id
+   * that is already assigned
+   * @throws std::runtime_error - if internal callback encountered an
+   * error. May cause @ref Deregistration
+   *
+   * @param timeout - number of miliseconds until a timeout occurs
+   * @return DataVariant
+   */
+  virtual DataVariant call(uintmax_t timeout = 100) const = 0;
+
+  /**
+   * @brief Calls the modeled functionality and waits to return the execution
+   * result, see @ref Callable::call(uintmax_t)
+   *
+   * @param parameters
+   * @param timeout - number of miliseconds until a timeout occurs
+   * @return DataVariant
+   */
+  virtual DataVariant call(
+      const Parameters& parameters, uintmax_t timeout = 100) const = 0;
+
+  /**
+   * @brief Calls the modeled functionality and allocates a future for the
+   * execution result
+   *
+   * Blocks until the execution call is dispatched
+   *
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
+   * @throws CallerIDExists - if internal callback returned a caller id
+   * that is already assigned
+   *
+   * @attention May cause @ref Deregistration
+   *
+   * @param parameters
+   * @return ResultFuture
+   */
+  [[nodiscard]] virtual ResultFuture asyncCall(
+      const Parameters& parameters = Parameters()) const = 0;
+
+  /**
+   * @brief Cancels a given asynchronous call
+   *
+   * The linked result future (the second Callable::ResultFuture parameter) will
+   * throw an exception to indicate that it was canceled
+   *
+   * @throws CallerNotFound - if the given call_id does not indicate a
+   * previous asynchronous call
+   * @throws ResultReturningNotSupported- if modeled functionality does not
+   * support returning execution result
+   * @throws std::runtime_error - if internal cancellation mechanism encountered
+   * an error
+   *
+   * @param call_id - obtained from the first ResultFuture parameter
+   */
+  virtual void cancelAsyncCall(uintmax_t call_id) const = 0;
+
+  virtual DataType resultType() const = 0;
+
+  virtual ParameterTypes parameterTypes() const = 0;
+}; // namespace Information_Model
+
+/**
+ * @brief Helper function to expand an existing parameter map with supported
+ * parameter types
+ *
+ * @throws ParameterDoesNotExist - if no supported parameter type is defined at
+ * a given position
+ * @throws ParameterTypeMismatch - if given parameter does not match the
+ * supported parameter type
+ * @throws MandatoryParameterHasNoValue - if given parameter is marked as
+ * mandatory, but has no value
+ *
+ * @param map - target container, if operation succeeded, the given container
+ * will be larger by one element
+ * @param supported_types - validation container, obtained from
+ * Callable::parameterTypes();
+ * @param position - parameter position
+ * @param parameter - assigned parameter value
+ * @param strict_assign - if true overrides existing parameter values, otherwise
+ * keeps the old value
+ */
+void addSupportedParameter(Parameters& map,
+    const ParameterTypes& supported_types,
+    uintmax_t position,
+    const std::optional<DataVariant>& param,
+    bool strict_assign = false);
+
+/**
+ * @brief Checks if a given container has all the mandatory parameters set and
+ * if set parameters have correct values
+ *
+ * @throws MandatoryParameterMissing - if given container does not have one of
+ * the required parameters
+ * @throws ParameterTypeMismatch - if given parameter does not match the
+ * supported parameter type
+ * @throws MandatoryParameterHasNoValue - if given parameter is marked as
+ * mandatory, but has no value
+ *
+ * @param input_parameters - input container
+ * @param supported_types - validation container, obtained from
+ * Callable::parameterTypes();
+ */
+void checkParameters(
+    const Parameters& input_parameters, const ParameterTypes& supported_types);
+
+Parameters makeDefaultParams(const ParameterTypes& supported_types);
+
+/**
+ * @brief Converts a given ParameterTypes container to a human
+ * readable string
+ *
+ * @param supported_types
+ * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
+ */
+std::string toString(const ParameterTypes& supported_types);
+
+/**
+ * @brief Converts a given Parameters container to a human
+ * readable string
+ *
+ * @param parameters
+ * @return std::string - returns "{}" if empty, otherwise "{{...},...}"
+ */
+std::string toString(const Parameters& parameters);
+
+using CallablePtr = std::shared_ptr<Callable>;
+/** @}*/
+} // namespace Information_Model
+#endif //__STAG_INFORMATION_MODEL_CALLABLE_HPP

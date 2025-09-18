@@ -1,268 +1,137 @@
-#include "DeviceMockBuilder.hpp"
+#include "DataVariant.hpp"
 
-#include <atomic>
-#include <condition_variable>
+#include <Variant_Visitor/Visitor.hpp>
+
+#include <functional>
 #include <iostream>
-#include <thread>
 
 using namespace std;
 using namespace Information_Model;
 
-void print(const DevicePtr& device);
-void print(const NonemptyDeviceElementPtr& element, size_t offset);
-void print(const NonemptyWritableMetricPtr& element, size_t offset);
-void print(const NonemptyMetricPtr& element, size_t offset);
-void print(const NonemptyObservableMetricPtr& element, size_t offset);
-void print(const NonemptyFunctionPtr& element, size_t offset);
-void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset);
-
-struct Executor {
-  using Callback = function<void(void)>;
-
-  pair<uintmax_t, future<DataVariant>> execute(const Function::Parameters&) {
-    auto allocate_lock = scoped_lock(execute_mx_);
-    auto id = calls_.size();
-    auto promise = std::promise<DataVariant>();
-    auto future = make_pair(id, promise.get_future());
-    calls_.emplace(id, move(promise));
-    return future;
-  }
-
-  void cancel(uintmax_t id) {
-    auto iter = calls_.find(id);
-    if (iter != calls_.end()) {
-      iter->second.set_exception(
-          make_exception_ptr(CallCanceled(id, "ExternalExecutor")));
-      auto clear_lock = scoped_lock(erase_mx_);
-      iter = calls_.erase(iter);
-    } else {
-      throw CallerNotFound(id, "ExternalExecutor");
-    }
-  }
-
-  void respondAll() {
-    auto execute_lock = scoped_lock(execute_mx_, erase_mx_);
-    // NOLINTNEXTLINE(modernize-loop-convert)
-    for (auto it = calls_.begin(); it != calls_.end(); it++) {
-      callback_();
-      it->second.set_value(DataVariant());
-    }
-    calls_.clear();
-  }
-
-private:
-  void respond(uintmax_t id) {
-    auto erase_lock = scoped_lock(erase_mx_);
-    auto it = calls_.find(id);
-    if (it != calls_.end()) {
-      if (callback_) {
-        callback_();
-        it->second.set_value(DataVariant());
-      } else {
-        it->second.set_exception(
-            make_exception_ptr(runtime_error("Callback dos not exist")));
-      }
-      it = calls_.erase(it);
-    }
-  }
-
-  Callback callback_ = []() { cout << "Callback called" << endl; };
-  mutex execute_mx_;
-  mutex erase_mx_;
-  unordered_map<uintmax_t, promise<DataVariant>> calls_;
-};
-
-DeviceBuilderInterface::ObservedValue observed_value = nullptr;
-
-void isObserved(bool observed) {
-  if (observed) {
-    cout << "Starting observation" << endl;
-    if (observed_value) {
-      // delaying event dispatch so observer has time to initialize
-      thread([] {
-        cout << "Dispatching event" << endl;
-        this_thread::sleep_for(100ms);
-        observed_value(false);
-      }).detach();
-    } else {
-      cerr << "ObservedValue callback is not set" << endl;
-    }
-  } else {
-    cout << "Stopping observation" << endl;
-  }
-}
-
+// NOLINTBEGIN(readability-magic-numbers,bugprone-*)
 int main() {
+  // You can set default variant value, based on given a DataType
+  auto variant_value =
+      setVariant(DataType::Boolean)
+          .value(); // dont forget to get the value, since the result is
+                    // std::optional<DataVariant>, not DataVariant
+
+  // You can check the internal variant value size
+  cout << "Given variant size is: " << size_of(variant_value) << " bytes"
+       << endl;
+
+  // You can check if a given variant holds a certain DataType
+  if (!matchVariantType(variant_value, DataType::Integer)) {
+    cout << "Given variant value is not an integer" << endl;
+  } else {
+    try {
+      // If you know the underlying data type, you can use the std::get to
+      // access it
+      auto uint_value = get<uintmax_t>(variant_value);
+      cout << uint_value << endl;
+    } catch (const bad_variant_access&) {
+      // But if you are wrong, you will get a bad_variant_access exception
+      cerr << "Opps, variant value is not a integer" << endl;
+    }
+  }
+
+  // You can get the exact DataType of the stored variant value
+  auto data_type = toDataType(variant_value);
+
+  // You can convert any DataType into a human readable string
+  cout << "Stored data variant is of " << toString(data_type) << " type"
+       << endl;
+
+  // You can remove all of the whitespaces from the human readable string
+  cout << "Stored data variant is of " << toSanitizedString(data_type)
+       << " type (sanitized)" << endl;
+
+  // A safer way to process the DataVariant value is to use data type pattern
+  // matching with Variant_Visitor library, just make sure all of the
+  // possibilities are covered in your lambdas
+  Variant_Visitor::match(
+      variant_value,
+      [](bool value) { cout << "matched to a boolean " << value << endl; },
+      [](uintmax_t value) { cout << "matched to an uint " << value << endl; },
+      [](intmax_t value) { cout << "matched to an int " << value << endl; },
+      [](double value) { cout << "matched to a double " << value << endl; },
+      [](const Timestamp& value) {
+        // you can convert a time stamp into a custom formatted string by using
+        // strftime flags
+        cout << "matched to a timestamp" << toString(value, "%Y-%M-%D") << endl;
+      },
+      [](const vector<uint8_t>&) {
+        // you can suppress capture value, if all you need to do is match for
+        // specific type
+        cout << "matched to a byte vector" << endl;
+      },
+      [](const string& value) {
+        cout << "matched to a string " << value << endl;
+      });
+
+  // If you only need to cover certain data types, you can use auto keyword as a
+  // suppressor or a general matcher
+  Variant_Visitor::match(
+      variant_value,
+      [](const auto&) { cout << "matched to an integer like" << endl; },
+      [](const Timestamp&) { cout << "matched to a timestamp" << endl; },
+      [](const vector<uint8_t>&) {
+        cout << "matched to a byte vector" << endl;
+      },
+      // You can also capture the string as a string_view if you only want to
+      // read the data
+      [](string_view value) {
+        cout << "matched as a string view " << value << endl;
+      });
+
+  // You can convert the variant value into a human readable string
+  cout << "Stored variant value as string is: " << toString(variant_value)
+       << endl;
+
+  // You can convert the variant value into an alphanumeric string
+  cout << "Stored variant value as a sanitized string is: "
+       << toSanitizedString(variant_value) << endl;
+
+  // You can generate a timestamp of a current value
+  auto current_time = makeTimestamp();
+
+  // You can convert a given Timestamp into an ISO 8601 string
+  cout << "Current system time is " << toString(current_time) << endl;
+
+  // You can manually pass a time_point value, though it must come from
+  // system_clock
+  auto current_timepoint = chrono::system_clock::now();
+  auto as_timestamp = toTimestamp(current_timepoint);
+
+  // You can also convert a given Timestamp into system_clock time point
+  auto as_time_point = toTimepoint(as_timestamp);
+  if (chrono::time_point_cast<chrono::seconds>(current_timepoint) !=
+      chrono::time_point_cast<chrono::seconds>(as_time_point)) {
+    // But don't expect the timepoints to match on subsecond level
+    cerr << "Current timepoint " << current_timepoint.time_since_epoch().count()
+         << "does not match converted "
+         << as_time_point.time_since_epoch().count() << " time point" << endl;
+    cerr << "This should not happen" << endl;
+  }
+
+  // You need to be careful when manually creating timestamps
+  auto bad_timestamp = Timestamp{.year = 0,
+      .month = 25,
+      .day = 100,
+      .hours = 86,
+      .minutes = 255,
+      .seconds = 92,
+      .microseconds = 100};
+
   try {
-    auto executor = make_shared<Executor>();
-    DevicePtr device;
-    string readable_id;
-    string callable_id;
-    string executable_id;
-    string custom_executable_id;
-    {
-      auto builder =
-          make_unique<Information_Model::testing::DeviceMockBuilder>();
-      builder->buildDeviceBase("9876", "Mocky", "Mocked test device");
-      auto subgroup_1_ref_id =
-          builder->addDeviceElementGroup("Group 1", "First group");
-      builder->addReadableMetric(subgroup_1_ref_id,
-          "ReadsBoolean",
-          "Mocked readable metric",
-          DataType::Boolean);
-      readable_id = builder->addReadableMetric(
-          "ReadsInteger", "Mocked readable metric", DataType::Integer);
-      builder->addWritableMetric(
-          "WritesString", "Mocked writable metric", DataType::String);
-      observed_value = builder
-                           ->addObservableMetric("ObservesFalse",
-                               "Mocked observable metric",
-                               DataType::Boolean,
-                               bind(&isObserved, placeholders::_1))
-                           .second;
-      callable_id = builder->addFunction(
-          "ReturnsBoolean", "Mocked function with return", DataType::Boolean);
-      executable_id = builder->addFunction(
-          "ReturnsNone", "Mocked function with no return", DataType::None);
-      custom_executable_id = builder->addFunction("CustomExecutable",
-          "Mocked function with custom executor that does not return any "
-          "values",
-          DataType::None,
-          bind(&Executor::execute, executor, placeholders::_1),
-          bind(&Executor::cancel, executor, placeholders::_1));
-
-      device = move(builder->getResult());
-      builder.reset();
-    }
-
-    print(device);
-
-    auto readable = get<NonemptyMetricPtr>(
-        device->getDeviceElement(readable_id)->functionality);
-    auto value = get<intmax_t>(readable->getMetricValue());
-    cout << "Reading " << readable_id << " metric value as " << value << endl;
-
-    auto callable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(callable_id)->functionality);
-    auto call_result = callable->call();
-    match(
-        call_result,
-        [callable_id](bool result) {
-          cout << "Function " + callable_id + " result: "
-               << (result ? "true" : "false") << endl;
-        },
-        [callable_id](const auto&) {
-          cerr << "Received wrong result type from " + callable_id + " function"
-               << endl;
-        });
-
-    auto executable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(executable_id)->functionality);
-    executable->execute();
-
-    auto custom_executable = get<NonemptyFunctionPtr>(
-        device->getDeviceElement(custom_executable_id)->functionality);
-    custom_executable->execute();
-    executor->respondAll();
-
-    observed_value = nullptr; // cleanup mocked callback
-    return EXIT_SUCCESS;
-  } catch (const exception& ex) {
-    cerr << "An unhandled exception occurred during mock test. Exception: "
-         << ex.what() << endl;
-    return EXIT_FAILURE;
-  }
-}
-
-void print(const NonemptyDeviceElementGroupPtr& elements, size_t offset) {
-  cout << string(offset, ' ') << "Group contains elements:" << endl;
-  for (const auto& element : elements->getSubelements()) {
-    print(element, offset + 3);
-  }
-}
-
-void print(const NonemptyMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  cout << endl;
-}
-
-void print(const NonemptyWritableMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Reads " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  cout << string(offset, ' ') << "Writes " << toString(element->getDataType())
-       << " value type" << endl;
-  cout << endl;
-}
-
-struct ExampleObserver : public MetricObserver {
-  explicit ExampleObserver(const NonemptyObservableMetricPtr& source)
-      : MetricObserver(source) {}
-
-  void handleEvent(DataVariantPtr value) override {
-    {
-      lock_guard lck(mx_);
-      cout << "New value observed:  " << toString(*value) << endl;
-      ready_ = true;
-    }
-    cv_.notify_one();
+    // You can check if a given timestamp is correct
+    verifyTimestamp(bad_timestamp);
+  } catch (const invalid_argument& ex) {
+    // thought it only throws an error message for the first offending field,
+    // not all of them
+    cout << "Bad time format: " << ex.what() << endl;
   }
 
-  void waitForEvent() {
-    unique_lock lck(mx_);
-    cv_.wait(lck, [this] { return ready_.load(); });
-  }
-
-private:
-  mutex mx_;
-  condition_variable cv_;
-  atomic<bool> ready_ = false;
-};
-
-void print(const NonemptyObservableMetricPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Observes " << toString(element->getDataType())
-       << " value: " << toString(element->getMetricValue()) << endl;
-  auto observer = ExampleObserver(element);
-  observer.waitForEvent();
+  return 0;
 }
-
-void print(const NonemptyFunctionPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Executes " << toString(element->resultType())
-       << " call(" << toString(element->parameterTypes()) << ")" << endl;
-  cout << endl;
-}
-
-void print(const NonemptyDeviceElementPtr& element, size_t offset) {
-  cout << string(offset, ' ') << "Element name: " << element->getElementName()
-       << endl;
-  cout << string(offset, ' ') << "Element id: " << element->getElementId()
-       << endl;
-  cout << string(offset, ' ')
-       << "Described as: " << element->getElementDescription() << endl;
-
-  match(
-      element->functionality, // clang-format off
-      [offset](const NonemptyDeviceElementGroupPtr& interface) {
-        print(interface, offset);
-      },
-      [offset](const NonemptyMetricPtr& interface) {
-         print(interface, offset); 
-      },
-      [offset](const NonemptyWritableMetricPtr& interface) { 
-        print(interface, offset); 
-      },
-      [offset](const NonemptyObservableMetricPtr& interface) { 
-        print(interface, offset); 
-      },
-      [offset](const NonemptyFunctionPtr& interface) { 
-        print(interface, offset); 
-      }); // clang-format on
-}
-
-void print(const DevicePtr& device) {
-  cout << "Device name: " << device->getElementName() << endl;
-  cout << "Device id: " << device->getElementId() << endl;
-  cout << "Described as: " << device->getElementDescription() << endl;
-  cout << endl;
-  print(device->getDeviceElementGroup(), 3);
-}
+// NOLINTEND(readability-magic-numbers,bugprone-*)

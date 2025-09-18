@@ -1,14 +1,10 @@
-#ifndef __INFORMATION_MODEL_DATA_VARIANT_HPP_
-#define __INFORMATION_MODEL_DATA_VARIANT_HPP_
-
-#include "Variant_Visitor.hpp"
+#ifndef __STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_
+#define __STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_
 
 #include <chrono>
-#include <iomanip>
+#include <cstdint>
 #include <memory>
 #include <optional>
-#include <sstream>
-#include <stdexcept>
 #include <string>
 #include <variant>
 #include <vector>
@@ -18,231 +14,148 @@ namespace Information_Model {
  * @addtogroup DataTypeModelling Data Type Modelling
  * @{
  */
+
 /**
- * @brief POSIX time wrapper class with inbuilt comparators
+ * @brief UTC Timestamp
  *
  */
-class DateTime {
-  std::time_t posix_time_;
+struct Timestamp {
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hours;
+  uint8_t minutes;
+  uint8_t seconds;
+  uint32_t microseconds;
 
-public:
-  /**
-   * @brief Sets this time point as current system time at the point of calling
-   *
-   */
-  DateTime() : posix_time_(std::time(nullptr)) {}
+  friend bool operator==(const Timestamp& lhs, const Timestamp& rhs);
 
-  /**
-   * @brief Sets Specified time point
-   *
-   * @param time_point
-   */
-  explicit DateTime(const std::time_t& time_point) : posix_time_(time_point) {}
+  friend bool operator!=(const Timestamp& lhs, const Timestamp& rhs);
 
-  /**
-   * @brief Converts POSIX time to human readable format
-   *
-   * @return std::string
-   */
-  std::string toString() const {
-    std::string result;
-    result.reserve(std::size("yyyy-mm-ddThh:mm:ssZ"));
-    std::strftime(std::data(result),
-        std::size(result),
-        "%FT%TZ",
-        std::localtime(&posix_time_));
-    return result;
-  }
+  friend bool operator<(const Timestamp& lhs, const Timestamp& rhs);
 
-  /**
-   * @brief Returns the amount of seconds since POSIX time epoch
-   *
-   * @return std::time_t
-   */
-  std::time_t getValue() const { return posix_time_; }
+  friend bool operator>(const Timestamp& lhs, const Timestamp& rhs);
 
-  std::size_t size() const { return sizeof(posix_time_); }
+  friend bool operator<=(const Timestamp& lhs, const Timestamp& rhs);
 
-  friend bool operator==(const DateTime& lhs, const DateTime& rhs);
-  friend bool operator!=(const DateTime& lhs, const DateTime& rhs);
-  friend bool operator<(const DateTime& lhs, const DateTime& rhs);
-  friend bool operator>(const DateTime& lhs, const DateTime& rhs);
-  friend bool operator<=(const DateTime& lhs, const DateTime& rhs);
-  friend bool operator>=(const DateTime& lhs, const DateTime& rhs);
+  friend bool operator>=(const Timestamp& lhs, const Timestamp& rhs);
 };
 
-inline bool operator==(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ == rhs.posix_time_);
-}
-inline bool operator!=(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ != rhs.posix_time_);
-}
-inline bool operator<(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ < rhs.posix_time_);
-}
-inline bool operator>(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ > rhs.posix_time_);
-}
-inline bool operator<=(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ <= rhs.posix_time_);
-}
-inline bool operator>=(const DateTime& lhs, const DateTime& rhs) {
-  return (lhs.posix_time_ >= rhs.posix_time_);
-}
+/**
+ * @brief Checks if a given timestamp contains valid values
+ *
+ * @throws std::invalid_argument if
+ *  - year is less than 1582 (ISO 8601 requirement)
+ *  - month is 0
+ *  - month is more than 12
+ *  - day is 0
+ *  - day is more than 31
+ *  - hours is more than 24
+ *  - minutes is more than 59
+ *  - seconds is more than 59
+ *
+ * @param timestamp
+ */
+void verifyTimestamp(const Timestamp& timestamp);
+
+/**
+ * @brief Creates a valid Timestamp for current time
+ *
+ * Result is the same as calling toTimestamp(std::chrono::system_clock::now())
+ *
+ * @return Timestamp
+ */
+Timestamp makeTimestamp();
+
+Timestamp toTimestamp(const std::chrono::system_clock::time_point& timepoint);
+
+std::chrono::system_clock::time_point toTimepoint(const Timestamp& timestamp);
+
+/**
+ * @brief Converts a given timestamp to ISO 8601 string format
+ *
+ * @throws std::invalid_argument - if given timestamp store nonsensical values,
+ * see @ref verifyTimestamp() documentation for exact checks
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const Timestamp& timestamp);
+
+/**
+ * @brief Converts a given timestamp to a string based on given strftime format
+ * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for reference
+ *
+ * @throws std::invalid_argument - if given timestamp store nonsensical values,
+ * see @ref verifyTimestamp() documentation for exact checks
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const Timestamp& timestamp, const std::string& format);
+
+/**
+ * @brief Converts a given timepoint to ISO 8601 string format
+ *
+ * @param time_point
+ * @return std::string
+ */
+std::string toString(const std::chrono::system_clock::time_point& timepoint);
+
+/**
+ * @brief Converts a given timepoint to a string based on given strftime format
+ * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for reference
+ *
+ * @param timestamp
+ * @return std::string
+ */
+std::string toString(const std::chrono::system_clock::time_point& timepoint,
+    const std::string& format);
 
 /**
  * @enum DataType
  * @brief DataType enumeration, specifying the supported data types
  *
  */
-enum class DataType {
+enum class DataType : uint8_t {
   Boolean, /*!< bool */
   Integer, /*!< intmax_t */
   Unsigned_Integer, /*!< uintmax_t */
   Double, /*!< double */
-  Time, /*!< Information_Model::DateTime */
+  Timestamp, /*!< Information_Model::Timestamp */
   Opaque, /*!< std::vector<uint8_t> */
   String, /*!< std::string */
   None, /*!< void */
   Unknown /*!< fallback type */
 };
 
-inline std::string toString(DataType type) {
-  switch (type) {
-  case DataType::Boolean:
-    return "Boolean";
-  case DataType::Integer:
-    return "Signed Integer";
-  case DataType::Unsigned_Integer:
-    return "Unsigned Integer";
-  case DataType::Double:
-    return "Double floating point";
-  case DataType::Time:
-    return "Time";
-  case DataType::Opaque:
-    return "Opaque byte array";
-  case DataType::String:
-    return "String";
-  case DataType::None:
-    return "None";
-  case DataType::Unknown:
-  default:
-    return "Unknown";
-  }
-}
+std::string toString(DataType type);
 
-inline std::string toSanitizedString(DataType type) {
-  switch (type) {
-  case DataType::Boolean:
-    return "Boolean";
-  case DataType::Integer:
-    return "SignedInteger";
-  case DataType::Unsigned_Integer:
-    return "UnsignedInteger";
-  case DataType::Double:
-    return "Double";
-  case DataType::Time:
-    return "Time";
-  case DataType::Opaque:
-    return "OpaqueByteArray";
-  case DataType::String:
-    return "String";
-  case DataType::None:
-    return "None";
-  case DataType::Unknown:
-  default:
-    return "Unknown";
-  }
-}
+std::string toSanitizedString(DataType type);
 
 using DataVariant = std::variant<bool,
     intmax_t,
     uintmax_t,
     double,
-    DateTime,
+    Timestamp,
     std::vector<uint8_t>,
     std::string>;
 
 using DataVariantPtr = std::shared_ptr<DataVariant>;
 
-inline std::size_t size_of(const DataVariant& variant) {
-  return match(
-      variant,
-      [](auto value) -> std::size_t { return sizeof(value); },
-      [](const DateTime& value) -> std::size_t { return value.size(); },
-      [](const std::vector<uint8_t>& value) -> std::size_t {
-        return value.size();
-      },
-      [](const std::string& value) -> std::size_t { return value.size(); });
-}
+std::size_t size_of(const DataVariant& variant);
 
-inline std::optional<DataVariant> setVariant(DataType type) {
-  switch (type) {
-  case DataType::Boolean:
-    return DataVariant((bool)false);
-  case DataType::Integer:
-    return DataVariant((intmax_t)0);
-  case DataType::Unsigned_Integer:
-    return DataVariant((uintmax_t)0);
-  case DataType::Double:
-    return DataVariant((double)0.0);
-  case DataType::Time:
-    return DataVariant(DateTime());
-  case DataType::Opaque:
-    return DataVariant(std::vector<uint8_t>());
-  case DataType::String:
-    return DataVariant(std::string());
-  case DataType::None:
-    return std::nullopt;
-  case DataType::Unknown:
-    [[fallthrough]];
-  default:
-    throw std::logic_error("Can not initialise variant with unknown data type");
-  }
-}
+std::optional<DataVariant> setVariant(DataType type);
 
-inline DataType toDataType(const DataVariant& variant) {
-  if (std::holds_alternative<bool>(variant)) {
-    return DataType::Boolean;
-  } else if (std::holds_alternative<intmax_t>(variant)) {
-    return DataType::Integer;
-  } else if (std::holds_alternative<uintmax_t>(variant)) {
-    return DataType::Unsigned_Integer;
-  } else if (std::holds_alternative<double>(variant)) {
-    return DataType::Double;
-  } else if (std::holds_alternative<DateTime>(variant)) {
-    return DataType::Time;
-  } else if (std::holds_alternative<std::vector<uint8_t>>(variant)) {
-    return DataType::Opaque;
-  } else if (std::holds_alternative<std::string>(variant)) {
-    return DataType::String;
-  } else {
-    return DataType::Unknown;
-  }
-}
+DataType toDataType(const DataVariant& variant);
 
-inline bool matchVariantType(const DataVariant& variant, DataType type) {
-  return toDataType(variant) == type;
-}
+bool matchVariantType(const DataVariant& variant, DataType type);
 
-inline std::string toString(const DataVariant& variant) {
-  return match(
-      variant,
-      [](bool value) -> std::string { return (value ? "true" : "false"); },
-      [](auto value) -> std::string { return std::to_string(value); },
-      [](const DateTime& value) -> std::string { return value.toString(); },
-      [](const std::vector<uint8_t>& value) -> std::string {
-        std::stringstream ss;
-        ss << std::hex << std::setfill('0');
-        for (auto byte : value) {
-          ss << std::hex << std::setw(2) << static_cast<int>(byte) << " ";
-        }
-        return ss.str();
-      },
-      [](const std::string& value) -> std::string { return value; });
-}
+std::string toString(const DataVariant& variant);
+
+std::string toSanitizedString(const DataVariant& variant);
 
 /** @}*/
 } // namespace Information_Model
 
-#endif //__INFORMATION_MODEL_DATA_VARIANT_HPP_
+#endif //__STAG_INFORMATION_MODEL_DATA_VARIANT_HPP_
