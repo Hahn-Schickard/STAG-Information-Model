@@ -2,6 +2,9 @@
 ## [0.5.1] - 2026.01.27
 ### Changed 
  - date dependency to be header only
+ - `toString(const Parameters&)` and `toString(const ParameterTypes&)` implementation to 
+ use for each loops with constrained pair binding
+ - `size_of(const DataVariant&)` to capture const auto& instead of auto value
 
 ## [0.5.0] - 2025.09.18
 ### Removed 
