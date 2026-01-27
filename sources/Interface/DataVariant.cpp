@@ -173,7 +173,7 @@ string toSanitizedString(DataType type) {
 size_t size_of(const DataVariant& variant) {
   return Variant_Visitor::match(
       variant,
-      [](auto value) { return sizeof(value); },
+      [](const auto& value) { return sizeof(value); },
       [](const vector<uint8_t>& value) { return value.size(); },
       [](const string& value) { return value.size(); });
 }
