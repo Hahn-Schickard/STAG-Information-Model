@@ -1,4 +1,8 @@
 # Changelog
+## [0.5.1] - 2026.01.27
+### Changed 
+ - date dependency to be header only
+
 ## [0.5.0] - 2025.09.18
 ### Removed 
  - Mock implementations
