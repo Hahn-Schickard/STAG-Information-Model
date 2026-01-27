@@ -89,9 +89,10 @@ string toString(const ParameterTypes& supported_types) {
 
   vector<uintmax_t> keys;
   keys.reserve(supported_types.size());
-  for (auto it = supported_types.begin(); it != supported_types.end(); it++) {
-    keys.push_back(it->first);
+  for (const auto& [key, _] : supported_types) {
+    keys.push_back(key);
   }
+
   sort(keys.begin(), keys.end());
 
   string result = "{";
@@ -112,8 +113,8 @@ string toString(const Parameters& parameters) {
 
   vector<uintmax_t> keys;
   keys.reserve(parameters.size());
-  for (auto it = parameters.begin(); it != parameters.end(); it++) {
-    keys.push_back(it->first);
+  for (const auto& [key, _] : parameters) {
+    keys.push_back(key);
   }
   sort(keys.begin(), keys.end());
 
